@@ -122,7 +122,7 @@ function AuthLayout({children,title,subtitle}) {
 
 function Login() {
   const nav=useNavigate(); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false);
-  async function submit(e){e.preventDefault();setError("");setBusy(true); if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;} const {error}=await supabase.auth.signInWithPassword({email,password}); if(error)setError(error.message);else nav("/app");setBusy(false);}
+  async function submit(e){e.preventDefault();setError("");setBusy(true); if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;} const {error}=await supabase.auth.signInWithPassword({email,password}); if(error)setError(error.message==="Invalid login credentials"?"E-mail ou senha incorretos.":error.message);else nav("/app");setBusy(false);}
   return <AuthLayout title="Bem-vindo de volta" subtitle="Entre na sua conta para continuar."><form onSubmit={submit} className="form-stack"><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" value={password} onChange={e=>setPassword(e.target.value)} required/><div className="form-meta"><Link to="/recuperar">Esqueci minha senha</Link></div>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Entrando...":"Entrar"}</Button></form><div className="auth-bottom">Ainda não tem conta? <Link to="/cadastro">Criar conta</Link></div></AuthLayout>
 }
 
@@ -132,8 +132,9 @@ function Signup() {
     const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,company_name:company}}});
     if(error){setError(error.message);setBusy(false);return;}
     if(data.session){nav("/onboarding");setBusy(false);return;}
+  if(data.user && Array.isArray(data.user.identities) && data.user.identities.length===0){setError("Este e-mail já possui uma conta. Faça login ou use \"Esqueci minha senha\".");setBusy(false);return;}
   const {error:loginError}=await supabase.auth.signInWithPassword({email,password});
-  if(loginError) setError(loginError.message); else nav("/onboarding");
+  if(loginError) setError(loginError.message==="Invalid login credentials"?"Este e-mail já possui uma conta com outra senha. Faça login ou recupere a senha.":loginError.message); else nav("/onboarding");
     setBusy(false);
   }
   return <AuthLayout title="Crie sua conta" subtitle="Comece a organizar suas cobranças gratuitamente."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" minLength="6" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button></form><div className="auth-bottom">Já possui uma conta? <Link to="/login">Entrar</Link></div></AuthLayout>
