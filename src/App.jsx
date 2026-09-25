@@ -6,6 +6,7 @@ import {
   Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal
 } from "lucide-react";
 import { supabase } from "./lib/supabase";
+import { PLAN_OPTIONS } from "./lib/plans";
 
 const money = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(v || 0));
 const todayISO = () => new Date().toISOString().slice(0,10);
@@ -90,9 +91,7 @@ function Landing() {
       <section id="precos" className="section soft"><div className="container">
         <div className="section-heading center"><span className="eyebrow">Preços</span><h2>Comece pequeno. Cresça quando precisar.</h2></div>
         <div className="pricing">
-          <Price title="Grátis" price="0" desc="Para começar a organizar." items={["Clientes","Cobranças","Dashboard","WhatsApp via link"]}/>
-          <Price featured title="Pro" price="29,90" desc="Para negócios que querem praticidade." items={["Tudo do Grátis","Relatórios","Assistente IA","Mais recursos"]}/>
-          <Price title="Profissional" price="59,90" desc="Para operações maiores." items={["Tudo do Pro","Mais usuários","Recursos avançados","Suporte prioritário"]}/>
+          {PLAN_OPTIONS.map((plan, i) => <Price key={plan.key} plan={plan} featured={i===1}/>)}
         </div>
       </div></section>
 
@@ -112,8 +111,15 @@ function DashboardPreview() {
   </div></div>
 }
 
-function Price({title,price,desc,items,featured}) {
-  return <div className={`price-card ${featured?"featured":""}`}>{featured && <div className="popular">Mais escolhido</div>}<h3>{title}</h3><p>{desc}</p><div className="price"><small>R$</small>{price}<span>/mês</span></div>{items.map(i=><div className="price-item" key={i}><Check size={16}/>{i}</div>)}<Link to="/cadastro" className={`btn ${featured?"btn-primary":"btn-secondary"} full`}>Começar</Link></div>
+function Price({plan, featured}) {
+  return <div className={`price-card ${featured?"featured":""}`}>
+    {featured && <div className="popular">Mais escolhido</div>}
+    <h3>{plan.title}</h3><p>{plan.desc}</p>
+    <div className="price"><small>R$</small>{plan.monthlyPrice}<span>/mês</span></div>
+    {plan.items.map(i=><div className="price-item" key={i}><Check size={16}/>{i}</div>)}
+    <a href={plan.monthlyCheckout} className={`btn ${featured?"btn-primary":"btn-secondary"} full`}>Assinar</a>
+    <div className="price-note">Plano anual: R$ {plan.annualPrice}/ano</div>
+  </div>;
 }
 
 function AuthLayout({children,title,subtitle}) {
@@ -223,6 +229,6 @@ function Reports(){return <><PageTitle title="Relatórios" subtitle="Acompanhe a
 
 function AIPage(){const [tone,setTone]=useState("Amigável");const [context,setContext]=useState("mensalidade de R$350 vence hoje");const [result,setResult]=useState("");function generate(){const intro=tone==="Profissional"?"Olá, tudo bem?":tone==="Direto"?"Olá!":tone==="Informal"?"Oi! Tudo certo?":"Oi! Tudo bem?";setResult(`${intro}\\n\\nPassando para lembrar sobre a ${context}. Quando puder, consegue verificar? Se precisar de alguma coisa, estou à disposição.`);}return <><PageTitle title="Assistente IA" subtitle="Crie mensagens de cobrança mais naturais."/><div className="ai-layout"><div className="panel"><div className="panel-head"><div><h2>Gerar mensagem</h2><p>Escolha o tom e descreva a situação.</p></div><Sparkles size={19}/></div><label className="field"><span>Tom</span><select value={tone} onChange={e=>setTone(e.target.value)}>{["Profissional","Amigável","Direto","Informal"].map(x=><option key={x}>{x}</option>)}</select></label><label className="field"><span>Contexto</span><textarea rows="4" value={context} onChange={e=>setContext(e.target.value)}/></label><Button onClick={generate}><Sparkles size={16}/> Gerar mensagem</Button></div><div className="panel ai-result"><div className="panel-head"><div><h2>Mensagem</h2><p>Revise antes de enviar.</p></div></div>{result?<><div className="generated">{result}</div><div className="modal-actions"><Button variant="secondary" onClick={generate}>Gerar outra</Button><Button onClick={()=>navigator.clipboard?.writeText(result)}>Copiar</Button></div></>:<div className="empty small"><Sparkles size={22}/><b>Sua mensagem aparecerá aqui.</b></div>}</div></div></>}
 
-function SettingsPage(){const [tab,setTab]=useState("empresa");return <><PageTitle title="Configurações" subtitle="Personalize o CobrançaPro para sua empresa."/><div className="settings-layout"><div className="settings-nav">{[["empresa","Empresa"],["whatsapp","WhatsApp"],["ia","IA"],["plano","Plano"]].map(([x,l])=><button className={tab===x?"active":""} onClick={()=>setTab(x)} key={x}>{l}</button>)}</div><div className="panel settings-panel">{tab==="empresa"&&<><h2>Empresa</h2><p>Dados básicos do seu negócio.</p><div className="form-grid"><Input label="Nome da empresa" placeholder="Minha empresa"/><Input label="Telefone" placeholder="(24) 99999-9999"/><Input label="Segmento" placeholder="Ex.: clínica"/></div><Button>Salvar alterações</Button></>}{tab==="whatsapp"&&<><h2>WhatsApp</h2><p>Prepare o canal para uma futura integração oficial.</p><div className="connection"><div><span className="status-dot"></span><b>Não conectado</b><small>Você poderá conectar o WhatsApp Business aqui.</small></div><Button>Conectar WhatsApp</Button></div></>}{tab==="ia"&&<><h2>Assistente IA</h2><p>Defina como o assistente deve escrever.</p><label className="field"><span>Nome do assistente</span><input defaultValue="Assistente CobrançaPro"/></label><label className="field"><span>Instruções</span><textarea rows="5" placeholder="Seja objetivo, educado e nunca invente valores."/></label><Button>Salvar</Button></>}{tab==="plano"&&<><h2>Plano</h2><p>Você está no plano Grátis.</p><div className="plan-box"><b>Grátis</b><strong>R$0</strong><span>Clientes, cobranças, dashboard e WhatsApp via link.</span><Button>Ver planos</Button></div></>}</div></div></>}
+function SettingsPage(){const [tab,setTab]=useState("empresa");const [profile,setProfile]=useState(null);useEffect(()=>{supabase?.auth.getUser().then(async({data})=>{if(!data.user)return;const {data:p}=await supabase.from("profiles").select("plan,billing_cycle,subscription_status,subscription_expires_at").eq("id",data.user.id).single();setProfile(p||null);});},[]);return <><PageTitle title="Configurações" subtitle="Personalize o CobrançaPro para sua empresa."/><div className="settings-layout"><div className="settings-nav">{[["empresa","Empresa"],["whatsapp","WhatsApp"],["ia","IA"],["plano","Plano"]].map(([x,l])=><button className={tab===x?"active":""} onClick={()=>setTab(x)} key={x}>{l}</button>)}</div><div className="panel settings-panel">{tab==="empresa"&&<><h2>Empresa</h2><p>Dados básicos do seu negócio.</p><div className="form-grid"><Input label="Nome da empresa" placeholder="Minha empresa"/><Input label="Telefone" placeholder="(24) 99999-9999"/><Input label="Segmento" placeholder="Ex.: clínica"/></div><Button>Salvar alterações</Button></>}{tab==="whatsapp"&&<><h2>WhatsApp</h2><p>Prepare o canal para uma futura integração oficial.</p><div className="connection"><div><span className="status-dot"></span><b>Não conectado</b><small>Você poderá conectar o WhatsApp Business aqui.</small></div><Button>Conectar WhatsApp</Button></div></>}{tab==="ia"&&<><h2>Assistente IA</h2><p>Defina como o assistente deve escrever.</p><label className="field"><span>Nome do assistente</span><input defaultValue="Assistente CobrançaPro"/></label><label className="field"><span>Instruções</span><textarea rows="5" placeholder="Seja objetivo, educado e nunca invente valores."/></label><Button>Salvar</Button></>}{tab==="plano"&&<><h2>Plano</h2><p>Confira sua assinatura atual.</p><div className="plan-box"><b>{profile?.plan==="free"||!profile?.plan?"Grátis":profile.plan.charAt(0).toUpperCase()+profile.plan.slice(1)}</b><strong>{profile?.plan==="essencial"?"R$49,90":profile?.plan==="profissional"?"R$99,90":profile?.plan==="business"?"R$199,90":"R$0"}</strong><span>Status: {profile?.subscription_status||"inactive"}{profile?.billing_cycle?(" · "+(profile.billing_cycle==="annual"?"Anual":"Mensal")):""}</span><a href="/#precos" className="btn btn-primary">Ver planos</a></div></>}</div></div></>}
 
 export default App;
