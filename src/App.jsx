@@ -117,8 +117,9 @@ function Price({plan, featured}) {
     <h3>{plan.title}</h3><p>{plan.desc}</p>
     <div className="price"><small>R$</small>{plan.monthlyPrice}<span>/mês</span></div>
     {plan.items.map(i=><div className="price-item" key={i}><Check size={16}/>{i}</div>)}
-    <a href={plan.monthlyCheckout} className={`btn ${featured?"btn-primary":"btn-secondary"} full`}>Assinar</a>
-    <div className="price-note">Plano anual: R$ {plan.annualPrice}/ano</div>
+    <a href={plan.monthlyCheckout} className={`btn ${featured?"btn-primary":"btn-secondary"} full`}>Assinar mensal</a>
+    <a href={plan.annualCheckout} className="btn btn-secondary full">Assinar anual</a>
+    <div className="price-note">Anual: R$ {plan.annualPrice}/ano</div>
   </div>;
 }
 
