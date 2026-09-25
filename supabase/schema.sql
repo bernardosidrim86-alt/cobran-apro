@@ -132,6 +132,40 @@ create policy "settings company" on public.company_settings for all using (compa
 drop policy if exists "messages company" on public.message_logs;
 create policy "messages company" on public.message_logs for all using (company_id = public.my_company_id()) with check (company_id = public.my_company_id());
 
+-- Cria a empresa do usuário no onboarding (RLS impede o insert direto antes do vínculo).
+create or replace function public.create_my_company(p_name text, p_segment text default null, p_phone text default null)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_company_id uuid;
+begin
+  if auth.uid() is null then
+    raise exception 'not authenticated';
+  end if;
+
+  select company_id into v_company_id from public.profiles where id = auth.uid();
+  if v_company_id is not null then
+    return v_company_id;
+  end if;
+
+  insert into public.companies (name, segment, phone)
+  values (coalesce(nullif(trim(p_name), ''), 'Minha empresa'), p_segment, p_phone)
+  returning id into v_company_id;
+
+  insert into public.profiles (id, company_id)
+  values (auth.uid(), v_company_id)
+  on conflict (id) do update set company_id = excluded.company_id;
+
+  return v_company_id;
+end;
+$$;
+
+revoke all on function public.create_my_company(text, text, text) from public, anon;
+grant execute on function public.create_my_company(text, text, text) to authenticated;
+
 -- Trigger para criar perfil após cadastro.
 create or replace function public.handle_new_user()
 returns trigger
