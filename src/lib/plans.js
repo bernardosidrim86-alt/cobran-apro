@@ -1,0 +1,32 @@
+export const PLAN_OPTIONS = [
+  {
+    key: "essencial",
+    title: "Essencial",
+    monthlyPrice: "49,90",
+    annualPrice: "478,80",
+    desc: "Para pequenos negócios que querem organizar suas cobranças.",
+    items: ["Clientes e cobranças", "Dashboard financeiro", "WhatsApp via link", "Relatórios"],
+    monthlyCheckout: "https://go.perfectpay.com.br/PPU38CQGH3N",
+    annualCheckout: "https://go.perfectpay.com.br/PPU38CQGH44",
+  },
+  {
+    key: "profissional",
+    title: "Profissional",
+    monthlyPrice: "99,90",
+    annualPrice: "958,80",
+    desc: "Para empresas que precisam de mais controle no dia a dia.",
+    items: ["Tudo do Essencial", "Assistente IA", "Mais recursos", "Suporte prioritário"],
+    monthlyCheckout: "https://go.perfectpay.com.br/PPU38CQGH3Q",
+    annualCheckout: "https://go.perfectpay.com.br/PPU38CQGH48",
+  },
+  {
+    key: "business",
+    title: "Business",
+    monthlyPrice: "199,90",
+    annualPrice: "1.918,80",
+    desc: "Para operações maiores e equipes em crescimento.",
+    items: ["Tudo do Profissional", "Recursos avançados", "Mais usuários", "Atendimento prioritário"],
+    monthlyCheckout: "https://go.perfectpay.com.br/PPU38CQGH3R",
+    annualCheckout: "https://go.perfectpay.com.br/PPU38CQGH4A",
+  },
+];
