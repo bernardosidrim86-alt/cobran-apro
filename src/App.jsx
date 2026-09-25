@@ -131,7 +131,9 @@ function Signup() {
   async function submit(e){e.preventDefault();setError("");setBusy(true); if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;}
     const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,company_name:company}}});
     if(error){setError(error.message);setBusy(false);return;}
-    if(data.session) nav("/onboarding"); else {setError("Conta criada. Confirme seu e-mail para entrar.");}
+    if(data.session){nav("/onboarding");setBusy(false);return;}
+  const {error:loginError}=await supabase.auth.signInWithPassword({email,password});
+  if(loginError) setError(loginError.message); else nav("/onboarding");
     setBusy(false);
   }
   return <AuthLayout title="Crie sua conta" subtitle="Comece a organizar suas cobranças gratuitamente."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" minLength="6" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button></form><div className="auth-bottom">Já possui uma conta? <Link to="/login">Entrar</Link></div></AuthLayout>
