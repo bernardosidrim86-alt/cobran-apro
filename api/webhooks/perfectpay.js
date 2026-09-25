@@ -19,22 +19,27 @@ function pick(obj, paths) {
 }
 
 function normalizeStatus(payload) {
-  const raw = String(
-    pick(payload, [
-      "sale_status_enum",
-      "sale_status",
-      "status",
-      "event",
-      "type",
-    ]) || ""
-  ).toLowerCase();
+  const code = Number(payload?.sale_status_enum);
 
-  if (raw.includes("refund") || raw.includes("reembols") || raw.includes("refunded")) return "refunded";
-  if (raw.includes("cancel")) return "cancelled";
-  if (raw.includes("pend")) return "pending";
-  if (raw.includes("reject") || raw.includes("recus")) return "pending";
-  if (raw.includes("approv") || raw.includes("approved") || raw.includes("paid") || raw.includes("pago")) return "active";
-  return "pending";
+  const statuses = {
+    0: "pending",
+    1: "pending",
+    2: "active",
+    3: "pending",
+    4: "pending",
+    5: "pending",
+    6: "cancelled",
+    7: "refunded",
+    8: "active",
+    9: "cancelled",
+    10: "active",
+    11: "pending",
+    12: "pending",
+    13: "expired",
+    16: "pending",
+  };
+
+  return statuses[code] || "pending";
 }
 
 module.exports = async function handler(req, res) {
