@@ -113,3 +113,4 @@
 .user-mini-button{width:100%;border:0;background:transparent;text-align:left;cursor:pointer}
 .user-mini-button:hover{background:#f7f7f7;border-radius:9px}
 @media(max-width:600px){.header-dropdown{right:-8px;width:min(310px,calc(100vw - 28px))}.profile-dropdown{width:min(245px,calc(100vw - 28px))}}
+\n/* Menu lateral mobile: fechar por toque, swipe ou fundo */\n.sidebar-backdrop{display:none}\n@media(max-width:900px){.sidebar-backdrop{display:block;position:fixed;inset:0;border:0;background:rgba(15,18,30,.28);z-index:49;cursor:pointer}.sidebar{touch-action:pan-y;will-change:transform}.sidebar.open{box-shadow:18px 0 40px rgba(16,24,40,.14)}}\n
