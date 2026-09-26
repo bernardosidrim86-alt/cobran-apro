@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">CobrançaPro</title>
+  <desc id="desc">Logo CobrançaPro em azul e roxo</desc>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#087CFF"/>
+      <stop offset=".55" stop-color="#2459F5"/>
+      <stop offset="1" stop-color="#7347E8"/>
+    </linearGradient>
+    <linearGradient id="p" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#315CF5"/>
+      <stop offset="1" stop-color="#7347E8"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(45 55)">
+    <path fill="url(#g)" d="M230 42c-32-26-70-39-111-39C54 3 0 57 0 122c0 66 54 120 119 120 41 0 79-13 111-39l-54-54c-17 13-36 20-57 20-28 0-50-21-50-47s22-47 50-47c21 0 40 7 57 20l54-53z"/>
+    <path fill="url(#p)" d="M164 73 108 129 83 104 45 142l63 63 94-94z"/>
+    <circle cx="105" cy="129" r="82" fill="none" stroke="#ffffff" stroke-opacity=".14" stroke-width="18"/>
+  </g>
+  <g font-family="Inter, Arial, Helvetica, sans-serif" font-weight="800" letter-spacing="-28">
+    <text x="325" y="275" font-size="175" fill="#071A3D">Cobrança</text>
+    <text x="900" y="275" font-size="175" fill="url(#p)">Pro</text>
+  </g>
+</svg>
