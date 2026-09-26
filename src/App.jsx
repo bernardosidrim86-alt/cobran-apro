@@ -230,62 +230,29 @@ function Reports(){
   const companyId=useCompany();
   const [range,setRange]=useState("30"),[from,setFrom]=useState(""),[to,setTo]=useState("");
   const [charges,setCharges]=useState([]),[payments,setPayments]=useState([]),[loading,setLoading]=useState(true);
-
-  const dates=useMemo(()=>{const end=new Date();end.setHours(23,59,59,999);const start=new Date(end);
-    if(range==="7")start.setDate(start.getDate()-6);else if(range==="90")start.setDate(start.getDate()-89);else if(range==="custom"&&from){const s=new Date(from+"T00:00:00");const x=to?new Date(to+"T23:59:59"):end;return{start:s,end:x}}else start.setDate(start.getDate()-29);
-    start.setHours(0,0,0,0);return{start,end}},[range,from,to]);
-
-  useEffect(()=>{if(!companyId)return;setLoading(true);Promise.all([
-    supabase.from("charges").select("id,amount,due_date,status,created_at,customers(name)").eq("company_id",companyId),
-    supabase.from("payments").select("id,amount,paid_at,customer_id,customers(name)").eq("company_id",companyId)
-  ]).then(([a,b])=>{setCharges(a.data||[]);setPayments(b.data||[]);setLoading(false);if(a.error)console.error(a.error);if(b.error)console.error(b.error)})},[companyId]);
-
-  const inPeriod=v=>v&&new Date(v)>=dates.start&&new Date(v)<=dates.end;
-  const pc=charges.filter(x=>x.status!=="cancelled"&&inPeriod(x.due_date+"T12:00:00"));
-  const pp=payments.filter(x=>inPeriod(x.paid_at));
-  const received=pp.reduce((a,x)=>a+Number(x.amount||0),0), billed=pc.reduce((a,x)=>a+Number(x.amount||0),0);
-  const open=pc.filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.amount||0),0);
-  const overdue=pc.filter(x=>x.status==="pending"&&x.due_date<todayISO()).reduce((a,x)=>a+Number(x.amount||0),0);
-  const paid=pc.filter(x=>x.status==="paid").length, rate=pc.length?Math.round(paid/pc.length*100):0, ticket=pp.length?received/pp.length:0;
-  const late=pc.filter(x=>x.status==="pending"&&x.due_date<todayISO()).length,pending=pc.filter(x=>x.status==="pending"&&x.due_date>=todayISO()).length,totalStatus=paid+pending+late;
-
-  const days=useMemo(()=>{const out=[],d=new Date(dates.start),n=Math.ceil((dates.end-dates.start)/864e5)+1;if(n>30)d.setDate(d.getDate()+n-30);
-    while(d<=dates.end&&out.length<30){const k=d.toISOString().slice(0,10);out.push({k,label:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}),b:pc.filter(x=>x.due_date===k).reduce((a,x)=>a+Number(x.amount||0),0),r:pp.filter(x=>x.paid_at.slice(0,10)===k).reduce((a,x)=>a+Number(x.amount||0),0)});d.setDate(d.getDate()+1)}return out},[dates,pc,pp]);
-  const max=Math.max(1,...days.flatMap(x=>[x.b,x.r]));
-  const customers={};pp.forEach(x=>{const n=x.customers?.name||"Cliente";customers[n]=(customers[n]||0)+Number(x.amount||0)});
-  const ranking=Object.entries(customers).sort((a,b)=>b[1]-a[1]).slice(0,6);
-  const label=range==="7"?"7 dias":range==="90"?"90 dias":range==="custom"?"personalizado":"30 dias";
-  const pctPaid=totalStatus?paid/totalStatus*100:0,pctPending=totalStatus?(paid+pending)/totalStatus*100:0;
-
-  return <div className="reports-page">
-    <PageTitle title="Relatórios" subtitle="Visão financeira do seu período."/>
-    <div className="report-toolbar"><div className="report-periods">{[["7","7 dias"],["30","30 dias"],["90","90 dias"],["custom","Personalizado"]].map(([v,l])=><button className={range===v?"active":""} onClick={()=>setRange(v)} key={v}>{l}</button>)}</div>
-      {range==="custom"&&<div className="report-dates"><input aria-label="Data inicial" type="date" value={from} onChange={e=>setFrom(e.target.value)}/><span>até</span><input aria-label="Data final" type="date" value={to} onChange={e=>setTo(e.target.value)}/></div>}
-    </div>
+  const dates=useMemo(()=>{const end=new Date();end.setHours(23,59,59,999);if(range==="custom"&&from){const start=new Date(from+"T00:00:00");const finish=to?new Date(to+"T23:59:59"):end;return{start,end:finish}}const start=new Date(end);start.setDate(start.getDate()-(range==="7"?6:range==="90"?89:29));start.setHours(0,0,0,0);return{start,end}},[range,from,to]);
+  useEffect(()=>{if(!companyId)return;setLoading(true);Promise.all([supabase.from("charges").select("id,amount,due_date,status,created_at,customers(name)").eq("company_id",companyId),supabase.from("payments").select("id,amount,paid_at,customer_id,customers(name)").eq("company_id",companyId)]).then(([a,p])=>{setCharges(a.data||[]);setPayments(p.data||[]);setLoading(false);if(a.error)console.error(a.error);if(p.error)console.error(p.error)})},[companyId]);
+  const inPeriod=v=>{if(!v)return false;const d=new Date(v);return d>=dates.start&&d<=dates.end};
+  const pc=charges.filter(x=>x.status!=="cancelled"&&inPeriod(x.due_date+"T12:00:00")),pp=payments.filter(x=>inPeriod(x.paid_at));
+  const received=pp.reduce((a,x)=>a+Number(x.amount||0),0),billed=pc.reduce((a,x)=>a+Number(x.amount||0),0),open=pc.filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.amount||0),0),overdue=pc.filter(x=>x.status==="pending"&&x.due_date<todayISO()).reduce((a,x)=>a+Number(x.amount||0),0);
+  const paid=pc.filter(x=>x.status==="paid").length,late=pc.filter(x=>x.status==="pending"&&x.due_date<todayISO()).length,pending=pc.filter(x=>x.status==="pending"&&x.due_date>=todayISO()).length,rate=pc.length?Math.round(paid/pc.length*100):0,ticket=pp.length?received/pp.length:0;
+  const buckets=useMemo(()=>{const total=Math.max(1,Math.ceil((dates.end-dates.start)/86400000)+1),step=Math.ceil(total/7);return Array.from({length:7},(_,i)=>{const start=new Date(dates.start);start.setDate(start.getDate()+i*step);const end=new Date(start);end.setDate(end.getDate()+step-1);if(end>dates.end)end.setTime(dates.end.getTime());const b=pc.filter(x=>{const d=new Date(x.due_date+"T12:00:00");return d>=start&&d<=end}).reduce((a,x)=>a+Number(x.amount||0),0),r=pp.filter(x=>{const d=new Date(x.paid_at);return d>=start&&d<=end}).reduce((a,x)=>a+Number(x.amount||0),0);const label=range==="7"?start.toLocaleDateString("pt-BR",{weekday:"short"}).replace(".",""):total>45?start.toLocaleDateString("pt-BR",{month:"short"}).replace(".",""):start.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});return{i,label,b,r}})},[dates,range,pc,pp]);
+  const max=Math.max(1,...buckets.flatMap(x=>[x.b,x.r])),map={};pp.forEach(x=>{const n=x.customers?.name||"Cliente";map[n]=(map[n]||0)+Number(x.amount||0)});const ranking=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const totalStatus=paid+pending+late,paidPct=totalStatus?paid/totalStatus*100:0,pendingPct=totalStatus?(paid+pending)/totalStatus*100:0,periodLabel=range==="7"?"7 dias":range==="90"?"90 dias":range==="custom"?"período selecionado":"30 dias";
+  return <div className="reports-page"><PageTitle title="Relatórios" subtitle="Acompanhe o desempenho financeiro da sua empresa."/>
+    <div className="report-toolbar"><div className="report-periods">{[["7","7 dias"],["30","30 dias"],["90","90 dias"],["custom","Personalizado"]].map(([v,l])=><button type="button" className={range===v?"active":""} onClick={()=>setRange(v)} key={v}>{l}</button>)}</div>{range==="custom"&&<div className="report-dates"><input type="date" value={from} onChange={e=>setFrom(e.target.value)}/><span>até</span><input type="date" value={to} onChange={e=>setTo(e.target.value)}/></div>}</div>
     {loading?<div className="report-skeleton"><div/><div/><div/><div/></div>:<>
-      <div className="report-kpis">
-        <Metric title="Recebido" value={money(received)} icon={Wallet} tone="success"/><Metric title="Em aberto" value={money(open)} icon={CircleDollarSign}/><Metric title="Atrasado" value={money(overdue)} icon={Receipt} tone="danger"/><Metric title="Recebimento" value={rate+"%"} icon={TrendingUp}/>
-      </div>
+      <div className="report-kpis"><Metric title="Recebido" value={money(received)} icon={Wallet} tone="success"/><Metric title="Em aberto" value={money(open)} icon={CircleDollarSign}/><Metric title="Atrasado" value={money(overdue)} icon={Receipt} tone="danger"/><Metric title="Taxa de recebimento" value={rate+"%"} icon={TrendingUp}/></div>
       <div className="report-layout">
-        <section className="panel report-card report-main"><div className="report-heading"><div><h2>Fluxo financeiro</h2><p>Últimos {label}</p></div><div className="report-legend"><span><i className="c1"/>Cobrado</span><span><i className="c2"/>Recebido</span></div></div>
-          <div className="report-bars">{days.map(x=><div className="report-bar-col" key={x.k}><div className="report-bar-wrap"><i style={{height:(x.b/max*100)+"%"}}/><i style={{height:(x.r/max*100)+"%"}}/></div><small>{x.label}</small></div>)}</div>
+        <section className="panel report-card report-main"><div className="report-heading"><div><h2>Desempenho financeiro</h2><p>Cobrado x recebido · {periodLabel}</p></div><div className="report-legend"><span><i className="c1"/>Cobrado</span><span><i className="c2"/>Recebido</span></div></div>
+          <div className="report-chart-area"><div className="report-y-labels"><span>{money(max)}</span><span>{money(max/2)}</span><span>R$ 0</span></div><div className="report-bars">{buckets.map(x=><div className="report-bar-col" key={x.i}><div className="report-bar-wrap"><i title={"Cobrado: "+money(x.b)} style={{height:(x.b?Math.max(4,x.b/max*100):0)+"%"}}/><i title={"Recebido: "+money(x.r)} style={{height:(x.r?Math.max(4,x.r/max*100):0)+"%"}}/></div><small>{x.label}</small></div>)}</div></div>
           <div className="report-footer"><span>Total cobrado <b>{money(billed)}</b></span><span>Total recebido <b>{money(received)}</b></span></div>
         </section>
-        <section className="panel report-card"><div className="report-heading"><div><h2>Status</h2><p>Distribuição das cobranças</p></div></div>
-          <div className="donut" style={{background:`conic-gradient(#5B5CE2 0 ${pctPaid}%,#F59E0B ${pctPaid}% ${pctPending}%,#EF4444 ${pctPending}% 100%)`}}><div><strong>{pc.length}</strong><span>cobranças</span></div></div>
-          <div className="report-status"><div><span><i className="c-paid"/>Pagas</span><b>{paid}</b></div><div><span><i className="c-pending"/>Pendentes</span><b>{pending}</b></div><div><span><i className="c-late"/>Atrasadas</span><b>{late}</b></div></div>
-        </section>
+        <section className="panel report-card"><div className="report-heading"><div><h2>Status das cobranças</h2><p>Distribuição no período</p></div></div><div className="donut" style={{background:`conic-gradient(#5B5CE2 0 ${paidPct}%,#F59E0B ${paidPct}% ${pendingPct}%,#EF4444 ${pendingPct}% 100%)`}}><div><strong>{pc.length}</strong><span>cobranças</span></div></div><div className="report-status"><div><span><i className="c-paid"/>Pagas</span><b>{paid}</b></div><div><span><i className="c-pending"/>Pendentes</span><b>{pending}</b></div><div><span><i className="c-late"/>Atrasadas</span><b>{late}</b></div></div></section>
       </div>
-      <div className="report-layout report-secondary">
-        <section className="panel report-card"><div className="report-heading"><div><h2>Clientes que mais pagaram</h2><p>Recebimentos no período</p></div></div>
-          {ranking.length?<div className="report-ranking">{ranking.map(([name,value],i)=><div className="report-rank" key={name}><span>{i+1}</span><div><b>{name}</b><em><i style={{width:(value/ranking[0][1]*100)+"%"}}/></em></div><strong>{money(value)}</strong></div>)}</div>:<Empty text="Nenhum recebimento no período."/>}
-        </section>
-        <section className="panel report-card"><div className="report-heading"><div><h2>Resumo</h2><p>Indicadores do período</p></div></div><div className="report-summary-list">
-          <div><span>Cobranças</span><b>{pc.length}</b></div><div><span>Pagas</span><b>{paid}</b></div><div><span>Valor cobrado</span><b>{money(billed)}</b></div><div><span>Valor recebido</span><b>{money(received)}</b></div><div><span>Em aberto</span><b>{money(open)}</b></div><div><span>Ticket médio</span><b>{money(ticket)}</b></div>
-        </div></section>
-      </div>
-    </>}
-  </div>;
+      <div className="report-layout report-secondary"><section className="panel report-card"><div className="report-heading"><div><h2>Recebimentos por cliente</h2><p>Quem mais gerou receita no período</p></div></div>{ranking.length?<div className="report-ranking">{ranking.map(([name,value],i)=><div className="report-rank" key={name}><span>{i+1}</span><div><b>{name}</b><em><i style={{width:Math.max(6,value/ranking[0][1]*100)+"%"}}/></em></div><strong>{money(value)}</strong></div>)}</div>:<Empty text="Nenhum recebimento no período."/>}</section>
+        <section className="panel report-card"><div className="report-heading"><div><h2>Resumo financeiro</h2><p>Principais indicadores</p></div></div><div className="report-summary-list"><div><span>Cobranças emitidas</span><b>{pc.length}</b></div><div><span>Cobranças pagas</span><b>{paid}</b></div><div><span>Valor cobrado</span><b>{money(billed)}</b></div><div><span>Valor recebido</span><b>{money(received)}</b></div><div><span>Valor em aberto</span><b>{money(open)}</b></div><div><span>Ticket médio</span><b>{money(ticket)}</b></div></div></section></div>
+    </>}</div>;
 }
 function AIPage(){const [tone,setTone]=useState("Amigável");const [context,setContext]=useState("mensalidade de R$350 vence hoje");const [result,setResult]=useState("");function generate(){const intro=tone==="Profissional"?"Olá, tudo bem?":tone==="Direto"?"Olá!":tone==="Informal"?"Oi! Tudo certo?":"Oi! Tudo bem?";setResult(`${intro}\\n\\nPassando para lembrar sobre a ${context}. Quando puder, consegue verificar? Se precisar de alguma coisa, estou à disposição.`);}return <><PageTitle title="Assistente IA" subtitle="Crie mensagens de cobrança mais naturais."/><div className="ai-layout"><div className="panel"><div className="panel-head"><div><h2>Gerar mensagem</h2><p>Escolha o tom e descreva a situação.</p></div><Sparkles size={19}/></div><label className="field"><span>Tom</span><select value={tone} onChange={e=>setTone(e.target.value)}>{["Profissional","Amigável","Direto","Informal"].map(x=><option key={x}>{x}</option>)}</select></label><label className="field"><span>Contexto</span><textarea rows="4" value={context} onChange={e=>setContext(e.target.value)}/></label><Button onClick={generate}><Sparkles size={16}/> Gerar mensagem</Button></div><div className="panel ai-result"><div className="panel-head"><div><h2>Mensagem</h2><p>Revise antes de enviar.</p></div></div>{result?<><div className="generated">{result}</div><div className="modal-actions"><Button variant="secondary" onClick={generate}>Gerar outra</Button><Button onClick={()=>navigator.clipboard?.writeText(result)}>Copiar</Button></div></>:<div className="empty small"><Sparkles size={22}/><b>Sua mensagem aparecerá aqui.</b></div>}</div></div></>}
 
