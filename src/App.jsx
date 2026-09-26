@@ -182,7 +182,7 @@ await supabase.from("company_settings").upsert({company_id:companyId,default_pay
 function AppShell({session}) {
   const nav=useNavigate(); const loc=useLocation(); const [mobile,setMobile]=useState(false); const [notificationsOpen,setNotificationsOpen]=useState(false); const [profileOpen,setProfileOpen]=useState(false); const [notificationCount,setNotificationCount]=useState(0);
   const fullName=session.user.user_metadata?.full_name||"Usuário"; const email=session.user.email||""; const initials=(fullName||email||"U").slice(0,1).toUpperCase();
-  useEffect(()=>{let active=true;async function loadNotifications(){const {data}=await supabase.from("charges").select("id,due_date,status").eq("company_id",session.user.user_metadata?.company_id||"").eq("status","pending");if(active)setNotificationCount((data||[]).filter(x=>x.due_date<=todayISO()).length);}loadNotifications();return()=>{active=false};},[session.user.user_metadata?.company_id]);
+  useEffect(()=>{let active=true;async function loadNotifications(){const {data:profile}=await supabase.from("profiles").select("company_id").eq("id",session.user.id).single();const companyId=profile?.company_id;if(!companyId){if(active)setNotificationCount(0);return;}const {data}=await supabase.from("charges").select("id,due_date,status").eq("company_id",companyId).eq("status","pending");if(active)setNotificationCount((data||[]).filter(x=>x.due_date<=todayISO()).length);}loadNotifications();return()=>{active=false};},[session.user.id]);
   async function logout(){await supabase?.auth.signOut();nav("/");}
   function openNotifications(){setNotificationsOpen(x=>!x);setProfileOpen(false);}
   function openProfile(){setProfileOpen(x=>!x);setNotificationsOpen(false);}
