@@ -49,3 +49,13 @@
 #precos .price-benefits-title{font-size:9px}
 @media(max-width:1050px){#precos .pricing{grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:760px!important;margin-left:auto;margin-right:auto}#precos .price-card{min-height:530px}}
 @media(max-width:600px){#precos .pricing{grid-template-columns:1fr!important;max-width:520px!important}}
+
+/* FIX PRICING DEFINITIVO */
+.pricing{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:14px!important;width:100%!important;max-width:1200px!important;margin:30px auto 0!important;align-items:stretch!important}
+.price-card{min-width:0!important;width:100%!important;display:flex!important;flex-direction:column!important;min-height:545px!important}
+.price-items{flex:1!important}
+.price-actions{margin-top:auto!important}
+@media (max-width:760px){
+  .pricing{grid-template-columns:1fr!important;max-width:520px!important}
+  .price-card{min-height:0!important}
+}
