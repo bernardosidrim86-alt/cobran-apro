@@ -59,3 +59,29 @@
   .pricing{grid-template-columns:1fr!important;max-width:520px!important}
   .price-card{min-height:0!important}
 }
+
+
+/* Theme */
+:root{color-scheme:light}
+html.dark{color-scheme:dark}
+html.dark body{background:#101114;color:#f4f4f5}
+html.dark .app-layout{background:#101114}
+html.dark .sidebar{background:#17181c;border-color:#28292f}
+html.dark .app-header{background:#17181c;border-color:#28292f}
+html.dark .page{background:#101114}
+html.dark .panel,html.dark .metric-card,html.dark .report-card,html.dark .plan-box,html.dark .connection,html.dark .price-card,html.dark .modal{background:#17181c;border-color:#2a2b32;color:#f4f4f5}
+html.dark .settings-nav button{color:#aaa}
+html.dark .settings-nav button.active{background:#262733;color:#a7a8ff}
+html.dark .app-header input,html.dark .field input,html.dark .field textarea,html.dark .searchbox,html.dark .report-periods,html.dark .report-dates input{background:#1d1e23;border-color:#303139;color:#f4f4f5}
+html.dark .app-header input::placeholder,html.dark .field input::placeholder,html.dark .field textarea::placeholder{color:#777}
+html.dark table th,html.dark .muted,html.dark .page-title p,html.dark .settings-panel>p,html.dark .connection small,html.dark .price-card>p,html.dark .price-note{color:#999}
+html.dark table td,html.dark th,html.dark .summary-list>div,html.dark .report-summary-list div,html.dark .report-rank,html.dark .report-status{border-color:#2a2b32}
+html.dark .report-bars,html.dark .report-bar-wrap{border-color:#2a2b32}
+html.dark .empty-icon,html.dark .rank{background:#24252a;color:#aaa}
+html.dark .donut:after,html.dark .status-ring:after{background:#17181c}
+html.dark .price-benefits-title{border-color:#2a2b32}
+html.dark .price-item{color:#ddd}
+.theme-toggle{width:34px;height:34px;border:1px solid #e5e5e5;background:#fff;border-radius:9px;display:grid;place-items:center;cursor:pointer;color:#555;font-size:17px;line-height:1;transition:.15s}
+.theme-toggle:hover{border-color:#cfcfd8;background:#f7f7fa}
+html.dark .theme-toggle{background:#1d1e23;border-color:#34353d;color:#f4f4f5}
+html.dark .theme-toggle:hover{background:#24252b}
