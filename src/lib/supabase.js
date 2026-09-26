@@ -1,11 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 
-// URL e chave anon são públicas por design (o acesso é protegido por RLS).
+// URL e chave publishable são públicas por design (o acesso é protegido por RLS).
 // O fallback garante que o app funcione mesmo quando as variáveis de ambiente
 // não chegaram ao build (preview ou deploy antigo).
-const FALLBACK_URL = "https://oephewcgnqljcnrwvxcj.supabase.co";
+const FALLBACK_URL = "https://hbrrvscohzsrvwuwoluh.supabase.co";
 const FALLBACK_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lcGhld2NnbnFsamNucnd2eGNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzNjMxMDcsImV4cCI6MjEwNTkzOTEwN30.ZgX8mL3q--A4Lmt41qTlvYadhYOUnOpIe7DGEwJk2D0";
+  "sb_publishable_ATQ9Wc4QNaLPH7TxiTo7IQ_yIm5AQfy";
 
 const url =
   import.meta.env.VITE_SUPABASE_URL ||
