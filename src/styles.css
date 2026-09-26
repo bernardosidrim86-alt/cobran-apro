@@ -36,3 +36,16 @@
 @media(max-width:1050px){.pricing{grid-template-columns:repeat(2,minmax(0,1fr));max-width:760px}.price-card{min-height:530px}}
 @media(max-width:900px){.pricing{grid-template-columns:1fr;max-width:520px}.price-card{min-height:0}.price-card.featured{order:-1}}
 @media(max-width:560px){.pricing{gap:14px;margin-top:24px}.price-card{padding:24px 19px 20px}.price-card.featured{padding:23px 18px 19px}.price-card .price{font-size:35px}}
+
+/* Pricing final layout */
+#precos .container{width:min(1200px,calc(100% - 32px))}
+#precos .pricing{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;width:100%;max-width:none!important;gap:14px!important;align-items:stretch}
+#precos .price-card{min-width:0;width:100%;min-height:545px;padding:24px 20px 20px}
+#precos .price-card.featured{padding:23px 19px 19px}
+#precos .price-card h3{font-size:20px}
+#precos .price-card>p{font-size:11px;min-height:54px}
+#precos .price-card .price{font-size:34px}
+#precos .price-item{font-size:10.5px;padding:6px 0}
+#precos .price-benefits-title{font-size:9px}
+@media(max-width:1050px){#precos .pricing{grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:760px!important;margin-left:auto;margin-right:auto}#precos .price-card{min-height:530px}}
+@media(max-width:600px){#precos .pricing{grid-template-columns:1fr!important;max-width:520px!important}}
