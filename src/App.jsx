@@ -48,7 +48,7 @@ function Landing() {
     <header className="site-header">
       <Link to="/" className="brand"><img className="brand-logo" src="/logo.png" alt="CobrançaPro" /></Link>
       <nav><a href="#recursos">Recursos</a><a href="#como">Como funciona</a><a href="#precos">Preços</a></nav>
-      <div className="header-actions"><Link to="/login" className="link-btn">Entrar</Link><Link to="/cadastro" className="btn btn-primary">Começar grátis <ArrowRight size={16}/></Link></div>
+      <div className="header-actions"><Link to="/login" className="link-btn">Entrar</Link></div>
     </header>
     <main>
       <section className="hero container">
