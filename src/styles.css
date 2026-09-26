@@ -124,3 +124,12 @@
 .header-icon-button,.avatar-button,.user-mini-button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .header-menu{z-index:70}
 .header-dropdown{z-index:80}
+
+.mobile-sidebar-head{display:flex;align-items:center;justify-content:space-between}
+.mobile-sidebar-head .side-brand{flex:1}
+.mobile-sidebar-close{display:none;border:0;background:#f4f4f7;color:#555;width:36px;height:36px;border-radius:9px;align-items:center;justify-content:center;flex:0 0 auto}
+@media(max-width:900px){
+  .mobile-sidebar-head{padding-right:6px}
+  .mobile-sidebar-close{display:flex}
+  .mobile-menu{touch-action:manipulation}
+}
