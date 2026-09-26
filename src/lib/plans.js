@@ -1,6 +1,8 @@
 export const PLAN_OPTIONS = [
   {
     key: "free",
+    maxCustomers: 10,
+    maxCharges: 20,
     title: "Grátis",
     monthlyPrice: "0",
     annualPrice: "0",
@@ -18,6 +20,8 @@ export const PLAN_OPTIONS = [
   },
   {
     key: "essencial",
+    maxCustomers: 50,
+    maxCharges: 150,
     title: "Essencial",
     monthlyPrice: "49,90",
     annualPrice: "478,80",
@@ -35,6 +39,8 @@ export const PLAN_OPTIONS = [
   },
   {
     key: "profissional",
+    maxCustomers: 200,
+    maxCharges: 500,
     title: "Profissional",
     monthlyPrice: "99,90",
     annualPrice: "958,80",
@@ -52,6 +58,8 @@ export const PLAN_OPTIONS = [
   },
   {
     key: "business",
+    maxCustomers: null,
+    maxCharges: null,
     title: "Business",
     monthlyPrice: "199,90",
     annualPrice: "1.918,80",
