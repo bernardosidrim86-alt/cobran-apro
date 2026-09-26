@@ -56,7 +56,7 @@ function Landing() {
           <div className="eyebrow"><span className="dot"></span> Gestão de cobranças simples</div>
           <h1>Receba no prazo.<br/><em>Sem ficar correndo atrás.</em></h1>
           <p>Organize suas cobranças, veja quem precisa ser cobrado hoje e envie lembretes pelo WhatsApp em poucos cliques.</p>
-          <div className="hero-actions"><Link to="/cadastro" className="btn btn-primary btn-lg">Começar grátis <ArrowRight size={18}/></Link><Link to="/login" className="btn btn-secondary btn-lg">Já tenho conta · Entrar</Link><a href="#como" className="btn btn-secondary btn-lg">Ver como funciona</a></div>
+          <div className="hero-actions"><Link to="/cadastro" className="btn btn-primary btn-lg">Começar grátis <ArrowRight size={18}/></Link><Link to="/login" className="btn btn-secondary btn-lg">Entrar</Link><a href="#como" className="btn btn-secondary btn-lg">Ver como funciona</a></div>
           <div className="trust"><Check size={16}/> Feito para pequenos negócios <Check size={16}/> Comece grátis</div>
         </div>
         <DashboardPreview/>
