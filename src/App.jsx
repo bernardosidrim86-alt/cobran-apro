@@ -228,138 +228,64 @@ function Payments(){const companyId=useCompany();const [rows,setRows]=useState([
 
 function Reports(){
   const companyId=useCompany();
-  const [range,setRange]=useState("30");
-  const [from,setFrom]=useState("");
-  const [to,setTo]=useState("");
-  const [charges,setCharges]=useState([]);
-  const [payments,setPayments]=useState([]);
-  const [loading,setLoading]=useState(true);
+  const [range,setRange]=useState("30"),[from,setFrom]=useState(""),[to,setTo]=useState("");
+  const [charges,setCharges]=useState([]),[payments,setPayments]=useState([]),[loading,setLoading]=useState(true);
 
-  const dates=useMemo(()=>{
-    const end=new Date(); end.setHours(23,59,59,999);
-    const start=new Date(end);
-    if(range==="7") start.setDate(start.getDate()-6);
-    else if(range==="90") start.setDate(start.getDate()-89);
-    else if(range==="custom"&&from){
-      const s=new Date(from+"T00:00:00");
-      const e=to?new Date(to+"T23:59:59"):end;
-      return {start:s,end:e};
-    } else start.setDate(start.getDate()-29);
-    start.setHours(0,0,0,0);
-    return {start,end};
-  },[range,from,to]);
+  const dates=useMemo(()=>{const end=new Date();end.setHours(23,59,59,999);const start=new Date(end);
+    if(range==="7")start.setDate(start.getDate()-6);else if(range==="90")start.setDate(start.getDate()-89);else if(range==="custom"&&from){const s=new Date(from+"T00:00:00");const x=to?new Date(to+"T23:59:59"):end;return{start:s,end:x}}else start.setDate(start.getDate()-29);
+    start.setHours(0,0,0,0);return{start,end}},[range,from,to]);
 
-  useEffect(()=>{
-    if(!companyId)return;
-    setLoading(true);
-    Promise.all([
-      supabase.from("charges").select("id,customer_id,amount,due_date,status,created_at,customers(name)").eq("company_id",companyId),
-      supabase.from("payments").select("id,amount,paid_at,customer_id,customers(name)").eq("company_id",companyId)
-    ]).then(([c,p])=>{
-      setCharges(c.data||[]); setPayments(p.data||[]); setLoading(false);
-      if(c.error)console.error(c.error); if(p.error)console.error(p.error);
-    });
-  },[companyId]);
+  useEffect(()=>{if(!companyId)return;setLoading(true);Promise.all([
+    supabase.from("charges").select("id,amount,due_date,status,created_at,customers(name)").eq("company_id",companyId),
+    supabase.from("payments").select("id,amount,paid_at,customer_id,customers(name)").eq("company_id",companyId)
+  ]).then(([a,b])=>{setCharges(a.data||[]);setPayments(b.data||[]);setLoading(false);if(a.error)console.error(a.error);if(b.error)console.error(b.error)})},[companyId]);
 
-  const inPeriod=(value)=>{
-    if(!value)return false;
-    const d=new Date(value);
-    return d>=dates.start&&d<=dates.end;
-  };
-  const periodCharges=charges.filter(c=>c.status!=="cancelled"&&inPeriod(c.due_date+"T12:00:00"));
-  const periodPayments=payments.filter(p=>inPeriod(p.paid_at));
-  const received=periodPayments.reduce((a,p)=>a+Number(p.amount||0),0);
-  const billed=periodCharges.reduce((a,c)=>a+Number(c.amount||0),0);
-  const open=periodCharges.filter(c=>c.status==="pending").reduce((a,c)=>a+Number(c.amount||0),0);
-  const overdue=periodCharges.filter(c=>c.status==="pending"&&c.due_date<todayISO()).reduce((a,c)=>a+Number(c.amount||0),0);
-  const paidCount=periodCharges.filter(c=>c.status==="paid").length;
-  const rate=periodCharges.length?Math.round(paidCount/periodCharges.length*100):0;
-  const ticket=periodPayments.length?received/periodPayments.length:0;
+  const inPeriod=v=>v&&new Date(v)>=dates.start&&new Date(v)<=dates.end;
+  const pc=charges.filter(x=>x.status!=="cancelled"&&inPeriod(x.due_date+"T12:00:00"));
+  const pp=payments.filter(x=>inPeriod(x.paid_at));
+  const received=pp.reduce((a,x)=>a+Number(x.amount||0),0), billed=pc.reduce((a,x)=>a+Number(x.amount||0),0);
+  const open=pc.filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.amount||0),0);
+  const overdue=pc.filter(x=>x.status==="pending"&&x.due_date<todayISO()).reduce((a,x)=>a+Number(x.amount||0),0);
+  const paid=pc.filter(x=>x.status==="paid").length, rate=pc.length?Math.round(paid/pc.length*100):0, ticket=pp.length?received/pp.length:0;
+  const late=pc.filter(x=>x.status==="pending"&&x.due_date<todayISO()).length,pending=pc.filter(x=>x.status==="pending"&&x.due_date>=todayISO()).length,totalStatus=paid+pending+late;
 
-  const days=useMemo(()=>{
-    const out=[]; const d=new Date(dates.start); const total=Math.ceil((dates.end-dates.start)/86400000)+1;
-    if(total>31)d.setDate(d.getDate()+total-31);
-    while(d<=dates.end&&out.length<31){
-      const key=d.toISOString().slice(0,10);
-      out.push({key,label:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}),
-        billed:periodCharges.filter(c=>c.due_date===key).reduce((a,c)=>a+Number(c.amount||0),0),
-        received:periodPayments.filter(p=>p.paid_at.slice(0,10)===key).reduce((a,p)=>a+Number(p.amount||0),0)});
-      d.setDate(d.getDate()+1);
-    }
-    return out;
-  },[dates,periodCharges,periodPayments]);
+  const days=useMemo(()=>{const out=[],d=new Date(dates.start),n=Math.ceil((dates.end-dates.start)/864e5)+1;if(n>30)d.setDate(d.getDate()+n-30);
+    while(d<=dates.end&&out.length<30){const k=d.toISOString().slice(0,10);out.push({k,label:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}),b:pc.filter(x=>x.due_date===k).reduce((a,x)=>a+Number(x.amount||0),0),r:pp.filter(x=>x.paid_at.slice(0,10)===k).reduce((a,x)=>a+Number(x.amount||0),0)});d.setDate(d.getDate()+1)}return out},[dates,pc,pp]);
+  const max=Math.max(1,...days.flatMap(x=>[x.b,x.r]));
+  const customers={};pp.forEach(x=>{const n=x.customers?.name||"Cliente";customers[n]=(customers[n]||0)+Number(x.amount||0)});
+  const ranking=Object.entries(customers).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const label=range==="7"?"7 dias":range==="90"?"90 dias":range==="custom"?"personalizado":"30 dias";
+  const pctPaid=totalStatus?paid/totalStatus*100:0,pctPending=totalStatus?(paid+pending)/totalStatus*100:0;
 
-  const max=Math.max(1,...days.flatMap(d=>[d.billed,d.received]));
-  const lateCount=periodCharges.filter(c=>c.status==="pending"&&c.due_date<todayISO()).length;
-  const pendingCount=periodCharges.filter(c=>c.status==="pending"&&c.due_date>=todayISO()).length;
-  const statusTotal=paidCount+pendingCount+lateCount;
-  const paidPct=statusTotal?paidCount/statusTotal*100:0;
-  const pendingPct=statusTotal?(paidCount+pendingCount)/statusTotal*100:0;
-
-  const byCustomer={};
-  periodPayments.forEach(p=>{
-    const name=p.customers?.name||"Cliente";
-    byCustomer[name]=(byCustomer[name]||0)+Number(p.amount||0);
-  });
-  const ranking=Object.entries(byCustomer).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const label=range==="7"?"Últimos 7 dias":range==="90"?"Últimos 90 dias":range==="custom"?"Período personalizado":"Últimos 30 dias";
-
-  return <>
-    <PageTitle title="Relatórios" subtitle="Dados reais das suas cobranças e recebimentos."/>
-    <div className="report-toolbar">
-      <div className="filters">{[["7","7 dias"],["30","30 dias"],["90","90 dias"],["custom","Personalizado"]].map(([v,l])=>
-        <button key={v} className={range===v?"selected":""} onClick={()=>setRange(v)}>{l}</button>)}</div>
-      {range==="custom"&&<div className="report-dates">
-        <label>De <input type="date" value={from} onChange={e=>setFrom(e.target.value)}/></label>
-        <label>Até <input type="date" value={to} onChange={e=>setTo(e.target.value)}/></label>
-      </div>}
+  return <div className="reports-page">
+    <PageTitle title="Relatórios" subtitle="Visão financeira do seu período."/>
+    <div className="report-toolbar"><div className="report-periods">{[["7","7 dias"],["30","30 dias"],["90","90 dias"],["custom","Personalizado"]].map(([v,l])=><button className={range===v?"active":""} onClick={()=>setRange(v)} key={v}>{l}</button>)}</div>
+      {range==="custom"&&<div className="report-dates"><input aria-label="Data inicial" type="date" value={from} onChange={e=>setFrom(e.target.value)}/><span>até</span><input aria-label="Data final" type="date" value={to} onChange={e=>setTo(e.target.value)}/></div>}
     </div>
-    {loading?<div className="report-loading"><div/><div/><div/><div/></div>:<>
-      <div className="metric-grid">
-        <Metric title="Recebido no período" value={money(received)} icon={Wallet} tone="success"/>
-        <Metric title="Em aberto" value={money(open)} icon={CircleDollarSign}/>
-        <Metric title="Atrasado" value={money(overdue)} icon={Receipt} tone="danger"/>
-        <Metric title="Taxa de recebimento" value={rate+"%"} icon={TrendingUp}/>
+    {loading?<div className="report-skeleton"><div/><div/><div/><div/></div>:<>
+      <div className="report-kpis">
+        <Metric title="Recebido" value={money(received)} icon={Wallet} tone="success"/><Metric title="Em aberto" value={money(open)} icon={CircleDollarSign}/><Metric title="Atrasado" value={money(overdue)} icon={Receipt} tone="danger"/><Metric title="Recebimento" value={rate+"%"} icon={TrendingUp}/>
       </div>
-      <div className="report-grid">
-        <section className="panel report-card report-wide">
-          <div className="panel-head"><div><h2>Movimentação</h2><p>{label} · cobranças x recebimentos</p></div><span className="report-summary">{money(received)} recebido</span></div>
-          <div className="chart-legend"><span><i className="legend-dot billed"/>Cobranças</span><span><i className="legend-dot received"/>Recebimentos</span></div>
-          <div className="report-chart">{days.map(d=><div className="chart-col" key={d.key}><div className="bars">
-            <i className="bar billed" style={{height:`${Math.max(3,d.billed/max*100)}%`}} title={money(d.billed)}/>
-            <i className="bar received" style={{height:`${Math.max(3,d.received/max*100)}%`}} title={money(d.received)}/>
-          </div><small>{d.label}</small></div>)}</div>
-          <div className="chart-foot"><span>Total cobrado <b>{money(billed)}</b></span><span>Ticket médio <b>{money(ticket)}</b></span></div>
+      <div className="report-layout">
+        <section className="panel report-card report-main"><div className="report-heading"><div><h2>Fluxo financeiro</h2><p>Últimos {label}</p></div><div className="report-legend"><span><i className="c1"/>Cobrado</span><span><i className="c2"/>Recebido</span></div></div>
+          <div className="report-bars">{days.map(x=><div className="report-bar-col" key={x.k}><div className="report-bar-wrap"><i style={{height:(x.b/max*100)+"%"}}/><i style={{height:(x.r/max*100)+"%"}}/></div><small>{x.label}</small></div>)}</div>
+          <div className="report-footer"><span>Total cobrado <b>{money(billed)}</b></span><span>Total recebido <b>{money(received)}</b></span></div>
         </section>
-        <section className="panel report-card">
-          <div className="panel-head"><div><h2>Status das cobranças</h2><p>Quantidade no período</p></div></div>
-          <div className="status-ring" style={{background:`conic-gradient(#5B5CE2 0 ${paidPct}%, #f59e0b ${paidPct}% ${pendingPct}%, #ef4444 ${pendingPct}% 100%)`}}><div><b>{periodCharges.length}</b><span>cobranças</span></div></div>
-          <div className="status-list">
-            <div><span><i className="legend-dot green"/>Pagas</span><b>{paidCount}</b></div>
-            <div><span><i className="legend-dot yellow"/>Pendentes</span><b>{pendingCount}</b></div>
-            <div><span><i className="legend-dot red"/>Atrasadas</span><b>{lateCount}</b></div>
-          </div>
+        <section className="panel report-card"><div className="report-heading"><div><h2>Status</h2><p>Distribuição das cobranças</p></div></div>
+          <div className="donut" style={{background:`conic-gradient(#5B5CE2 0 ${pctPaid}%,#F59E0B ${pctPaid}% ${pctPending}%,#EF4444 ${pctPending}% 100%)`}}><div><strong>{pc.length}</strong><span>cobranças</span></div></div>
+          <div className="report-status"><div><span><i className="c-paid"/>Pagas</span><b>{paid}</b></div><div><span><i className="c-pending"/>Pendentes</span><b>{pending}</b></div><div><span><i className="c-late"/>Atrasadas</span><b>{late}</b></div></div>
         </section>
       </div>
-      <div className="report-grid report-bottom">
-        <section className="panel report-card">
-          <div className="panel-head"><div><h2>Recebimentos por cliente</h2><p>Valores recebidos no período.</p></div></div>
-          {ranking.length===0?<Empty text="Nenhum recebimento no período."/>:<div className="ranking">{ranking.map(([name,value],i)=><div className="ranking-row" key={name}><span className="rank">{i+1}</span><div className="rank-main"><b>{name}</b><div><span style={{width:`${Math.max(4,value/(ranking[0]?.[1]||1)*100)}%`}}/></div></div><strong>{money(value)}</strong></div>)}</div>}
+      <div className="report-layout report-secondary">
+        <section className="panel report-card"><div className="report-heading"><div><h2>Clientes que mais pagaram</h2><p>Recebimentos no período</p></div></div>
+          {ranking.length?<div className="report-ranking">{ranking.map(([name,value],i)=><div className="report-rank" key={name}><span>{i+1}</span><div><b>{name}</b><em><i style={{width:(value/ranking[0][1]*100)+"%"}}/></em></div><strong>{money(value)}</strong></div>)}</div>:<Empty text="Nenhum recebimento no período."/>}
         </section>
-        <section className="panel report-card">
-          <div className="panel-head"><div><h2>Resumo do período</h2><p>Calculado somente com seus dados.</p></div></div>
-          <div className="summary-list">
-            <div><span>Cobranças</span><b>{periodCharges.length}</b></div>
-            <div><span>Pagas</span><b>{paidCount}</b></div>
-            <div><span>Valor cobrado</span><b>{money(billed)}</b></div>
-            <div><span>Valor recebido</span><b>{money(received)}</b></div>
-            <div><span>Em aberto</span><b>{money(open)}</b></div>
-            <div><span>Ticket médio</span><b>{money(ticket)}</b></div>
-          </div>
-        </section>
+        <section className="panel report-card"><div className="report-heading"><div><h2>Resumo</h2><p>Indicadores do período</p></div></div><div className="report-summary-list">
+          <div><span>Cobranças</span><b>{pc.length}</b></div><div><span>Pagas</span><b>{paid}</b></div><div><span>Valor cobrado</span><b>{money(billed)}</b></div><div><span>Valor recebido</span><b>{money(received)}</b></div><div><span>Em aberto</span><b>{money(open)}</b></div><div><span>Ticket médio</span><b>{money(ticket)}</b></div>
+        </div></section>
       </div>
     </>}
-  </>;
+  </div>;
 }
 function AIPage(){const [tone,setTone]=useState("Amigável");const [context,setContext]=useState("mensalidade de R$350 vence hoje");const [result,setResult]=useState("");function generate(){const intro=tone==="Profissional"?"Olá, tudo bem?":tone==="Direto"?"Olá!":tone==="Informal"?"Oi! Tudo certo?":"Oi! Tudo bem?";setResult(`${intro}\\n\\nPassando para lembrar sobre a ${context}. Quando puder, consegue verificar? Se precisar de alguma coisa, estou à disposição.`);}return <><PageTitle title="Assistente IA" subtitle="Crie mensagens de cobrança mais naturais."/><div className="ai-layout"><div className="panel"><div className="panel-head"><div><h2>Gerar mensagem</h2><p>Escolha o tom e descreva a situação.</p></div><Sparkles size={19}/></div><label className="field"><span>Tom</span><select value={tone} onChange={e=>setTone(e.target.value)}>{["Profissional","Amigável","Direto","Informal"].map(x=><option key={x}>{x}</option>)}</select></label><label className="field"><span>Contexto</span><textarea rows="4" value={context} onChange={e=>setContext(e.target.value)}/></label><Button onClick={generate}><Sparkles size={16}/> Gerar mensagem</Button></div><div className="panel ai-result"><div className="panel-head"><div><h2>Mensagem</h2><p>Revise antes de enviar.</p></div></div>{result?<><div className="generated">{result}</div><div className="modal-actions"><Button variant="secondary" onClick={generate}>Gerar outra</Button><Button onClick={()=>navigator.clipboard?.writeText(result)}>Copiar</Button></div></>:<div className="empty small"><Sparkles size={22}/><b>Sua mensagem aparecerá aqui.</b></div>}</div></div></>}
 
