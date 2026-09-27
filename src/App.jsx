@@ -241,7 +241,7 @@ function Dashboard({session}) {
     return()=>{active=false};
   },[companyId]);
 
-  const firstName=(session?.user?.user_metadata?.full_name||"").trim().split(/\\s+/)[0]||"";
+  const firstName=(session?.user?.user_metadata?.full_name||"").trim().split(/\s+/)[0]||"";
   const title=firstName ? "Olá, "+firstName : "Dashboard";
   const attention=data.overdue+data.today;
   const progress=data.receive>0 ? Math.min(100,Math.round((data.paid/(data.paid+data.receive))*100)) : 0;
