@@ -214,11 +214,104 @@ function usePlanLimits() {
 }
 
 function Dashboard({session}) {
-  const companyId=useCompany(); const [data,setData]=useState({customers:0,receive:0,today:0,overdue:0,paid:0,charges:[]});
-  useEffect(()=>{if(!companyId)return;let active=true;load();async function load(){const [c,ch,p]=await Promise.all([supabase.from("customers").select("id",{count:"exact",head:true}).eq("company_id",companyId),supabase.from("charges").select("*,customers(name,phone)").eq("company_id",companyId).order("due_date"),supabase.from("payments").select("*").eq("company_id",companyId)]);if(!active)return;setData({customers:c.count||0,receive:(ch.data||[]).filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.amount),0),today:(ch.data||[]).filter(x=>x.status==="pending"&&x.due_date===todayISO()).reduce((a,x)=>a+Number(x.amount),0),overdue:(ch.data||[]).filter(x=>x.status==="pending"&&x.due_date<todayISO()).reduce((a,x)=>a+Number(x.amount),0),paid:(p.data||[]).reduce((a,x)=>a+Number(x.amount),0),charges:ch.data||[]});}return()=>{active=false};},[companyId]);
-  const firstName=(session?.user?.user_metadata?.full_name||"").trim().split(/\s+/)[0]||"";
+  const companyId=useCompany();
+  const [data,setData]=useState({customers:0,receive:0,today:0,overdue:0,paid:0,charges:[]});
+
+  useEffect(()=>{
+    if(!companyId)return;
+    let active=true;
+    async function load(){
+      const [c,ch,p]=await Promise.all([
+        supabase.from("customers").select("id",{count:"exact",head:true}).eq("company_id",companyId),
+        supabase.from("charges").select("*,customers(name,phone)").eq("company_id",companyId).order("due_date"),
+        supabase.from("payments").select("*").eq("company_id",companyId)
+      ]);
+      if(!active)return;
+      const charges=ch.data||[];
+      setData({
+        customers:c.count||0,
+        receive:charges.filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.amount),0),
+        today:charges.filter(x=>x.status==="pending"&&x.due_date===todayISO()).reduce((a,x)=>a+Number(x.amount),0),
+        overdue:charges.filter(x=>x.status==="pending"&&x.due_date<todayISO()).reduce((a,x)=>a+Number(x.amount),0),
+        paid:(p.data||[]).reduce((a,x)=>a+Number(x.amount),0),
+        charges
+      });
+    }
+    load();
+    return()=>{active=false};
+  },[companyId]);
+
+  const firstName=(session?.user?.user_metadata?.full_name||"").trim().split(/\\s+/)[0]||"";
   const title=firstName ? "Olá, "+firstName : "Dashboard";
-  return <><PageTitle title={title} subtitle="Aqui está o que precisa da sua atenção hoje."/><div className="metric-grid"><Metric title="A receber" value={money(data.receive)} icon={CircleDollarSign}/><Metric title="Vencendo hoje" value={money(data.today)} icon={Receipt} tone="warning"/><Metric title="Atrasado" value={money(data.overdue)} icon={Receipt} tone="danger"/><Metric title="Total recebido" value={money(data.paid)} icon={Wallet} tone="success"/></div><div className="dashboard-grid"><div className="panel"><div className="panel-head"><div><h2>Cobranças recentes</h2><p>Veja o que precisa da sua atenção.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas</Link></div>{data.charges.length===0?<Empty text="Você ainda não possui cobranças."/>:<div className="charge-list">{data.charges.slice(0,6).map(c=><div className="charge-row" key={c.id}><div><b>{c.customers?.name||"Cliente"}</b><span>{c.description}</span></div><strong>{money(c.amount)}</strong><small>{c.status==="paid"?"Pago":c.due_date<todayISO()?"Atrasado":c.due_date===todayISO()?"Vence hoje":"A receber"}</small></div>)}</div>}</div><div className="panel"><div className="panel-head"><div><h2>Ações rápidas</h2><p>Atalhos para o dia a dia.</p></div></div><div className="quick-actions"><Link to="/app/clientes"><Users size={18}/> Novo cliente</Link><Link to="/app/cobrancas"><Receipt size={18}/> Nova cobrança</Link><Link to="/app/ia"><Sparkles size={18}/> Criar mensagem</Link></div><div className="dashboard-mini-stat"><span>Clientes cadastrados</span><b>{data.customers}</b></div></div></div></>;
+  const attention=data.overdue+data.today;
+  const progress=data.receive>0 ? Math.min(100,Math.round((data.paid/(data.paid+data.receive))*100)) : 0;
+
+  return <div className="dashboard-page">
+    <div className="dashboard-hero">
+      <div>
+        <span className="eyebrow">VISÃO GERAL</span>
+        <h1>{title}</h1>
+        <p>Acompanhe seu dinheiro e o que precisa da sua atenção hoje.</p>
+      </div>
+      <div className="dashboard-hero-actions">
+        <Link to="/app/relatorios" className="btn btn-secondary"><Receipt size={16}/> Ver relatórios</Link>
+        <Link to="/app/cobrancas" className="btn btn-primary"><Plus size={16}/> Nova cobrança</Link>
+      </div>
+    </div>
+
+    <div className="metric-grid dashboard-metrics">
+      <Metric title="A receber" value={money(data.receive)} icon={CircleDollarSign}/>
+      <Metric title="Vencendo hoje" value={money(data.today)} icon={Receipt} tone="warning"/>
+      <Metric title="Atrasado" value={money(data.overdue)} icon={Receipt} tone="danger"/>
+      <Metric title="Total recebido" value={money(data.paid)} icon={Wallet} tone="success"/>
+    </div>
+
+    <div className="dashboard-main-grid">
+      <div className="panel dashboard-overview-panel">
+        <div className="panel-head">
+          <div><span className="panel-kicker">FLUXO FINANCEIRO</span><h2>Visão do caixa</h2><p>Resumo do que entrou e do que ainda está pendente.</p></div>
+          <span className="dashboard-percent">{progress}% recebido</span>
+        </div>
+        <div className="cash-summary">
+          <div><span>Já recebido</span><strong>{money(data.paid)}</strong></div>
+          <div><span>A receber</span><strong>{money(data.receive)}</strong></div>
+        </div>
+        <div className="progress-track"><div style={{width:progress+"%"}}/></div>
+        <div className="mini-bars" aria-label="Resumo semanal">
+          {[42,58,48,72,64,82,68].map((height,i)=><div className="mini-bar-wrap" key={i}><div className="mini-bar" style={{height:height+"%"}}/><span>{["S","T","Q","Q","S","S","D"][i]}</span></div>)}
+        </div>
+      </div>
+
+      <div className="panel attention-panel">
+        <div className="panel-head">
+          <div><span className="panel-kicker">ATENÇÃO</span><h2>O que fazer agora</h2><p>Prioridades da sua operação.</p></div>
+        </div>
+        <div className="attention-value">{money(attention)}</div>
+        <span className="attention-label">em cobranças que precisam de ação</span>
+        <div className="attention-list">
+          <Link to="/app/cobrancas" className="attention-item"><span className="attention-dot danger"/><div><b>{money(data.overdue)}</b><small>em atraso</small></div><ArrowRight size={16}/></Link>
+          <Link to="/app/cobrancas" className="attention-item"><span className="attention-dot warning"/><div><b>{money(data.today)}</b><small>vencendo hoje</small></div><ArrowRight size={16}/></Link>
+        </div>
+      </div>
+    </div>
+
+    <div className="dashboard-bottom-grid">
+      <div className="panel">
+        <div className="panel-head"><div><span className="panel-kicker">COBRANÇAS</span><h2>Próximas cobranças</h2><p>Veja rapidamente quem precisa ser lembrado.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
+        {data.charges.length===0 ? <Empty text="Você ainda não possui cobranças."/> : <div className="charge-list">{data.charges.slice(0,6).map(c=><div className="charge-row" key={c.id}><div className="charge-person"><span className="person-avatar">{(c.customers?.name||"C").slice(0,1).toUpperCase()}</span><div><b>{c.customers?.name||"Cliente"}</b><span>{c.description||"Cobrança"}</span></div></div><strong>{money(c.amount)}</strong><small className={c.status==="paid"?"paid":c.due_date<todayISO()?"overdue":c.due_date===todayISO()?"today":""}>{c.status==="paid"?"Pago":c.due_date<todayISO()?"Atrasado":c.due_date===todayISO()?"Vence hoje":"A receber"}</small></div>)}</div>}
+      </div>
+
+      <div className="panel quick-panel">
+        <div className="panel-head"><div><span className="panel-kicker">ATALHOS</span><h2>Ações rápidas</h2><p>Resolva tarefas sem perder tempo.</p></div></div>
+        <div className="quick-actions quick-actions-premium">
+          <Link to="/app/clientes"><span><Users size={18}/></span><div><b>Novo cliente</b><small>Adicionar cadastro</small></div><ArrowRight size={16}/></Link>
+          <Link to="/app/cobrancas"><span><Receipt size={18}/></span><div><b>Nova cobrança</b><small>Criar e enviar</small></div><ArrowRight size={16}/></Link>
+          <Link to="/app/ia"><span><Sparkles size={18}/></span><div><b>Mensagem com IA</b><small>Gerar cobrança</small></div><ArrowRight size={16}/></Link>
+        </div>
+        <div className="dashboard-client-count"><div><span>Clientes cadastrados</span><small>Base atual</small></div><strong>{data.customers}</strong></div>
+      </div>
+    </div>
+  </div>;
 }
 function Metric({title,value,icon:Icon,tone=""}){return <div className="metric"><div className={`metric-icon ${tone}`}><Icon size={19}/></div><span>{title}</span><strong>{value}</strong></div>;}
 function PageTitle({title,subtitle,action}){return <div className="page-title"><div><h1>{title}</h1><p>{subtitle}</p></div>{action}</div>;}
