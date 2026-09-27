@@ -305,7 +305,7 @@ function Dashboard({session}) {
         <div className="panel-head"><div><span className="panel-kicker">ATALHOS</span><h2>Ações rápidas</h2><p>Resolva tarefas sem perder tempo.</p></div></div>
         <div className="quick-actions quick-actions-premium">
           <Link to="/app/clientes"><span><Users size={18}/></span><div><b>Novo cliente</b><small>Adicionar cadastro</small></div><ArrowRight size={16}/></Link>
-          <Link to="/app/cobrancas"><span><Receipt size={18}/></span><div><b>Nova cobrança</b><small>Criar e enviar</small></div><ArrowRight size={16}/></Link>
+          <Link to="/app/cobrancas"><span><CircleDollarSign size={18}/></span><div><b>Nova cobrança</b><small>Criar e enviar</small></div><ArrowRight size={16}/></Link>
           <Link to="/app/ia"><span><Sparkles size={18}/></span><div><b>Mensagem com IA</b><small>Gerar cobrança</small></div><ArrowRight size={16}/></Link>
         </div>
         <div className="dashboard-client-count"><div><span>Clientes cadastrados</span><small>Base atual</small></div><strong>{data.customers}</strong></div>
