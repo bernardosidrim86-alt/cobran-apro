@@ -698,3 +698,29 @@ tbody tr:last-child td{
   .mini-bars{height:80px;gap:7px}
   .dashboard-percent{display:none}
 }
+
+/* Correção mobile da Visão Geral */
+html,body,#root{max-width:100%;overflow-x:hidden}
+.app-layout,.app-main,.page,.dashboard-page,.dashboard-main-grid,.dashboard-bottom-grid,.panel,.dashboard-hero,.dashboard-hero>div{min-width:0;max-width:100%}
+@media(max-width:700px){
+  .dashboard-page{width:100%;overflow:hidden}
+  .dashboard-hero{width:100%}
+  .dashboard-hero>div:first-child{width:100%;min-width:0}
+  .dashboard-hero p{max-width:100%;line-height:1.5}
+  .dashboard-hero-actions{width:100%;min-width:0}
+  .dashboard-hero-actions .btn{min-width:0;white-space:nowrap;padding-left:10px;padding-right:10px}
+  .dashboard-metrics{width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .metric{min-width:0;overflow:hidden}
+  .metric strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dashboard-main-grid,.dashboard-bottom-grid{width:100%;min-width:0}
+  .panel-head>div{min-width:0}
+  .panel-head p{line-height:1.45}
+  .cash-summary{min-width:0;flex-wrap:wrap;gap:20px}
+  .mini-bars{width:100%;min-width:0}
+  .charge-list,.quick-actions-premium,.attention-list{min-width:0;max-width:100%}
+  .charge-row{min-width:0}
+  .charge-person{min-width:0}
+  .charge-person>div{min-width:0}
+  .charge-person b,.charge-person span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
+  .charge-row>strong{white-space:nowrap}
+}
