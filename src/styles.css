@@ -677,7 +677,7 @@ tbody tr:last-child td{
 .quick-actions-premium a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#26272d;padding:11px 10px;border:1px solid transparent;border-radius:12px;transition:.18s ease}
 .quick-actions-premium a:hover{background:#fafaff;border-color:#e7e7f1;transform:translateX(2px)}
 .quick-actions-premium a>span{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#f1f1ff;color:#5b5ce2;flex:0 0 auto}
-.quick-actions-premium a:nth-child(2)>span{background:#fff6e8;color:#b57608}
+.quick-actions-premium a:nth-child(2)>span{background:#f1f1ff;color:#5b5ce2}
 .quick-actions-premium a:nth-child(3)>span{background:#f3efff;color:#805bd6}
 .quick-actions-premium a>div{display:flex;flex-direction:column;gap:2px;flex:1}
 .quick-actions-premium b{font-size:13px}
