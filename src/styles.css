@@ -970,3 +970,27 @@ html[data-theme="dark"] .charge-status.today{color:#f2c66b;background:#382c14;bo
 html[data-theme="dark"] .charge-status.overdue{color:#ff8f8f;background:#3b1d1d;border-color:#5c2929}
 html[data-theme="dark"] .charge-status.pending{color:#b9bac3;background:#25262e;border-color:#34353f}
 html[data-theme="dark"] .charge-row{border-bottom-color:#2a2b35}
+
+
+/* Banner do teste grátis */
+.trial-banner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:0 0 18px;
+  padding:10px 14px;
+  border:1px solid #e3e3f5;
+  border-radius:12px;
+  background:#f8f8ff;
+  color:#5b5ce2;
+  font-size:12px;
+}
+.trial-banner span{display:flex;align-items:center;gap:4px}
+.trial-banner strong{font-weight:800}
+.trial-banner a{display:inline-flex;align-items:center;gap:5px;color:#5b5ce2;text-decoration:none;font-weight:750}
+.trial-banner a:hover{text-decoration:underline}
+@media(max-width:600px){
+  .trial-banner{align-items:flex-start;padding:10px 12px;font-size:11px}
+  .trial-banner a{white-space:nowrap}
+}
