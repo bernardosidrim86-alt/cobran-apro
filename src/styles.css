@@ -949,3 +949,24 @@ html[data-theme="dark"] .soft,
 html[data-theme="dark"] .auth-page{
   background:#111218;
 }
+
+/* Status profissional das próximas cobranças */
+.charge-row{min-height:62px}
+.charge-status{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:82px;height:28px;padding:0 9px;border:1px solid transparent;border-radius:999px;font-size:10px;font-weight:750;line-height:1;white-space:nowrap;box-sizing:border-box}
+.charge-status i{width:6px;height:6px;border-radius:50%;display:block;flex:0 0 6px}
+.charge-status.paid{color:#16803b;background:#effaf3;border-color:#d9f0e1}
+.charge-status.paid i{background:#22a05a}
+.charge-status.today{color:#9a6700;background:#fff8e8;border-color:#f5e6bd}
+.charge-status.today i{background:#e4a11b}
+.charge-status.overdue{color:#c83d3d;background:#fff1f1;border-color:#f4dada}
+.charge-status.overdue i{background:#e05252}
+.charge-status.pending{color:#6f717b;background:#f5f5f7;border-color:#e9e9ed}
+.charge-status.pending i{background:#9b9da6}
+@media(max-width:600px){
+  .charge-status{min-width:76px;height:27px;padding:0 8px;font-size:9px}
+}
+html[data-theme="dark"] .charge-status.paid{color:#72d69a;background:#173324;border-color:#245238}
+html[data-theme="dark"] .charge-status.today{color:#f2c66b;background:#382c14;border-color:#59471f}
+html[data-theme="dark"] .charge-status.overdue{color:#ff8f8f;background:#3b1d1d;border-color:#5c2929}
+html[data-theme="dark"] .charge-status.pending{color:#b9bac3;background:#25262e;border-color:#34353f}
+html[data-theme="dark"] .charge-row{border-bottom-color:#2a2b35}
