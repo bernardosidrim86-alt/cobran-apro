@@ -3,11 +3,12 @@ export const PLAN_OPTIONS = [
     key: "free",
     maxCustomers: 10,
     maxCharges: 20,
-    title: "Grátis",
+    title: "Teste grátis",
     monthlyPrice: "0",
     annualPrice: "0",
-    desc: "Para começar a organizar suas cobranças sem pagar nada.",
+    desc: "Teste todos os recursos essenciais por 7 dias, sem cartão de crédito.",
     items: [
+      "7 dias de acesso grátis",
       "Até 10 clientes",
       "Até 20 cobranças por mês",
       "Dashboard financeiro",
@@ -17,6 +18,7 @@ export const PLAN_OPTIONS = [
     monthlyCheckout: null,
     annualCheckout: null,
     free: true,
+    trialDays: 7,
   },
   {
     key: "essencial",
