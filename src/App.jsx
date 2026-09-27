@@ -329,14 +329,87 @@ function Customers() {
 }
 
 function Charges() {
-  const companyId=useCompany();const [rows,setRows]=useState([]);const [customers,setCustomers]=useState([]);const [open,setOpen]=useState(false);const [filter,setFilter]=useState("all");const [form,setForm]=useState({customer_id:"",description:"",amount:"",due_date:todayISO(),payment_method:"Pix",recurrence:"none",notes:""});
-  async function load(){if(!companyId)return;const [{data:c},{data:cu}]=await Promise.all([supabase.from("charges").select("*,customers(name,phone)").eq("company_id",companyId).order("due_date"),supabase.from("customers").select("*").eq("company_id",companyId).order("name")]);setRows(c||[]);setCustomers(cu||[]);}
-  useEffect(()=>{load()},[companyId]);
-  async function save(e){e.preventDefault();const {data:user}=await supabase.auth.getUser();const {data:profile}=await supabase.from("profiles").select("plan").eq("id",user.user.id).single();const plan=PLAN_OPTIONS.find(p=>p.key===(profile?.plan||"free"))||PLAN_OPTIONS[0];let query=supabase.from("charges").select("id",{count:"exact",head:true}).eq("company_id",companyId);if(plan.maxCharges!==null){const start=new Date();start.setDate(1);const firstDay=start.toISOString().slice(0,10);const next=new Date(start.getFullYear(),start.getMonth()+1,1);const nextDay=next.toISOString().slice(0,10);query=query.gte("created_at",firstDay).lt("created_at",nextDay);}const {count}=await query;if(plan.maxCharges!==null&&(count||0)>=plan.maxCharges){alert(`O plano ${plan.title} permite até ${plan.maxCharges} cobranças por mês. Faça upgrade para adicionar mais.`);return;}const {error}=await supabase.from("charges").insert({...form,company_id:companyId,amount:Number(form.amount)});if(error)alert(error.message);else{setOpen(false);setForm({customer_id:"",description:"",amount:"",due_date:todayISO(),payment_method:"Pix",recurrence:"none",notes:""});load();}}
-  const filtered=rows.filter(x=>filter==="all"?true:filter==="paid"?x.status==="paid":filter==="overdue"?x.status==="pending"&&x.due_date<todayISO():filter==="today"?x.status==="pending"&&x.due_date===todayISO():x.status==="pending");
-  return <><PageTitle title="Cobranças" subtitle="Acompanhe tudo que precisa ser recebido." action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Nova cobrança</Button>}/><div className="filters">{[["all","Todas"],["pending","A receber"],["today","Vencendo hoje"],["overdue","Atrasadas"],["paid","Pagas"]].map(([v,l])=><button className={filter===v?"selected":""} onClick={()=>setFilter(v)} key={v}>{l}</button>)}</div><div className="panel table-panel">{filtered.length===0?<Empty text="Nenhuma cobrança encontrada."/>:<table><thead><tr><th>Cliente</th><th>Descrição</th><th>Valor</th><th>Vencimento</th><th>Status</th></tr></thead><tbody>{filtered.map(c=><tr key={c.id}><td><b>{c.customers?.name}</b></td><td>{c.description}</td><td><b>{money(c.amount)}</b></td><td>{new Date(c.due_date+"T12:00:00").toLocaleDateString("pt-BR")}</td><td><span className={`badge ${c.status==="paid"?"green":c.due_date<todayISO()?"red":c.due_date===todayISO()?"yellow":"gray"}`}>{c.status==="paid"?"Pago":c.due_date<todayISO()?"Atrasado":c.due_date===todayISO()?"Vence hoje":"A receber"}</span></td></tr>)}</tbody></table>}</div>{open&&<div className="modal-backdrop"><form className="modal" onSubmit={save}><button type="button" className="modal-x" onClick={()=>setOpen(false)}><X/></button><div className="modal-head"><div className="icon-box"><Receipt/></div><div><h2>Nova cobrança</h2><p>Crie um valor a receber.</p></div></div><label className="field"><span>Cliente</span><select value={form.customer_id} onChange={e=>setForm({...form,customer_id:e.target.value})} required><option value="">Selecione</option>{customers.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}</select></label><Input label="Descrição" placeholder="Ex.: Mensalidade" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} required/><Input label="Valor" type="number" step="0.01" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} required/><Input label="Vencimento" type="date" value={form.due_date} onChange={e=>setForm({...form,due_date:e.target.value})} required/><label className="field"><span>Método</span><select value={form.payment_method} onChange={e=>setForm({...form,payment_method:e.target.value})}>{["Pix","Dinheiro","Cartão","Transferência","Outro"].map(x=><option key={x}>{x}</option>)}</select></label><div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)}>Cancelar</Button><Button type="submit">Criar cobrança</Button></div></form></div>}</>
-}
+  const companyId=useCompany();
+  const [rows,setRows]=useState([]);
+  const [customers,setCustomers]=useState([]);
+  const [open,setOpen]=useState(false);
+  const [selected,setSelected]=useState(null);
+  const [filter,setFilter]=useState("all");
+  const [form,setForm]=useState({customer_id:"",description:"",amount:"",due_date:todayISO(),payment_method:"Pix",recurrence:"none",notes:""});
 
+  async function load(){
+    if(!companyId)return;
+    const [{data:c},{data:cu}]=await Promise.all([
+      supabase.from("charges").select("*,customers(name,phone)").eq("company_id",companyId).order("due_date"),
+      supabase.from("customers").select("*").eq("company_id",companyId).order("name")
+    ]);
+    setRows(c||[]);
+    setCustomers(cu||[]);
+  }
+
+  useEffect(()=>{load()},[companyId]);
+
+  async function save(e){
+    e.preventDefault();
+    const {data:user}=await supabase.auth.getUser();
+    const {data:profile}=await supabase.from("profiles").select("plan").eq("id",user.user.id).single();
+    const plan=PLAN_OPTIONS.find(p=>p.key===(profile?.plan||"free"))||PLAN_OPTIONS[0];
+    let query=supabase.from("charges").select("id",{count:"exact",head:true}).eq("company_id",companyId);
+    if(plan.maxCharges!==null){
+      const start=new Date();
+      start.setDate(1);
+      const firstDay=start.toISOString().slice(0,10);
+      const next=new Date(start.getFullYear(),start.getMonth()+1,1);
+      const nextDay=next.toISOString().slice(0,10);
+      query=query.gte("created_at",firstDay).lt("created_at",nextDay);
+    }
+    const {count}=await query;
+    if(plan.maxCharges!==null&&(count||0)>=plan.maxCharges){
+      alert(`O plano ${plan.title} permite até ${plan.maxCharges} cobranças por mês. Faça upgrade para adicionar mais.`);
+      return;
+    }
+    const {error}=await supabase.from("charges").insert({...form,company_id:companyId,amount:Number(form.amount)});
+    if(error) alert(error.message);
+    else{
+      setOpen(false);
+      setForm({customer_id:"",description:"",amount:"",due_date:todayISO(),payment_method:"Pix",recurrence:"none",notes:""});
+      load();
+    }
+  }
+
+  const filtered=rows.filter(x=>filter==="all"?true:filter==="paid"?x.status==="paid":filter==="overdue"?x.status==="pending"&&x.due_date<todayISO():filter==="today"?x.status==="pending"&&x.due_date===todayISO():x.status==="pending");
+
+  return <>
+    <PageTitle title="Cobranças" subtitle="Acompanhe tudo que precisa ser recebido." action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Nova cobrança</Button>}/>
+    <div className="filters">{[["all","Todas"],["pending","A receber"],["today","Vencendo hoje"],["overdue","Atrasadas"],["paid","Pagas"]].map(([v,l])=><button className={filter===v?"selected":""} onClick={()=>setFilter(v)} key={v}>{l}</button>)}</div>
+    <div className="panel table-panel">
+      {filtered.length===0?<Empty text="Nenhuma cobrança encontrada."/>:<table>
+        <thead><tr><th>Cliente</th><th>Descrição</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ação</th></tr></thead>
+        <tbody>{filtered.map(c=><tr key={c.id} onClick={()=>setSelected(c)} style={{cursor:"pointer"}}>
+          <td><b>{c.customers?.name}</b></td>
+          <td>{c.description}</td>
+          <td><b>{money(c.amount)}</b></td>
+          <td>{new Date(c.due_date+"T12:00:00").toLocaleDateString("pt-BR")}</td>
+          <td><span className={`badge ${c.status==="paid"?"green":c.due_date<todayISO()?"red":c.due_date===todayISO()?"yellow":"gray"}`}>{c.status==="paid"?"Pago":c.due_date<todayISO()?"Atrasado":c.due_date===todayISO()?"Vence hoje":"A receber"}</span></td>
+          <td>{c.status!=="paid"&&<button className="btn btn-secondary btn-sm" onClick={(e)=>{e.stopPropagation();setSelected(c)}}><MessageCircle size={14}/> Cobrar</button>}</td>
+        </tr>)}</tbody>
+      </table>}
+    </div>
+
+    {open&&<div className="modal-backdrop"><form className="modal" onSubmit={save}>
+      <button type="button" className="modal-x" onClick={()=>setOpen(false)}><X/></button>
+      <div className="modal-head"><div className="icon-box"><Receipt/></div><div><h2>Nova cobrança</h2><p>Crie um valor a receber.</p></div></div>
+      <label className="field"><span>Cliente</span><select value={form.customer_id} onChange={e=>setForm({...form,customer_id:e.target.value})} required><option value="">Selecione</option>{customers.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}</select></label>
+      <Input label="Descrição" placeholder="Ex.: Mensalidade" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} required/>
+      <Input label="Valor" type="number" step="0.01" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} required/>
+      <Input label="Vencimento" type="date" value={form.due_date} onChange={e=>setForm({...form,due_date:e.target.value})} required/>
+      <label className="field"><span>Método</span><select value={form.payment_method} onChange={e=>setForm({...form,payment_method:e.target.value})}>{["Pix","Dinheiro","Cartão","Transferência","Outro"].map(x=><option key={x}>{x}</option>)}</select></label>
+      <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)}>Cancelar</Button><Button type="submit">Criar cobrança</Button></div>
+    </form></div>}
+
+    {selected&&<ChargeDetail charge={selected} onClose={()=>setSelected(null)} onPaid={()=>{setSelected(null);load();}}/>}
+  </>;
+}
 function Payments(){const companyId=useCompany();const [rows,setRows]=useState([]);useEffect(()=>{if(companyId)supabase.from("payments").select("*,customers(name),charges(description)").eq("company_id",companyId).order("paid_at",{ascending:false}).then(({data})=>setRows(data||[]));},[companyId]);const total=rows.reduce((a,x)=>a+Number(x.amount),0);return <><PageTitle title="Recebimentos" subtitle="Tudo que sua empresa já recebeu."/><div className="metric-grid three"><Metric title="Total recebido" value={money(total)} icon={Wallet} tone="success"/><Metric title="Recebido hoje" value={money(rows.filter(x=>x.paid_at.slice(0,10)===todayISO()).reduce((a,x)=>a+Number(x.amount),0))} icon={Check} tone="success"/><Metric title="Lançamentos" value={rows.length} icon={Receipt}/></div><div className="panel table-panel">{rows.length===0?<Empty text="Nenhum recebimento registrado ainda."/>:<table><thead><tr><th>Cliente</th><th>Valor</th><th>Data</th><th>Método</th></tr></thead><tbody>{rows.map(x=><tr key={x.id}><td><b>{x.customers?.name||"Cliente"}</b></td><td><b>{money(x.amount)}</b></td><td>{new Date(x.paid_at).toLocaleDateString("pt-BR")}</td><td>{x.payment_method||"—"}</td></tr>)}</tbody></table>}</div></>
 }
 
