@@ -627,3 +627,6 @@ tbody tr:last-child td{
   .modal{padding:20px;border-radius:16px}
   .header-dropdown{top:45px}
 }
+
+/* Dashboard micro-stat */
+.dashboard-mini-stat{margin-top:14px;padding:13px 14px;border-radius:11px;background:#f8f8fc;border:1px solid #ededf3;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#858691}.dashboard-mini-stat b{font-size:16px;color:#292a31}
