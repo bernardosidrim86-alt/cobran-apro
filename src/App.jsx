@@ -441,8 +441,46 @@ function Reports(){
         <section className="panel report-card"><div className="report-heading"><div><h2>Resumo financeiro</h2><p>Principais indicadores</p></div></div><div className="report-summary-list"><div><span>Cobranças emitidas</span><b>{pc.length}</b></div><div><span>Cobranças pagas</span><b>{paid}</b></div><div><span>Valor cobrado</span><b>{money(billed)}</b></div><div><span>Valor recebido</span><b>{money(received)}</b></div><div><span>Valor em aberto</span><b>{money(open)}</b></div><div><span>Ticket médio</span><b>{money(ticket)}</b></div></div></section></div>
     </>}</div>;
 }
-function AIPage(){const [tone,setTone]=useState("Amigável");const [context,setContext]=useState("mensalidade de R$350 vence hoje");const [result,setResult]=useState("");function generate(){const intro=tone==="Profissional"?"Olá, tudo bem?":tone==="Direto"?"Olá!":tone==="Informal"?"Oi! Tudo certo?":"Oi! Tudo bem?";setResult(`${intro}\\n\\nPassando para lembrar sobre a ${context}. Quando puder, consegue verificar? Se precisar de alguma coisa, estou à disposição.`);}return <><PageTitle title="Assistente IA" subtitle="Crie mensagens de cobrança mais naturais."/><div className="ai-layout"><div className="panel"><div className="panel-head"><div><h2>Gerar mensagem</h2><p>Escolha o tom e descreva a situação.</p></div><Sparkles size={19}/></div><label className="field"><span>Tom</span><select value={tone} onChange={e=>setTone(e.target.value)}>{["Profissional","Amigável","Direto","Informal"].map(x=><option key={x}>{x}</option>)}</select></label><label className="field"><span>Contexto</span><textarea rows="4" value={context} onChange={e=>setContext(e.target.value)}/></label><Button onClick={generate}><Sparkles size={16}/> Gerar mensagem</Button></div><div className="panel ai-result"><div className="panel-head"><div><h2>Mensagem</h2><p>Revise antes de enviar.</p></div></div>{result?<><div className="generated">{result}</div><div className="modal-actions"><Button variant="secondary" onClick={generate}>Gerar outra</Button><Button onClick={()=>navigator.clipboard?.writeText(result)}>Copiar</Button></div></>:<div className="empty small"><Sparkles size={22}/><b>Sua mensagem aparecerá aqui.</b></div>}</div></div></>}
+function AIPage(){
+  const [tone,setTone]=useState("Amigável");
+  const [context,setContext]=useState("mensalidade de R$350 vence hoje");
+  const [result,setResult]=useState("");
 
+  function generate(){
+    const clean=context.trim();
+    if(!clean){
+      setResult("Digite o contexto da cobrança para gerar a mensagem.");
+      return;
+    }
+    const intros={
+      Profissional:"Olá, tudo bem?",
+      Amigável:"Oi! Tudo bem?",
+      Direto:"Olá!",
+      Informal:"Oi! Tudo certo?"
+    };
+    const intro=intros[tone]||intros.Amigável;
+    const message=tone==="Direto"
+      ? `${intro}\n\nPassando para lembrar sobre ${clean}. Quando puder, consegue verificar?\n\nObrigado!`
+      : `${intro}\n\nPassando para lembrar sobre ${clean}. Quando puder, consegue verificar? Se precisar de alguma coisa, estou à disposição.\n\nObrigado!`;
+    setResult(message);
+  }
+
+  return <>
+    <PageTitle title="Assistente IA" subtitle="Crie mensagens de cobrança mais naturais."/>
+    <div className="ai-layout">
+      <div className="panel">
+        <div className="panel-head"><div><h2>Gerar mensagem</h2><p>Escolha o tom e descreva a situação.</p></div><Sparkles size={19}/></div>
+        <label className="field"><span>Tom</span><select value={tone} onChange={e=>setTone(e.target.value)}>{["Profissional","Amigável","Direto","Informal"].map(x=><option key={x}>{x}</option>)}</select></label>
+        <label className="field"><span>Contexto</span><textarea rows="4" value={context} onChange={e=>setContext(e.target.value)} placeholder="Ex.: mensalidade de R$350 vence hoje"/></label>
+        <Button onClick={generate}><Sparkles size={16}/> Gerar mensagem</Button>
+      </div>
+      <div className="panel ai-result">
+        <div className="panel-head"><div><h2>Mensagem</h2><p>Revise antes de enviar.</p></div></div>
+        {result?<><div className="generated">{result}</div><div className="modal-actions"><Button variant="secondary" onClick={generate}>Gerar outra</Button><Button onClick={()=>navigator.clipboard?.writeText(result)}>Copiar</Button></div></>:<div className="empty small"><Sparkles size={22}/><b>Sua mensagem aparecerá aqui.</b></div>}
+      </div>
+    </div>
+  </>;
+}
 function SettingsPage(){const [tab,setTab]=useState("empresa");const [profile,setProfile]=useState(null);useEffect(()=>{supabase?.auth.getUser().then(async({data})=>{if(!data.user)return;const {data:p}=await supabase.from("profiles").select("plan,billing_cycle,subscription_status,subscription_expires_at").eq("id",data.user.id).single();setProfile(p||null);});},[]);return <><PageTitle title="Configurações" subtitle="Personalize o CobrançaPro para sua empresa."/><div className="settings-layout"><div className="settings-nav">{[["empresa","Empresa"],["whatsapp","WhatsApp"],["ia","IA"],["plano","Plano"]].map(([x,l])=><button className={tab===x?"active":""} onClick={()=>setTab(x)} key={x}>{l}</button>)}</div><div className="panel settings-panel">{tab==="empresa"&&<><h2>Empresa</h2><p>Dados básicos do seu negócio.</p><div className="form-grid"><Input label="Nome da empresa" placeholder="Minha empresa"/><Input label="Telefone" placeholder="(24) 99999-9999"/><Input label="Segmento" placeholder="Ex.: clínica"/></div><Button>Salvar alterações</Button></>}{tab==="whatsapp"&&<><h2>WhatsApp</h2><p>Prepare o canal para uma futura integração oficial.</p><div className="connection"><div><span className="status-dot"></span><b>Não conectado</b><small>Você poderá conectar o WhatsApp Business aqui.</small></div><Button>Conectar WhatsApp</Button></div></>}{tab==="ia"&&<><h2>Assistente IA</h2><p>Defina como o assistente deve escrever.</p><label className="field"><span>Nome do assistente</span><input defaultValue="Assistente CobrançaPro"/></label><label className="field"><span>Instruções</span><textarea rows="5" placeholder="Seja objetivo, educado e nunca invente valores."/></label><Button>Salvar</Button></>}{tab==="plano"&&<><h2>Plano</h2><p>Confira sua assinatura atual.</p><div className="plan-box"><b>{profile?.plan==="free"||!profile?.plan?"Grátis":profile.plan.charAt(0).toUpperCase()+profile.plan.slice(1)}</b><strong>{profile?.plan==="essencial"?"R$49,90":profile?.plan==="profissional"?"R$99,90":profile?.plan==="business"?"R$199,90":"R$0"}</strong><span>Status: {profile?.subscription_status||"inactive"}{profile?.billing_cycle?(" · "+(profile.billing_cycle==="annual"?"Anual":"Mensal")):""}</span><a href="/#precos" className="btn btn-primary">Ver planos</a></div></>}</div></div></>}
 
 export default App;
