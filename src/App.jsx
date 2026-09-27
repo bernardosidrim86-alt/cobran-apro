@@ -10,6 +10,9 @@ import { PLAN_OPTIONS } from "./lib/plans";
 
 const money = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(v || 0));
 const todayISO = () => new Date().toISOString().slice(0,10);
+const TRIAL_DAYS = 7;
+const trialEnd = (createdAt) => new Date(new Date(createdAt).getTime() + TRIAL_DAYS * 86400000);
+const trialDaysLeft = (createdAt) => Math.max(0, Math.ceil((trialEnd(createdAt) - new Date()) / 86400000));
 
 function Button({children, variant="primary", className="", ...props}) {
   return <button className={`btn btn-${variant} ${className}`} {...props}>{children}</button>;
@@ -57,7 +60,7 @@ function Landing() {
           <h1>Receba no prazo.<br/><em>Sem ficar correndo atrás.</em></h1>
           <p>Organize suas cobranças, veja quem precisa ser cobrado hoje e envie lembretes pelo WhatsApp em poucos cliques.</p>
           <div className="hero-actions"><Link to="/cadastro" className="btn btn-primary btn-lg">Começar grátis <ArrowRight size={18}/></Link><Link to="/login" className="btn btn-secondary btn-lg">Entrar</Link><a href="#como" className="btn btn-secondary btn-lg">Ver como funciona</a></div>
-          <div className="trust"><Check size={16}/> Feito para pequenos negócios <Check size={16}/> Comece grátis</div>
+          <div className="trust"><Check size={16}/> Feito para pequenos negócios <Check size={16}/> 7 dias grátis</div>
         </div>
         <DashboardPreview/>
       </section>
@@ -89,7 +92,7 @@ function Landing() {
       </div></section>
 
       <section id="precos" className="section soft"><div className="container">
-        <div className="section-heading center"><span className="eyebrow">Preços</span><h2>Escolha o plano ideal para sua empresa.</h2><p>Comece grátis e faça upgrade quando precisar de mais recursos.</p></div>
+        <div className="section-heading center"><span className="eyebrow">Preços</span><h2>Escolha o plano ideal para sua empresa.</h2><p>Teste grátis por 7 dias. Sem cartão de crédito. Faça upgrade quando precisar.</p></div>
         <div className="pricing">
           {PLAN_OPTIONS.map(plan => <Price key={plan.key} plan={plan} featured={plan.key==="profissional"}/>)}
         </div>
@@ -119,17 +122,17 @@ function Price({plan, featured}) {
       <div><span className="price-kicker">{isFree ? "PARA COMEÇAR" : plan.key==="business" ? "PARA EQUIPES" : plan.key==="profissional" ? "PARA CRESCER" : "PARA ORGANIZAR"}</span><h3>{plan.title}</h3></div>
     </div>
     <p>{plan.desc}</p>
-    <div className="price"><small>R$</small>{plan.monthlyPrice}<span>{isFree ? "para sempre" : "/mês"}</span></div>
+    <div className="price"><small>R$</small>{plan.monthlyPrice}<span>{isFree ? "7 dias grátis" : "/mês"}</span></div>
     {!isFree && <div className="price-annual"><b>R$ {plan.annualPrice}</b><span>/ano no plano anual</span></div>}
     <div className="price-benefits-title">O que está incluído:</div>
     <div className="price-items">{plan.items.map(i=><div className="price-item" key={i}><Check size={16}/><span>{i}</span></div>)}</div>
     <div className="price-actions">
-      {isFree ? <Link to="/cadastro" className="btn btn-secondary full">Começar grátis <ArrowRight size={16}/></Link> : <>
+      {isFree ? <Link to="/cadastro" className="btn btn-secondary full">Testar por 7 dias <ArrowRight size={16}/></Link> : <>
         <a href={plan.monthlyCheckout} className={`btn ${featured?"btn-primary":"btn-secondary"} full`}>Assinar mensal</a>
         <a href={plan.annualCheckout} className="btn btn-secondary full">Assinar anual</a>
       </>}
     </div>
-    <div className="price-note">{isFree ? "Sem cartão de crédito." : `Economize no anual: R$ ${plan.annualPrice}/ano`}</div>
+    <div className="price-note">{isFree ? "7 dias grátis · Sem cartão de crédito." : `Economize no anual: R$ ${plan.annualPrice}/ano`}</div>
   </div>;
 }
 
@@ -154,7 +157,7 @@ function Signup() {
   if(loginError) setError(loginError.message==="Invalid login credentials"?"Este e-mail já possui uma conta com outra senha. Faça login ou recupere a senha.":loginError.message); else nav("/onboarding");
     setBusy(false);
   }
-  return <AuthLayout title="Crie sua conta" subtitle="Comece a organizar suas cobranças gratuitamente."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" minLength="6" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button></form><div className="auth-bottom">Já possui uma conta? <Link to="/login">Entrar</Link></div></AuthLayout>
+  return <AuthLayout title="Crie sua conta" subtitle="Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" minLength="6" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button></form><div className="auth-bottom">Já possui uma conta? <Link to="/login">Entrar</Link></div></AuthLayout>
 }
 
 function ForgotPassword() {
@@ -180,10 +183,13 @@ await supabase.from("company_settings").upsert({company_id:companyId,default_pay
 }
 
 function AppShell({session}) {
-  const nav=useNavigate(); const loc=useLocation(); const [mobile,setMobile]=useState(false); const [notificationsOpen,setNotificationsOpen]=useState(false); const [profileOpen,setProfileOpen]=useState(false); const [notificationCount,setNotificationCount]=useState(0); const touchStartX=React.useRef(null); const touchStartY=React.useRef(null); const pointerStartX=React.useRef(null); const pointerStartY=React.useRef(null);
+  const nav=useNavigate(); const loc=useLocation(); const [mobile,setMobile]=useState(false); const [notificationsOpen,setNotificationsOpen]=useState(false); const [profileOpen,setProfileOpen]=useState(false); const [notificationCount,setNotificationCount]=useState(0); const [trialBlocked,setTrialBlocked]=useState(false); const [trialLoading,setTrialLoading]=useState(true); const [trialDays,setTrialDays]=useState(TRIAL_DAYS); const touchStartX=React.useRef(null); const touchStartY=React.useRef(null); const pointerStartX=React.useRef(null); const pointerStartY=React.useRef(null);
   const fullName=session.user.user_metadata?.full_name||"Usuário"; const email=session.user.email||""; const initials=(fullName||email||"U").slice(0,1).toUpperCase();
-  useEffect(()=>{let active=true;async function loadNotifications(){const {data:profile}=await supabase.from("profiles").select("company_id").eq("id",session.user.id).single();const companyId=profile?.company_id;if(!companyId){if(active)setNotificationCount(0);return;}const {data}=await supabase.from("charges").select("id,due_date,status").eq("company_id",companyId).eq("status","pending");if(active)setNotificationCount((data||[]).filter(x=>x.due_date<=todayISO()).length);}loadNotifications();return()=>{active=false};},[session.user.id]);
+  useEffect(()=>{let active=true;async function loadAccount(){const {data:profile}=await supabase.from("profiles").select("company_id,plan,subscription_expires_at").eq("id",session.user.id).single();if(!active)return;const paidPlan=profile?.plan&&profile.plan!=="free";if(paidPlan){setTrialBlocked(false);setTrialLoading(false);return;}const expires=profile?.subscription_expires_at?new Date(profile.subscription_expires_at):trialEnd(session.user.created_at);const days=Math.max(0,Math.ceil((expires-new Date())/86400000));setTrialDays(days);setTrialBlocked(expires<=new Date());setTrialLoading(false);if(!profile?.subscription_expires_at){await supabase.from("profiles").update({subscription_expires_at:expires.toISOString()}).eq("id",session.user.id);}if(!profile?.company_id){return;}const {data}=await supabase.from("charges").select("id,due_date,status").eq("company_id",profile.company_id).eq("status","pending");if(active)setNotificationCount((data||[]).filter(x=>x.due_date<=todayISO()).length);}loadAccount();return()=>{active=false};},[session.user.id,session.user.created_at]);
+  useEffect(()=>{if(trialDays>0&&!trialBlocked)document.title=`CobrançaPro · ${trialDays} dias grátis`;},[trialDays,trialBlocked]);
   async function logout(){await supabase?.auth.signOut();nav("/");}
+  if(trialLoading) return <div className="screen-center">Verificando seu acesso...</div>;
+  if(trialBlocked) return <div className="auth-page"><div className="auth-card"><Link to="/" className="brand auth-brand"><img className="brand-logo" src="/logo.png" alt="CobrançaPro" /></Link><div className="auth-heading"><h1>Seu teste grátis terminou</h1><p>Seus 7 dias de acesso chegaram ao fim. Escolha um plano para continuar usando o CobrançaPro.</p></div><div className="finish-box"><CreditCard size={20}/><div><b>Escolha seu plano</b><span>Assine o Essencial, Profissional ou Business e continue de onde parou.</span></div></div><Link to="/#precos" className="btn btn-primary full">Ver planos <ArrowRight size={16}/></Link><button className="btn btn-secondary full" onClick={logout}>Sair da conta</button></div></div>;
   function openNotifications(){setNotificationsOpen(x=>!x);setProfileOpen(false);setMobile(false);}
   function openProfile(){setProfileOpen(x=>!x);setNotificationsOpen(false);setMobile(false);}
   function handleTouchStart(e){const t=e.touches?.[0];if(!t)return;touchStartX.current=t.clientX;touchStartY.current=t.clientY;}
@@ -481,6 +487,6 @@ function AIPage(){
     </div>
   </>;
 }
-function SettingsPage(){const [tab,setTab]=useState("empresa");const [profile,setProfile]=useState(null);useEffect(()=>{supabase?.auth.getUser().then(async({data})=>{if(!data.user)return;const {data:p}=await supabase.from("profiles").select("plan,billing_cycle,subscription_status,subscription_expires_at").eq("id",data.user.id).single();setProfile(p||null);});},[]);return <><PageTitle title="Configurações" subtitle="Personalize o CobrançaPro para sua empresa."/><div className="settings-layout"><div className="settings-nav">{[["empresa","Empresa"],["whatsapp","WhatsApp"],["ia","IA"],["plano","Plano"]].map(([x,l])=><button className={tab===x?"active":""} onClick={()=>setTab(x)} key={x}>{l}</button>)}</div><div className="panel settings-panel">{tab==="empresa"&&<><h2>Empresa</h2><p>Dados básicos do seu negócio.</p><div className="form-grid"><Input label="Nome da empresa" placeholder="Minha empresa"/><Input label="Telefone" placeholder="(24) 99999-9999"/><Input label="Segmento" placeholder="Ex.: clínica"/></div><Button>Salvar alterações</Button></>}{tab==="whatsapp"&&<><h2>WhatsApp</h2><p>Prepare o canal para uma futura integração oficial.</p><div className="connection"><div><span className="status-dot"></span><b>Não conectado</b><small>Você poderá conectar o WhatsApp Business aqui.</small></div><Button>Conectar WhatsApp</Button></div></>}{tab==="ia"&&<><h2>Assistente IA</h2><p>Defina como o assistente deve escrever.</p><label className="field"><span>Nome do assistente</span><input defaultValue="Assistente CobrançaPro"/></label><label className="field"><span>Instruções</span><textarea rows="5" placeholder="Seja objetivo, educado e nunca invente valores."/></label><Button>Salvar</Button></>}{tab==="plano"&&<><h2>Plano</h2><p>Confira sua assinatura atual.</p><div className="plan-box"><b>{profile?.plan==="free"||!profile?.plan?"Grátis":profile.plan.charAt(0).toUpperCase()+profile.plan.slice(1)}</b><strong>{profile?.plan==="essencial"?"R$49,90":profile?.plan==="profissional"?"R$99,90":profile?.plan==="business"?"R$199,90":"R$0"}</strong><span>Status: {profile?.subscription_status||"inactive"}{profile?.billing_cycle?(" · "+(profile.billing_cycle==="annual"?"Anual":"Mensal")):""}</span><a href="/#precos" className="btn btn-primary">Ver planos</a></div></>}</div></div></>}
+function SettingsPage(){const [tab,setTab]=useState("empresa");const [profile,setProfile]=useState(null);useEffect(()=>{supabase?.auth.getUser().then(async({data})=>{if(!data.user)return;const {data:p}=await supabase.from("profiles").select("plan,billing_cycle,subscription_status,subscription_expires_at").eq("id",data.user.id).single();setProfile(p||null);});},[]);return <><PageTitle title="Configurações" subtitle="Personalize o CobrançaPro para sua empresa."/><div className="settings-layout"><div className="settings-nav">{[["empresa","Empresa"],["whatsapp","WhatsApp"],["ia","IA"],["plano","Plano"]].map(([x,l])=><button className={tab===x?"active":""} onClick={()=>setTab(x)} key={x}>{l}</button>)}</div><div className="panel settings-panel">{tab==="empresa"&&<><h2>Empresa</h2><p>Dados básicos do seu negócio.</p><div className="form-grid"><Input label="Nome da empresa" placeholder="Minha empresa"/><Input label="Telefone" placeholder="(24) 99999-9999"/><Input label="Segmento" placeholder="Ex.: clínica"/></div><Button>Salvar alterações</Button></>}{tab==="whatsapp"&&<><h2>WhatsApp</h2><p>Prepare o canal para uma futura integração oficial.</p><div className="connection"><div><span className="status-dot"></span><b>Não conectado</b><small>Você poderá conectar o WhatsApp Business aqui.</small></div><Button>Conectar WhatsApp</Button></div></>}{tab==="ia"&&<><h2>Assistente IA</h2><p>Defina como o assistente deve escrever.</p><label className="field"><span>Nome do assistente</span><input defaultValue="Assistente CobrançaPro"/></label><label className="field"><span>Instruções</span><textarea rows="5" placeholder="Seja objetivo, educado e nunca invente valores."/></label><Button>Salvar</Button></>}{tab==="plano"&&<><h2>Plano</h2><p>Confira seu período de teste e sua assinatura atual.</p><div className="plan-box"><b>{profile?.plan==="free"||!profile?.plan?"Teste grátis":profile.plan.charAt(0).toUpperCase()+profile.plan.slice(1)}</b><strong>{profile?.plan==="essencial"?"R$49,90":profile?.plan==="profissional"?"R$99,90":profile?.plan==="business"?"R$199,90":"7 dias"}</strong><span>Status: {profile?.subscription_status||"inactive"}{profile?.billing_cycle?(" · "+(profile.billing_cycle==="annual"?"Anual":"Mensal")):""}</span><a href="/#precos" className="btn btn-primary">Ver planos</a></div></>}</div></div></>}
 
 export default App;
