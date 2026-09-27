@@ -783,3 +783,21 @@ html,body,#root{max-width:100%;overflow-x:hidden}
     flex-basis:34px;
   }
 }
+
+
+/* Centralização definitiva da inicial no avatar das cobranças */
+.charge-person .person-avatar{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  line-height:1 !important;
+  padding:0 !important;
+  margin:0 !important;
+  position:relative;
+  top:0;
+  left:0;
+}
+.charge-person .person-avatar::first-letter{
+  line-height:1;
+}
