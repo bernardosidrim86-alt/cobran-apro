@@ -801,3 +801,151 @@ html,body,#root{max-width:100%;overflow-x:hidden}
 .charge-person .person-avatar::first-letter{
   line-height:1;
 }
+
+
+/* Tema claro/escuro */
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root{
+  background:#111218;
+  color:#f4f4f7;
+}
+html[data-theme="dark"] .app-layout,
+html[data-theme="dark"] .app-main,
+html[data-theme="dark"] .page{background:#111218;color:#f4f4f7}
+html[data-theme="dark"] .app-header{
+  background:rgba(25,26,34,.94);
+  border-bottom-color:#2a2b35;
+}
+html[data-theme="dark"] .sidebar{
+  background:#181920;
+  border-right-color:#2a2b35;
+}
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .metric,
+html[data-theme="dark"] .table-panel,
+html[data-theme="dark"] .settings-nav,
+html[data-theme="dark"] .settings-panel{
+  background:#191a22;
+  border-color:#2b2c36;
+  color:#f4f4f7;
+  box-shadow:none;
+}
+html[data-theme="dark"] .panel-head p,
+html[data-theme="dark"] .page-title p,
+html[data-theme="dark"] .dashboard-hero p,
+html[data-theme="dark"] .metric span,
+html[data-theme="dark"] .cash-summary span,
+html[data-theme="dark"] .attention-label,
+html[data-theme="dark"] .charge-person span,
+html[data-theme="dark"] .quick-actions-premium small,
+html[data-theme="dark"] .dashboard-client-count span,
+html[data-theme="dark"] .panel-kicker{
+  color:#9a9ba7;
+}
+html[data-theme="dark"] .metric b,
+html[data-theme="dark"] .metric strong,
+html[data-theme="dark"] .dashboard-hero h1,
+html[data-theme="dark"] .cash-summary strong,
+html[data-theme="dark"] .attention-value,
+html[data-theme="dark"] .attention-item b,
+html[data-theme="dark"] .charge-row>strong,
+html[data-theme="dark"] .quick-actions-premium b{
+  color:#f4f4f7;
+}
+html[data-theme="dark"] .charge-row,
+html[data-theme="dark"] .attention-list,
+html[data-theme="dark"] .attention-item,
+html[data-theme="dark"] .dashboard-client-count,
+html[data-theme="dark"] .charge-list,
+html[data-theme="dark"] td{
+  border-color:#2b2c36;
+}
+html[data-theme="dark"] .charge-row:hover,
+html[data-theme="dark"] tbody tr:hover,
+html[data-theme="dark"] .quick-actions-premium a:hover{
+  background:#20212a;
+}
+html[data-theme="dark"] .header-search,
+html[data-theme="dark"] .searchbox{
+  background:#20212a;
+  border-color:#30313d;
+}
+html[data-theme="dark"] .header-search input,
+html[data-theme="dark"] .searchbox input,
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select{
+  background:#20212a;
+  color:#f4f4f7;
+  border-color:#353642;
+}
+html[data-theme="dark"] th,
+html[data-theme="dark"] td{color:#b7b8c2}
+html[data-theme="dark"] td:first-child{color:#f0f0f3}
+html[data-theme="dark"] .quick-actions-premium a,
+html[data-theme="dark"] .connection,
+html[data-theme="dark"] .plan-box,
+html[data-theme="dark"] .dashboard-mini-stat{
+  background:#1f2028;
+  border-color:#2d2e38;
+}
+html[data-theme="dark"] .quick-actions-premium a>span,
+html[data-theme="dark"] .person-avatar,
+html[data-theme="dark"] .metric-icon,
+html[data-theme="dark"] .dashboard-percent{
+  background:#292a4a;
+}
+html[data-theme="dark"] .theme-toggle{
+  background:#20212a;
+  color:#f1c75b;
+}
+html[data-theme="dark"] .theme-toggle:hover,
+html[data-theme="dark"] .header-icon-button:hover{
+  background:#292a35;
+}
+html[data-theme="dark"] .avatar-button{
+  background:#292a4a;
+  color:#b9baff;
+}
+html[data-theme="dark"] .header-dropdown,
+html[data-theme="dark"] .modal{
+  background:#191a22;
+  border-color:#30313c;
+  color:#f4f4f7;
+}
+html[data-theme="dark"] .dropdown-divider,
+html[data-theme="dark"] .notification-item:hover,
+html[data-theme="dark"] .profile-dropdown>a:hover,
+html[data-theme="dark"] .profile-dropdown>button:hover{
+  border-color:#30313c;
+  background:#20212a;
+}
+html[data-theme="dark"] .modal-x{
+  background:#292a32;
+  color:#ddd;
+}
+html[data-theme="dark"] .empty,
+html[data-theme="dark"] .empty.small{
+  color:#9b9ca7;
+}
+html[data-theme="dark"] .filters{
+  background:#191a22;
+  border-color:#2d2e38;
+}
+html[data-theme="dark"] .filters button{
+  color:#aaaab5;
+}
+html[data-theme="dark"] .filters button.selected{
+  background:#292a4a;
+  color:#b9baff;
+}
+html[data-theme="dark"] .progress-track{
+  background:#2a2b34;
+}
+html[data-theme="dark"] .mini-bar{
+  background:#35365a;
+}
+html[data-theme="dark"] .soft,
+html[data-theme="dark"] .auth-page{
+  background:#111218;
+}
