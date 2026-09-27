@@ -724,3 +724,22 @@ html,body,#root{max-width:100%;overflow-x:hidden}
   .charge-person b,.charge-person span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
   .charge-row>strong{white-space:nowrap}
 }
+
+/* Correção definitiva do layout mobile */
+*,*::before,*::after{box-sizing:border-box}
+@media(max-width:900px){
+  .app-main{
+    margin-left:0 !important;
+    width:100% !important;
+    max-width:100% !important;
+  }
+  .page{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+  .dashboard-page{
+    width:100%;
+    max-width:100%;
+  }
+}
