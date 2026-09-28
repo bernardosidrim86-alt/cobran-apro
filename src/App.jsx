@@ -574,9 +574,88 @@ function Reports(){
     </>}</div>;
 }
 function AIPage(){
+  const companyId=useCompany();
   const [tone,setTone]=useState("Amigável");
   const [context,setContext]=useState("mensalidade de R$350 vence hoje");
   const [result,setResult]=useState("");
+  const [question,setQuestion]=useState("");
+  const [messages,setMessages]=useState([]);
+  const [data,setData]=useState({customers:[],charges:[],payments:[]});
+  const [loading,setLoading]=useState(true);
+
+  useEffect(()=>{
+    if(!companyId)return;
+    let active=true;
+    async function load(){
+      setLoading(true);
+      const [customers,charges,payments]=await Promise.all([
+        supabase.from("customers").select("id,name,phone,email").eq("company_id",companyId).order("name"),
+        supabase.from("charges").select("id,customer_id,description,amount,due_date,status,customers(name)").eq("company_id",companyId).order("due_date"),
+        supabase.from("payments").select("id,customer_id,amount,paid_at,payment_method,customers(name)").eq("company_id",companyId).order("paid_at",{ascending:false})
+      ]);
+      if(active){
+        setData({customers:customers.data||[],charges:charges.data||[],payments:payments.data||[]});
+        setLoading(false);
+      }
+    }
+    load();
+    return()=>{active=false};
+  },[companyId]);
+
+  function answerQuestion(text){
+    const q=text.toLowerCase().trim();
+    const {customers,charges,payments}=data;
+    const pending=charges.filter(x=>x.status==="pending");
+    const overdue=pending.filter(x=>x.due_date<todayISO());
+    const today=pending.filter(x=>x.due_date===todayISO());
+    const receive=pending.reduce((sum,x)=>sum+Number(x.amount||0),0);
+    const received=payments.reduce((sum,x)=>sum+Number(x.amount||0),0);
+
+    if(/^(oi|olá|ola|bom dia|boa tarde|boa noite)/.test(q)){
+      return "Olá! Sou o Assistente do CobrançaPro. Posso consultar seus clientes, cobranças e recebimentos ou preparar uma mensagem de cobrança.";
+    }
+    if(q.includes("quantos cliente")||q.includes("número de cliente")||q.includes("numero de cliente")){
+      return `Você tem ${customers.length} cliente${customers.length===1?"":"s"} cadastrado${customers.length===1?"":"s"}.`;
+    }
+    if(q.includes("quanto")&&(q.includes("receber")||q.includes("aberto")||q.includes("pendente"))){
+      return `Hoje você tem ${money(receive)} em cobranças em aberto, somando ${pending.length} cobrança${pending.length===1?"":"s"} pendente${pending.length===1?"":"s"}.`;
+    }
+    if(q.includes("quanto")&&(q.includes("recebi")||q.includes("recebido")||q.includes("entrou"))){
+      return `O total registrado em recebimentos é ${money(received)}, considerando ${payments.length} lançamento${payments.length===1?"":"s"}.`;
+    }
+    if(q.includes("atrasad")){
+      if(!overdue.length)return "Você não tem cobranças atrasadas no momento.";
+      const total=overdue.reduce((sum,x)=>sum+Number(x.amount||0),0);
+      const names=overdue.slice(0,3).map(x=>x.customers?.name||"Cliente").join(", ");
+      return `Você tem ${overdue.length} cobrança${overdue.length===1?"":"s"} atrasada${overdue.length===1?"":"s"}, totalizando ${money(total)}. Entre elas: ${names}.`;
+    }
+    if(q.includes("vence hoje")||q.includes("vencendo hoje")){
+      if(!today.length)return "Você não tem cobranças vencendo hoje.";
+      const total=today.reduce((sum,x)=>sum+Number(x.amount||0),0);
+      return `Hoje vencem ${today.length} cobrança${today.length===1?"":"s"}, no total de ${money(total)}.`;
+    }
+    if(q.includes("próxim")||q.includes("proxim")||q.includes("cobrar primeiro")||q.includes("quem cobrar")){
+      const list=pending.filter(x=>x.due_date>=todayISO()).slice(0,3);
+      if(!list.length)return "Não encontrei cobranças futuras pendentes.";
+      return "As próximas cobranças são: "+list.map(x=>`${x.customers?.name||"Cliente"} (${money(x.amount)}) em ${new Date(x.due_date+"T12:00:00").toLocaleDateString("pt-BR")}`).join("; ")+".";
+    }
+    if(q.includes("maior")&&(q.includes("cobrança")||q.includes("cobranca"))){
+      const biggest=[...charges].sort((a,b)=>Number(b.amount||0)-Number(a.amount||0))[0];
+      return biggest ? `A maior cobrança cadastrada é de ${money(biggest.amount)} para ${biggest.customers?.name||"Cliente"}.` : "Você ainda não tem cobranças cadastradas.";
+    }
+    if(q.includes("mensagem")||q.includes("cobrar")||q.includes("whatsapp")){
+      return "Posso preparar uma mensagem. Use o gerador ao lado, escolha o tom e descreva a situação da cobrança.";
+    }
+    return "Consigo consultar seus dados de clientes, cobranças e recebimentos. Tente perguntar, por exemplo: “Quanto tenho para receber?”, “Quem está atrasado?” ou “Quanto recebi este mês?”.";
+  }
+
+  function ask(text=question){
+    const clean=text.trim();
+    if(!clean)return;
+    const answer=answerQuestion(clean);
+    setMessages(prev=>[...prev,{role:"user",text:clean},{role:"assistant",text:answer}]);
+    setQuestion("");
+  }
 
   function generate(){
     const clean=context.trim();
@@ -597,17 +676,31 @@ function AIPage(){
     setResult(message);
   }
 
+  const suggestions=["Quanto tenho para receber?","Quem está atrasado?","Quanto recebi?","Quem eu preciso cobrar hoje?"];
+
   return <>
-    <PageTitle title="Assistente IA" subtitle="Crie mensagens de cobrança mais naturais."/>
+    <PageTitle title="Assistente IA" subtitle="Pergunte sobre seu negócio e prepare mensagens de cobrança."/>
     <div className="ai-layout">
-      <div className="panel">
-        <div className="panel-head"><div><h2>Gerar mensagem</h2><p>Escolha o tom e descreva a situação.</p></div><Sparkles size={19}/></div>
+      <div className="panel ai-chat-panel">
+        <div className="panel-head">
+          <div><span className="panel-kicker">ASSISTENTE</span><h2>Converse com seus dados</h2><p>Pergunte sobre clientes, cobranças e recebimentos.</p></div>
+          <Sparkles size={19}/>
+        </div>
+        <div className="ai-chat-messages">
+          {messages.length===0 && <div className="ai-chat-empty"><div className="ai-chat-icon"><Sparkles size={20}/></div><b>Como posso ajudar?</b><span>Eu consigo consultar os dados da sua empresa e responder perguntas rápidas.</span><div className="ai-suggestions">{suggestions.map(x=><button type="button" key={x} onClick={()=>ask(x)}>{x}</button>)}</div></div>}
+          {messages.map((m,i)=><div className={`ai-message ${m.role}`} key={i}><span>{m.role==="assistant"?"IA":"Você"}</span><p>{m.text}</p></div>)}
+        </div>
+        <form className="ai-chat-input" onSubmit={e=>{e.preventDefault();ask()}}>
+          <input value={question} onChange={e=>setQuestion(e.target.value)} placeholder={loading?"Carregando seus dados...":"Ex.: quanto tenho para receber?"} disabled={loading}/>
+          <Button type="submit" disabled={loading||!question.trim()}><ArrowRight size={16}/></Button>
+        </form>
+      </div>
+
+      <div className="panel ai-result">
+        <div className="panel-head"><div><span className="panel-kicker">MENSAGEM</span><h2>Preparar cobrança</h2><p>Crie uma mensagem pronta para enviar.</p></div></div>
         <label className="field"><span>Tom</span><select value={tone} onChange={e=>setTone(e.target.value)}>{["Profissional","Amigável","Direto","Informal"].map(x=><option key={x}>{x}</option>)}</select></label>
         <label className="field"><span>Contexto</span><textarea rows="4" value={context} onChange={e=>setContext(e.target.value)} placeholder="Ex.: mensalidade de R$350 vence hoje"/></label>
         <Button onClick={generate}><Sparkles size={16}/> Gerar mensagem</Button>
-      </div>
-      <div className="panel ai-result">
-        <div className="panel-head"><div><h2>Mensagem</h2><p>Revise antes de enviar.</p></div></div>
         {result?<><div className="generated">{result}</div><div className="modal-actions"><Button variant="secondary" onClick={generate}>Gerar outra</Button><Button onClick={()=>navigator.clipboard?.writeText(result)}>Copiar</Button></div></>:<div className="empty small"><Sparkles size={22}/><b>Sua mensagem aparecerá aqui.</b></div>}
       </div>
     </div>
