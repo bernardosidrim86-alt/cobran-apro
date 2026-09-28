@@ -36,14 +36,43 @@ function App() {
   if (loading) return <div className="screen-center">Carregando...</div>;
   return <Routes>
     <Route path="/" element={<Landing session={session} />} />
-    <Route path="/login" element={session ? <Navigate to="/app" replace/> : <Login />} />
-    <Route path="/cadastro" element={session ? <Navigate to="/onboarding" replace/> : <Signup />} />
+    <Route path="/login" element={session ? <SessionRedirect session={session}/> : <Login />} />
+    <Route path="/cadastro" element={session ? <SessionRedirect session={session}/> : <Signup />} />
     <Route path="/recuperar" element={<ForgotPassword />} />
     <Route path="/nova-senha" element={<ResetPassword />} />
     <Route path="/onboarding" element={session ? <Onboarding session={session}/> : <Navigate to="/login" replace/>} />
     <Route path="/app/*" element={session ? <AppShell session={session}/> : <Navigate to="/login" replace/>} />
     <Route path="*" element={<Navigate to="/" replace/>} />
   </Routes>;
+}
+
+function getPendingCheckout() {
+  try { return localStorage.getItem("pendingPerfectPayCheckout"); } catch { return null; }
+}
+
+function continuePendingCheckout(userId) {
+  const pending = getPendingCheckout();
+  if (!pending || !userId) return false;
+  try {
+    const checkoutUrl = new URL(pending);
+    if (checkoutUrl.hostname !== "checkout.perfectpay.com.br") return false;
+    checkoutUrl.searchParams.set("utm_content", userId);
+    localStorage.removeItem("pendingPerfectPayCheckout");
+    window.location.href = checkoutUrl.toString();
+    return true;
+  } catch {
+    localStorage.removeItem("pendingPerfectPayCheckout");
+    return false;
+  }
+}
+
+function SessionRedirect({session}) {
+  const nav = useNavigate();
+  useEffect(() => {
+    if (continuePendingCheckout(session?.user?.id)) return;
+    nav("/onboarding", {replace:true});
+  }, [session, nav]);
+  return <div className="screen-center">Continuando...</div>;
 }
 
 function Landing({session}) {
@@ -138,8 +167,9 @@ function Price({plan, featured, session}) {
     }
 
     // Toda compra paga precisa estar vinculada a uma conta do CobrançaPro.
-    // Guardamos o checkout na URL para continuar automaticamente após login/cadastro.
-    window.location.href = `/cadastro?checkout=${encodeURIComponent(checkoutUrl.toString())}`;
+    // Guardamos o checkout localmente para sobreviver ao login/cadastro e à confirmação de e-mail.
+    localStorage.setItem("pendingPerfectPayCheckout", checkoutUrl.toString());
+    window.location.href = "/cadastro";
   }
   return <div className={`price-card ${featured?"featured":""} ${isFree?"free-card":""}`}>
     {featured && <div className="popular">Mais escolhido</div>}
@@ -173,6 +203,7 @@ function Login() {
     if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;}
     const {data,error}=await supabase.auth.signInWithPassword({email,password});
     if(error){setError(error.message==="Invalid login credentials"?"E-mail ou senha incorretos.":error.message);setBusy(false);return;}
+    if(continuePendingCheckout(data?.user?.id)) return;
     if(checkout && data?.user?.id){
       const checkoutUrl=new URL(checkout);
       checkoutUrl.searchParams.set("utm_content",data.user.id);
@@ -188,6 +219,7 @@ function Signup() {
   const nav=useNavigate(); const [name,setName]=useState(""); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [company,setCompany]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false);
   const checkout=new URLSearchParams(window.location.search).get("checkout");
   function continueToCheckout(userId){
+    if(continuePendingCheckout(userId)) return true;
     if(!checkout || !userId) return false;
     const checkoutUrl=new URL(checkout);
     checkoutUrl.searchParams.set("utm_content",userId);
@@ -222,7 +254,7 @@ function Signup() {
     else if(!continueToCheckout(loginData?.user?.id)) nav("/onboarding");
     setBusy(false);
   }
-  return <AuthLayout title="Crie sua conta" subtitle="Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" minLength="6" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button></form><div className="auth-bottom">Já possui uma conta? <Link to={checkout?`/login?checkout=${encodeURIComponent(checkout)}`:"/login"}>Entrar</Link></div></AuthLayout>
+  return <AuthLayout title="Crie sua conta" subtitle="Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" minLength="6" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button></form><div className="auth-bottom">Já possui uma conta? <Link to="/login">Entrar</Link></div></AuthLayout>
 }
 
 function ForgotPassword() {
