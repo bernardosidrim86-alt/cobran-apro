@@ -35,7 +35,7 @@ function App() {
 
   if (loading) return <div className="screen-center">Carregando...</div>;
   return <Routes>
-    <Route path="/" element={<Landing />} />
+    <Route path="/" element={<Landing session={session} />} />
     <Route path="/login" element={session ? <Navigate to="/app" replace/> : <Login />} />
     <Route path="/cadastro" element={session ? <Navigate to="/onboarding" replace/> : <Signup />} />
     <Route path="/recuperar" element={<ForgotPassword />} />
@@ -46,7 +46,7 @@ function App() {
   </Routes>;
 }
 
-function Landing() {
+function Landing({session}) {
   useEffect(()=>{
     if(window.location.hash!=="#precos") return;
     const scrollToPlans=()=>document.getElementById("precos")?.scrollIntoView({behavior:"smooth",block:"start"});
@@ -100,7 +100,7 @@ function Landing() {
       <section id="precos" className="section soft"><div className="container">
         <div className="section-heading center"><span className="eyebrow">Preços</span><h2>Escolha o plano ideal para sua empresa.</h2><p>Teste grátis por 7 dias. Sem cartão de crédito. Faça upgrade quando precisar.</p></div>
         <div className="pricing">
-          {PLAN_OPTIONS.map(plan => <Price key={plan.key} plan={plan} featured={plan.key==="profissional"}/>)}
+          {PLAN_OPTIONS.map(plan => <Price key={plan.key} plan={plan} featured={plan.key==="profissional"} session={session}/>)}
         </div>
       </div></section>
 
@@ -120,8 +120,18 @@ function DashboardPreview() {
   </div></div>
 }
 
-function Price({plan, featured}) {
+function Price({plan, featured, session}) {
   const isFree = !!plan.free;
+  function startCheckout(url) {
+    if (!url) return;
+    if (session?.user?.id) {
+      const checkoutUrl = new URL(url);
+      checkoutUrl.searchParams.set("utm_content", session.user.id);
+      window.location.href = checkoutUrl.toString();
+      return;
+    }
+    window.location.href = url;
+  }
   return <div className={`price-card ${featured?"featured":""} ${isFree?"free-card":""}`}>
     {featured && <div className="popular">Mais escolhido</div>}
     <div className="price-head">
@@ -134,8 +144,8 @@ function Price({plan, featured}) {
     <div className="price-items">{plan.items.map(i=><div className="price-item" key={i}><Check size={16}/><span>{i}</span></div>)}</div>
     <div className="price-actions">
       {isFree ? <Link to="/cadastro" className="btn btn-secondary full">Testar por 7 dias <ArrowRight size={16}/></Link> : <>
-        <a href={plan.monthlyCheckout} className={`btn ${featured?"btn-primary":"btn-secondary"} full`}>Assinar mensal</a>
-        <a href={plan.annualCheckout} className="btn btn-secondary full">Assinar anual</a>
+        <button type="button" onClick={()=>startCheckout(plan.monthlyCheckout)} className={`btn ${featured?"btn-primary":"btn-secondary"} full`}>Assinar mensal</button>
+        <button type="button" onClick={()=>startCheckout(plan.annualCheckout)} className="btn btn-secondary full">Assinar anual</button>
       </>}
     </div>
     <div className="price-note">{isFree ? "7 dias grátis · Sem cartão de crédito." : `Economize no anual: R$ ${plan.annualPrice}/ano`}</div>
@@ -148,22 +158,44 @@ function AuthLayout({children,title,subtitle}) {
 
 function Login() {
   const nav=useNavigate(); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false);
-  async function submit(e){e.preventDefault();setError("");setBusy(true); if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;} const {error}=await supabase.auth.signInWithPassword({email,password}); if(error)setError(error.message==="Invalid login credentials"?"E-mail ou senha incorretos.":error.message);else nav("/app");setBusy(false);}
-  return <AuthLayout title="Bem-vindo de volta" subtitle="Entre na sua conta para continuar."><form onSubmit={submit} className="form-stack"><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" value={password} onChange={e=>setPassword(e.target.value)} required/><div className="form-meta"><Link to="/recuperar">Esqueci minha senha</Link></div>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Entrando...":"Entrar"}</Button></form><div className="auth-bottom">Ainda não tem conta? <Link to="/cadastro">Criar conta</Link></div></AuthLayout>
+  const checkout=new URLSearchParams(window.location.search).get("checkout");
+  async function submit(e){
+    e.preventDefault();setError("");setBusy(true);
+    if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;}
+    const {data,error}=await supabase.auth.signInWithPassword({email,password});
+    if(error){setError(error.message==="Invalid login credentials"?"E-mail ou senha incorretos.":error.message);setBusy(false);return;}
+    if(checkout && data?.user?.id){
+      const checkoutUrl=new URL(checkout);
+      checkoutUrl.searchParams.set("utm_content",data.user.id);
+      window.location.href=checkoutUrl.toString();
+      return;
+    }
+    nav("/app");setBusy(false);
+  }
+  return <AuthLayout title="Bem-vindo de volta" subtitle="Entre na sua conta para continuar."><form onSubmit={submit} className="form-stack"><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" value={password} onChange={e=>setPassword(e.target.value)} required/><div className="form-meta"><Link to="/recuperar">Esqueci minha senha</Link></div>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Entrando...":"Entrar"}</Button></form><div className="auth-bottom">Ainda não tem conta? <Link to={checkout?`/cadastro?checkout=${encodeURIComponent(checkout)}`:"/cadastro"}>Criar conta</Link></div></AuthLayout>
 }
 
 function Signup() {
   const nav=useNavigate(); const [name,setName]=useState(""); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [company,setCompany]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false);
+  const checkout=new URLSearchParams(window.location.search).get("checkout");
+  function continueToCheckout(userId){
+    if(!checkout || !userId) return false;
+    const checkoutUrl=new URL(checkout);
+    checkoutUrl.searchParams.set("utm_content",userId);
+    window.location.href=checkoutUrl.toString();
+    return true;
+  }
   async function submit(e){e.preventDefault();setError("");setBusy(true); if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;}
     const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,company_name:company}}});
     if(error){setError(error.message);setBusy(false);return;}
-    if(data.session){nav("/onboarding");setBusy(false);return;}
+    if(data.session){if(!continueToCheckout(data.user?.id)) nav("/onboarding");setBusy(false);return;}
   if(data.user && Array.isArray(data.user.identities) && data.user.identities.length===0){setError("Este e-mail já possui uma conta. Faça login ou use \"Esqueci minha senha\".");setBusy(false);return;}
-  const {error:loginError}=await supabase.auth.signInWithPassword({email,password});
-  if(loginError) setError(loginError.message==="Invalid login credentials"?"Este e-mail já possui uma conta com outra senha. Faça login ou recupere a senha.":loginError.message); else nav("/onboarding");
+  const {error:loginError,data:loginData}=await supabase.auth.signInWithPassword({email,password});
+  if(loginError) setError(loginError.message==="Invalid login credentials"?"Este e-mail já possui uma conta com outra senha. Faça login ou recupere a senha.":loginError.message);
+  else if(!continueToCheckout(loginData?.user?.id)) nav("/onboarding");
     setBusy(false);
   }
-  return <AuthLayout title="Crie sua conta" subtitle="Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" minLength="6" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button></form><div className="auth-bottom">Já possui uma conta? <Link to="/login">Entrar</Link></div></AuthLayout>
+  return <AuthLayout title="Crie sua conta" subtitle="Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" minLength="6" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button></form><div className="auth-bottom">Já possui uma conta? <Link to={checkout?`/login?checkout=${encodeURIComponent(checkout)}`:"/login"}>Entrar</Link></div></AuthLayout>
 }
 
 function ForgotPassword() {
