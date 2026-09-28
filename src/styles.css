@@ -710,8 +710,8 @@ html,body,#root{max-width:100%;overflow-x:hidden}
   .dashboard-hero-actions{width:100%;min-width:0}
   .dashboard-hero-actions .btn{min-width:0;white-space:nowrap;padding-left:10px;padding-right:10px}
   .dashboard-metrics{width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .metric{min-width:0;overflow:hidden}
-  .metric strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .metric{min-width:0;overflow:visible}
+  .metric strong{white-space:normal;overflow:visible;text-overflow:clip;word-break:normal}
   .dashboard-main-grid,.dashboard-bottom-grid{width:100%;min-width:0}
   .panel-head>div{min-width:0}
   .panel-head p{line-height:1.45}
