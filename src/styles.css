@@ -1587,3 +1587,33 @@ tbody tr:last-child td{border-bottom:0}
   .payments-page .payments-metrics{gap:10px}
   .payments-page .payments-metrics .metric + .metric{border-left:1px solid var(--cp-line)!important}
 }
+
+/* Dashboard — hierarquia limpa */
+.dashboard-page .dashboard-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+.dashboard-page .dashboard-hero-actions{display:flex;gap:8px}
+.dashboard-page .dashboard-main-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.75fr);gap:12px;margin-bottom:12px}
+.dashboard-page .dashboard-bottom-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.75fr);gap:12px}
+.dashboard-page .dashboard-overview-panel,.dashboard-page .attention-panel{min-height:245px}
+.dashboard-page .cash-summary{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:18px;padding-bottom:18px}
+.dashboard-page .cash-summary div{padding:5px 0}
+.dashboard-page .cash-summary div + div{padding-left:28px}
+.dashboard-progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:10px;color:#858791}
+.dashboard-progress-row b{font-size:11px;color:#4f50d4}
+.dashboard-page .progress-track{height:7px;border-radius:99px;background:#eeeef3;overflow:hidden}
+.dashboard-page .progress-track>div{height:100%;border-radius:inherit;background:#5b5ce2}
+.dashboard-page .attention-value{font-size:30px;font-weight:780;letter-spacing:-.04em;margin:10px 0 2px}
+.dashboard-page .attention-label{display:block;font-size:10px;color:#8d8f98;margin-bottom:18px}
+.dashboard-page .attention-list{border-top:1px solid var(--cp-line)}
+.dashboard-page .attention-item{min-height:48px}
+.dashboard-page .quick-actions-premium a{min-height:54px}
+.dashboard-page .dashboard-client-count{margin-top:12px}
+@media(max-width:900px){
+  .dashboard-page .dashboard-hero{align-items:flex-start}
+  .dashboard-page .dashboard-main-grid,.dashboard-page .dashboard-bottom-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .dashboard-page .dashboard-hero{display:block}
+  .dashboard-page .dashboard-hero-actions{margin-top:16px}
+  .dashboard-page .dashboard-hero-actions .btn{width:100%;justify-content:center}
+  .dashboard-page .dashboard-overview-panel,.dashboard-page .attention-panel{min-height:0}
+}
