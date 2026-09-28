@@ -237,9 +237,10 @@ body{background:var(--cp-bg);color:var(--cp-ink)}
 .metric{
   min-height:132px;
   padding:18px;
-  border:1px solid #e7e7ed;
+  border:1px solid #dcdde6;
   border-radius:15px;
-  box-shadow:0 2px 8px rgba(20,20,40,.025);
+  background:#fff;
+  box-shadow:0 2px 8px rgba(20,20,40,.035);
   transition:.18s;
 }
 .metric:hover{
@@ -267,10 +268,11 @@ body{background:var(--cp-bg);color:var(--cp-ink)}
   gap:16px;
 }
 .panel{
-  border:1px solid #e6e6ec;
+  border:1px solid #dcdde6;
   border-radius:15px;
   padding:21px;
-  box-shadow:0 2px 8px rgba(20,20,40,.025);
+  background:#fff;
+  box-shadow:0 2px 8px rgba(20,20,40,.035);
 }
 .panel-head{
   margin-bottom:16px;
@@ -1174,3 +1176,9 @@ body{background:#fcfcfe}
 .price-card{min-height:0}
 .cta h2{font-size:31px}
 }
+
+/* Divisores sutis para deixar os blocos financeiros mais bem definidos */
+.dashboard-metrics .metric + .metric{box-shadow:-1px 0 0 #f3f3f6,0 2px 8px rgba(20,20,40,.035)}
+.cash-summary{padding:0 0 18px;border-bottom:1px solid #e7e7ed}
+.cash-summary div + div{border-left:1px solid #e7e7ed;padding-left:48px}
+@media(max-width:600px){.cash-summary div + div{padding-left:20px}}
