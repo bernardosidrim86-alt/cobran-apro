@@ -582,6 +582,7 @@ function AIPage(){
   const [messages,setMessages]=useState([]);
   const [data,setData]=useState({customers:[],charges:[],payments:[]});
   const [loading,setLoading]=useState(true);
+  const [aiLoading,setAiLoading]=useState(false);
 
   useEffect(()=>{
     if(!companyId)return;
@@ -602,78 +603,50 @@ function AIPage(){
     return()=>{active=false};
   },[companyId]);
 
-  function answerQuestion(text){
-    const q=text.toLowerCase().trim();
-    const {customers,charges,payments}=data;
-    const pending=charges.filter(x=>x.status==="pending");
-    const overdue=pending.filter(x=>x.due_date<todayISO());
-    const today=pending.filter(x=>x.due_date===todayISO());
-    const receive=pending.reduce((sum,x)=>sum+Number(x.amount||0),0);
-    const received=payments.reduce((sum,x)=>sum+Number(x.amount||0),0);
-
-    if(/^(oi|olá|ola|bom dia|boa tarde|boa noite)/.test(q)){
-      return "Olá! Sou o Assistente do CobrançaPro. Posso consultar seus clientes, cobranças e recebimentos ou preparar uma mensagem de cobrança.";
-    }
-    if(q.includes("quantos cliente")||q.includes("número de cliente")||q.includes("numero de cliente")){
-      return `Você tem ${customers.length} cliente${customers.length===1?"":"s"} cadastrado${customers.length===1?"":"s"}.`;
-    }
-    if(q.includes("quanto")&&(q.includes("receber")||q.includes("aberto")||q.includes("pendente"))){
-      return `Hoje você tem ${money(receive)} em cobranças em aberto, somando ${pending.length} cobrança${pending.length===1?"":"s"} pendente${pending.length===1?"":"s"}.`;
-    }
-    if(q.includes("quanto")&&(q.includes("recebi")||q.includes("recebido")||q.includes("entrou"))){
-      return `O total registrado em recebimentos é ${money(received)}, considerando ${payments.length} lançamento${payments.length===1?"":"s"}.`;
-    }
-    if(q.includes("atrasad")){
-      if(!overdue.length)return "Você não tem cobranças atrasadas no momento.";
-      const total=overdue.reduce((sum,x)=>sum+Number(x.amount||0),0);
-      const names=overdue.slice(0,3).map(x=>x.customers?.name||"Cliente").join(", ");
-      return `Você tem ${overdue.length} cobrança${overdue.length===1?"":"s"} atrasada${overdue.length===1?"":"s"}, totalizando ${money(total)}. Entre elas: ${names}.`;
-    }
-    if(q.includes("vence hoje")||q.includes("vencendo hoje")){
-      if(!today.length)return "Você não tem cobranças vencendo hoje.";
-      const total=today.reduce((sum,x)=>sum+Number(x.amount||0),0);
-      return `Hoje vencem ${today.length} cobrança${today.length===1?"":"s"}, no total de ${money(total)}.`;
-    }
-    if(q.includes("próxim")||q.includes("proxim")||q.includes("cobrar primeiro")||q.includes("quem cobrar")){
-      const list=pending.filter(x=>x.due_date>=todayISO()).slice(0,3);
-      if(!list.length)return "Não encontrei cobranças futuras pendentes.";
-      return "As próximas cobranças são: "+list.map(x=>`${x.customers?.name||"Cliente"} (${money(x.amount)}) em ${new Date(x.due_date+"T12:00:00").toLocaleDateString("pt-BR")}`).join("; ")+".";
-    }
-    if(q.includes("maior")&&(q.includes("cobrança")||q.includes("cobranca"))){
-      const biggest=[...charges].sort((a,b)=>Number(b.amount||0)-Number(a.amount||0))[0];
-      return biggest ? `A maior cobrança cadastrada é de ${money(biggest.amount)} para ${biggest.customers?.name||"Cliente"}.` : "Você ainda não tem cobranças cadastradas.";
-    }
-    if(q.includes("mensagem")||q.includes("cobrar")||q.includes("whatsapp")){
-      return "Posso preparar uma mensagem. Use o gerador ao lado, escolha o tom e descreva a situação da cobrança.";
-    }
-    return "Consigo consultar seus dados de clientes, cobranças e recebimentos. Tente perguntar, por exemplo: “Quanto tenho para receber?”, “Quem está atrasado?” ou “Quanto recebi este mês?”.";
-  }
-
-  function ask(text=question){
+  async function ask(text=question){
     const clean=text.trim();
-    if(!clean)return;
-    const answer=answerQuestion(clean);
-    setMessages(prev=>[...prev,{role:"user",text:clean},{role:"assistant",text:answer}]);
+    if(!clean||aiLoading)return;
+    const nextMessages=[...messages,{role:"user",text:clean}];
+    setMessages(nextMessages);
     setQuestion("");
+    setAiLoading(true);
+    try{
+      const response=await fetch("/api/ai-chat",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({messages:nextMessages,data,mode:"chat"})
+      });
+      const json=await response.json();
+      if(!response.ok) throw new Error(json.error||"Não foi possível consultar a IA.");
+      setMessages(prev=>[...prev,{role:"assistant",text:json.answer}]);
+    }catch(error){
+      setMessages(prev=>[...prev,{role:"assistant",text:"Não consegui consultar a IA agora. "+error.message}]);
+    }finally{
+      setAiLoading(false);
+    }
   }
 
-  function generate(){
+  async function generate(){
     const clean=context.trim();
     if(!clean){
       setResult("Digite o contexto da cobrança para gerar a mensagem.");
       return;
     }
-    const intros={
-      Profissional:"Olá, tudo bem?",
-      Amigável:"Oi! Tudo bem?",
-      Direto:"Olá!",
-      Informal:"Oi! Tudo certo?"
-    };
-    const intro=intros[tone]||intros.Amigável;
-    const message=tone==="Direto"
-      ? `${intro}\n\nPassando para lembrar sobre ${clean}. Quando puder, consegue verificar?\n\nObrigado!`
-      : `${intro}\n\nPassando para lembrar sobre ${clean}. Quando puder, consegue verificar? Se precisar de alguma coisa, estou à disposição.\n\nObrigado!`;
-    setResult(message);
+    setAiLoading(true);
+    try{
+      const response=await fetch("/api/ai-chat",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({data,mode:"message",tone,context:clean})
+      });
+      const json=await response.json();
+      if(!response.ok) throw new Error(json.error||"Não foi possível gerar a mensagem.");
+      setResult(json.answer);
+    }catch(error){
+      setResult("Não consegui gerar a mensagem agora. "+error.message);
+    }finally{
+      setAiLoading(false);
+    }
   }
 
   const suggestions=["Quanto tenho para receber?","Quem está atrasado?","Quanto recebi?","Quem eu preciso cobrar hoje?"];
@@ -691,8 +664,8 @@ function AIPage(){
           {messages.map((m,i)=><div className={`ai-message ${m.role}`} key={i}><span>{m.role==="assistant"?"IA":"Você"}</span><p>{m.text}</p></div>)}
         </div>
         <form className="ai-chat-input" onSubmit={e=>{e.preventDefault();ask()}}>
-          <input value={question} onChange={e=>setQuestion(e.target.value)} placeholder={loading?"Carregando seus dados...":"Ex.: quanto tenho para receber?"} disabled={loading}/>
-          <Button type="submit" disabled={loading||!question.trim()}><ArrowRight size={16}/></Button>
+          <input value={question} onChange={e=>setQuestion(e.target.value)} placeholder={loading?"Carregando seus dados...":aiLoading?"Pensando...":"Ex.: quanto tenho para receber?"} disabled={loading||aiLoading}/>
+          <Button type="submit" disabled={loading||aiLoading||!question.trim()}><ArrowRight size={16}/></Button>
         </form>
       </div>
 
@@ -700,7 +673,7 @@ function AIPage(){
         <div className="panel-head"><div><span className="panel-kicker">MENSAGEM</span><h2>Preparar cobrança</h2><p>Crie uma mensagem pronta para enviar.</p></div></div>
         <label className="field"><span>Tom</span><select value={tone} onChange={e=>setTone(e.target.value)}>{["Profissional","Amigável","Direto","Informal"].map(x=><option key={x}>{x}</option>)}</select></label>
         <label className="field"><span>Contexto</span><textarea rows="4" value={context} onChange={e=>setContext(e.target.value)} placeholder="Ex.: mensalidade de R$350 vence hoje"/></label>
-        <Button onClick={generate}><Sparkles size={16}/> Gerar mensagem</Button>
+        <Button onClick={generate} disabled={aiLoading}><Sparkles size={16}/> {aiLoading?"Gerando...":"Gerar mensagem"}</Button>
         {result?<><div className="generated">{result}</div><div className="modal-actions"><Button variant="secondary" onClick={generate}>Gerar outra</Button><Button onClick={()=>navigator.clipboard?.writeText(result)}>Copiar</Button></div></>:<div className="empty small"><Sparkles size={22}/><b>Sua mensagem aparecerá aqui.</b></div>}
       </div>
     </div>
