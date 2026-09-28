@@ -68,11 +68,46 @@ function continuePendingCheckout(userId) {
 
 function SessionRedirect({session}) {
   const nav = useNavigate();
+  const [checking, setChecking] = useState(true);
+
   useEffect(() => {
-    if (continuePendingCheckout(session?.user?.id)) return;
-    nav("/onboarding", {replace:true});
+    let active = true;
+
+    async function redirect() {
+      if (continuePendingCheckout(session?.user?.id)) return;
+
+      // Usuário já autenticado não deve voltar para o onboarding toda vez
+      // que abrir /login. Só novos usuários sem empresa precisam configurar o negócio.
+      if (!supabase || !session?.user?.id) {
+        if (active) nav("/login", {replace:true});
+        return;
+      }
+
+      const {data: profile, error} = await supabase
+        .from("profiles")
+        .select("company_id")
+        .eq("id", session.user.id)
+        .maybeSingle();
+
+      if (!active) return;
+
+      if (!error && profile?.company_id) {
+        nav("/app", {replace:true});
+      } else {
+        nav("/onboarding", {replace:true});
+      }
+    }
+
+    redirect().finally(() => {
+      if (active) setChecking(false);
+    });
+
+    return () => {
+      active = false;
+    };
   }, [session, nav]);
-  return <div className="screen-center">Continuando...</div>;
+
+  return <div className="screen-center">{checking ? "Entrando..." : "Continuando..."}</div>;
 }
 
 function Landing({session}) {
