@@ -1269,3 +1269,105 @@ html[data-theme="dark"] table th,
 html[data-theme="dark"] table td{
   border-bottom-color:#2b2c35;
 }
+
+/* Linhas de estrutura — separação visual leve e consistente */
+.dashboard-page .panel,
+.dashboard-page .metric,
+.dashboard-page .quick-actions-premium,
+.dashboard-page .dashboard-client-count,
+.feature-card,
+.step,
+.price-card,
+.preview-cards>div,
+.preview-list,
+.auth-card,
+.onboard-card,
+.table-panel,
+.settings-panel,
+.connection,
+.plan-box,
+.report-card{
+  border:1px solid #e1e1e8;
+}
+
+.dashboard-page .panel-head{
+  padding-bottom:14px;
+  border-bottom:1px solid #ededf1;
+  margin-bottom:14px;
+}
+
+.dashboard-page .cash-summary{
+  border-bottom:1px solid #e1e1e8;
+}
+
+.dashboard-page .cash-summary div + div{
+  border-left:1px solid #e1e1e8;
+}
+
+.dashboard-page .charge-row,
+.dashboard-page .attention-item{
+  border-bottom:1px solid #ededf1;
+}
+
+.dashboard-page .charge-row:last-child,
+.dashboard-page .attention-item:last-child{
+  border-bottom:0;
+}
+
+.dashboard-page .quick-actions-premium a + a{
+  border-top:1px solid #ededf1;
+}
+
+.feature-grid .feature-card + .feature-card,
+.steps .step + .step{
+  border-left-color:#e1e1e8;
+}
+
+.price-card .price-benefits-title{
+  padding-top:14px;
+  border-top:1px solid #ededf1;
+}
+
+.price-card .price-actions{
+  padding-top:14px;
+  border-top:1px solid #ededf1;
+}
+
+@media(max-width:900px){
+  .dashboard-page .panel-head{
+    padding-bottom:12px;
+  }
+  .feature-grid .feature-card + .feature-card,
+  .steps .step + .step{
+    border-left-color:#e1e1e8;
+  }
+}
+
+html[data-theme="dark"] .dashboard-page .panel,
+html[data-theme="dark"] .dashboard-page .metric,
+html[data-theme="dark"] .dashboard-page .quick-actions-premium,
+html[data-theme="dark"] .dashboard-page .dashboard-client-count,
+html[data-theme="dark"] .feature-card,
+html[data-theme="dark"] .step,
+html[data-theme="dark"] .price-card,
+html[data-theme="dark"] .preview-cards>div,
+html[data-theme="dark"] .preview-list,
+html[data-theme="dark"] .auth-card,
+html[data-theme="dark"] .onboard-card,
+html[data-theme="dark"] .table-panel,
+html[data-theme="dark"] .settings-panel,
+html[data-theme="dark"] .connection,
+html[data-theme="dark"] .plan-box,
+html[data-theme="dark"] .report-card{
+  border-color:#30313b;
+}
+
+html[data-theme="dark"] .dashboard-page .panel-head,
+html[data-theme="dark"] .dashboard-page .cash-summary,
+html[data-theme="dark"] .dashboard-page .charge-row,
+html[data-theme="dark"] .dashboard-page .attention-item,
+html[data-theme="dark"] .dashboard-page .quick-actions-premium a + a,
+html[data-theme="dark"] .price-card .price-benefits-title,
+html[data-theme="dark"] .price-card .price-actions{
+  border-color:#2b2c35;
+}
