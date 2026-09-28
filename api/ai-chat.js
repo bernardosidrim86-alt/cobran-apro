@@ -5,12 +5,45 @@ export default async function handler(req,res){
   if(!key) return res.status(503).json({error:"Assistente IA não configurado. Adicione GROQ_API_KEY na Vercel."});
 
   try{
-    const {messages=[],data={},mode="chat",tone="Amigável",context=""}=req.body||{};
+    const {messages=[],mode="chat",tone="Amigável",context=""}=req.body||{};
+    const authHeader=req.headers.authorization||"";
+    const accessToken=authHeader.startsWith("Bearer ")?authHeader.slice(7).trim():"";
+    if(!accessToken) return res.status(401).json({error:"Você precisa estar logado para usar o Assistente IA."});
+
+    const supabaseUrl="https://vfywuuazvdkvttbwpjht.supabase.co";
+    const supabaseKey="sb_publishable_fHvAxyMhqBwriqUJgAUVNw_hI95QEt8";
+    const sbHeaders={apikey:supabaseKey,Authorization:"Bearer "+accessToken};
+
+    const authResponse=await fetch(supabaseUrl+"/auth/v1/user",{headers:sbHeaders});
+    const authUser=await authResponse.json().catch(()=>null);
+    if(!authResponse.ok||!authUser?.id) return res.status(401).json({error:"Sessão inválida. Faça login novamente."});
+
+    const profileResponse=await fetch(supabaseUrl+"/rest/v1/profiles?id=eq."+encodeURIComponent(authUser.id)+"&select=plan&limit=1",{headers:sbHeaders});
+    const profileRows=await profileResponse.json().catch(()=>[]);
+    if(!profileResponse.ok) return res.status(403).json({error:"Não foi possível validar seu plano."});
+    const plan=profileRows?.[0]?.plan||"free";
+    if(plan!=="profissional"&&plan!=="business") return res.status(403).json({error:"O Assistente IA está disponível a partir do plano Profissional."});
+
     const question=Array.isArray(messages)?String(messages[messages.length-1]?.text||messages[messages.length-1]?.content||"").toLowerCase():"";
 
-    const customers=Array.isArray(data.customers)?data.customers:[];
-    const charges=Array.isArray(data.charges)?data.charges:[];
-    const payments=Array.isArray(data.payments)?data.payments:[];
+    const fetchTable=async (table,select,order,limit=1000)=>{
+      const url=new URL(supabaseUrl+"/rest/v1/"+table);
+      url.searchParams.set("select",select);
+      if(order) url.searchParams.set("order",order);
+      url.searchParams.set("limit",String(limit));
+      const response=await fetch(url,{headers:sbHeaders});
+      const rows=await response.json().catch(()=>[]);
+      if(!response.ok) throw new Error("Não foi possível carregar os dados financeiros.");
+      return Array.isArray(rows)?rows:[];
+    };
+
+    // Os dados vêm do Supabase usando o JWT do usuário. Assim o RLS aplica
+    // automaticamente o isolamento da empresa e o navegador não controla o contexto enviado à IA.
+    const [customers,charges,payments]=await Promise.all([
+      fetchTable("customers","id,name","name.asc"),
+      fetchTable("charges","id,customer_id,description,amount,due_date,status,customers(name)","due_date.asc"),
+      fetchTable("payments","id,customer_id,amount,paid_at,payment_method,customers(name)","paid_at.desc")
+    ]);
 
     const today=new Date().toISOString().slice(0,10);
     const money=n=>Number(n||0);
