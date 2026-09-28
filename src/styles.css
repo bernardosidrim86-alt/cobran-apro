@@ -1634,3 +1634,6 @@ tbody tr:last-child td{border-bottom:0}
 .ai-result{min-height:560px}
 .ai-result .generated{margin-top:16px;white-space:pre-wrap}
 @media(max-width:900px){.ai-layout{grid-template-columns:1fr!important}.ai-chat-panel,.ai-result{min-height:0}.ai-chat-messages{max-height:none}}
+
+/* IA premium bloqueada */
+.nav-lock{margin-left:auto;opacity:.65}.ai-locked-panel{min-height:500px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:44px 24px}.ai-locked-icon{width:58px;height:58px;border-radius:16px;background:#f0f1ff;color:#5b5ce2;display:grid;place-items:center;margin-bottom:15px}.ai-locked-panel .panel-kicker{margin-bottom:7px}.ai-locked-panel h2{font-size:22px;margin:0 0 8px;letter-spacing:-.03em}.ai-locked-panel p{max-width:430px;margin:0 0 8px;font-size:11px;line-height:1.6;color:#777}.ai-locked-panel small{font-size:10px;color:#999;margin-bottom:18px}.ai-locked-panel .btn{min-width:130px;justify-content:center}.ai-locked-features{display:grid;gap:8px;margin-top:24px;text-align:left}.ai-locked-features span{display:flex;align-items:center;gap:7px;font-size:10px;color:#777}.ai-locked-features svg{color:#5b5ce2}
