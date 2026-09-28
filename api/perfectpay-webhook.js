@@ -166,15 +166,31 @@ export default async function handler(req, res) {
     }
 
     // Backward-compatible fallback for purchases without the account identifier.
+    // Search all Auth pages instead of only the first 1,000 users.
     if (!user && email) {
-      const { data: usersData, error: usersError } =
-        await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+      const perPage = 1000;
+      let page = 1;
 
-      if (usersError) throw usersError;
+      while (!user) {
+        const { data: usersData, error: usersError } =
+          await supabaseAdmin.auth.admin.listUsers({ page, perPage });
 
-      user = usersData.users.find(
-        (item) => String(item.email || "").toLowerCase() === email
-      );
+        if (usersError) throw usersError;
+
+        user = usersData.users.find(
+          (item) => String(item.email || "").toLowerCase() === email
+        );
+
+        if (
+          user ||
+          usersData.users.length < perPage ||
+          page >= 100
+        ) {
+          break;
+        }
+
+        page += 1;
+      }
     }
 
     if (!user) {
