@@ -1371,3 +1371,72 @@ html[data-theme="dark"] .price-card .price-benefits-title,
 html[data-theme="dark"] .price-card .price-actions{
   border-color:#2b2c35;
 }
+
+/* Recebimentos — linhas de organização */
+.payments-page .payments-metrics .metric{
+  position:relative;
+}
+.payments-page .payments-metrics .metric + .metric::before{
+  content:"";
+  position:absolute;
+  left:-7px;
+  top:18px;
+  bottom:18px;
+  width:1px;
+  background:#e4e4ea;
+}
+.payments-table-panel{
+  padding-top:0;
+}
+.payments-table-head{
+  min-height:62px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  border-bottom:1px solid #e3e3e9;
+}
+.payments-table-head div{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.payments-table-head span{
+  font-size:8px;
+  font-weight:700;
+  letter-spacing:.08em;
+  color:#999;
+}
+.payments-table-head b{
+  font-size:12px;
+}
+.payments-table-head small{
+  font-size:9px;
+  color:#999;
+}
+.payments-table{
+  margin-top:0;
+}
+.payments-table th,
+.payments-table td{
+  border-bottom:1px solid #ededf1;
+}
+.payments-table th + th,
+.payments-table td + td{
+  border-left:1px solid #f0f0f3;
+}
+.payments-table tbody tr:hover{
+  background:#fafaff;
+}
+@media(max-width:700px){
+  .payments-page .payments-metrics .metric + .metric::before{
+    display:none;
+  }
+  .payments-table-head{
+    min-height:56px;
+  }
+  .payments-table th + th,
+  .payments-table td + td{
+    border-left:0;
+  }
+}
