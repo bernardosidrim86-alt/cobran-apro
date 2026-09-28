@@ -1609,3 +1609,28 @@ tbody tr:last-child td{border-bottom:0}
 .dashboard-page .dashboard-client-count{margin-top:12px}
 @media(max-width:900px){.dashboard-page .dashboard-hero{align-items:flex-start}.dashboard-page .dashboard-main-grid,.dashboard-page .dashboard-bottom-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.dashboard-page .dashboard-hero{display:block}.dashboard-page .dashboard-hero-actions{margin-top:16px}.dashboard-page .dashboard-hero-actions .btn{width:100%;justify-content:center}.dashboard-page .dashboard-overview-panel,.dashboard-page .attention-panel{min-height:0}}
+
+
+/* Assistente IA — chat + contexto financeiro */
+.ai-layout{grid-template-columns:minmax(0,1.25fr) minmax(340px,.9fr)!important;gap:14px!important}
+.ai-chat-panel{display:flex;flex-direction:column;min-height:560px}
+.ai-chat-messages{flex:1;min-height:330px;max-height:430px;overflow:auto;padding:4px 2px 14px}
+.ai-chat-empty{min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;color:#777;gap:7px}
+.ai-chat-empty>b{font-size:14px;color:#24252a}
+.ai-chat-empty>span{max-width:360px;font-size:10px;line-height:1.6;color:#999}
+.ai-chat-icon{width:44px;height:44px;border-radius:12px;background:#f0f1ff;color:#5b5ce2;display:grid;place-items:center;margin-bottom:5px}
+.ai-suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:15px;max-width:440px}
+.ai-suggestions button{border:1px solid #e1e1e8;background:#fff;border-radius:9px;padding:8px 10px;color:#666;font-size:10px}
+.ai-suggestions button:hover{background:#f7f7ff;color:#5051d6;border-color:#d8d8ef}
+.ai-message{max-width:82%;margin:8px 0;padding:10px 12px;border-radius:11px;border:1px solid #e5e5eb;background:#fafafd}
+.ai-message span{display:block;font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#999;margin-bottom:4px}
+.ai-message p{margin:0;font-size:11px;line-height:1.55;white-space:pre-wrap;color:#303139}
+.ai-message.user{margin-left:auto;background:#f0f1ff;border-color:#dedfff}
+.ai-message.user span{color:#5556cf}
+.ai-chat-input{display:flex;gap:7px;border-top:1px solid #ededf1;padding-top:14px}
+.ai-chat-input input{flex:1;min-width:0;height:40px;border:1px solid #e1e1e7;border-radius:9px;padding:0 12px;outline:none;font-size:11px;background:#fff}
+.ai-chat-input input:focus{border-color:#bfc0ee;box-shadow:0 0 0 3px #5b5ce20d}
+.ai-chat-input .btn{width:40px;padding:0;justify-content:center}
+.ai-result{min-height:560px}
+.ai-result .generated{margin-top:16px;white-space:pre-wrap}
+@media(max-width:900px){.ai-layout{grid-template-columns:1fr!important}.ai-chat-panel,.ai-result{min-height:0}.ai-chat-messages{max-height:none}}
