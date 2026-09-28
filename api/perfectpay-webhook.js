@@ -136,6 +136,11 @@ export default async function handler(req, res) {
 
     const approved = [2, 8, 10].includes(status);
     const revoked = [5, 6, 7, 9, 13].includes(status);
+    const saleCode = String(payload?.code || "").trim();
+
+    if (!saleCode) {
+      return res.status(400).json({ ok: false, error: "missing_sale_code" });
+    }
 
     if (!approved && !revoked) {
       return res.status(200).json({ ok: true, ignored: true, status });
@@ -181,7 +186,32 @@ export default async function handler(req, res) {
       });
     }
 
+    const { data: currentProfile, error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .select("plan, subscription_status, subscription_expires_at")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (profileError) throw profileError;
+
     if (revoked) {
+      // Never revoke a newer/different paid plan because an old Perfect Pay
+      // transaction changed state later.
+      const incomingPlan = detectPlan(payload);
+
+      if (
+        incomingPlan &&
+        currentProfile?.plan &&
+        currentProfile.plan !== "free" &&
+        currentProfile.plan !== incomingPlan.key
+      ) {
+        return res.status(200).json({
+          ok: true,
+          ignored: true,
+          reason: "revocation_for_different_plan",
+        });
+      }
+
       const { error } = await supabaseAdmin
         .from("profiles")
         .update({
@@ -209,9 +239,54 @@ export default async function handler(req, res) {
       });
     }
 
+    const planRank = {
+      free: 0,
+      essencial: 1,
+      profissional: 2,
+      business: 3,
+    };
+
+    const currentPlanKey = String(currentProfile?.plan || "free");
+    const currentExpiresAt = currentProfile?.subscription_expires_at
+      ? new Date(currentProfile.subscription_expires_at)
+      : null;
+    const currentIsActive =
+      currentProfile?.subscription_status === "active" &&
+      currentExpiresAt &&
+      currentExpiresAt > new Date();
+
+    // An older webhook for a cheaper plan must not downgrade an active
+    // subscription purchased later.
+    if (
+      currentIsActive &&
+      (planRank[plan.key] ?? 0) < (planRank[currentPlanKey] ?? 0)
+    ) {
+      return res.status(200).json({
+        ok: true,
+        ignored: true,
+        reason: "older_lower_plan",
+      });
+    }
+
+    // Perfect Pay can send both "approved" and "completed" for the same sale.
+    // Once an active subscription exists, a later "completed" event must not
+    // grant another billing period.
+    if (status === 10 && currentIsActive) {
+      return res.status(200).json({
+        ok: true,
+        ignored: true,
+        reason: "completed_already_active",
+      });
+    }
+
     const now = new Date();
+    const baseDate =
+      currentIsActive && currentPlanKey === plan.key && currentExpiresAt
+        ? currentExpiresAt
+        : now;
+
     const expiresAt = addDays(
-      now,
+      baseDate,
       plan.cycle === "annual" ? plan.daysAnnual : plan.daysMonthly
     );
 
