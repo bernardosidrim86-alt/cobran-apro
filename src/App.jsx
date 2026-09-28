@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, Link, useLocation, useNavigate } from "react-r
 import {
   ArrowRight, Bell, Check, ChevronRight, CircleDollarSign, CreditCard,
   LayoutDashboard, LogOut, Menu, MessageCircle, Plus, Receipt, Settings,
-  Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal
+  Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal, Lock
 } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import { PLAN_OPTIONS } from "./lib/plans";
@@ -651,10 +651,11 @@ function AIPage({locked=false,currentPlan="free"}){
   }
 
   const suggestions=["Quanto tenho para receber?","Quem está atrasado?","Quanto recebi?","Quem eu preciso cobrar hoje?"];
+  const planLabel=currentPlan==="essencial"?"Essencial":"Teste grátis";
 
   return <>
     <PageTitle title="Assistente IA" subtitle="Pergunte sobre seu negócio e prepare mensagens de cobrança."/>
-    <div className="ai-layout">
+    {locked ? <div className="panel ai-locked-panel"><div className="ai-locked-icon"><Lock size={24}/></div><span className="panel-kicker">RECURSO PREMIUM</span><h2>Assistente IA</h2><p>O Assistente IA está disponível a partir do plano Profissional.</p><small>Seu plano atual: <b>{planLabel}</b></small><a href="/#precos" className="btn btn-primary">Ver planos</a><div className="ai-locked-features"><span><Check size={14}/> Análise das suas cobranças</span><span><Check size={14}/> Respostas sobre recebimentos</span><span><Check size={14}/> Mensagens de cobrança com IA</span></div></div> : <div className="ai-layout">
       <div className="panel ai-chat-panel">
         <div className="panel-head">
           <div><span className="panel-kicker">ASSISTENTE</span><h2>Converse com seus dados</h2><p>Pergunte sobre clientes, cobranças e recebimentos.</p></div>
@@ -677,7 +678,7 @@ function AIPage({locked=false,currentPlan="free"}){
         <Button onClick={generate} disabled={aiLoading}><Sparkles size={16}/> {aiLoading?"Gerando...":"Gerar mensagem"}</Button>
         {result?<><div className="generated">{result}</div><div className="modal-actions"><Button variant="secondary" onClick={generate}>Gerar outra</Button><Button onClick={()=>navigator.clipboard?.writeText(result)}>Copiar</Button></div></>:<div className="empty small"><Sparkles size={22}/><b>Sua mensagem aparecerá aqui.</b></div>}
       </div>
-    </div>
+    </div>}
   </>;
 }
 function SettingsPage({canUseAI=false}){const [tab,setTab]=useState("empresa");const [profile,setProfile]=useState(null);useEffect(()=>{supabase?.auth.getUser().then(async({data})=>{if(!data.user)return;const {data:p}=await supabase.from("profiles").select("plan,billing_cycle,subscription_status,subscription_expires_at").eq("id",data.user.id).single();setProfile(p||null);});},[]);return <><PageTitle title="Configurações" subtitle="Personalize o CobrançaPro para sua empresa."/><div className="settings-layout"><div className="settings-nav">{[["empresa","Empresa"],["whatsapp","WhatsApp"],...(canUseAI?[["ia","IA"]]:[]),["plano","Plano"]].map(([x,l])=><button className={tab===x?"active":""} onClick={()=>setTab(x)} key={x}>{l}</button>)}</div><div className="panel settings-panel">{tab==="empresa"&&<><h2>Empresa</h2><p>Dados básicos do seu negócio.</p><div className="form-grid"><Input label="Nome da empresa" placeholder="Minha empresa"/><Input label="Telefone" placeholder="(24) 99999-9999"/><Input label="Segmento" placeholder="Ex.: clínica"/></div><Button>Salvar alterações</Button></>}{tab==="whatsapp"&&<><h2>WhatsApp</h2><p>Prepare o canal para uma futura integração oficial.</p><div className="connection"><div><span className="status-dot"></span><b>Não conectado</b><small>Você poderá conectar o WhatsApp Business aqui.</small></div><Button>Conectar WhatsApp</Button></div></>}{tab==="ia"&&<><h2>Assistente IA</h2><p>Defina como o assistente deve escrever.</p><label className="field"><span>Nome do assistente</span><input defaultValue="Assistente CobrançaPro"/></label><label className="field"><span>Instruções</span><textarea rows="5" placeholder="Seja objetivo, educado e nunca invente valores."/></label><Button>Salvar</Button></>}{tab==="plano"&&<><h2>Plano</h2><p>Confira seu período de teste e sua assinatura atual.</p><div className="plan-box"><b>{profile?.plan==="free"||!profile?.plan?"Teste grátis":profile.plan.charAt(0).toUpperCase()+profile.plan.slice(1)}</b><strong>{profile?.plan==="essencial"?"R$49,90":profile?.plan==="profissional"?"R$99,90":profile?.plan==="business"?"R$199,90":"7 dias"}</strong><span>Status: {profile?.subscription_status||"inactive"}{profile?.billing_cycle?(" · "+(profile.billing_cycle==="annual"?"Anual":"Mensal")):""}</span><a href="/#precos" className="btn btn-primary">Ver planos</a></div></>}</div></div></>}
