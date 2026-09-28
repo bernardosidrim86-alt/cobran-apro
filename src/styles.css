@@ -1178,10 +1178,10 @@ body{background:#fcfcfe}
 }
 
 /* Divisores sutis para deixar os blocos financeiros mais bem definidos */
-.dashboard-metrics .metric{border:2px solid #aeb1c0!important;background:#fff;box-shadow:0 3px 14px rgba(20,20,40,.08)}
-.dashboard-metrics .metric + .metric{box-shadow:inset 1px 0 0 #c8cad5,0 3px 14px rgba(20,20,40,.08)}
-.cash-summary{padding:0 0 18px;border-bottom:2px solid #b9bbc7}
+.dashboard-metrics .metric{border:1px solid #c9cad5!important;background:#fff;box-shadow:0 2px 10px rgba(20,20,40,.05)}
+.dashboard-metrics .metric + .metric{box-shadow:inset 1px 0 0 #dedee5,0 2px 10px rgba(20,20,40,.05)}
+.cash-summary{padding:0 0 18px;border-bottom:1px solid #d0d1da}
 .cash-summary div{padding:8px 0}
-.cash-summary div + div{border-left:2px solid #b9bbc7;padding-left:48px}
-@media(max-width:900px){.dashboard-metrics .metric{border-color:#aeb1c0!important}.cash-summary div + div{padding-left:28px}}
+.cash-summary div + div{border-left:1px solid #d0d1da;padding-left:48px}
+@media(max-width:900px){.dashboard-metrics .metric{border-color:#c9cad5!important}.cash-summary div + div{padding-left:28px}}
 @media(max-width:600px){.cash-summary div + div{padding-left:20px}}
