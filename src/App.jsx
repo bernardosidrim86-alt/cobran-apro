@@ -378,7 +378,7 @@ function Dashboard({session}) {
     return()=>{active=false};
   },[companyId]);
 
-  const firstName=(session?.user?.user_metadata?.full_name||"").trim().split(/\s+/)[0]||"";
+  const firstName=(session?.user?.user_metadata?.full_name||"").trim().split(/\\s+/)[0]||"";
   const title=firstName ? "Olá, "+firstName : "Dashboard";
   const attention=data.overdue+data.today;
   const progress=data.receive>0 ? Math.min(100,Math.round((data.paid/(data.paid+data.receive))*100)) : 0;
@@ -388,10 +388,9 @@ function Dashboard({session}) {
       <div>
         <span className="eyebrow">VISÃO GERAL</span>
         <h1>{title}</h1>
-        <p>Acompanhe seu dinheiro e o que precisa da sua atenção hoje.</p>
+        <p>Acompanhe o que entrou, o que falta receber e o que precisa de atenção.</p>
       </div>
       <div className="dashboard-hero-actions">
-        <Link to="/app/relatorios" className="btn btn-secondary"><Receipt size={16}/> Ver relatórios</Link>
         <Link to="/app/cobrancas" className="btn btn-primary"><Plus size={16}/> Nova cobrança</Link>
       </div>
     </div>
@@ -406,46 +405,43 @@ function Dashboard({session}) {
     <div className="dashboard-main-grid">
       <div className="panel dashboard-overview-panel">
         <div className="panel-head">
-          <div><span className="panel-kicker">FLUXO FINANCEIRO</span><h2>Visão do caixa</h2><p>Resumo do que entrou e do que ainda está pendente.</p></div>
-          <span className="dashboard-percent">{progress}% recebido</span>
+          <div><span className="panel-kicker">RESUMO</span><h2>Seu caixa</h2><p>Quanto você já recebeu e quanto ainda está em aberto.</p></div>
         </div>
         <div className="cash-summary">
           <div><span>Já recebido</span><strong>{money(data.paid)}</strong></div>
           <div><span>A receber</span><strong>{money(data.receive)}</strong></div>
         </div>
+        <div className="dashboard-progress-row"><span>Recebimento do total</span><b>{progress}%</b></div>
         <div className="progress-track"><div style={{width:progress+"%"}}/></div>
-        <div className="mini-bars" aria-label="Resumo semanal">
-          {[42,58,48,72,64,82,68].map((height,i)=><div className="mini-bar-wrap" key={i}><div className="mini-bar" style={{height:height+"%"}}/><span>{["S","T","Q","Q","S","S","D"][i]}</span></div>)}
-        </div>
       </div>
 
       <div className="panel attention-panel">
         <div className="panel-head">
-          <div><span className="panel-kicker">ATENÇÃO</span><h2>O que fazer agora</h2><p>Prioridades da sua operação.</p></div>
+          <div><span className="panel-kicker">ATENÇÃO</span><h2>Precisa de ação</h2><p>Prioridades para hoje.</p></div>
         </div>
         <div className="attention-value">{money(attention)}</div>
-        <span className="attention-label">em cobranças que precisam de ação</span>
+        <span className="attention-label">em cobranças para acompanhar</span>
         <div className="attention-list">
-          <Link to="/app/cobrancas" className="attention-item"><span className="attention-dot danger"/><div><b>{money(data.overdue)}</b><small>em atraso</small></div><ArrowRight size={16}/></Link>
-          <Link to="/app/cobrancas" className="attention-item"><span className="attention-dot warning"/><div><b>{money(data.today)}</b><small>vencendo hoje</small></div><ArrowRight size={16}/></Link>
+          <Link to="/app/cobrancas?filter=overdue" className="attention-item"><span className="attention-dot danger"/><div><b>{money(data.overdue)}</b><small>em atraso</small></div><ArrowRight size={16}/></Link>
+          <Link to="/app/cobrancas?filter=today" className="attention-item"><span className="attention-dot warning"/><div><b>{money(data.today)}</b><small>vencendo hoje</small></div><ArrowRight size={16}/></Link>
         </div>
       </div>
     </div>
 
     <div className="dashboard-bottom-grid">
       <div className="panel">
-        <div className="panel-head"><div><span className="panel-kicker">COBRANÇAS</span><h2>Próximas cobranças</h2><p>Veja rapidamente quem precisa ser lembrado.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
+        <div className="panel-head"><div><span className="panel-kicker">PRÓXIMAS</span><h2>Cobranças</h2><p>As cobranças mais próximas do vencimento.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
         {data.charges.length===0 ? <Empty text="Você ainda não possui cobranças."/> : <div className="charge-list">{data.charges.slice(0,6).map(c=><div className="charge-row" key={c.id}><div className="charge-person"><span className="person-avatar">{(c.customers?.name||"C").slice(0,1).toUpperCase()}</span><div><b>{c.customers?.name||"Cliente"}</b><span>{c.description||"Cobrança"}</span></div></div><strong>{money(c.amount)}</strong><span className={`charge-status ${c.status==="paid"?"paid":c.due_date<todayISO()?"overdue":c.due_date===todayISO()?"today":"pending"}`}><i></i>{c.status==="paid"?"Pago":c.due_date<todayISO()?"Atrasado":c.due_date===todayISO()?"Vence hoje":"A receber"}</span></div>)}</div>}
       </div>
 
       <div className="panel quick-panel">
-        <div className="panel-head"><div><span className="panel-kicker">ATALHOS</span><h2>Ações rápidas</h2><p>Resolva tarefas sem perder tempo.</p></div></div>
+        <div className="panel-head"><div><span className="panel-kicker">ATALHOS</span><h2>O que você quer fazer?</h2><p>Acesse as tarefas mais usadas.</p></div></div>
         <div className="quick-actions quick-actions-premium">
-          <Link to="/app/clientes"><span><Users size={18}/></span><div><b>Novo cliente</b><small>Adicionar cadastro</small></div><ArrowRight size={16}/></Link>
-          <Link to="/app/cobrancas"><span><CircleDollarSign size={18}/></span><div><b>Nova cobrança</b><small>Criar e enviar</small></div><ArrowRight size={16}/></Link>
-          <Link to="/app/ia"><span><Sparkles size={18}/></span><div><b>Mensagem com IA</b><small>Gerar cobrança</small></div><ArrowRight size={16}/></Link>
+          <Link to="/app/clientes"><span><Users size={18}/></span><div><b>Novo cliente</b><small>Cadastrar cliente</small></div><ArrowRight size={16}/></Link>
+          <Link to="/app/cobrancas"><span><CircleDollarSign size={18}/></span><div><b>Nova cobrança</b><small>Criar uma cobrança</small></div><ArrowRight size={16}/></Link>
+          <Link to="/app/ia"><span><Sparkles size={18}/></span><div><b>Mensagem com IA</b><small>Preparar uma cobrança</small></div><ArrowRight size={16}/></Link>
         </div>
-        <div className="dashboard-client-count"><div><span>Clientes cadastrados</span><small>Base atual</small></div><strong>{data.customers}</strong></div>
+        <div className="dashboard-client-count"><div><span>Clientes cadastrados</span><small>Total da sua base</small></div><strong>{data.customers}</strong></div>
       </div>
     </div>
   </div>;
