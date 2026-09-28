@@ -167,9 +167,8 @@ function Price({plan, featured, session}) {
     }
 
     // Toda compra paga precisa estar vinculada a uma conta do CobrançaPro.
-    // Guardamos o checkout localmente para sobreviver ao login/cadastro e à confirmação de e-mail.
-    localStorage.setItem("pendingPerfectPayCheckout", checkoutUrl.toString());
-    window.location.href = "/cadastro";
+    // Leva o checkout diretamente para a tela de cadastro e preserva o plano na URL.
+    window.location.href = `/cadastro?checkout=${encodeURIComponent(checkoutUrl.toString())}`;
   }
   return <div className={`price-card ${featured?"featured":""} ${isFree?"free-card":""}`}>
     {featured && <div className="popular">Mais escolhido</div>}
