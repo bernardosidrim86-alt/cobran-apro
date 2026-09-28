@@ -124,13 +124,22 @@ function Price({plan, featured, session}) {
   const isFree = !!plan.free;
   function startCheckout(url) {
     if (!url) return;
+
+    const checkoutUrl = new URL(url);
+    if (checkoutUrl.hostname !== "checkout.perfectpay.com.br") {
+      console.error("Checkout inválido.");
+      return;
+    }
+
     if (session?.user?.id) {
-      const checkoutUrl = new URL(url);
       checkoutUrl.searchParams.set("utm_content", session.user.id);
       window.location.href = checkoutUrl.toString();
       return;
     }
-    window.location.href = url;
+
+    // Toda compra paga precisa estar vinculada a uma conta do CobrançaPro.
+    // Guardamos o checkout na URL para continuar automaticamente após login/cadastro.
+    window.location.href = `/cadastro?checkout=${encodeURIComponent(checkoutUrl.toString())}`;
   }
   return <div className={`price-card ${featured?"featured":""} ${isFree?"free-card":""}`}>
     {featured && <div className="popular">Mais escolhido</div>}
@@ -188,11 +197,29 @@ function Signup() {
   async function submit(e){e.preventDefault();setError("");setBusy(true); if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;}
     const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,company_name:company}}});
     if(error){setError(error.message);setBusy(false);return;}
-    if(data.session){if(!continueToCheckout(data.user?.id)) nav("/onboarding");setBusy(false);return;}
-  if(data.user && Array.isArray(data.user.identities) && data.user.identities.length===0){setError("Este e-mail já possui uma conta. Faça login ou use \"Esqueci minha senha\".");setBusy(false);return;}
-  const {error:loginError,data:loginData}=await supabase.auth.signInWithPassword({email,password});
-  if(loginError) setError(loginError.message==="Invalid login credentials"?"Este e-mail já possui uma conta com outra senha. Faça login ou recupere a senha.":loginError.message);
-  else if(!continueToCheckout(loginData?.user?.id)) nav("/onboarding");
+    if(data.session){
+      if(!continueToCheckout(data.user?.id)) nav("/onboarding");
+      setBusy(false);
+      return;
+    }
+
+    if(data.user && Array.isArray(data.user.identities) && data.user.identities.length===0){
+      setError("Este e-mail já possui uma conta. Faça login ou use \"Esqueci minha senha\".");
+      setBusy(false);
+      return;
+    }
+
+    // Se a confirmação de e-mail estiver ativa no Supabase, não existe sessão ainda.
+    // Mantemos o checkout na URL e orientamos o usuário a confirmar o e-mail e entrar.
+    if(data.user && checkout){
+      setError("Conta criada. Confirme seu e-mail e depois entre na sua conta para continuar o pagamento.");
+      setBusy(false);
+      return;
+    }
+
+    const {error:loginError,data:loginData}=await supabase.auth.signInWithPassword({email,password});
+    if(loginError) setError(loginError.message==="Invalid login credentials"?"Este e-mail já possui uma conta com outra senha. Faça login ou recupere a senha.":loginError.message);
+    else if(!continueToCheckout(loginData?.user?.id)) nav("/onboarding");
     setBusy(false);
   }
   return <AuthLayout title="Crie sua conta" subtitle="Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" minLength="6" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button></form><div className="auth-bottom">Já possui uma conta? <Link to={checkout?`/login?checkout=${encodeURIComponent(checkout)}`:"/login"}>Entrar</Link></div></AuthLayout>
