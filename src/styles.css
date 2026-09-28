@@ -1440,3 +1440,46 @@ html[data-theme="dark"] .price-card .price-actions{
     border-left:0;
   }
 }
+
+/* Recebimentos — cards de resumo */
+.payments-page .payments-metrics{
+  gap:0;
+}
+.payments-page .payments-metrics .metric{
+  position:relative;
+  border:1px solid #dedee6;
+  border-radius:0;
+  box-shadow:none;
+}
+.payments-page .payments-metrics .metric:first-child{
+  border-radius:13px 0 0 13px;
+}
+.payments-page .payments-metrics .metric:last-child{
+  border-radius:0 13px 13px 0;
+}
+.payments-page .payments-metrics .metric + .metric{
+  border-left:0;
+}
+.payments-page .payments-metrics .metric + .metric::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:16px;
+  bottom:16px;
+  width:1px;
+  background:#d9d9e2;
+}
+@media(max-width:900px){
+  .payments-page .payments-metrics{
+    gap:12px;
+  }
+  .payments-page .payments-metrics .metric{
+    border-radius:13px;
+  }
+  .payments-page .payments-metrics .metric + .metric{
+    border-left:1px solid #dedee6;
+  }
+  .payments-page .payments-metrics .metric + .metric::before{
+    display:none;
+  }
+}
