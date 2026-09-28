@@ -55,7 +55,7 @@ function continuePendingCheckout(userId) {
   if (!pending || !userId) return false;
   try {
     const checkoutUrl = new URL(pending);
-    if (checkoutUrl.hostname !== "checkout.perfectpay.com.br") return false;
+    if (!["checkout.perfectpay.com.br","go.perfectpay.com.br"].includes(checkoutUrl.hostname)) return false;
     checkoutUrl.searchParams.set("utm_content", userId);
     localStorage.removeItem("pendingPerfectPayCheckout");
     window.location.href = checkoutUrl.toString();
@@ -155,7 +155,7 @@ function Price({plan, featured, session}) {
     if (!url) return;
 
     const checkoutUrl = new URL(url);
-    if (checkoutUrl.hostname !== "checkout.perfectpay.com.br") {
+    if (!["checkout.perfectpay.com.br","go.perfectpay.com.br"].includes(checkoutUrl.hostname)) {
       console.error("Checkout inválido.");
       return;
     }
