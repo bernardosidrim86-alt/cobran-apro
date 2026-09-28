@@ -1185,3 +1185,87 @@ body{background:#fcfcfe}
 .cash-summary div + div{border-left:1px solid #d0d1da;padding-left:48px}
 @media(max-width:900px){.dashboard-metrics .metric{border-color:#c9cad5!important}.cash-summary div + div{padding-left:28px}}
 @media(max-width:600px){.cash-summary div + div{padding-left:20px}}
+
+/* Divisores sutis — aplicação consistente nos blocos principais */
+.dashboard-page .panel,
+.dashboard-page .quick-actions-premium,
+.dashboard-page .attention-list,
+.dashboard-page .dashboard-mini-stat,
+.dashboard-page .dashboard-client-count,
+.dashboard-page .cash-summary,
+.dashboard-page .dashboard-metrics .metric{
+  border-color:#dfe0e7;
+}
+
+.dashboard-page .panel + .panel{
+  border-top-color:#dfe0e7;
+}
+
+.dashboard-page .charge-list{
+  border-top:1px solid #e1e1e8;
+}
+
+.dashboard-page .charge-row{
+  border-bottom:1px solid #ededf1;
+}
+
+.dashboard-page .attention-item{
+  border-bottom:1px solid #ededf1;
+}
+
+.dashboard-page .attention-item:last-child{
+  border-bottom:0;
+}
+
+.dashboard-page .quick-actions-premium a + a{
+  border-top-color:#ededf1;
+}
+
+.table-panel,
+.settings-panel,
+.connection,
+.plan-box,
+.generated{
+  border-color:#dfe0e7;
+}
+
+table th,
+table td{
+  border-bottom-color:#e9e9ee;
+}
+
+@media(max-width:900px){
+  .dashboard-page .panel,
+  .dashboard-page .quick-actions-premium,
+  .dashboard-page .attention-list,
+  .dashboard-page .dashboard-mini-stat,
+  .dashboard-page .dashboard-client-count,
+  .table-panel,
+  .settings-panel,
+  .connection,
+  .plan-box,
+  .generated{
+    border-color:#e2e2e9;
+  }
+}
+
+html[data-theme="dark"] .dashboard-page .panel,
+html[data-theme="dark"] .dashboard-page .quick-actions-premium,
+html[data-theme="dark"] .dashboard-page .attention-list,
+html[data-theme="dark"] .dashboard-page .dashboard-mini-stat,
+html[data-theme="dark"] .dashboard-page .dashboard-client-count,
+html[data-theme="dark"] .dashboard-page .dashboard-metrics .metric,
+html[data-theme="dark"] .table-panel,
+html[data-theme="dark"] .settings-panel,
+html[data-theme="dark"] .connection,
+html[data-theme="dark"] .plan-box,
+html[data-theme="dark"] .generated{
+  border-color:#30313b;
+}
+
+html[data-theme="dark"] .dashboard-page .charge-row,
+html[data-theme="dark"] .dashboard-page .attention-item,
+html[data-theme="dark"] table th,
+html[data-theme="dark"] table td{
+  border-bottom-color:#2b2c35;
+}
