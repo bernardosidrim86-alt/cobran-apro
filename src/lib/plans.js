@@ -36,6 +36,7 @@ export const PLAN_OPTIONS = [
       "WhatsApp via link",
       "Relatórios financeiros",
       "Controle de recebimentos",
+      "Assistente IA para dúvidas e mensagens",
     ],
     monthlyCheckout: "https://go.perfectpay.com.br/PPU38CQGH3N",
     annualCheckout: "https://go.perfectpay.com.br/PPU38CQGH44",
