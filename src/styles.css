@@ -1069,3 +1069,108 @@ table tbody tr:hover{background:#fafaff}
 @media(prefers-reduced-motion:reduce){
   *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
 }
+
+/* CobrançaPro — visual redesign v2 */
+body{background:#fcfcfe}
+.site-header{height:78px;border-bottom:1px solid rgba(231,231,238,.75);padding-left:max(24px,calc((100vw - 1240px)/2));padding-right:max(24px,calc((100vw - 1240px)/2));box-shadow:0 1px 0 rgba(20,20,40,.02)}
+.site-header .brand-logo{width:180px;height:66px;transform:translateY(9px)}
+.site-header nav{margin-left:42px;gap:32px;font-size:13px}
+.site-header nav a{color:#62636c}
+.header-actions .link-btn{padding:9px 4px;color:#444}
+.hero{width:min(1240px,calc(100% - 48px));min-height:720px;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:70px;padding-top:78px;padding-bottom:100px}
+.hero-copy{position:relative;z-index:2}
+.hero .eyebrow{padding:7px 11px;border:1px solid #e4e4f5;background:#f8f8ff;border-radius:999px;font-size:10px;letter-spacing:.07em}
+.hero h1{font-size:68px;line-height:.98;letter-spacing:-.065em;margin:22px 0 20px;max-width:650px}
+.hero h1 em{background:linear-gradient(100deg,#5b5ce2,#7778ed);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-copy>p{font-size:16px;line-height:1.75;color:#686a74;max-width:520px}
+.hero-actions{margin-top:30px;gap:9px}
+.hero-actions .btn-primary{padding-left:21px;padding-right:21px}
+.trust{margin-top:22px;gap:19px;color:#777984}
+.preview-wrap{perspective:1000px}
+.glow{inset:7% -13% -13%;background:radial-gradient(circle,#7778ed33 0,#5b5ce215 38%,transparent 70%);filter:blur(18px)}
+.preview{padding:22px;border-radius:22px;box-shadow:0 35px 90px rgba(37,37,106,.13),0 2px 8px rgba(20,20,40,.05);border-color:#e4e4ed;transform:rotateY(-2deg) rotateX(1deg)}
+.preview:before{content:"";display:block;width:38px;height:4px;border-radius:99px;background:#e7e7f7;margin:0 auto 18px}
+.preview-top b{font-size:15px}
+.preview-top span{font-size:10px}
+.preview-cards{gap:11px;margin-top:22px}
+.preview-cards>div{padding:15px;border-radius:12px;background:#fdfdff}
+.preview-cards b{font-size:15px}
+.preview-list{padding:17px;border-radius:14px;margin-top:18px}
+.list-title{font-size:12px}
+.preview-row{padding:13px 8px}
+.preview-row b{font-size:11px}
+.section{padding:105px 0}
+.section-heading{max-width:690px;margin-bottom:48px}
+.section-heading h2{font-size:43px;letter-spacing:-.05em}
+.section-heading p{color:#777984;font-size:13px;line-height:1.7}
+.soft{background:#f6f6fa;border-top:1px solid #eeeeF4;border-bottom:1px solid #eeeeF4}
+.steps{gap:0;position:relative}
+.steps:before{content:"";position:absolute;left:8%;right:8%;top:39px;height:1px;background:#dfdfee}
+.step{position:relative;z-index:1;border-radius:18px;padding:25px;background:rgba(255,255,255,.94);min-height:210px;margin:0 7px;box-shadow:0 7px 25px rgba(20,20,40,.035)}
+.step>span{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:#f0f0ff;border:4px solid #fff;font-size:9px}
+.step h3{margin-top:26px;font-size:15px}
+.feature-grid{gap:12px}
+.feature-card{padding:25px;border-radius:17px;min-height:190px}
+.feature-card h3{font-size:15px;margin-top:25px}
+.feature-card p{font-size:12px;line-height:1.7}
+.icon-box{width:42px;height:42px;border-radius:12px;background:#f6f6ff;border-color:#e8e8fa}
+#precos .section-heading h2{max-width:650px;margin-left:auto;margin-right:auto}
+#precos .section-heading p{max-width:520px;margin-left:auto;margin-right:auto}
+.pricing{gap:12px;margin-top:42px}
+.price-card{border-radius:20px;padding:27px 22px 22px;min-height:585px;box-shadow:0 7px 28px rgba(20,20,40,.04)}
+.price-card.featured{box-shadow:0 20px 55px rgba(91,92,226,.14);border-width:1.5px}
+.price-card:hover{transform:translateY(-7px)}
+.price-card h3{font-size:22px}
+.price-card>p{font-size:11.5px}
+.price-card .price{font-size:40px}
+.price-benefits-title{margin-top:21px}
+.price-item{padding:8px 0}
+.price-actions .btn{border-radius:11px}
+.price-card.featured .btn-primary{box-shadow:0 9px 22px rgba(91,92,226,.2)}
+.cta{padding:88px 0;background:linear-gradient(115deg,#5051d5,#696ae8);overflow:hidden}
+.cta:after{content:"";position:absolute;width:620px;height:620px;left:-350px;bottom:-500px;border:1px solid rgba(255,255,255,.12);border-radius:50%}
+.cta h2{font-size:40px}
+.footer{padding:30px 0;background:#fff}
+.auth-page{background:radial-gradient(circle at 50% 10%,#f0f0ff 0,#f8f8fa 35%,#f7f7f9 70%)}
+.auth-card{border-radius:22px;padding:38px;box-shadow:0 25px 80px rgba(20,20,40,.08)}
+.app-layout{background:#f7f7f9}
+.sidebar{width:250px;padding:22px 15px}
+.app-main{margin-left:250px;width:calc(100% - 250px)}
+.app-header{height:68px;padding:0 32px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px)}
+.page{padding:34px;max-width:1380px}
+.page-title h1{font-size:29px}
+.metric-grid{gap:14px}
+.metric{padding:20px;border-radius:16px}
+.metric-icon{width:37px;height:37px;border-radius:11px}
+.metric b{font-size:22px}
+.panel{border-radius:16px;padding:21px}
+@media(max-width:1050px){
+.hero{grid-template-columns:1fr;gap:50px;padding-top:55px}
+.hero h1{font-size:57px}
+.preview{max-width:720px;margin:auto}
+}
+@media(max-width:900px){
+.site-header{height:70px}
+.site-header .brand-logo{width:165px}
+.hero{width:min(100% - 32px,700px);padding-top:48px}
+.hero h1{font-size:50px}
+.section{padding:80px 0}
+.steps:before{display:none}
+.step{margin:0}
+.app-main{margin-left:0}
+}
+@media(max-width:600px){
+.site-header{padding:0 15px}
+.hero{width:calc(100% - 28px);padding:42px 0 70px}
+.hero h1{font-size:42px}
+.hero-copy>p{font-size:14px}
+.hero-actions{gap:8px}
+.hero-actions .btn{width:100%}
+.preview{padding:15px;border-radius:17px}
+.preview-top b{font-size:13px}
+.section{padding:68px 0}
+.section-heading h2{font-size:32px}
+.feature-card{min-height:0}
+.price-card{min-height:0}
+.cta h2{font-size:31px}
+}
