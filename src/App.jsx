@@ -612,10 +612,13 @@ function AIPage({locked=false,currentPlan="free"}){
     setQuestion("");
     setAiLoading(true);
     try{
+      const {data:sessionData}=await supabase.auth.getSession();
+      const accessToken=sessionData?.session?.access_token;
+      if(!accessToken) throw new Error("Sua sessão expirou. Faça login novamente.");
       const response=await fetch("/api/ai-chat",{
         method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({messages:nextMessages,data,mode:"chat"})
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+accessToken},
+        body:JSON.stringify({messages:nextMessages,mode:"chat"})
       });
       const json=await response.json();
       if(!response.ok) throw new Error(json.error||"Não foi possível consultar a IA.");
@@ -635,10 +638,13 @@ function AIPage({locked=false,currentPlan="free"}){
     }
     setAiLoading(true);
     try{
+      const {data:sessionData}=await supabase.auth.getSession();
+      const accessToken=sessionData?.session?.access_token;
+      if(!accessToken) throw new Error("Sua sessão expirou. Faça login novamente.");
       const response=await fetch("/api/ai-chat",{
         method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({data,mode:"message",tone,context:clean})
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+accessToken},
+        body:JSON.stringify({mode:"message",tone,context:clean})
       });
       const json=await response.json();
       if(!response.ok) throw new Error(json.error||"Não foi possível gerar a mensagem.");
