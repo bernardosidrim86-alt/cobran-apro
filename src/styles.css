@@ -1743,3 +1743,91 @@ button,input,textarea,select{font-family:inherit}
  .dashboard-page .charge-row>.charge-status{grid-column:1/-1}
  .dashboard-page .charge-row>strong{align-self:center}
 }
+
+
+/* Clientes — visual refresh */
+.toolbar + .panel.table-panel{
+  margin-top:4px;
+  padding:8px 20px 10px;
+  box-shadow:var(--cp-shadow-sm);
+}
+.toolbar + .panel.table-panel table{font-size:13px}
+.toolbar + .panel.table-panel th{
+  padding:13px 10px;
+  font-size:11px;
+  color:var(--cp-subtle);
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  font-weight:700;
+}
+.toolbar + .panel.table-panel td{
+  padding:15px 10px;
+  font-size:13px;
+  color:#555861;
+  vertical-align:middle;
+}
+.toolbar + .panel.table-panel tbody tr{
+  transition:background .14s ease;
+}
+.toolbar + .panel.table-panel tbody tr:hover{
+  background:#fafaff;
+}
+.toolbar + .panel.table-panel td:first-child b{
+  color:var(--cp-text);
+  font-size:13px;
+  font-weight:650;
+}
+.toolbar + .panel.table-panel td:last-child{
+  width:44px;
+  text-align:right;
+  color:#9a9ca5;
+}
+.toolbar + .panel.table-panel td:last-child svg{
+  padding:6px;
+  width:30px;
+  height:30px;
+  border-radius:8px;
+}
+.toolbar + .panel.table-panel td:last-child svg:hover{
+  background:#f0f1ff;
+  color:var(--cp-brand);
+}
+@media(max-width:700px){
+  .toolbar + .panel.table-panel{
+    padding:8px 12px;
+    overflow:visible;
+  }
+  .toolbar + .panel.table-panel table,
+  .toolbar + .panel.table-panel thead,
+  .toolbar + .panel.table-panel tbody,
+  .toolbar + .panel.table-panel tr,
+  .toolbar + .panel.table-panel td{
+    display:block;
+    width:100%;
+  }
+  .toolbar + .panel.table-panel thead{display:none}
+  .toolbar + .panel.table-panel tbody{display:grid;gap:8px}
+  .toolbar + .panel.table-panel tr{
+    padding:13px;
+    border:1px solid var(--cp-line);
+    border-radius:10px;
+    background:#fff;
+  }
+  .toolbar + .panel.table-panel td{
+    padding:4px 0;
+    border:0;
+    font-size:12px;
+  }
+  .toolbar + .panel.table-panel td:first-child{
+    padding-bottom:7px;
+  }
+  .toolbar + .panel.table-panel td:nth-child(2)::before{content:"Telefone: ";color:var(--cp-subtle)}
+  .toolbar + .panel.table-panel td:nth-child(3)::before{content:"E-mail: ";color:var(--cp-subtle)}
+  .toolbar + .panel.table-panel td:nth-child(4)::before{content:"Criado em: ";color:var(--cp-subtle)}
+  .toolbar + .panel.table-panel td:last-child{
+    position:absolute;
+    width:auto;
+    right:22px;
+    margin-top:-116px;
+  }
+}
