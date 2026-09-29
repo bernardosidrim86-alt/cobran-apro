@@ -339,15 +339,29 @@ export default async function handler(req, res) {
     }
 
     const now = new Date();
-    const baseDate =
-      currentIsActive && currentPlanKey === plan.key && currentExpiresAt
-        ? currentExpiresAt
-        : now;
+    const nextChargeDate = payload?.subscription?.next_charge_date
+      ? new Date(payload.subscription.next_charge_date)
+      : null;
 
-    const expiresAt = addDays(
-      baseDate,
-      plan.cycle === "annual" ? plan.daysAnnual : plan.daysMonthly
-    );
+    // Perfect Pay already sends the next billing date for subscriptions.
+    // Use it as the expiration date so a monthly plan does not inherit a
+    // stale/far-future date from a previous test or renewal.
+    const hasValidNextChargeDate =
+      nextChargeDate && !Number.isNaN(nextChargeDate.getTime()) && nextChargeDate > now;
+
+    const baseDate =
+      hasValidNextChargeDate
+        ? nextChargeDate
+        : currentIsActive && currentPlanKey === plan.key && currentExpiresAt
+          ? currentExpiresAt
+          : now;
+
+    const expiresAt = hasValidNextChargeDate
+      ? nextChargeDate.toISOString()
+      : addDays(
+          baseDate,
+          plan.cycle === "annual" ? plan.daysAnnual : plan.daysMonthly
+        );
 
     const { error } = await supabaseAdmin
       .from("profiles")
