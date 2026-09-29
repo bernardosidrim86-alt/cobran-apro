@@ -1682,7 +1682,7 @@ button,input,textarea,select{font-family:inherit}
 .dashboard-metrics .metric{border:0;border-radius:var(--cp-radius-lg);box-shadow:var(--cp-shadow-sm);padding:20px}
 .dashboard-metrics .metric-icon{width:36px;height:36px;border-radius:10px;margin-bottom:20px}
 .dashboard-metrics .metric span{font-size:13px;color:var(--cp-muted)}
-.dashboard-metrics .metric strong{font-size:30px;line-height:1.1;letter-spacing:-.045em;margin-top:6px}
+.dashboard-metrics .metric strong{font-size:24px;line-height:1.15;letter-spacing:-.03em;font-weight:650;margin-top:6px}
 .dashboard-metrics .metric:first-child strong{color:var(--cp-brand)}
 .dashboard-page .panel-head{margin-bottom:20px}
 .dashboard-page .panel-kicker{font-size:12px;letter-spacing:.07em;color:var(--cp-subtle);font-weight:700}
@@ -1736,7 +1736,7 @@ button,input,textarea,select{font-family:inherit}
  .dashboard-page .dashboard-hero-actions .btn{width:100%;height:46px}
  .dashboard-metrics{grid-template-columns:1fr 1fr}
  .dashboard-metrics .metric{padding:16px}
- .dashboard-metrics .metric strong{font-size:23px}
+ .dashboard-metrics .metric strong{font-size:21px;font-weight:650}
  .dashboard-metrics .metric span{font-size:12px}
  .dashboard-page .panel{padding:18px}
  .dashboard-page .charge-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
