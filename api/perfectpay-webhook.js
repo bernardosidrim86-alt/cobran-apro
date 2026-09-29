@@ -327,21 +327,32 @@ export default async function handler(req, res) {
       });
     }
 
+    const now = new Date();
+    const nextChargeDate = payload?.subscription?.next_charge_date
+      ? new Date(payload.subscription.next_charge_date)
+      : null;
+
+    const hasValidNextChargeDate =
+      nextChargeDate && !Number.isNaN(nextChargeDate.getTime()) && nextChargeDate > now;
+
     // Perfect Pay can send both "approved" and "completed" for the same sale.
-    // Once an active subscription exists, a later "completed" event must not
-    // grant another billing period.
-    if (status === 10 && currentIsActive) {
+    // Ignore a completed event only when it does not carry a newer billing
+    // date. A renewal can arrive as "completed" with a next_charge_date that
+    // is later than the current expiration, and that event must extend access.
+    if (
+      status === 10 &&
+      currentIsActive &&
+      !(
+        hasValidNextChargeDate &&
+        (!currentExpiresAt || nextChargeDate > currentExpiresAt)
+      )
+    ) {
       return res.status(200).json({
         ok: true,
         ignored: true,
         reason: "completed_already_active",
       });
     }
-
-    const now = new Date();
-    const nextChargeDate = payload?.subscription?.next_charge_date
-      ? new Date(payload.subscription.next_charge_date)
-      : null;
 
     // Perfect Pay already sends the next billing date for subscriptions.
     // Use it as the expiration date so a monthly plan does not inherit a
