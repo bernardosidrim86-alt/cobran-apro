@@ -3432,3 +3432,41 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     gap:3px;
   }
 }
+
+
+/* Ações da tabela de cobranças */
+.charge-action-cell{
+  width:1%;
+  min-width:128px;
+  white-space:nowrap;
+  text-align:right;
+}
+.charge-repeat-action{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:112px;
+  min-height:34px;
+  padding:7px 11px;
+  color:#333;
+  background:#fff;
+  border:1px solid #DCDDE3;
+  opacity:1;
+  visibility:visible;
+}
+.charge-repeat-action svg{
+  flex:0 0 auto;
+}
+.charge-repeat-action:hover{
+  color:#5B5CE2;
+  border-color:#C9CAEE;
+  background:#F7F7FF;
+}
+@media(max-width:700px){
+  .charge-action-cell{
+    min-width:112px;
+  }
+  .charge-repeat-action{
+    min-width:0;
+  }
+}
