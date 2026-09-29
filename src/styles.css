@@ -3980,3 +3980,23 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     pointer-events:none !important;
   }
 }
+
+
+/* MOBILE — prioridade máxima para remover ações dos clientes */
+@media screen and (max-width: 900px){
+  .toolbar + .panel.table-panel td.customer-actions-cell,
+  .toolbar + .panel.table-panel th.customer-actions-head,
+  .toolbar + .panel.table-panel td.customer-actions-cell .customer-menu-trigger,
+  .toolbar + .panel.table-panel td.customer-actions-cell .customer-menu{
+    display:none !important;
+    visibility:hidden !important;
+    width:0 !important;
+    min-width:0 !important;
+    max-width:0 !important;
+    height:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    pointer-events:none !important;
+  }
+}
