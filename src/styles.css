@@ -3383,3 +3383,52 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     grid-template-columns:1fr;
   }
 }
+
+
+/* Repetir cobrança */
+.modal:has(.repeat-summary) .repeat-summary{
+  display:grid;
+  gap:0;
+  margin:0 0 16px;
+  border:1px solid #E7E7EC;
+  border-radius:12px;
+  overflow:hidden;
+  background:#F7F7F9;
+}
+.modal:has(.repeat-summary) .repeat-summary > div{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  min-height:46px;
+  padding:10px 14px;
+}
+.modal:has(.repeat-summary) .repeat-summary > div + div{
+  border-top:1px solid #E7E7EC;
+}
+.modal:has(.repeat-summary) .repeat-summary span{
+  font-size:12px;
+  color:#6B6D77;
+}
+.modal:has(.repeat-summary) .repeat-summary b{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:13px;
+  font-weight:650;
+  color:#1F2025;
+}
+.modal:has(.repeat-summary) .field{
+  margin-bottom:0;
+}
+.modal:has(.repeat-summary) .field span{
+  font-size:12px;
+}
+@media(max-width:560px){
+  .modal:has(.repeat-summary) .repeat-summary > div{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:3px;
+  }
+}
