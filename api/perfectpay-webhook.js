@@ -127,6 +127,22 @@ export default async function handler(req, res) {
     }
 
     const status = Number(payload?.sale_status_enum);
+
+    // Temporary diagnostic for Perfect Pay subscription-event testing.
+    // Do not log customer email, token, or the full payload.
+    console.log("PerfectPay webhook diagnostic", {
+      sale_code: String(payload?.code || "").trim() || null,
+      sale_status_enum: Number.isFinite(status) ? status : null,
+      sale_status_enum_key: payload?.sale_status_enum_key || null,
+      sale_status_detail: payload?.sale_status_detail || null,
+      plan_code: payload?.plan?.code || null,
+      plan_name: payload?.plan?.name || null,
+      subscription_code: payload?.subscription?.code || null,
+      subscription_status: payload?.subscription?.status || null,
+      subscription_status_event: payload?.subscription?.status_event || null,
+      subscription_next_charge_date: payload?.subscription?.next_charge_date || null,
+    });
+
     const email = getCustomerEmail(payload);
     const metadataIdentifier = String(
       payload?.metadata?.utm_content ||
