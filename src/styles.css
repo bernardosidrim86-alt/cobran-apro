@@ -3853,3 +3853,22 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     font-size:9.5px !important;
   }
 }
+
+
+/* MOBILE FINAL COMPACT PASS */
+@media (max-width:700px){
+  .filters + .panel.table-panel,
+  .toolbar + .panel.table-panel{padding:3px 8px !important;}
+  .filters + .panel.table-panel tr,
+  .toolbar + .panel.table-panel tr{padding:7px 8px !important; min-height:0 !important;}
+  .filters + .panel.table-panel td,
+  .toolbar + .panel.table-panel td{font-size:9px !important; line-height:1.2 !important; padding:1px 0 !important;}
+  .filters + .panel.table-panel td:first-child,
+  .toolbar + .panel.table-panel td:first-child{padding-bottom:4px !important;}
+  .filters + .panel.table-panel td:nth-child(5) .badge,
+  .filters + .panel.table-panel td:nth-child(6) .btn,
+  .customer-menu-trigger{transform:scale(.9); transform-origin:center;}
+  .filters + .panel.table-panel .badge{font-size:7px !important; padding:2px 5px !important;}
+  .filters + .panel.table-panel td:nth-child(6) .btn{font-size:8px !important; min-height:24px !important; height:24px !important;}
+  .toolbar + .panel.table-panel .customer-menu-trigger{width:26px !important;height:26px !important;}
+}
