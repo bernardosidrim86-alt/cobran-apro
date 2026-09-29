@@ -429,8 +429,8 @@ function Dashboard({session}) {
 
     <div className="dashboard-bottom-grid">
       <div className="panel">
-        <div className="panel-head"><div><span className="panel-kicker">PRÓXIMAS</span><h2>Cobranças</h2><p>As cobranças mais próximas do vencimento.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
-        {data.charges.length===0 ? <Empty text="Você ainda não possui cobranças."/> : <div className="charge-list">{data.charges.slice(0,6).map(c=><div className="charge-row" key={c.id}><div className="charge-person"><span className="person-avatar">{(c.customers?.name||"C").slice(0,1).toUpperCase()}</span><div><b>{c.customers?.name||"Cliente"}</b><span>{c.description||"Cobrança"}</span></div></div><strong>{money(c.amount)}</strong><span className={`charge-status ${c.status==="paid"?"paid":c.due_date<todayISO()?"overdue":c.due_date===todayISO()?"today":"pending"}`}><i></i>{c.status==="paid"?"Pago":c.due_date<todayISO()?"Atrasado":c.due_date===todayISO()?"Vence hoje":"A receber"}</span></div>)}</div>}
+        <div className="panel-head"><div><span className="panel-kicker">ATENÇÃO</span><h2>Quem eu preciso cobrar hoje?</h2><p>Clientes com cobrança vencendo hoje ou em atraso.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
+        {data.charges.filter(c=>c.status==="pending"&&c.due_date<=todayISO()).length===0 ? <Empty text="Nenhuma cobrança precisa de atenção hoje."/> : <div className="charge-list">{data.charges.filter(c=>c.status==="pending"&&c.due_date<=todayISO()).slice(0,6).map(c=><div className="charge-row" key={c.id}><div className="charge-person"><span className="person-avatar">{(c.customers?.name||"C").slice(0,1).toUpperCase()}</span><div><b>{c.customers?.name||"Cliente"}</b><span>{c.description||"Cobrança"}</span></div></div><strong>{money(c.amount)}</strong><span className={`charge-status ${c.due_date<todayISO()?"overdue":"today"}`}><i></i>{c.due_date<todayISO()?"Atrasado":"Vence hoje"}</span></div>)}</div>}
       </div>
 
       <div className="panel quick-panel">
