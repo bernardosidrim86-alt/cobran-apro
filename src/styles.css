@@ -3967,3 +3967,16 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     display:none !important;
   }
 }
+
+
+/* MOBILE — remover definitivamente os 3 pontos de Clientes */
+@media screen and (max-width: 900px){
+  .customer-actions-head,
+  .customer-actions-cell,
+  .customer-actions-cell .customer-menu-trigger,
+  .customer-actions-cell .customer-menu{
+    display:none !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+}
