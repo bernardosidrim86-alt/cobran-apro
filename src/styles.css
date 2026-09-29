@@ -3957,3 +3957,13 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     visibility:visible !important;
   }
 }
+
+
+/* MOBILE — ocultar ações dos clientes */
+@media (max-width:700px){
+  .toolbar + .panel.table-panel .customer-actions-cell,
+  .toolbar + .panel.table-panel .customer-menu-trigger,
+  .toolbar + .panel.table-panel .customer-menu{
+    display:none !important;
+  }
+}
