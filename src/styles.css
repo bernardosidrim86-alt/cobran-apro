@@ -2040,3 +2040,176 @@ button,input,textarea,select{font-family:inherit}
   background:#f3f3f6;
   color:var(--cp-text);
 }
+
+
+/* Recebimentos — visual refresh */
+.payments-page .payments-metrics{
+  gap:14px;
+  margin-bottom:18px;
+}
+.payments-page .payments-metrics .metric{
+  position:relative;
+  border:0!important;
+  border-radius:var(--cp-radius-lg)!important;
+  box-shadow:var(--cp-shadow-sm)!important;
+  padding:20px;
+}
+.payments-page .payments-metrics .metric + .metric{
+  border-left:0!important;
+}
+.payments-page .payments-metrics .metric + .metric::before{
+  display:none;
+}
+.payments-page .payments-metrics .metric-icon{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  margin-bottom:18px;
+}
+.payments-page .payments-metrics .metric span{
+  font-size:13px;
+  color:var(--cp-muted);
+}
+.payments-page .payments-metrics .metric b{
+  font-size:22px;
+  line-height:1.1;
+  letter-spacing:-.04em;
+  margin-top:6px;
+}
+.payments-page .payments-metrics .metric:first-child b,
+.payments-page .payments-metrics .metric:nth-child(2) b{
+  color:var(--cp-brand);
+}
+.payments-table-panel{
+  padding:0!important;
+  overflow:hidden;
+}
+.payments-table-head{
+  min-height:72px;
+  padding:0 22px;
+  border-bottom:1px solid var(--cp-line);
+}
+.payments-table-head div{
+  gap:5px;
+}
+.payments-table-head span{
+  font-size:10px;
+  letter-spacing:.08em;
+  color:var(--cp-subtle);
+}
+.payments-table-head b{
+  font-size:15px;
+  letter-spacing:-.015em;
+  color:var(--cp-text);
+}
+.payments-table-head small{
+  font-size:12px;
+  color:var(--cp-subtle);
+}
+.payments-table{
+  font-size:13px;
+}
+.payments-table th{
+  padding:13px 14px;
+  font-size:11px;
+  color:var(--cp-subtle);
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  font-weight:700;
+}
+.payments-table td{
+  padding:15px 14px;
+  font-size:13px;
+  color:#555861;
+  vertical-align:middle;
+}
+.payments-table th:first-child,
+.payments-table td:first-child{
+  padding-left:22px;
+}
+.payments-table th:last-child,
+.payments-table td:last-child{
+  padding-right:22px;
+}
+.payments-table th + th,
+.payments-table td + td{
+  border-left:0!important;
+}
+.payments-table tbody tr{
+  transition:background .14s ease;
+}
+.payments-table tbody tr:hover{
+  background:#fafaff;
+}
+.payments-table td:first-child b{
+  color:var(--cp-text);
+  font-weight:650;
+}
+.payments-table td:nth-child(2) b{
+  color:var(--cp-text);
+  font-weight:650;
+}
+.payments-table .empty{
+  min-height:250px;
+}
+@media(max-width:700px){
+  .payments-page .payments-metrics{
+    gap:8px;
+  }
+  .payments-page .payments-metrics .metric{
+    padding:16px;
+  }
+  .payments-page .payments-metrics .metric b{
+    font-size:18px;
+  }
+  .payments-page .payments-metrics .metric span{
+    font-size:11px;
+  }
+  .payments-table-panel{
+    overflow:visible;
+  }
+  .payments-table-head{
+    min-height:64px;
+    padding:0 16px;
+  }
+  .payments-table-head b{
+    font-size:14px;
+  }
+  .payments-table-head small{
+    font-size:11px;
+  }
+  .payments-table,
+  .payments-table thead,
+  .payments-table tbody,
+  .payments-table tr,
+  .payments-table td{
+    display:block;
+    width:100%;
+  }
+  .payments-table thead{
+    display:none;
+  }
+  .payments-table tbody{
+    display:grid;
+    gap:8px;
+    padding:10px 12px 12px;
+  }
+  .payments-table tr{
+    padding:13px;
+    border:1px solid var(--cp-line);
+    border-radius:10px;
+    background:#fff;
+  }
+  .payments-table td,
+  .payments-table th{
+    padding:4px 0!important;
+    border:0!important;
+    font-size:12px;
+  }
+  .payments-table td:first-child{
+    padding-bottom:8px!important;
+  }
+  .payments-table td:nth-child(2)::before{content:"Valor: ";color:var(--cp-subtle)}
+  .payments-table td:nth-child(3)::before{content:"Data: ";color:var(--cp-subtle)}
+  .payments-table td:nth-child(4)::before{content:"Método: ";color:var(--cp-subtle)}
+}
