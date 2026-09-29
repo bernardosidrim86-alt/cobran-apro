@@ -150,8 +150,18 @@ export default async function handler(req, res) {
       ""
     ).trim();
 
+    const subscriptionStatus = normalize(payload?.subscription?.status);
+    const subscriptionStatusEvent = normalize(payload?.subscription?.status_event);
+
+    // Perfect Pay can send subscription lifecycle events with sale_status_enum
+    // still equal to "approved". Treat explicit subscription cancellation/
+    // expiration/inactivation events as revocation too.
+    const subscriptionRevoked =
+      /cancelad|cancell|expired|vencid|inativ/.test(subscriptionStatus) ||
+      /cancelad|cancell|expired|vencid|inativ/.test(subscriptionStatusEvent);
+
     const approved = [2, 8, 10].includes(status);
-    const revoked = [5, 6, 7, 9, 13].includes(status);
+    const revoked = [5, 6, 7, 9, 13].includes(status) || subscriptionRevoked;
     const saleCode = String(payload?.code || "").trim();
 
     if (!saleCode) {
