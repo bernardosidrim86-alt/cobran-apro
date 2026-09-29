@@ -522,7 +522,7 @@ function Charges() {
           <td><b>{money(c.amount)}</b></td>
           <td>{new Date(c.due_date+"T12:00:00").toLocaleDateString("pt-BR")}</td>
           <td><span className={`badge ${c.status==="paid"?"green":c.due_date<todayISO()?"red":c.due_date===todayISO()?"yellow":"gray"}`}>{c.status==="paid"?"Pago":c.due_date<todayISO()?"Atrasado":c.due_date===todayISO()?"Vence hoje":"A receber"}</span></td>
-          <td>{c.status!=="paid"&&<button className="btn btn-secondary btn-sm" onClick={(e)=>{e.stopPropagation();setSelected(c)}}><MessageCircle size={14}/> Cobrar</button>}</td>
+          <td className="charge-action-cell">{c.status==="paid"?<button className="btn btn-secondary btn-sm charge-repeat-action" onClick={(e)=>{e.stopPropagation();setSelected(c)}}><Receipt size={14}/> Repetir</button>:<button className="btn btn-secondary btn-sm charge-repeat-action" onClick={(e)=>{e.stopPropagation();setSelected(c)}}><MessageCircle size={14}/> Cobrar</button>}</td>
         </tr>)}</tbody>
       </table>}
     </div>
