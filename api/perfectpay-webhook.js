@@ -237,6 +237,12 @@ export default async function handler(req, res) {
     if (profileError) throw profileError;
 
     if (revoked) {
+      // A subscription cancellation should keep the paid plan active until
+      // the already-paid period ends. Sale-level revocations (refund,
+      // chargeback, rejection, etc.) revoke access immediately.
+      const cancellationKeepsAccess =
+        subscriptionRevoked && [2, 8, 10].includes(status);
+
       // Never revoke a newer/different paid plan because an old Perfect Pay
       // transaction changed state later.
       const incomingPlan = detectPlan(payload);
@@ -256,17 +262,28 @@ export default async function handler(req, res) {
 
       const { error } = await supabaseAdmin
         .from("profiles")
-        .update({
-          plan: "free",
-          billing_cycle: null,
-          subscription_status: "cancelled",
-          subscription_expires_at: new Date().toISOString(),
-        })
+        .update(
+          cancellationKeepsAccess
+            ? {
+                subscription_status: "cancelled",
+              }
+            : {
+                plan: "free",
+                billing_cycle: null,
+                subscription_status: "cancelled",
+                subscription_expires_at: new Date().toISOString(),
+              }
+        )
         .eq("id", user.id);
 
       if (error) throw error;
 
-      return res.status(200).json({ ok: true, action: "subscription_revoked" });
+      return res.status(200).json({
+        ok: true,
+        action: cancellationKeepsAccess
+          ? "subscription_cancelled_until_expiration"
+          : "subscription_revoked",
+      });
     }
 
     const plan = detectPlan(payload);
