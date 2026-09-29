@@ -3670,3 +3670,186 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     padding:3px 6px;
   }
 }
+
+
+/* MOBILE — compactar de verdade Clientes e Cobranças */
+@media screen and (max-width: 700px){
+  .page{
+    padding:14px 12px 22px !important;
+  }
+
+  .page-title{
+    margin-bottom:12px !important;
+  }
+
+  .page-title h1{
+    font-size:20px !important;
+  }
+
+  .page-title p{
+    font-size:10px !important;
+  }
+
+  .page-title .btn{
+    min-height:34px !important;
+    height:34px !important;
+    padding:0 10px !important;
+    font-size:10px !important;
+  }
+
+  /* Cobranças */
+  .filters{
+    margin-bottom:8px !important;
+    gap:5px !important;
+  }
+
+  .filters button{
+    min-height:32px !important;
+    height:32px !important;
+    padding:0 9px !important;
+    font-size:9px !important;
+  }
+
+  .filters + .panel.table-panel{
+    padding:4px 10px !important;
+    border-radius:10px !important;
+  }
+
+  .filters + .panel.table-panel table{
+    min-width:0 !important;
+    width:100% !important;
+    font-size:10px !important;
+  }
+
+  .filters + .panel.table-panel tbody{
+    gap:5px !important;
+  }
+
+  .filters + .panel.table-panel tr{
+    padding:9px 10px !important;
+    border-radius:9px !important;
+  }
+
+  .filters + .panel.table-panel td{
+    padding:2px 0 !important;
+    font-size:10px !important;
+    line-height:1.35 !important;
+  }
+
+  .filters + .panel.table-panel td:first-child{
+    padding-right:58px !important;
+    padding-bottom:5px !important;
+  }
+
+  .filters + .panel.table-panel td:nth-child(2)::before,
+  .filters + .panel.table-panel td:nth-child(3)::before,
+  .filters + .panel.table-panel td:nth-child(4)::before{
+    font-size:9px !important;
+  }
+
+  .filters + .panel.table-panel td:nth-child(5){
+    padding-top:5px !important;
+  }
+
+  .filters + .panel.table-panel td:nth-child(6){
+    top:9px !important;
+    right:9px !important;
+  }
+
+  .filters + .panel.table-panel td:nth-child(6) .btn{
+    min-height:27px !important;
+    height:27px !important;
+    padding:0 7px !important;
+    font-size:9px !important;
+    border-radius:7px !important;
+  }
+
+  .filters + .panel.table-panel .badge{
+    padding:3px 6px !important;
+    font-size:8px !important;
+  }
+
+  /* Clientes */
+  .toolbar + .panel.table-panel{
+    padding:4px 10px !important;
+    border-radius:10px !important;
+  }
+
+  .toolbar + .panel.table-panel table{
+    min-width:0 !important;
+    width:100% !important;
+    font-size:10px !important;
+  }
+
+  .toolbar + .panel.table-panel tbody{
+    gap:5px !important;
+  }
+
+  .toolbar + .panel.table-panel tr{
+    padding:9px 10px !important;
+    border-radius:9px !important;
+  }
+
+  .toolbar + .panel.table-panel td{
+    padding:2px 0 !important;
+    font-size:10px !important;
+    line-height:1.35 !important;
+  }
+
+  .toolbar + .panel.table-panel td:first-child{
+    padding-bottom:5px !important;
+    padding-right:58px !important;
+  }
+
+  .toolbar + .panel.table-panel td:last-child{
+    right:9px !important;
+    margin-top:-93px !important;
+  }
+
+  .customer-menu-trigger{
+    width:28px !important;
+    height:28px !important;
+  }
+
+  .customer-menu-trigger svg{
+    width:16px !important;
+    height:16px !important;
+  }
+
+  .toolbar{
+    margin-bottom:8px !important;
+  }
+
+  .searchbox{
+    min-height:34px !important;
+    height:34px !important;
+    padding:0 9px !important;
+  }
+
+  .searchbox input{
+    font-size:10px !important;
+  }
+}
+
+@media screen and (max-width: 420px){
+  .page{
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+
+  .filters + .panel.table-panel,
+  .toolbar + .panel.table-panel{
+    padding-left:8px !important;
+    padding-right:8px !important;
+  }
+
+  .filters + .panel.table-panel tr,
+  .toolbar + .panel.table-panel tr{
+    padding:8px !important;
+  }
+
+  .filters + .panel.table-panel td,
+  .toolbar + .panel.table-panel td{
+    font-size:9.5px !important;
+  }
+}
