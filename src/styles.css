@@ -3167,3 +3167,84 @@ button,input,textarea,select{font-family:inherit}
     max-width:none;
   }
 }
+
+/* Theme toggle */
+.theme-toggle{width:36px;height:36px;border:1px solid #e5e5ea;background:#fff;color:#666;border-radius:9px;display:grid;place-items:center;cursor:pointer}
+.theme-toggle:hover{background:#f7f7fa;color:#5B5CE2}
+html[data-theme="dark"] body,
+html[data-theme="dark"] .app-layout{background:#111217;color:#ececf1}
+html[data-theme="dark"] .app-header,
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .metric,
+html[data-theme="dark"] .table-panel,
+html[data-theme="dark"] .settings-panel,
+html[data-theme="dark"] .connection,
+html[data-theme="dark"] .plan-box,
+html[data-theme="dark"] .generated,
+html[data-theme="dark"] .price-card,
+html[data-theme="dark"] .feature-card,
+html[data-theme="dark"] .step{background:#191a20;color:#ececf1;border-color:#30313b}
+html[data-theme="dark"] .app-header{border-bottom-color:#2b2c35}
+html[data-theme="dark"] .sidebar{border-right-color:#2b2c35}
+html[data-theme="dark"] .side-nav a{color:#a7a8b1}
+html[data-theme="dark"] .side-nav a:hover{background:#22232b;color:#f1f1f4}
+html[data-theme="dark"] .side-nav a.active{background:#24254a;color:#aeb0ff}
+html[data-theme="dark"] .page-title h1,
+html[data-theme="dark"] .panel-head h2,
+html[data-theme="dark"] .metric strong,
+html[data-theme="dark"] .metric b{color:#f1f1f4}
+html[data-theme="dark"] .page-title p,
+html[data-theme="dark"] .panel-head p,
+html[data-theme="dark"] .metric span,
+html[data-theme="dark"] .dashboard-page .dashboard-hero p{color:#a5a6af}
+html[data-theme="dark"] .header-search{background:#202128;border-color:#30313b;color:#9c9da6}
+html[data-theme="dark"] .header-search input{color:#eee}
+html[data-theme="dark"] .theme-toggle{background:#202128;border-color:#34353e;color:#c5c6ce}
+html[data-theme="dark"] .theme-toggle:hover{background:#292a34;color:#b0b1ff}
+html[data-theme="dark"] .header-icon-button{color:#aaa}
+html[data-theme="dark"] .header-icon-button:hover,
+html[data-theme="dark"] .header-icon-button.active{background:#282936;color:#aeb0ff}
+html[data-theme="dark"] .user-mini-button:hover{background:#22232a}
+html[data-theme="dark"] .user-mini b,
+html[data-theme="dark"] .profile-dropdown b{color:#eee}
+html[data-theme="dark"] .user-mini span,
+html[data-theme="dark"] .profile-dropdown span{color:#999}
+html[data-theme="dark"] .header-dropdown{background:#191a20;border-color:#30313b;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+html[data-theme="dark"] .dropdown-head,
+html[data-theme="dark"] .dropdown-divider{border-color:#2b2c35;background:#2b2c35}
+html[data-theme="dark"] .notification-item,
+html[data-theme="dark"] .profile-dropdown>a,
+html[data-theme="dark"] .profile-dropdown>button{color:#d7d8df}
+html[data-theme="dark"] .notification-item:hover,
+html[data-theme="dark"] .profile-dropdown>a:hover,
+html[data-theme="dark"] .profile-dropdown>button:hover{background:#22232a;color:#fff}
+html[data-theme="dark"] .filters button,
+html[data-theme="dark"] .searchbox,
+html[data-theme="dark"] .btn-secondary{background:#202128;border-color:#34353e;color:#ddd}
+html[data-theme="dark"] .filters button.selected{background:#292a50;border-color:#4547a0;color:#b8b9ff}
+html[data-theme="dark"] table th{background:#202128;color:#a8a9b2}
+html[data-theme="dark"] table td{color:#d8d9df}
+html[data-theme="dark"] tbody tr:hover{background:#202128}
+html[data-theme="dark"] .dashboard-page .charge-row,
+html[data-theme="dark"] .dashboard-page .attention-item,
+html[data-theme="dark"] .dashboard-page .quick-actions-premium a + a{border-color:#2b2c35}
+html[data-theme="dark"] .dashboard-page .quick-actions-premium a:hover{background:#22232a;border-color:#3a3b46}
+html[data-theme="dark"] .dashboard-page .cash-summary div + div{border-color:#30313b}
+html[data-theme="dark"] .dashboard-page .charge-main b,
+html[data-theme="dark"] .dashboard-page .charge-value b,
+html[data-theme="dark"] .dashboard-page .charge-person b,
+html[data-theme="dark"] .dashboard-page .attention-item b{color:#eee}
+html[data-theme="dark"] .dashboard-page .charge-main span,
+html[data-theme="dark"] .dashboard-page .charge-value span,
+html[data-theme="dark"] .dashboard-page .charge-person span,
+html[data-theme="dark"] .dashboard-page .attention-item small{color:#9a9ba4}
+html[data-theme="dark"] .empty{color:#9fa0aa}
+html[data-theme="dark"] .empty-icon{background:#24252b;color:#a5a6af}
+html[data-theme="dark"] .auth-page{background:#111217}
+html[data-theme="dark"] .auth-card,
+html[data-theme="dark"] .onboard-card{background:#191a20;border-color:#30313b;color:#eee}
+html[data-theme="dark"] .field input,
+html[data-theme="dark"] .field textarea,
+html[data-theme="dark"] .field select{background:#202128;border-color:#34353e;color:#eee}
+html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#eee}
