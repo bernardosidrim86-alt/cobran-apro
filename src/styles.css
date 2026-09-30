@@ -4107,7 +4107,18 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
   margin-top:10px;
 }
 .dashboard-page .dashboard-overview-panel .cash-summary div + div{
-  padding-left:36px;
+  padding-left:52px !important;
+}
+.dashboard-page .dashboard-overview-panel .cash-summary div:first-child{
+  padding-right:24px;
+}
+@media (max-width:600px){
+  .dashboard-page .dashboard-overview-panel .cash-summary div + div{
+    padding-left:36px !important;
+  }
+  .dashboard-page .dashboard-overview-panel .cash-summary div:first-child{
+    padding-right:16px;
+  }
 }
 @media (max-width:600px){
   .dashboard-page .dashboard-overview-panel .cash-summary div + div{
