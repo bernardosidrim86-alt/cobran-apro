@@ -153,31 +153,33 @@ function Landing({session}) {
         <DashboardPreview/>
       </section>
 
-      <section id="como" className="section soft"><div className="container">
-        <ScrollReveal><div className="section-heading"><span className="eyebrow">Como funciona</span><h2>Uma visão clara de tudo que você precisa receber.</h2></div></ScrollReveal>
-        <div className="steps">
-          {[
-            ["01","Cadastre seus clientes","Tenha todos os contatos e históricos em um só lugar."],
-            ["02","Crie suas cobranças","Defina valor, vencimento, serviço e recorrência."],
-            ["03","Veja quem cobrar","O dashboard destaca automaticamente o que precisa de atenção."],
-            ["04","Envie pelo WhatsApp","Abra uma mensagem pronta e cobre de forma profissional."]
-          ].map((x,i)=><ScrollReveal key={x[0]} delay={i*70}><div className="step"><span>{x[0]}</span><h3>{x[1]}</h3><p>{x[2]}</p></div></ScrollReveal>)}
+      <section id="como" className="section soft product-story">
+        <div className="container">
+          <ScrollReveal><div className="section-heading center"><span className="eyebrow">Veja por dentro</span><h2>Um sistema feito para você saber o que precisa fazer.</h2><p>Sem planilhas espalhadas. Sem ficar procurando quem está devendo. O CobrançaPro coloca as informações importantes na sua frente.</p></div></ScrollReveal>
+          <ScrollReveal><div className="story-dashboard"><DashboardPreview/></div></ScrollReveal>
         </div>
-      </div></section>
+      </section>
 
-      <section id="recursos" className="section"><div className="container">
-        <ScrollReveal><div className="section-heading"><span className="eyebrow">Recursos</span><h2>Tudo que você precisa para receber melhor.</h2></div></ScrollReveal>
-        <div className="feature-grid">
-          {[
-            [LayoutDashboard,"Dashboard financeiro","Veja a receber, vencendo hoje, atrasado e recebido."],
-            [Users,"Clientes","Cadastre clientes e acompanhe todo o histórico."],
-            [Receipt,"Cobranças","Crie, acompanhe e marque cobranças como pagas."],
-            [MessageCircle,"WhatsApp","Mensagens prontas para cobrar sem perder tempo."],
-            [Sparkles,"Assistente IA","Crie mensagens naturais para cada situação."],
-            [TrendingUp,"Relatórios","Acompanhe recebimentos e cobranças em um só lugar."]
-          ].map(([Icon,t,p],i)=><ScrollReveal key={t} delay={i*65}><div className="feature-card"><div className="icon-box"><Icon size={20}/></div><h3>{t}</h3><p>{p}</p></div></ScrollReveal>)}
+      <section id="recursos" className="section product-features">
+        <div className="container">
+          <ScrollReveal><div className="section-heading"><span className="eyebrow">Recursos</span><h2>Seu financeiro organizado em um só lugar.</h2><p>Conheça as principais telas do CobrançaPro e veja como elas trabalham juntas.</p></div></ScrollReveal>
+
+          <ScrollReveal><div className="feature-showcase">
+            <div className="feature-copy"><span className="feature-number">01</span><h3>Clientes organizados</h3><p>Tenha nome, contato e histórico dos seus clientes em uma tela simples. Encontre qualquer pessoa rapidamente.</p><div className="feature-points"><span><Check size={15}/> Histórico centralizado</span><span><Check size={15}/> Busca rápida</span><span><Check size={15}/> Acesso às cobranças</span></div></div>
+            <div className="screen-mock customers-mock"><div className="mock-head"><div><span>CLIENTES</span><b>Seus clientes</b></div><button>+ Novo cliente</button></div><div className="mock-search">⌕&nbsp; Buscar cliente...</div>{[["João Silva","(24) 99999-0000","8 cobranças"],["Maria Souza","(24) 98888-0000","5 cobranças"],["Carlos Lima","(24) 97777-0000","12 cobranças"]].map(x=><div className="mock-client" key={x[0]}><span>{x[0][0]}</span><div><b>{x[0]}</b><small>{x[1]}</small></div><em>{x[2]}</em></div>)}</div>
+          </div></ScrollReveal>
+
+          <ScrollReveal><div className="feature-showcase reverse">
+            <div className="feature-copy"><span className="feature-number">02</span><h3>Cobranças sem bagunça</h3><p>Crie cobranças, acompanhe vencimentos e veja rapidamente o que está pendente, atrasado ou pago.</p><div className="feature-points"><span><Check size={15}/> Status em tempo real</span><span><Check size={15}/> Vencimentos claros</span><span><Check size={15}/> Histórico de recebimentos</span></div></div>
+            <div className="screen-mock charges-mock"><div className="mock-head"><div><span>COBRANÇAS</span><b>Controle suas cobranças</b></div><button>+ Nova cobrança</button></div><div className="mock-tabs"><b>Todas</b><span>A receber</span><span>Atrasadas</span><span>Pagas</span></div>{[["João Silva","Mensalidade","R$ 350,00","Atrasado"],["Maria Souza","Serviço","R$ 180,00","Vence hoje"],["Carlos Lima","Consultoria","R$ 900,00","Pago"]].map(x=><div className="mock-charge" key={x[0]}><div><b>{x[0]}</b><small>{x[1]}</small></div><strong>{x[2]}</strong><em className={x[3]==="Pago"?"paid":""}>{x[3]}</em></div>)}</div>
+          </div></ScrollReveal>
+
+          <ScrollReveal><div className="feature-showcase">
+            <div className="feature-copy"><span className="feature-number">03</span><h3>Cobrança mais profissional</h3><p>Prepare a mensagem certa para cada cliente e abra o WhatsApp com tudo pronto para enviar.</p><div className="feature-points"><span><Check size={15}/> Mensagens personalizadas</span><span><Check size={15}/> WhatsApp em poucos cliques</span><span><Check size={15}/> Assistente IA nos planos elegíveis</span></div></div>
+            <div className="screen-mock whatsapp-mock"><div className="mock-chat-head"><span>J</span><div><b>João Silva</b><small>Mensagem de cobrança</small></div></div><div className="chat-bubble">Olá, João! Tudo bem? Passando para lembrar da mensalidade de R$ 350,00 que está em aberto. Se precisar de alguma coisa, estou à disposição.</div><div className="chat-actions"><button>Gerar com IA</button><button>Abrir WhatsApp <ArrowRight size={12}/></button></div></div>
+          </div></ScrollReveal>
         </div>
-      </div></section>
+      </section>
 
       <section id="precos" className="section soft"><div className="container">
         <ScrollReveal><div className="section-heading center"><span className="eyebrow">Preços</span><h2>Escolha o plano ideal para sua empresa.</h2><p>Teste grátis por 7 dias. Sem cartão de crédito. Faça upgrade quando precisar.</p></div></ScrollReveal>
