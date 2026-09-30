@@ -4100,3 +4100,17 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     font-size:12px;
   }
 }
+
+
+/* Dashboard: mais respiro entre a divisão e os valores do caixa */
+.dashboard-page .dashboard-overview-panel .cash-summary{
+  margin-top:10px;
+}
+.dashboard-page .dashboard-overview-panel .cash-summary div + div{
+  padding-left:36px;
+}
+@media (max-width:600px){
+  .dashboard-page .dashboard-overview-panel .cash-summary div + div{
+    padding-left:24px;
+  }
+}
