@@ -4839,3 +4839,271 @@ tbody tr:hover{
 @media(prefers-reduced-motion:reduce){
   .status-dot,.badge.green{animation:none!important}
 }
+
+
+/* COBRANCAPRO — LANDING PAGE LIVE 1.0 */
+@keyframes landingHeroIn{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes landingPreviewIn{
+  from{opacity:0;transform:translateY(24px) scale(.975)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes landingFloat{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  50%{transform:translateY(-7px) rotate(.25deg)}
+}
+@keyframes landingGlow{
+  0%,100%{opacity:.55;transform:scale(.98)}
+  50%{opacity:.85;transform:scale(1.04)}
+}
+@keyframes landingPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(91,92,226,0)}
+  50%{box-shadow:0 0 0 6px rgba(91,92,226,.08)}
+}
+@keyframes landingRowIn{
+  from{opacity:0;transform:translateX(-8px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:40;
+  transition:box-shadow .25s ease,background-color .25s ease;
+}
+.site-header:hover{
+  box-shadow:0 8px 30px rgba(25,25,70,.05);
+}
+.site-header nav a{
+  position:relative;
+  transition:color .2s ease,transform .2s ease;
+}
+.site-header nav a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:100%;
+  bottom:-7px;
+  height:2px;
+  border-radius:2px;
+  background:#5B5CE2;
+  transition:right .2s ease;
+}
+.site-header nav a:hover{
+  transform:translateY(-1px);
+}
+.site-header nav a:hover::after{
+  right:0;
+}
+.site-header .link-btn{
+  transition:transform .2s ease,color .2s ease;
+}
+.site-header .link-btn:hover{
+  color:#5051D1;
+  transform:translateY(-1px);
+}
+
+.hero-copy{
+  animation:landingHeroIn .65s .05s cubic-bezier(.22,1,.36,1) both;
+}
+.hero .eyebrow{
+  animation:landingHeroIn .5s cubic-bezier(.22,1,.36,1) both;
+}
+.hero h1{
+  animation:landingHeroIn .6s .08s cubic-bezier(.22,1,.36,1) both;
+}
+.hero-copy>p{
+  animation:landingHeroIn .6s .15s cubic-bezier(.22,1,.36,1) both;
+}
+.hero-actions{
+  animation:landingHeroIn .6s .22s cubic-bezier(.22,1,.36,1) both;
+}
+.trust{
+  animation:landingHeroIn .6s .29s cubic-bezier(.22,1,.36,1) both;
+}
+
+.hero-actions .btn{
+  transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s ease,background-color .2s ease,border-color .2s ease;
+}
+.hero-actions .btn:hover{
+  transform:translateY(-3px);
+}
+.hero-actions .btn-primary:hover{
+  box-shadow:0 12px 28px rgba(91,92,226,.22);
+}
+.hero-actions .btn-primary svg{
+  transition:transform .2s ease;
+}
+.hero-actions .btn-primary:hover svg{
+  transform:translateX(4px);
+}
+
+.preview-wrap{
+  animation:landingPreviewIn .75s .12s cubic-bezier(.22,1,.36,1) both;
+}
+.preview-wrap .glow{
+  animation:landingGlow 4s ease-in-out infinite;
+}
+.preview{
+  transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease;
+  animation:landingFloat 6s ease-in-out 1s infinite;
+}
+.preview:hover{
+  transform:translateY(-5px);
+  box-shadow:0 32px 85px rgba(37,37,106,.14);
+  animation-play-state:paused;
+}
+.preview-cards>div{
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.preview-cards>div:hover{
+  transform:translateY(-3px);
+  border-color:#dfe0f6;
+  box-shadow:0 8px 22px rgba(40,40,90,.06);
+}
+.preview-list{
+  transition:box-shadow .25s ease,border-color .25s ease;
+}
+.preview-list:hover{
+  border-color:#dedff1;
+  box-shadow:0 10px 28px rgba(40,40,90,.05);
+}
+.preview-row{
+  transition:background-color .18s ease,transform .18s ease;
+}
+.preview-row:hover{
+  background:#fafaff;
+  transform:translateX(3px);
+}
+.preview-row:nth-child(2){animation:landingRowIn .35s .65s both}
+.preview-row:nth-child(3){animation:landingRowIn .35s .75s both}
+.preview-row:nth-child(4){animation:landingRowIn .35s .85s both}
+
+.section-heading{
+  animation:landingHeroIn .55s .05s both;
+}
+.steps .step:nth-child(1){animation:landingHeroIn .45s .08s both}
+.steps .step:nth-child(2){animation:landingHeroIn .45s .14s both}
+.steps .step:nth-child(3){animation:landingHeroIn .45s .20s both}
+.steps .step:nth-child(4){animation:landingHeroIn .45s .26s both}
+
+.step,
+.feature-card,
+.price-card{
+  transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s ease,border-color .25s ease;
+}
+.step:hover,
+.feature-card:hover{
+  transform:translateY(-6px);
+  border-color:#dddff2;
+  box-shadow:0 16px 38px rgba(30,30,80,.07);
+}
+.step>span,
+.feature-card .icon-box{
+  transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s ease,background-color .25s ease;
+}
+.step:hover>span{
+  transform:translateX(3px);
+}
+.feature-card:hover .icon-box{
+  transform:scale(1.08) rotate(-3deg);
+  box-shadow:0 7px 18px rgba(91,92,226,.09);
+  background:#f5f5ff;
+}
+
+.pricing .price-card:nth-child(1){animation:landingHeroIn .5s .06s both}
+.pricing .price-card:nth-child(2){animation:landingHeroIn .5s .13s both}
+.pricing .price-card:nth-child(3){animation:landingHeroIn .5s .20s both}
+.price-card:hover{
+  transform:translateY(-7px);
+  box-shadow:0 18px 45px rgba(30,30,80,.08);
+}
+.price-card.featured{
+  transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s ease,border-color .25s ease;
+}
+.price-card.featured:hover{
+  box-shadow:0 22px 55px rgba(91,92,226,.15);
+}
+.price-card .btn{
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background-color .2s ease;
+}
+.price-card .btn:hover{
+  transform:translateY(-2px);
+}
+.price-card .btn-primary:hover{
+  box-shadow:0 9px 22px rgba(91,92,226,.18);
+}
+.price-item svg{
+  transition:transform .2s ease;
+}
+.price-item:hover svg{
+  transform:scale(1.12);
+}
+
+.cta-inner{
+  animation:landingHeroIn .55s .05s both;
+}
+.cta .btn{
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.cta .btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 28px rgba(20,20,80,.18);
+}
+.cta .btn svg{
+  transition:transform .2s ease;
+}
+.cta .btn:hover svg{
+  transform:translateX(4px);
+}
+
+.trust svg{
+  animation:landingPulse 2.8s ease-in-out infinite;
+  border-radius:50%;
+}
+
+@media(max-width:900px){
+  .preview{
+    animation:landingPreviewIn .65s .1s cubic-bezier(.22,1,.36,1) both;
+  }
+  .step:hover,
+  .feature-card:hover,
+  .price-card:hover{
+    transform:translateY(-3px);
+  }
+}
+@media(max-width:600px){
+  .site-header{
+    box-shadow:0 3px 16px rgba(20,20,60,.04);
+  }
+  .hero-copy{
+    animation-duration:.5s;
+  }
+  .hero-actions .btn:hover{
+    transform:translateY(-1px);
+  }
+  .preview{
+    animation:landingPreviewIn .6s .08s cubic-bezier(.22,1,.36,1) both;
+  }
+  .preview:hover{
+    transform:none;
+    box-shadow:0 25px 70px #25256A15;
+  }
+  .step:hover,
+  .feature-card:hover,
+  .price-card:hover{
+    transform:none;
+    box-shadow:0 8px 22px rgba(30,30,80,.05);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .site-header,.hero-copy,.hero .eyebrow,.hero h1,.hero-copy>p,.hero-actions,.trust,
+  .preview-wrap,.preview,.section-heading,.steps .step,.pricing .price-card,.cta-inner,
+  .preview-row{
+    animation:none!important;
+  }
+  .trust svg{animation:none!important}
+}
