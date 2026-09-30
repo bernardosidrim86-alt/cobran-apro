@@ -330,7 +330,7 @@ function AppShell({session}) {
 
   const hasAIAccess=currentPlan==="profissional"||currentPlan==="business";
   const links=[["/app",LayoutDashboard,"Dashboard"],["/app/clientes",Users,"Clientes"],["/app/recebimentos",Wallet,"Recebimentos"],["/app/relatorios",TrendingUp,"Relatórios"],["/app/ia",Sparkles,"Assistente IA"],["/app/configuracoes",Settings,"Configurações"]];
-  return <div className="app-layout" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onPointerDown={handlePointerDown} onPointerUp={handlePointerUp}>{mobile&&<button className="sidebar-backdrop" aria-label="Fechar menu" onClick={()=>setMobile(false)}></button>}<aside className={`sidebar ${mobile?"open":""}`}>\n      <div className="mobile-sidebar-head"><Link to="/" className="brand side-brand"><img className="brand-logo" src="/logo.png" alt="CobrançaPro" /></Link>{mobile&&<button className="mobile-sidebar-close" onClick={()=>setMobile(false)} aria-label="Fechar menu"><X size={20}/></button>}</div><div className="side-nav">
+  return <div className="app-layout" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onPointerDown={handlePointerDown} onPointerUp={handlePointerUp}>{mobile&&<button className="sidebar-backdrop" aria-label="Fechar menu" onClick={()=>setMobile(false)}></button>}<aside className={`sidebar ${mobile?"open":""}`}><div className="mobile-sidebar-head"><Link to="/" className="brand side-brand"><img className="brand-logo" src="/logo.png" alt="CobrançaPro" /></Link>{mobile&&<button className="mobile-sidebar-close" onClick={()=>setMobile(false)} aria-label="Fechar menu"><X size={20}/></button>}</div><div className="side-nav">
     {links.slice(0,2).map(([path,Icon,label])=><Link onClick={()=>setMobile(false)} className={loc.pathname===path?"active":""} to={path} key={path}><Icon size={18}/>{label}</Link>)}
     <div className="side-nav-group">
       <button type="button" className={"side-nav-parent "+(loc.pathname.startsWith("/app/cobrancas")?"active":"")} onClick={()=>setChargesOpen(x=>!x)}>
@@ -499,7 +499,7 @@ function Charges() {
   useEffect(()=>{load()},[companyId]);
   useEffect(()=>{
     const requested=new URLSearchParams(loc.search).get("filter");
-    if(["pending","overdue","paid","today"].includes(requested)) setFilter(requested);
+    if(["pending","overdue","paid"].includes(requested)) setFilter(requested);
     else if(loc.pathname==="/app/cobrancas") setFilter("pending");
   },[loc.search,loc.pathname]);
 
@@ -531,17 +531,10 @@ function Charges() {
     }
   }
 
-  const filtered=rows.filter(x=>filter==="paid"
-    ? x.status==="paid"
-    : filter==="overdue"
-      ? x.status==="pending"&&x.due_date<todayISO()
-      : filter==="today"
-        ? x.status==="pending"&&x.due_date===todayISO()
-        : x.status==="pending"&&x.due_date>=todayISO()
-  );
+  const filtered=rows.filter(x=>filter==="paid"?x.status==="paid":filter==="overdue"?x.status==="pending"&&x.due_date<todayISO():x.status==="pending"&&x.due_date>=todayISO());
 
-  const sectionTitle=filter==="paid"?"Recebidas":filter==="overdue"?"Atrasadas":filter==="today"?"Vencendo hoje":"A receber";
-  const sectionSubtitle=filter==="paid"?"Histórico de cobranças já recebidas.":filter==="overdue"?"Cobranças vencidas que precisam de atenção.":filter==="today"?"Cobranças que vencem hoje.":"Cobranças pendentes e dentro do prazo.";
+  const sectionTitle=filter==="paid"?"Recebidas":filter==="overdue"?"Atrasadas":"A receber";
+  const sectionSubtitle=filter==="paid"?"Histórico de cobranças já recebidas.":filter==="overdue"?"Cobranças vencidas que precisam de atenção.":"Cobranças pendentes e dentro do prazo.";
 
   return <>
     <PageTitle title={sectionTitle} subtitle={sectionSubtitle} action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Nova cobrança</Button>}/>
