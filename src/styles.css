@@ -4461,3 +4461,15 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     padding-right:15px;
   }
 }
+
+
+/* Sidebar mobile: fechamento e preenchimento corretos */
+@media (max-width:900px){
+  .sidebar{height:100dvh;min-height:100dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:14px}
+  .sidebar .side-nav{flex:0 0 auto}
+  .sidebar .side-bottom{margin-top:auto}
+  .sidebar-close{display:grid;place-items:center;position:absolute;top:16px;right:12px;width:32px;height:32px;border:1px solid #e8e8ee;border-radius:8px;background:#fff;color:#777;z-index:2}
+  .sidebar-close:hover{background:#f7f7f9;color:#222}
+  .side-brand{padding-right:46px}
+}
+@media (min-width:901px){.sidebar-close{display:none!important}}
