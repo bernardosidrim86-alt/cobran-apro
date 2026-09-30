@@ -4440,3 +4440,24 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     height:20px;
   }
 }
+
+
+/* Recebimentos — respiro interno dos títulos */
+.payments-page .payments-table-panel .payments-table-head{
+  padding-left:10px;
+  padding-right:10px;
+}
+.payments-page .payments-metrics .metric{
+  padding-left:20px;
+  padding-right:20px;
+}
+@media(max-width:700px){
+  .payments-page .payments-table-panel .payments-table-head{
+    padding-left:9px;
+    padding-right:9px;
+  }
+  .payments-page .payments-metrics .metric{
+    padding-left:15px;
+    padding-right:15px;
+  }
+}
