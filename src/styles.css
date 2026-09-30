@@ -4380,3 +4380,63 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
   .payments-responsive-main b,.payments-responsive-main strong{font-size:10px!important}
   .payments-responsive-meta span{font-size:8px!important}
 }
+
+
+/* Recebimentos — acabamento premium */
+.payments-table-panel .payments-responsive-list{
+  border:1px solid #ececf1;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 1px 2px rgba(20,20,40,.025);
+}
+.payments-table-panel .payments-responsive-row{
+  position:relative;
+  transition:background .15s ease,box-shadow .15s ease;
+}
+.payments-table-panel .payments-responsive-row:hover{
+  background:#fafaff;
+}
+.payments-table-panel .payments-responsive-row:not(:last-child){
+  border-bottom:1px solid #f0f0f4;
+}
+.payments-table-panel .payments-responsive-row::before{
+  content:"";
+  width:3px;
+  height:22px;
+  position:absolute;
+  left:0;
+  top:50%;
+  transform:translateY(-50%);
+  border-radius:0 3px 3px 0;
+  background:#5B5CE2;
+  opacity:.7;
+}
+.payments-table-panel .payments-responsive-main b{
+  letter-spacing:-.01em;
+}
+.payments-table-panel .payments-responsive-main strong{
+  letter-spacing:-.015em;
+}
+.payments-table-panel .payments-responsive-meta span{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+.payments-table-panel .payments-table-head{
+  margin-bottom:10px;
+}
+.payments-table-panel .payments-table-head b{
+  letter-spacing:-.02em;
+}
+@media(max-width:700px){
+  .payments-table-panel .payments-responsive-list{
+    border-radius:11px;
+  }
+  .payments-table-panel .payments-responsive-row{
+    padding-left:13px!important;
+  }
+  .payments-table-panel .payments-responsive-row::before{
+    width:2px;
+    height:20px;
+  }
+}
