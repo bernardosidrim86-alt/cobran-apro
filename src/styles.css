@@ -4106,8 +4106,31 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
 .dashboard-page .dashboard-overview-panel .cash-summary{
   margin-top:10px;
 }
+.dashboard-page .dashboard-overview-panel .cash-summary{
+  grid-template-columns:1fr 1fr;
+}
 .dashboard-page .dashboard-overview-panel .cash-summary div + div{
-  padding-left:52px !important;
+  padding-left:0 !important;
+  border-left:0 !important;
+  position:relative;
+}
+.dashboard-page .dashboard-overview-panel .cash-summary div + div::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:1px;
+  height:42px;
+  background:var(--cp-line);
+}
+@media (max-width:600px){
+  .dashboard-page .dashboard-overview-panel .cash-summary div + div{
+    padding-left:24px !important;
+  }
+  .dashboard-page .dashboard-overview-panel .cash-summary div + div::before{
+    left:0;
+  }
 }
 .dashboard-page .dashboard-overview-panel .cash-summary div:first-child{
   padding-right:24px;
