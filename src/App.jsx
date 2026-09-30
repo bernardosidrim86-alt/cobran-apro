@@ -499,7 +499,7 @@ function Charges() {
   useEffect(()=>{load()},[companyId]);
   useEffect(()=>{
     const requested=new URLSearchParams(loc.search).get("filter");
-    if(["pending","overdue","paid"].includes(requested)) setFilter(requested);
+    if(["pending","overdue","paid","today"].includes(requested)) setFilter(requested);
     else if(loc.pathname==="/app/cobrancas") setFilter("pending");
   },[loc.search,loc.pathname]);
 
@@ -531,10 +531,17 @@ function Charges() {
     }
   }
 
-  const filtered=rows.filter(x=>filter==="paid"?x.status==="paid":filter==="overdue"?x.status==="pending"&&x.due_date<todayISO():x.status==="pending"&&x.due_date>=todayISO());
+  const filtered=rows.filter(x=>filter==="paid"
+    ? x.status==="paid"
+    : filter==="overdue"
+      ? x.status==="pending"&&x.due_date<todayISO()
+      : filter==="today"
+        ? x.status==="pending"&&x.due_date===todayISO()
+        : x.status==="pending"&&x.due_date>=todayISO()
+  );
 
-  const sectionTitle=filter==="paid"?"Recebidas":filter==="overdue"?"Atrasadas":"A receber";
-  const sectionSubtitle=filter==="paid"?"Histórico de cobranças já recebidas.":filter==="overdue"?"Cobranças vencidas que precisam de atenção.":"Cobranças pendentes e dentro do prazo.";
+  const sectionTitle=filter==="paid"?"Recebidas":filter==="overdue"?"Atrasadas":filter==="today"?"Vencendo hoje":"A receber";
+  const sectionSubtitle=filter==="paid"?"Histórico de cobranças já recebidas.":filter==="overdue"?"Cobranças vencidas que precisam de atenção.":filter==="today"?"Cobranças que vencem hoje.":"Cobranças pendentes e dentro do prazo.";
 
   return <>
     <PageTitle title={sectionTitle} subtitle={sectionSubtitle} action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Nova cobrança</Button>}/>
