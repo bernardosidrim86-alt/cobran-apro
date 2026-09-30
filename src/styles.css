@@ -4270,3 +4270,81 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
 .automation-days .choice{min-height:42px}
 .settings-divider{height:1px;background:var(--cp-line,#e5e7eb);margin:24px 0 0}
 @media(max-width:600px){.automation-card{padding-top:18px;margin-top:18px}.automation-card .form-grid{grid-template-columns:1fr}.toggle-row{align-items:flex-start}.automation-days{grid-template-columns:repeat(3,1fr)}}
+
+
+/* Recebimentos — estrutura responsiva definitiva */
+.payments-responsive-list{
+  width:100%;
+}
+.payments-responsive-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(90px,auto) minmax(70px,auto);
+  align-items:center;
+  min-height:52px;
+  padding:0 22px;
+  border-bottom:1px solid var(--cp-line);
+  box-sizing:border-box;
+}
+.payments-responsive-row:last-child{border-bottom:0}
+.payments-responsive-main{
+  display:contents;
+}
+.payments-responsive-main b{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--cp-text);
+  font-size:13px;
+  font-weight:650;
+}
+.payments-responsive-main strong{
+  color:var(--cp-text);
+  font-size:13px;
+  font-weight:650;
+}
+.payments-responsive-meta{
+  display:contents;
+}
+.payments-responsive-meta span{
+  color:var(--cp-muted);
+  font-size:12px;
+  white-space:nowrap;
+}
+@media(max-width:700px){
+  .payments-responsive-row{
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-rows:auto auto;
+    row-gap:3px;
+    min-height:0;
+    padding:11px 14px;
+  }
+  .payments-responsive-main{
+    display:contents;
+  }
+  .payments-responsive-main b{
+    grid-column:1;
+    grid-row:1;
+    font-size:12px;
+  }
+  .payments-responsive-main strong{
+    grid-column:2;
+    grid-row:1;
+    text-align:right;
+    font-size:12px;
+  }
+  .payments-responsive-meta{
+    display:contents;
+  }
+  .payments-responsive-meta span:first-child{
+    grid-column:1;
+    grid-row:2;
+    font-size:10px;
+  }
+  .payments-responsive-meta span:last-child{
+    grid-column:2;
+    grid-row:2;
+    text-align:right;
+    font-size:10px;
+  }
+}
