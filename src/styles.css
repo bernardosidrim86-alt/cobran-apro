@@ -4717,3 +4717,125 @@ tbody tr:hover{
     transition-duration:.01ms!important;
   }
 }
+
+
+/* COBRANCAPRO — LIVE FEEL 2.0 */
+@keyframes cpMetricReveal{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes cpRowReveal{
+  from{opacity:0;transform:translateX(-7px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes cpSoftFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-2px)}
+}
+@keyframes cpGlow{
+  0%,100%{box-shadow:0 0 0 0 rgba(91,92,226,0)}
+  50%{box-shadow:0 0 0 4px rgba(91,92,226,.07)}
+}
+@keyframes cpShimmer{
+  0%{background-position:-220px 0}
+  100%{background-position:220px 0}
+}
+
+.page > .metric-grid .metric:nth-child(1){animation:cpMetricReveal .45s .04s both cubic-bezier(.22,1,.36,1)}
+.page > .metric-grid .metric:nth-child(2){animation:cpMetricReveal .45s .09s both cubic-bezier(.22,1,.36,1)}
+.page > .metric-grid .metric:nth-child(3){animation:cpMetricReveal .45s .14s both cubic-bezier(.22,1,.36,1)}
+.page > .metric-grid .metric:nth-child(4){animation:cpMetricReveal .45s .19s both cubic-bezier(.22,1,.36,1)}
+
+.page .charge-row:nth-child(1),
+.page .payments-responsive-row:nth-child(1),
+.page tbody tr:nth-child(1){animation:cpRowReveal .3s .08s both}
+.page .charge-row:nth-child(2),
+.page .payments-responsive-row:nth-child(2),
+.page tbody tr:nth-child(2){animation:cpRowReveal .3s .13s both}
+.page .charge-row:nth-child(3),
+.page .payments-responsive-row:nth-child(3),
+.page tbody tr:nth-child(3){animation:cpRowReveal .3s .18s both}
+.page .charge-row:nth-child(4),
+.page .payments-responsive-row:nth-child(4),
+.page tbody tr:nth-child(4){animation:cpRowReveal .3s .23s both}
+.page .charge-row:nth-child(5),
+.page .payments-responsive-row:nth-child(5),
+.page tbody tr:nth-child(5){animation:cpRowReveal .3s .28s both}
+
+.metric b{
+  transition:transform .2s ease,color .2s ease;
+}
+.metric:hover b{
+  transform:translateX(2px);
+}
+
+.quick-action > span{
+  transition:transform .2s cubic-bezier(.22,1,.36,1),background-color .2s ease;
+}
+.quick-action:hover > span{
+  transform:scale(1.08) rotate(-3deg);
+}
+
+.text-link svg,
+.link-btn svg{
+  transition:transform .18s ease;
+}
+.text-link:hover svg,
+.link-btn:hover svg{
+  transform:translateX(3px);
+}
+
+.filters button:hover{
+  transform:translateY(-1px);
+  border-color:#d8d8e8;
+}
+.filters button.selected{
+  box-shadow:0 4px 12px rgba(91,92,226,.08);
+}
+
+.searchbox:focus-within{
+  box-shadow:0 0 0 3px rgba(91,92,226,.07);
+  border-color:#c8c9ed;
+}
+
+.avatar,
+.customer-avatar{
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.avatar:hover,
+.customer-avatar:hover{
+  transform:scale(1.04);
+  box-shadow:0 5px 14px rgba(40,40,80,.08);
+}
+
+.status-dot{
+  animation:cpGlow 2.2s ease-in-out infinite;
+}
+
+.badge.green{
+  animation:cpGlow 2.8s ease-in-out infinite;
+}
+
+.loading,
+.skeleton,
+[class*="skeleton"]{
+  background:linear-gradient(90deg,#f3f3f6 25%,#fafafd 50%,#f3f3f6 75%);
+  background-size:440px 100%;
+  animation:cpShimmer 1.35s linear infinite;
+}
+
+.panel-head .text-link:hover,
+.panel-head .link-btn:hover{
+  color:#4f50d4;
+}
+
+@media(max-width:700px){
+  .page > .metric-grid .metric:nth-child(n){
+    animation-duration:.34s;
+  }
+  .status-dot{animation-duration:2.8s}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .status-dot,.badge.green{animation:none!important}
+}
