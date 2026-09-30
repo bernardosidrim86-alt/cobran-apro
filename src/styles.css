@@ -4559,3 +4559,161 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     max-width:210px;
   }
 }
+
+
+/* COBRANCAPRO — MICRO-INTERACTIONS PREMIUM */
+@keyframes cpPageIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes cpCardIn{
+  from{opacity:0;transform:translateY(10px) scale(.99)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes cpFadeUp{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes cpPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(91,92,226,0)}
+  50%{box-shadow:0 0 0 5px rgba(91,92,226,.08)}
+}
+
+.app-main{
+  animation:cpPageIn .32s cubic-bezier(.22,1,.36,1) both;
+}
+.page > .page-title{
+  animation:cpFadeUp .35s cubic-bezier(.22,1,.36,1) both;
+}
+.page > .metric-grid,
+.page > .metric-grid.three{
+  animation:cpCardIn .42s .04s cubic-bezier(.22,1,.36,1) both;
+}
+.page > .content-grid,
+.page > .report-grid,
+.page > .ai-layout,
+.page > .settings-layout,
+.page > .panel{
+  animation:cpCardIn .44s .08s cubic-bezier(.22,1,.36,1) both;
+}
+
+.metric,
+.panel,
+.quick-action,
+.price-card,
+.feature-card,
+.step{
+  transition:
+    transform .2s cubic-bezier(.22,1,.36,1),
+    box-shadow .2s ease,
+    border-color .2s ease,
+    background-color .2s ease;
+}
+
+.metric:hover,
+.quick-action:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(30,30,70,.06);
+}
+
+.panel:hover{
+  border-color:#e1e1eb;
+}
+
+.metric-icon{
+  transition:transform .22s cubic-bezier(.22,1,.36,1);
+}
+.metric:hover .metric-icon{
+  transform:scale(1.06);
+}
+
+.btn{
+  transition:
+    transform .18s cubic-bezier(.22,1,.36,1),
+    box-shadow .18s ease,
+    background-color .18s ease,
+    border-color .18s ease;
+}
+.btn:active{
+  transform:translateY(1px) scale(.98);
+}
+.btn-primary:hover{
+  box-shadow:0 7px 18px rgba(91,92,226,.18);
+}
+
+.side-nav a,
+.side-nav-parent,
+.settings-nav button,
+.filters button{
+  transition:
+    background-color .18s ease,
+    color .18s ease,
+    transform .18s cubic-bezier(.22,1,.36,1);
+}
+.side-nav a:hover,
+.side-nav-parent:hover{
+  transform:translateX(2px);
+}
+
+.charge-row,
+.payments-responsive-row,
+tbody tr{
+  transition:background-color .16s ease;
+}
+.charge-row:hover,
+.payments-responsive-row:hover,
+tbody tr:hover{
+  background:#fafaff;
+}
+
+.badge{
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.badge:hover{
+  transform:scale(1.03);
+}
+
+.empty-icon{
+  transition:transform .25s cubic-bezier(.22,1,.36,1);
+}
+.empty:hover .empty-icon{
+  transform:translateY(-3px) rotate(-2deg);
+}
+
+.quick-action:hover > span{
+  animation:cpPulse .8s ease;
+}
+
+.searchbox,
+.field input,
+.field textarea,
+.field select{
+  transition:border-color .18s ease,box-shadow .18s ease;
+}
+
+.modal-backdrop{
+  animation:cpFadeUp .2s ease both;
+}
+.modal{
+  animation:cpCardIn .26s cubic-bezier(.22,1,.36,1) both;
+}
+
+@media(max-width:700px){
+  .app-main{
+    animation-duration:.26s;
+  }
+  .metric:hover,
+  .quick-action:hover,
+  .panel:hover{
+    transform:none;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+  }
+}
