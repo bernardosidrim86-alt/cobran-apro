@@ -4018,3 +4018,34 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     transform:none !important;
   }
 }
+
+
+/* Mobile: remover completamente caixas/divisores visuais dos atalhos */
+@media (max-width: 600px){
+  .dashboard-page .quick-panel .quick-actions-premium,
+  .dashboard-page .quick-panel .quick-actions-premium a,
+  .dashboard-page .quick-panel .quick-actions-premium a + a,
+  .dashboard-page .quick-panel .quick-actions-premium a::before,
+  .dashboard-page .quick-panel .quick-actions-premium a::after{
+    border:0 !important;
+    border-top:0 !important;
+    border-bottom:0 !important;
+    outline:0 !important;
+    box-shadow:none !important;
+  }
+  .dashboard-page .quick-panel .quick-actions-premium a{
+    background:transparent !important;
+    border-radius:0 !important;
+    transform:none !important;
+  }
+  .dashboard-page .quick-panel .quick-actions-premium a:hover,
+  .dashboard-page .quick-panel .quick-actions-premium a:active,
+  .dashboard-page .quick-panel .quick-actions-premium a:focus,
+  .dashboard-page .quick-panel .quick-actions-premium a:focus-visible{
+    background:transparent !important;
+    border:0 !important;
+    outline:0 !important;
+    box-shadow:none !important;
+    transform:none !important;
+  }
+}
