@@ -4049,3 +4049,20 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     transform:none !important;
   }
 }
+
+
+/* Mobile: remover caixas/divisores dos clientes cadastrados */
+@media (max-width: 600px){
+  .dashboard-page .dashboard-client-count,
+  .dashboard-page .dashboard-client-count a,
+  .dashboard-page .dashboard-client-count::before,
+  .dashboard-page .dashboard-client-count::after,
+  .dashboard-page .dashboard-client-count a::before,
+  .dashboard-page .dashboard-client-count a::after{
+    border:0 !important;
+    border-top:0 !important;
+    border-bottom:0 !important;
+    outline:0 !important;
+    box-shadow:none !important;
+  }
+}
