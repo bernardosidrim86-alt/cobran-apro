@@ -185,3 +185,47 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
 after insert on auth.users
 for each row execute procedure public.handle_new_user();
+
+
+-- WhatsApp automation
+create table if not exists public.whatsapp_automation_settings (
+  id uuid primary key default gen_random_uuid(),
+  company_id uuid unique not null references public.companies(id) on delete cascade,
+  enabled boolean not null default false,
+  reminder_before_days integer not null default 1 check (reminder_before_days between 0 and 30),
+  reminder_on_due boolean not null default true,
+  reminder_after_days integer[] not null default '{1,3,7}',
+  send_start_hour smallint not null default 8 check (send_start_hour between 0 and 23),
+  send_end_hour smallint not null default 18 check (send_end_hour between 0 and 23),
+  template_before text not null default 'Olá {nome}! Passando para lembrar que sua cobrança de {valor} vence em {vencimento}.',
+  template_due text not null default 'Olá {nome}! Sua cobrança de {valor} vence hoje ({vencimento}).',
+  template_after text not null default 'Olá {nome}! Identificamos que sua cobrança de {valor}, com vencimento em {vencimento}, está em aberto.',
+  template_before_name text,
+  template_due_name text,
+  template_after_name text,
+  template_language text not null default 'pt_BR',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.whatsapp_connections (
+  id uuid primary key default gen_random_uuid(),
+  company_id uuid unique not null references public.companies(id) on delete cascade,
+  phone_number_id text,
+  business_account_id text,
+  display_phone text,
+  status text not null default 'disconnected' check (status in ('disconnected','pending','connected','error')),
+  last_error text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.whatsapp_automation_settings enable row level security;
+alter table public.whatsapp_connections enable row level security;
+
+create policy "whatsapp automation company" on public.whatsapp_automation_settings for all using (company_id = public.my_company_id()) with check (company_id = public.my_company_id());
+create policy "whatsapp connections company" on public.whatsapp_connections for all using (company_id = public.my_company_id()) with check (company_id = public.my_company_id());
+
+alter table public.message_logs add column if not exists automation_key text;
+alter table public.message_logs add column if not exists error text;
+create unique index if not exists message_logs_automation_once_idx on public.message_logs(charge_id, automation_key) where charge_id is not null and automation_key is not null;
