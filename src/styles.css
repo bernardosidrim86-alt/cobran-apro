@@ -4000,3 +4000,21 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     pointer-events:none !important;
   }
 }
+
+
+/* Atalhos do dashboard: visual limpo no mobile */
+@media (max-width: 600px){
+  .dashboard-page .quick-actions-premium a{
+    border:0 !important;
+    box-shadow:none !important;
+    background:transparent !important;
+  }
+  .dashboard-page .quick-actions-premium a + a{
+    border-top:0 !important;
+  }
+  .dashboard-page .quick-actions-premium a:hover{
+    border:0 !important;
+    background:transparent !important;
+    transform:none !important;
+  }
+}
