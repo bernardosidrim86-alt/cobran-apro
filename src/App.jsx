@@ -531,11 +531,13 @@ function Charges() {
     }
   }
 
-  const filtered=rows.filter(x=>filter==="all"?true:filter==="paid"?x.status==="paid":filter==="overdue"?x.status==="pending"&&x.due_date<todayISO():filter==="today"?x.status==="pending"&&x.due_date===todayISO():x.status==="pending");
+  const filtered=rows.filter(x=>filter==="paid"?x.status==="paid":filter==="overdue"?x.status==="pending"&&x.due_date<todayISO():x.status==="pending"&&x.due_date>=todayISO());
+
+  const sectionTitle=filter==="paid"?"Recebidas":filter==="overdue"?"Atrasadas":"A receber";
+  const sectionSubtitle=filter==="paid"?"Histórico de cobranças já recebidas.":filter==="overdue"?"Cobranças vencidas que precisam de atenção.":"Cobranças pendentes e dentro do prazo.";
 
   return <>
-    <PageTitle title="Cobranças" subtitle="Acompanhe tudo que precisa ser recebido." action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Nova cobrança</Button>}/>
-    <div className="filters">{[["all","Todas"],["pending","A receber"],["today","Vencendo hoje"],["overdue","Atrasadas"],["paid","Recebidas"]].map(([v,l])=><button className={filter===v?"selected":""} onClick={()=>setFilter(v)} key={v}>{l}</button>)}</div>
+    <PageTitle title={sectionTitle} subtitle={sectionSubtitle} action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Nova cobrança</Button>}/>
     <div className="panel table-panel">
       {filtered.length===0?<Empty text="Nenhuma cobrança encontrada."/>:<table>
         <thead><tr><th>Cliente</th><th>Descrição</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ação</th></tr></thead>
