@@ -4150,3 +4150,15 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     padding-left:24px;
   }
 }
+
+
+/* WhatsApp: automacao de cobrancas */
+.automation-card{margin-top:22px;padding-top:22px;border-top:1px solid var(--cp-line,#e5e7eb);display:grid;gap:18px}
+.automation-card h3{margin:0 0 5px;font-size:16px}
+.automation-card p{margin:0;color:var(--cp-muted,#6b7280);font-size:13px;line-height:1.5}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:14px;font-weight:600}
+.toggle-row input{width:42px;height:22px;accent-color:#6c5ce7;cursor:pointer}
+.automation-days{margin-top:8px}
+.automation-days .choice{min-height:42px}
+.settings-divider{height:1px;background:var(--cp-line,#e5e7eb);margin:24px 0 0}
+@media(max-width:600px){.automation-card{padding-top:18px;margin-top:18px}.automation-card .form-grid{grid-template-columns:1fr}.toggle-row{align-items:flex-start}.automation-days{grid-template-columns:repeat(3,1fr)}}
