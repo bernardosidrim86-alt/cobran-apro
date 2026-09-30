@@ -2279,6 +2279,50 @@ button,input,textarea,select{font-family:inherit}
 }
 
 
+
+/* Recebimentos — lista mobile independente */
+.payments-mobile-list{display:none}
+@media(max-width:700px){
+  .payments-table{display:table!important}
+  .payments-mobile-list{display:block;padding:6px 10px 10px}
+  .payments-mobile-row{
+    padding:10px 4px;
+    border-bottom:1px solid var(--cp-line);
+  }
+  .payments-mobile-row:last-child{border-bottom:0}
+  .payments-mobile-main{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .payments-mobile-main b{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:var(--cp-text);
+    font-size:11px;
+    font-weight:650;
+  }
+  .payments-mobile-main strong{
+    flex:0 0 auto;
+    color:var(--cp-text);
+    font-size:11px;
+    font-weight:700;
+  }
+  .payments-mobile-meta{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:3px;
+    color:var(--cp-subtle);
+    font-size:9px;
+  }
+  .payments-mobile-meta span+span::before{content:"•";margin-right:12px;color:#c5c6cc}
+  .payments-page .payments-table{display:none!important}
+}
+
 /* Relatórios — visual refresh */
 .reports-page{
   max-width:1280px;
