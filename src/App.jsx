@@ -161,7 +161,7 @@ function Landing({session}) {
             ["02","Crie suas cobranças","Defina valor, vencimento, serviço e recorrência."],
             ["03","Veja quem cobrar","O dashboard destaca automaticamente o que precisa de atenção."],
             ["04","Envie pelo WhatsApp","Abra uma mensagem pronta e cobre de forma profissional."]
-          ].map((x,i)=><ScrollReveal key={x[0]} delay={i*70}><div className="step"><span>{x[0]}</span><h3>{x[1]}</h3><p>{x[2]}</p></div>)}
+          ].map((x,i)=><ScrollReveal key={x[0]} delay={i*70}><div className="step"><span>{x[0]}</span><h3>{x[1]}</h3><p>{x[2]}</p></div></ScrollReveal>)}
         </div>
       </div></section>
 
@@ -175,8 +175,7 @@ function Landing({session}) {
             [MessageCircle,"WhatsApp","Mensagens prontas para cobrar sem perder tempo."],
             [Sparkles,"Assistente IA","Crie mensagens naturais para cada situação."],
             [TrendingUp,"Relatórios","Acompanhe recebimentos e cobranças em um só lugar."]
-          ].map(([Icon,t,p],i)=><ScrollReveal key={t} delay={i*65}><div className="feature-card"><div className="icon-box"><Icon size={20}/></div><h3>{t}</h3><p>{p}</p></div>)}
-        </div></ScrollReveal>)}
+          ].map(([Icon,t,p],i)=><ScrollReveal key={t} delay={i*65}><div className="feature-card"><div className="icon-box"><Icon size={20}/></div><h3>{t}</h3><p>{p}</p></div></ScrollReveal>)}
         </div>
       </div></section>
 
