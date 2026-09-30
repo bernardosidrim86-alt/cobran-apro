@@ -110,6 +110,24 @@ function SessionRedirect({session}) {
   return <div className="screen-center">{checking ? "Entrando..." : "Continuando..."}</div>;
 }
 
+function ScrollReveal({children, className="", delay=0}) {
+  const ref = React.useRef(null);
+  useEffect(()=>{
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry])=>{
+      if (entry.isIntersecting) {
+        el.style.setProperty("--reveal-delay", `${delay}ms`);
+        el.classList.add("is-visible");
+        observer.unobserve(el);
+      }
+    }, {threshold:0.14, rootMargin:"0px 0px -8% 0px"});
+    observer.observe(el);
+    return ()=>observer.disconnect();
+  }, [delay]);
+  return <div ref={ref} className={`scroll-reveal ${className}`}>{children}</div>;
+}
+
 function Landing({session}) {
   useEffect(()=>{
     if(window.location.hash!=="#precos") return;
@@ -136,19 +154,19 @@ function Landing({session}) {
       </section>
 
       <section id="como" className="section soft"><div className="container">
-        <div className="section-heading"><span className="eyebrow">Como funciona</span><h2>Uma visão clara de tudo que você precisa receber.</h2></div>
+        <ScrollReveal><div className="section-heading"><span className="eyebrow">Como funciona</span><h2>Uma visão clara de tudo que você precisa receber.</h2></div></ScrollReveal>
         <div className="steps">
           {[
             ["01","Cadastre seus clientes","Tenha todos os contatos e históricos em um só lugar."],
             ["02","Crie suas cobranças","Defina valor, vencimento, serviço e recorrência."],
             ["03","Veja quem cobrar","O dashboard destaca automaticamente o que precisa de atenção."],
             ["04","Envie pelo WhatsApp","Abra uma mensagem pronta e cobre de forma profissional."]
-          ].map(x=><div className="step" key={x[0]}><span>{x[0]}</span><h3>{x[1]}</h3><p>{x[2]}</p></div>)}
+          ].map((x,i)=><ScrollReveal key={x[0]} delay={i*70}><div className="step"><span>{x[0]}</span><h3>{x[1]}</h3><p>{x[2]}</p></div>)}
         </div>
       </div></section>
 
       <section id="recursos" className="section"><div className="container">
-        <div className="section-heading"><span className="eyebrow">Recursos</span><h2>Tudo que você precisa para receber melhor.</h2></div>
+        <ScrollReveal><div className="section-heading"><span className="eyebrow">Recursos</span><h2>Tudo que você precisa para receber melhor.</h2></div></ScrollReveal>
         <div className="feature-grid">
           {[
             [LayoutDashboard,"Dashboard financeiro","Veja a receber, vencendo hoje, atrasado e recebido."],
@@ -157,14 +175,15 @@ function Landing({session}) {
             [MessageCircle,"WhatsApp","Mensagens prontas para cobrar sem perder tempo."],
             [Sparkles,"Assistente IA","Crie mensagens naturais para cada situação."],
             [TrendingUp,"Relatórios","Acompanhe recebimentos e cobranças em um só lugar."]
-          ].map(([Icon,t,p])=><div className="feature-card" key={t}><div className="icon-box"><Icon size={20}/></div><h3>{t}</h3><p>{p}</p></div>)}
+          ].map(([Icon,t,p],i)=><ScrollReveal key={t} delay={i*65}><div className="feature-card"><div className="icon-box"><Icon size={20}/></div><h3>{t}</h3><p>{p}</p></div>)}
+        </div></ScrollReveal>)}
         </div>
       </div></section>
 
       <section id="precos" className="section soft"><div className="container">
-        <div className="section-heading center"><span className="eyebrow">Preços</span><h2>Escolha o plano ideal para sua empresa.</h2><p>Teste grátis por 7 dias. Sem cartão de crédito. Faça upgrade quando precisar.</p></div>
+        <ScrollReveal><div className="section-heading center"><span className="eyebrow">Preços</span><h2>Escolha o plano ideal para sua empresa.</h2><p>Teste grátis por 7 dias. Sem cartão de crédito. Faça upgrade quando precisar.</p></div></ScrollReveal>
         <div className="pricing">
-          {PLAN_OPTIONS.map(plan => <Price key={plan.key} plan={plan} featured={plan.key==="profissional"} session={session}/>)}
+          {PLAN_OPTIONS.map((plan,i) => <ScrollReveal key={plan.key} delay={i*90}><Price plan={plan} featured={plan.key==="profissional"} session={session}/></ScrollReveal>)}
         </div>
       </div></section>
 
