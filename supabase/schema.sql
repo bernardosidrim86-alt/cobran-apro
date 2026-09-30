@@ -223,7 +223,9 @@ create table if not exists public.whatsapp_connections (
 alter table public.whatsapp_automation_settings enable row level security;
 alter table public.whatsapp_connections enable row level security;
 
+drop policy if exists "whatsapp automation company" on public.whatsapp_automation_settings;
 create policy "whatsapp automation company" on public.whatsapp_automation_settings for all using (company_id = public.my_company_id()) with check (company_id = public.my_company_id());
+drop policy if exists "whatsapp connections company" on public.whatsapp_connections;
 create policy "whatsapp connections company" on public.whatsapp_connections for all using (company_id = public.my_company_id()) with check (company_id = public.my_company_id());
 
 alter table public.message_logs add column if not exists automation_key text;
