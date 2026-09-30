@@ -4066,3 +4066,37 @@ html[data-theme="dark"] .modal{background:#191a20;border-color:#30313b;color:#ee
     box-shadow:none !important;
   }
 }
+
+
+/* Dashboard: ação "Ver todas" alinhada e sem quebra */
+.dashboard-page .dashboard-bottom-grid > .panel:first-child .panel-head .link-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  white-space:nowrap;
+  flex:0 0 auto;
+  text-decoration:none;
+  line-height:1;
+  padding:6px 0;
+}
+.dashboard-page .dashboard-bottom-grid > .panel:first-child .panel-head .link-btn svg{
+  flex:0 0 auto;
+  display:block;
+}
+@media (max-width: 600px){
+  .dashboard-page .dashboard-bottom-grid > .panel:first-child .panel-head{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+  }
+  .dashboard-page .dashboard-bottom-grid > .panel:first-child .panel-head > div{
+    flex:1;
+    min-width:0;
+  }
+  .dashboard-page .dashboard-bottom-grid > .panel:first-child .panel-head .link-btn{
+    margin-top:1px;
+    padding:4px 0;
+    font-size:12px;
+  }
+}
