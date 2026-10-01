@@ -7559,3 +7559,84 @@ tbody tr:hover{
     font-size:7px;
   }
 }
+
+
+/* LANDING 2.9 — PRODUCT FLOW, WITHOUT DUPLICATING THE DASHBOARD */
+.cp-lp-product-breakdown-heading{
+  margin-bottom:46px;
+}
+.cp-lp-product-breakdown{
+  display:grid;
+  grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;
+  align-items:stretch;
+  gap:12px;
+}
+.cp-lp-breakdown-card{
+  position:relative;
+  min-height:230px;
+  padding:25px;
+  border:1px solid #cfd4de;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 9px 25px rgba(26,31,55,.055);
+}
+.cp-lp-breakdown-index{
+  display:block;
+  color:#9ca0ad;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.1em;
+}
+.cp-lp-breakdown-icon{
+  width:42px;
+  height:42px;
+  margin-top:34px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  color:#5b5ce2;
+  background:#f0f0ff;
+  border:1px solid #e2e3fb;
+}
+.cp-lp-breakdown-card h3{
+  margin:20px 0 8px;
+  color:#272a3c;
+  font-size:16px;
+  line-height:1.2;
+  letter-spacing:-.02em;
+}
+.cp-lp-breakdown-card p{
+  margin:0;
+  color:#767a89;
+  font-size:11px;
+  line-height:1.6;
+}
+.cp-lp-breakdown-connector{
+  width:24px;
+  height:1px;
+  align-self:center;
+  background:#cbd0db;
+}
+@media(max-width:1050px){
+  .cp-lp-product-breakdown{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .cp-lp-breakdown-connector{
+    display:none;
+  }
+}
+@media(max-width:520px){
+  .cp-lp-product-breakdown{
+    grid-template-columns:1fr;
+  }
+  .cp-lp-breakdown-card{
+    min-height:0;
+    padding:22px;
+  }
+  .cp-lp-breakdown-icon{
+    margin-top:27px;
+  }
+  .cp-lp-product-breakdown-heading{
+    margin-bottom:30px;
+  }
+}
