@@ -5311,3 +5311,19 @@ tbody tr:hover{
 @media(max-width:900px){
   .dashboard-screenshot-preview{width:100%;margin:0 auto}
 }
+
+/* Customer actions dropdown: keep menu above table rows while moving the mouse */
+.customer-actions-cell:has(.customer-menu){
+  z-index:1000 !important;
+}
+.customer-menu{
+  z-index:10000 !important;
+  top:calc(100% + 2px) !important;
+  right:0 !important;
+  pointer-events:auto !important;
+}
+.customer-menu button{
+  position:relative;
+  z-index:1;
+  pointer-events:auto !important;
+}
