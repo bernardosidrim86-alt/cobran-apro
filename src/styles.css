@@ -8229,3 +8229,118 @@ tbody tr:hover{
     transform:translateY(3px);
   }
 }
+
+/* LANDING 4.1 — PREMIUM CTA SYSTEM */
+.cp-lp .btn{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+}
+.cp-lp .btn svg{
+  flex:none;
+  transition:transform .22s cubic-bezier(.2,.8,.2,1);
+}
+.cp-lp .btn-primary{
+  background:linear-gradient(135deg,#696bf0 0%,#5557da 100%);
+  border-color:#5557da;
+  color:#fff;
+  box-shadow:
+    0 10px 24px rgba(79,81,208,.18),
+    0 2px 4px rgba(43,44,111,.08);
+}
+.cp-lp .btn-primary::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-42%;
+  width:26%;
+  height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.24),transparent);
+  transform:skewX(-18deg);
+  transition:left .55s ease;
+  pointer-events:none;
+  z-index:-1;
+}
+.cp-lp .btn-primary:hover{
+  transform:translateY(-2px);
+  border-color:#4f51d4;
+  box-shadow:
+    0 15px 32px rgba(79,81,208,.24),
+    0 3px 6px rgba(43,44,111,.10);
+}
+.cp-lp .btn-primary:hover::before{
+  left:135%;
+}
+.cp-lp .btn-primary:hover svg{
+  transform:translateX(3px);
+}
+
+.cp-lp .btn-secondary{
+  background:rgba(255,255,255,.62);
+  border-color:#c6cbd7;
+  color:#343849;
+  box-shadow:0 6px 16px rgba(27,31,58,.045);
+}
+.cp-lp .btn-secondary:hover{
+  transform:translateY(-2px);
+  background:#fff;
+  border-color:#afb5c4;
+  color:#252938;
+  box-shadow:0 11px 24px rgba(27,31,58,.075);
+}
+.cp-lp .btn-secondary:hover svg{
+  transform:translateX(3px);
+}
+
+.cp-lp-hero-actions{
+  gap:12px;
+}
+.cp-lp-hero-actions .btn{
+  min-height:52px;
+  padding-left:21px;
+  padding-right:21px;
+  border-radius:13px;
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:-.01em;
+}
+.cp-lp-hero-actions .btn-primary{
+  min-width:188px;
+}
+.cp-lp-hero-actions .btn-secondary{
+  min-width:188px;
+}
+.cp-lp-header-cta{
+  box-shadow:0 7px 18px rgba(79,81,208,.14);
+}
+.cp-lp-header-cta:hover{
+  transform:translateY(-1px);
+}
+.cp-lp-final-cta .btn-white{
+  box-shadow:0 10px 26px rgba(23,26,74,.12);
+  transition:transform .22s ease,box-shadow .22s ease,background .22s ease;
+}
+.cp-lp-final-cta .btn-white:hover{
+  transform:translateY(-2px);
+  box-shadow:0 15px 32px rgba(23,26,74,.16);
+}
+.cp-lp-pricing-grid .price-actions .btn{
+  transition:transform .2s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease;
+}
+.cp-lp-pricing-grid .price-actions .btn:hover{
+  transform:translateY(-2px);
+}
+@media(max-width:520px){
+  .cp-lp-hero-actions{
+    gap:10px;
+  }
+  .cp-lp-hero-actions .btn{
+    min-height:50px;
+    border-radius:12px;
+    font-size:12px;
+  }
+  .cp-lp-hero-actions .btn-primary,
+  .cp-lp-hero-actions .btn-secondary{
+    min-width:0;
+  }
+}
