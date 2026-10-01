@@ -136,7 +136,7 @@ function Landing({session}) {
     return()=>clearTimeout(timer);
   },[]);
 
-  return <div className="cp-lp cp-lp-dark">
+  return <div className="cp-lp">
     <header className="cp-lp-header">
       <div className="cp-lp-header-inner">
         <Link to="/" className="cp-lp-brand">
