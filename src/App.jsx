@@ -150,6 +150,26 @@ function Landing({session}) {
     return()=>clearTimeout(timer);
   },[]);
 
+  useEffect(()=>{
+    const items=document.querySelectorAll(".lp .scroll-reveal");
+    if(!items.length) return;
+    const reduceMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduceMotion){
+      items.forEach(el=>el.classList.add("is-visible"));
+      return;
+    }
+    const observer=new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },{threshold:0.12,rootMargin:"0px 0px -7% 0px"});
+    items.forEach(el=>observer.observe(el));
+    return()=>observer.disconnect();
+  },[]);
+
   const steps=[
     {n:"01",title:"Cadastre seus clientes",text:"Nome, telefone e e-mail de cada cliente em um só lugar, com busca rápida. Nada de procurar contato em conversa antiga.",img:"/landing/clientes.webp",alt:"Lista de clientes do CobrançaPro com telefone e e-mail"},
     {n:"02",title:"Crie as cobranças",text:"Defina valor, vencimento e recorrência. O sistema separa sozinho o que está a receber, o que vence hoje, o que atrasou e o que já foi pago.",img:"/landing/cobrancas.webp",alt:"Lista de cobranças com status pago, a receber e atrasado"},
@@ -207,7 +227,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section className="lp-problem">
+      <section className="lp-problem scroll-reveal">
         <div className="lp-wrap lp-problem-grid">
           <h2>Cobrança espalhada em planilha, caderno e WhatsApp vira dinheiro esquecido.</h2>
           <ul className="lp-problem-list">
@@ -218,7 +238,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="como" className="lp-section">
+      <section id="como" className="lp-section scroll-reveal">
         <div className="lp-wrap">
           <div className="lp-heading"><p className="lp-kicker">Como funciona</p><h2>Do cadastro ao dinheiro na conta, em quatro passos.</h2></div>
           <div className="lp-steps">
@@ -232,7 +252,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="recursos" className="lp-section lp-soft">
+      <section id="recursos" className="lp-section lp-soft scroll-reveal">
         <div className="lp-wrap">
           <div className="lp-heading"><p className="lp-kicker">Recursos</p><h2>O que vem no sistema.</h2></div>
           <dl className="lp-features">
@@ -241,14 +261,14 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section className="lp-who">
+      <section className="lp-who scroll-reveal">
         <div className="lp-wrap">
           <p className="lp-kicker">Para quem é</p>
           <p className="lp-who-text">Feito para quem precisa receber: <b>prestadores de serviço</b>, <b>barbearias e salões</b>, <b>clínicas e consultórios</b>, <b>oficinas e negócios locais</b>, <b>profissionais autônomos</b> e <b>pequenas empresas</b> que cobram todo mês.</p>
         </div>
       </section>
 
-      <section id="precos" className="lp-section lp-soft lp-plans">
+      <section id="precos" className="lp-section lp-soft lp-plans scroll-reveal">
         <div className="lp-wrap">
           <div className="lp-heading"><p className="lp-kicker">Planos</p><h2>Comece de graça. Faça upgrade quando precisar.</h2><p className="lp-sub">Teste por 7 dias, sem cartão de crédito. A assinatura é processada pela Perfect Pay.</p></div>
           <div className="lp-billing" role="group" aria-label="Periodicidade do plano">
@@ -261,7 +281,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="duvidas" className="lp-section">
+      <section id="duvidas" className="lp-section scroll-reveal">
         <div className="lp-wrap lp-faq-grid">
           <div className="lp-heading"><p className="lp-kicker">Dúvidas</p><h2>Perguntas frequentes.</h2></div>
           <div className="lp-faq">
@@ -270,7 +290,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section className="lp-final">
+      <section className="lp-final scroll-reveal">
         <div className="lp-wrap lp-final-in">
           <div><h2>Chega de planilha para saber quem está te devendo.</h2><p>7 dias grátis · Sem cartão de crédito</p></div>
           <Link to="/cadastro" className="lp-btn lp-btn-light lp-btn-lg">Começar grátis <ArrowRight size={18}/></Link>
