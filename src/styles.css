@@ -8344,3 +8344,125 @@ tbody tr:hover{
     min-width:0;
   }
 }
+
+/* LANDING 4.2 — MODERN SAAS HERO CTAS */
+.cp-lp-hero{
+  background:
+    radial-gradient(70% 55% at 50% 0%,rgba(94,96,242,.15),transparent 72%),
+    radial-gradient(32% 35% at 5% 30%,rgba(59,130,246,.08),transparent 72%),
+    linear-gradient(180deg,#f6f8ff 0%,#eef1f8 100%)!important;
+}
+.cp-lp-hero-actions{
+  align-items:center;
+  gap:14px;
+}
+.cp-lp-hero-actions .btn{
+  min-height:54px;
+  border-radius:14px;
+  font-size:13px;
+  font-weight:850;
+  letter-spacing:-.02em;
+  transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s ease,background .2s ease,border-color .2s ease,color .2s ease;
+}
+.cp-lp-hero-actions .btn-primary{
+  position:relative;
+  min-width:196px;
+  padding:0 22px;
+  color:#fff;
+  background:
+    linear-gradient(135deg,#6573f2 0%,#5361e6 48%,#4b5de1 100%);
+  border:1px solid rgba(65,74,192,.85);
+  box-shadow:
+    0 14px 28px rgba(72,84,220,.24),
+    0 5px 10px rgba(49,58,153,.10),
+    inset 0 1px 0 rgba(255,255,255,.18);
+}
+.cp-lp-hero-actions .btn-primary::before{
+  content:"";
+  position:absolute;
+  inset:1px;
+  border-radius:13px;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 45%);
+  pointer-events:none;
+  z-index:-1;
+}
+.cp-lp-hero-actions .btn-primary::after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-35%;
+  width:24%;
+  height:100%;
+  transform:skewX(-18deg);
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.25),transparent);
+  pointer-events:none;
+  transition:left .65s cubic-bezier(.2,.7,.2,1);
+}
+.cp-lp-hero-actions .btn-primary:hover{
+  transform:translateY(-3px);
+  background:
+    linear-gradient(135deg,#6d7bf7 0%,#5968ec 48%,#5265e8 100%);
+  box-shadow:
+    0 18px 34px rgba(72,84,220,.30),
+    0 7px 14px rgba(49,58,153,.12),
+    inset 0 1px 0 rgba(255,255,255,.20);
+}
+.cp-lp-hero-actions .btn-primary:hover::after{
+  left:135%;
+}
+.cp-lp-hero-actions .btn-primary svg{
+  transition:transform .24s cubic-bezier(.2,.8,.2,1);
+}
+.cp-lp-hero-actions .btn-primary:hover svg{
+  transform:translateX(4px);
+}
+
+.cp-lp-hero-actions .btn-secondary{
+  min-width:auto;
+  padding:0 7px 0 4px;
+  border:0;
+  background:transparent!important;
+  color:#50566a;
+  box-shadow:none!important;
+}
+.cp-lp-hero-actions .btn-secondary::before,
+.cp-lp-hero-actions .btn-secondary::after{
+  display:none;
+}
+.cp-lp-hero-actions .btn-secondary:hover{
+  transform:none;
+  color:#33394a;
+  background:transparent!important;
+}
+.cp-lp-hero-actions .btn-secondary svg{
+  color:#5b5ce2;
+  transition:transform .22s ease;
+}
+.cp-lp-hero-actions .btn-secondary:hover svg{
+  transform:translateX(4px);
+}
+
+.cp-lp-header-cta{
+  background:linear-gradient(135deg,#6573f2 0%,#5361e6 100%)!important;
+  border-color:#5361e6!important;
+}
+
+@media(max-width:520px){
+  .cp-lp-hero{
+    background:
+      radial-gradient(92% 42% at 50% 0%,rgba(94,96,242,.13),transparent 72%),
+      linear-gradient(180deg,#f4f6fc 0%,#edf0f6 100%)!important;
+  }
+  .cp-lp-hero-actions{
+    align-items:stretch;
+    gap:8px;
+  }
+  .cp-lp-hero-actions .btn-primary{
+    min-width:0;
+    width:100%;
+  }
+  .cp-lp-hero-actions .btn-secondary{
+    justify-content:center;
+    min-height:42px;
+  }
+}
