@@ -186,9 +186,9 @@ function Landing({session}) {
         </div>
       </div></section>
 
-      <section className="cta"><div className="container cta-inner"><div><span className="eyebrow">CobrançaPro</span><h2>Comece a organizar suas cobranças hoje.</h2></div><Link to="/cadastro" className="btn btn-white btn-lg">Criar minha conta <ArrowRight size={18}/></Link></div></section>
+      <section className="cta"><div className="container cta-inner"><div className="cta-copy"><span className="eyebrow">Comece grátis</span><h2>Menos cobrança manual.<br/><span>Mais dinheiro recebido no prazo.</span></h2><p>Organize seus clientes, cobranças e recebimentos em um só lugar.</p></div><Link to="/cadastro" className="btn btn-white btn-lg">Criar minha conta <ArrowRight size={18}/></Link></div></section>
     </main>
-    <footer className="footer"><div className="container"><span>© 2026 CobrançaPro</span><span>Receba no prazo. Sem ficar correndo atrás.</span></div></footer>
+    <footer className="footer"><div className="container"><div><strong>CobrançaPro</strong><span>Receba no prazo. Sem ficar correndo atrás.</span></div><div><span>© 2026 CobrançaPro</span><Link to="/login">Entrar</Link><Link to="/cadastro">Criar conta</Link></div></div></footer>
   </div>;
 }
 
