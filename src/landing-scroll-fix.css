@@ -1,0 +1,24 @@
+/* LANDING SCROLL FIX — one vertical scroll container only */
+html,
+body,
+#root{
+  max-width:100%;
+  overflow-x:clip!important;
+}
+
+html{
+  overflow-y:visible!important;
+}
+
+body{
+  overflow-y:visible!important;
+}
+
+#root{
+  overflow-y:visible!important;
+}
+
+.cp-lp{
+  overflow:visible!important;
+  clip-path:none!important;
+}
