@@ -1070,7 +1070,7 @@ function CalendarPage(){
           <div><span>Recebido</span><b>{money(selectedReceived)}</b></div>
         </div>
         <div className="calendar-events">
-          {selectedCharges.map(x=><Link to="/app/cobrancas?q="+encodeURIComponent(x.description||x.customers?.name||"")} className="calendar-event" key={x.id}>
+          {selectedCharges.map(x=><Link to={"/app/cobrancas?q="+encodeURIComponent(x.description||x.customers?.name||"")} className="calendar-event" key={x.id}>
             <span className={x.status==="paid"?"event-dot paid":x.due_date<todayISO()?"event-dot late":"event-dot charge"}/>
             <div><b>{x.customers?.name||"Cliente"}</b><small>{x.description||"Cobrança"} · {x.status==="paid"?"Pago":x.due_date<todayISO()?"Atrasado":"A receber"}</small></div>
             <strong>{money(x.amount)}</strong>
