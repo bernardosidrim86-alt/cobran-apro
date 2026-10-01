@@ -219,30 +219,28 @@ function Landing({session}) {
             <p className="lp-sub">Tudo o que você precisa para organizar clientes, cobranças, recebimentos e contatos.</p>
           </div>
 
-          <div className="lp-feature-list">
+          <div className="lp-feature-grid">
             {modules.map((module,moduleIndex)=>(
-              <section id={module.id} className={"lp-feature-row " + (moduleIndex%2 ? "reverse" : "")} key={module.id}>
-                <div className="lp-feature-intro">
-                  <div className="lp-feature-index">0{moduleIndex+1}</div>
-                  <div className="lp-feature-icon" aria-hidden="true">
-                    {moduleIndex===0 ? <Receipt size={24}/> : moduleIndex===1 ? <Users size={24}/> : moduleIndex===2 ? <MessageCircle size={24}/> : <TrendingUp size={24}/>}
-                  </div>
-                  <p className="lp-kicker">{module.kicker}</p>
-                  <h2>{module.title}</h2>
-                  <p className="lp-feature-lead">{module.text}</p>
+              <section id={module.id} className="lp-feature" key={module.id}>
+                <div className="lp-feature-icon" aria-hidden="true">
+                  {moduleIndex===0 ? <Receipt size={22}/> : moduleIndex===1 ? <Users size={22}/> : moduleIndex===2 ? <MessageCircle size={22}/> : <TrendingUp size={22}/>}
                 </div>
-                <div className="lp-feature-details">
+                <p className="lp-kicker">{module.kicker}</p>
+                <h2>{module.title}</h2>
+                <p className="lp-feature-lead">{module.text}</p>
+                <div className="lp-resource-grid">
                   {module.resources.map(([title,text],resourceIndex)=>(
-                    <article className="lp-feature-item" key={title}>
-                      <span className="lp-feature-item-number">0{resourceIndex+1}</span>
+                    <article className="lp-resource" key={title}>
+                      <div className="lp-resource-icon" aria-hidden="true">
+                        {resourceIndex===0 ? <Check size={17}/> : resourceIndex===1 ? <Search size={17}/> : resourceIndex===2 ? <TrendingUp size={17}/> : <Receipt size={17}/>}
+                      </div>
                       <div><h3>{title}</h3><p>{text}</p></div>
                     </article>
                   ))}
                 </div>
               </section>
             ))}
-          </div>
-          </div>
+          </div>>
         </div>
       </section>
 
