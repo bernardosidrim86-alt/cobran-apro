@@ -128,6 +128,15 @@ function ScrollReveal({children, className="", delay=0}) {
   return <div ref={ref} className={`scroll-reveal ${className}`}>{children}</div>;
 }
 
+function scrollLandingTo(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const header=document.querySelector(".cp-lp-header");
+  const offset=(header?.getBoundingClientRect().height||0)+12;
+  const top=el.getBoundingClientRect().top+window.scrollY-offset;
+  window.scrollTo({top:Math.max(0,top),behavior:"smooth"});
+}
+
 function Landing({session}) {
   const [annualBilling,setAnnualBilling]=useState(false);
 
@@ -146,9 +155,9 @@ function Landing({session}) {
         </Link>
 
         <nav className="cp-lp-nav" aria-label="Navegação principal">
-          <a href="#recursos">Recursos</a>
-          <a href="#como-funciona">Como funciona</a>
-          <a href="#precos">Preços</a>
+          <a href="#recursos" onClick={e=>{e.preventDefault();scrollLandingTo("recursos")}}>Recursos</a>
+          <a href="#como-funciona" onClick={e=>{e.preventDefault();scrollLandingTo("como-funciona")}}>Como funciona</a>
+          <a href="#precos" onClick={e=>{e.preventDefault();scrollLandingTo("precos")}}>Preços</a>
         </nav>
 
         <div className="cp-lp-header-actions">
@@ -174,7 +183,7 @@ function Landing({session}) {
 
             <div className="cp-lp-hero-actions">
               <Link to="/cadastro" className="btn btn-primary btn-lg">Começar grátis <ArrowRight size={18}/></Link>
-              <a href="#como-funciona" className="btn btn-secondary btn-lg">Ver como funciona <ChevronRight size={18}/></a>
+              <a href="#como-funciona" onClick={e=>{e.preventDefault();scrollLandingTo("como-funciona")}} className="btn btn-secondary btn-lg">Ver como funciona <ChevronRight size={18}/></a>
             </div>
 
             <div className="cp-lp-trust-row">
