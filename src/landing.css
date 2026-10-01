@@ -48,7 +48,7 @@
 /* ---------- Cabeçalho ---------- */
 .lp-header{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--lp-line)}
 .lp-header-in{display:flex;align-items:center;justify-content:space-between;gap:24px;height:68px}
-.lp-brand img{height:58px;width:auto;display:block}
+.lp-brand img{height:64px;width:auto;display:block}
 .lp-nav{display:flex;gap:30px;font-size:15px;font-weight:550}
 .lp-nav a{color:var(--lp-muted)}
 .lp-nav a:hover{color:var(--lp-ink)}
@@ -194,7 +194,7 @@
   .lp{font-size:16px}
   .lp-wrap{padding:0 20px}
   .lp-header-in{height:60px}
-  .lp-brand img{height:48px}
+  .lp-brand img{height:52px}
   .lp-lead{font-size:17px}
   .lp-cta-row .lp-btn{flex:1 1 100%}
   .lp-features{grid-template-columns:minmax(0,1fr)}
