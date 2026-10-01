@@ -7485,3 +7485,77 @@ tbody tr:hover{
     min-height:41px;
   }
 }
+
+
+/* LANDING 2.8 — CLEAN PRICING CONTROLS */
+.cp-lp-pricing-controls{
+  display:flex;
+  justify-content:center;
+  margin:0 auto 30px;
+}
+.cp-lp-billing-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  padding:4px;
+  border:1px solid #cfd3dd;
+  border-radius:12px;
+  background:#e7eaf0;
+  box-shadow:0 5px 16px rgba(29,33,60,.055);
+}
+.cp-lp-billing-toggle button{
+  min-width:108px;
+  height:36px;
+  padding:0 13px;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  color:#646978;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+  transition:background .2s ease,color .2s ease,box-shadow .2s ease,transform .2s ease;
+}
+.cp-lp-billing-toggle button:hover{
+  color:#444857;
+}
+.cp-lp-billing-toggle button.active{
+  background:#fff;
+  color:#2f3344;
+  box-shadow:0 3px 10px rgba(24,27,54,.09);
+}
+.cp-lp-billing-toggle button span{
+  display:inline-block;
+  margin-left:4px;
+  color:#5b5ce2;
+  font-size:8px;
+}
+.cp-lp-pricing-grid .price-billing-note{
+  min-height:24px;
+  display:flex;
+  align-items:center;
+  color:#898d9b;
+  font-size:9px;
+}
+.cp-lp-pricing-grid .price-billing-note strong{
+  color:#5b5ce2;
+  font-weight:800;
+  margin-right:3px;
+}
+.cp-lp-pricing-grid .price-card.free-card .price-billing-note{
+  color:#7b7f8d;
+}
+.cp-lp-pricing-grid .price-card .price-note{
+  color:#a0a3ae;
+}
+@media(max-width:520px){
+  .cp-lp-pricing-controls{
+    margin-bottom:23px;
+  }
+  .cp-lp-billing-toggle button{
+    min-width:96px;
+  }
+  .cp-lp-billing-toggle button span{
+    font-size:7px;
+  }
+}
