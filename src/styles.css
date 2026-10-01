@@ -5237,3 +5237,30 @@ tbody tr:hover{
     padding:0 10px;
   }
 }
+
+/* LANDING — pricing mais comercial */
+.pricing{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:stretch}
+.price-card{padding:23px;min-width:0;border-radius:18px;display:flex;flex-direction:column}
+.price-card.featured{transform:translateY(-6px);box-shadow:0 20px 55px rgba(91,92,226,.14)}
+.price-card.free-card{background:#fbfbfd}
+.price-kicker{display:block;font-size:9px;letter-spacing:.1em;font-weight:800;color:#8a8da0;margin-bottom:7px}
+.price-card.featured .price-kicker{color:#5b5ce2}
+.price-card>p{min-height:48px;line-height:1.55;margin:12px 0 0}
+.price{margin:20px 0 8px;white-space:nowrap}
+.price-annual{display:flex;flex-direction:column;gap:2px;min-height:31px;color:#747681;font-size:9px}
+.price-annual b{font-size:10px;color:#35374a}
+.price-benefits-title{font-size:9px;font-weight:750;color:#55586b;margin:20px 0 9px;padding-top:17px;border-top:1px solid #eee}
+.price-items{flex:1}
+.price-item{align-items:flex-start;line-height:1.4}
+.price-item svg{margin-top:1px;flex:none}
+.price-actions{margin-top:20px;display:grid;gap:7px}
+.price-note{font-size:8px;color:#999;text-align:center;line-height:1.45;margin-top:10px;min-height:23px}
+@media(max-width:1050px){
+  .pricing{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .price-card.featured{transform:none}
+}
+@media(max-width:600px){
+  .pricing{grid-template-columns:1fr;gap:12px}
+  .price-card{padding:20px}
+  .price-card>p{min-height:auto}
+}
