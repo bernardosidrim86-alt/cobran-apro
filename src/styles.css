@@ -8530,3 +8530,217 @@ body{
 .cp-lp{
   animation:none!important;
 }
+
+
+/* LANDING 5.0 — DARK MODE PREMIUM */
+.cp-lp{
+  --cp-primary:#7c82ff;
+  --cp-primary-dark:#6970ef;
+  --cp-ink:#f4f6fb;
+  --cp-text:#e0e4ec;
+  --cp-muted:#9aa2b2;
+  --cp-soft:#10141b;
+  --cp-border:#252b36;
+  --cp-shadow:0 24px 70px rgba(0,0,0,.24);
+  background:#0b0e13!important;
+  color:var(--cp-ink)!important;
+}
+
+.cp-lp-header{
+  background:rgba(11,14,19,.86)!important;
+  border-bottom:1px solid rgba(45,51,63,.8)!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.025)!important;
+}
+.cp-lp-nav a,
+.cp-lp-login{
+  color:#a5adbc!important;
+}
+.cp-lp-nav a:hover,
+.cp-lp-login:hover{
+  color:#9ea4ff!important;
+}
+
+.cp-lp-hero{
+  background:
+    radial-gradient(70% 55% at 50% 0%,rgba(94,96,242,.20),transparent 70%),
+    radial-gradient(30% 35% at 5% 30%,rgba(59,130,246,.07),transparent 72%),
+    linear-gradient(180deg,#0c1016 0%,#0d1118 100%)!important;
+}
+.cp-lp-hero h1,
+.cp-lp-split-heading h2,
+.cp-lp-centered-heading h2,
+.cp-lp-faq-heading h2{
+  color:#f3f5f9!important;
+}
+.cp-lp-hero h1 span{color:#8a8fff!important}
+.cp-lp-hero-sub,
+.cp-lp-split-heading p,
+.cp-lp-centered-heading>p{
+  color:#9aa2b1!important;
+}
+.cp-lp-trust-row{color:#7f8796!important}
+.cp-lp-trust-row span:not(:last-child)::after{background:#3a414e!important}
+
+.cp-lp .btn-secondary{
+  color:#c4cad5!important;
+  background:transparent!important;
+  border-color:transparent!important;
+}
+.cp-lp .btn-secondary:hover{
+  color:#fff!important;
+  background:transparent!important;
+}
+.cp-lp .btn-secondary svg{color:#8b91ff!important}
+
+.cp-lp-proof{
+  background:#0f1319!important;
+  border-top-color:#252b36!important;
+  border-bottom-color:#252b36!important;
+}
+.cp-lp-proof-label{color:#737c8d!important}
+.cp-lp-proof-items span{color:#b6bdc9!important}
+.cp-lp-proof-items svg{color:#8a90ff!important}
+
+.cp-lp-problem{background:#11151c!important}
+.cp-lp-solution{background:#0b0e13!important}
+.cp-lp-audience{background:#0b0e13!important}
+.cp-lp-pricing{background:#11151c!important;border-top-color:#252b36!important}
+.cp-lp-faq{background:#0b0e13!important}
+
+.cp-lp-problem-card,
+.cp-lp-feature-card,
+.cp-lp-audience-grid>div,
+.cp-lp-faq-list details{
+  background:#141922!important;
+  border-color:#282f3b!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.16)!important;
+}
+.cp-lp-problem-card:hover,
+.cp-lp-feature-card:hover,
+.cp-lp-audience-grid>div:hover{
+  border-color:#3a4251!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.22)!important;
+}
+.cp-lp-problem-number,
+.cp-lp-feature-top>span,
+.cp-lp-audience-grid span{
+  color:#667083!important;
+}
+.cp-lp-problem-card h3,
+.cp-lp-feature-card h3,
+.cp-lp-audience-grid strong{
+  color:#eef1f5!important;
+}
+.cp-lp-problem-card p,
+.cp-lp-feature-card p,
+.cp-lp-audience-grid p{
+  color:#929aaa!important;
+}
+.cp-lp-feature-large{
+  background:linear-gradient(145deg,#151a23 0%,#12171f 100%)!important;
+}
+.cp-lp-feature-accent{
+  background:linear-gradient(145deg,#171b29 0%,#131720 100%)!important;
+}
+.cp-lp-feature-icon{
+  background:rgba(102,107,228,.15)!important;
+  color:#969aff!important;
+}
+.cp-lp-mini-dashboard>div,
+.cp-lp-ai-note{
+  background:#10151d!important;
+  border-color:#2b313d!important;
+}
+.cp-lp-mini-dashboard span{color:#7e8796!important}
+.cp-lp-mini-dashboard strong{color:#e7ebf1!important}
+.cp-lp-feature-line{border-bottom-color:#2a303b!important;color:#a9b0bd!important}
+.cp-lp-feature-line b{color:#9ca1ff!important}
+.cp-lp-status-list span{color:#a0a7b4!important}
+.cp-lp-whatsapp-chip{background:#1a202a!important;color:#a1a6ff!important}
+.cp-lp-receive-amount{color:#68cf9b!important}
+.cp-lp-ai-note{color:#8d96a5!important}
+.cp-lp-feature-bottom{color:#7f8898!important}
+.cp-lp-feature-bottom svg{color:#8f95ff!important}
+
+.cp-lp-dashboard-section{
+  background:#10141b!important;
+  border-top-color:#252b36!important;
+  border-bottom-color:#252b36!important;
+}
+
+.cp-lp-pricing-grid .price-card{
+  background:#141922!important;
+  border-color:#2a303c!important;
+  color:#e7ebf1!important;
+}
+.cp-lp-pricing-grid .price-card.featured{
+  border-color:#6268dc!important;
+  box-shadow:0 22px 60px rgba(91,92,226,.16)!important;
+}
+.cp-lp-pricing-grid .price-card .price,
+.cp-lp-pricing-grid .price-card h3,
+.cp-lp-pricing-grid .price-card strong,
+.cp-lp-pricing-grid .price-card b{
+  color:#f0f2f6!important;
+}
+.cp-lp-pricing-grid .price-card p,
+.cp-lp-pricing-grid .price-card li,
+.cp-lp-pricing-grid .price-card span{
+  color:#9ba3b2!important;
+}
+.cp-lp-pricing-grid .price-card .popular{
+  background:#686ee8!important;
+  color:#fff!important;
+}
+.cp-lp-pricing-grid .price-card .price-items li svg{color:#777df2!important}
+.cp-lp-pricing-grid .price-card .btn-secondary{
+  background:#1b2029!important;
+  border-color:#343b49!important;
+  color:#e4e8ee!important;
+}
+.cp-lp-pricing-grid .price-card .btn-secondary:hover{
+  background:#242a34!important;
+  border-color:#4b5363!important;
+  color:#fff!important;
+}
+
+.cp-lp-faq-list details{background:#141922!important}
+.cp-lp-faq-list summary{color:#e6eaf0!important}
+.cp-lp-faq-list summary:after{color:#778092!important}
+.cp-lp-faq-list details p{color:#929aaa!important}
+
+.cp-lp-final-cta{
+  background:linear-gradient(135deg,#4e55d2 0%,#6268e6 100%)!important;
+}
+.cp-lp-final-cta .cp-lp-label{color:#dfe2ff!important}
+.cp-lp-final-cta p{color:#dce0ff!important}
+
+.cp-lp-footer{
+  background:#0b0e13!important;
+  border-top-color:#252b36!important;
+}
+.cp-lp-footer-main p,
+.cp-lp-footer-bottom{color:#697383!important}
+.cp-lp-footer-links a{color:#8992a2!important}
+.cp-lp-footer-links a:hover{color:#9da2ff!important}
+
+.cp-lp .cp-lp-eyebrow{
+  color:#9398ff!important;
+  background:rgba(102,107,228,.10)!important;
+  border-color:rgba(123,128,242,.22)!important;
+  box-shadow:none!important;
+}
+.cp-lp .cp-lp-dot{
+  background:#8b90ff!important;
+  box-shadow:0 0 0 5px rgba(139,144,255,.10)!important;
+}
+
+/* A landing permanece estática para preservar o scroll leve */
+.cp-lp,
+.cp-lp::before,
+.cp-lp::after,
+.cp-lp section::before,
+.cp-lp section::after{
+  animation:none!important;
+  transition:none!important;
+}
