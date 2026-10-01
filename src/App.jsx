@@ -160,54 +160,10 @@ function Landing({session}) {
   ];
 
   const modules=[
-    {
-      id:"cobrancas",kicker:"COBRANÇAS",
-      title:"Saiba o que está para receber e o que já passou do prazo.",
-      text:"Crie e acompanhe suas cobranças com valor, vencimento, recorrência e status em um só lugar.",
-      img:"/landing/cobrancas.webp",alt:"Tela de cobranças do CobrançaPro",
-      resources:[
-        ["Criar cobranças","Defina valor, vencimento e recorrência para cada cobrança."],
-        ["Status organizado","Veja o que está a receber, vencendo hoje, atrasado ou pago."],
-        ["Filtros por situação","Encontre rapidamente as cobranças que precisa acompanhar."],
-        ["Recebimentos","Registre os pagamentos e mantenha o histórico atualizado."]
-      ]
-    },
-    {
-      id:"clientes",kicker:"CLIENTES",
-      title:"Tenha os dados dos seus clientes organizados.",
-      text:"Cadastre clientes, encontre contatos rapidamente e mantenha as informações necessárias para suas cobranças em um só lugar.",
-      img:"/landing/clientes.webp",alt:"Tela de clientes do CobrançaPro",
-      resources:[
-        ["Cadastro completo","Guarde nome, telefone e e-mail de cada cliente."],
-        ["Busca rápida","Encontre um cliente sem procurar em conversas antigas."],
-        ["Ações do cliente","Acesse rapidamente as ações disponíveis em cada cadastro."],
-        ["Cobranças relacionadas","Consulte as cobranças ligadas aos seus clientes dentro do sistema."]
-      ]
-    },
-    {
-      id:"whatsapp",kicker:"WHATSAPP",
-      title:"Cobre pelo WhatsApp com a mensagem pronta.",
-      text:"O CobrançaPro abre o WhatsApp com uma mensagem preparada para a cobrança. Você revisa, ajusta se quiser e envia.",
-      img:"/landing/cobrar.webp",alt:"Ação de cobrança pelo WhatsApp no CobrançaPro",
-      resources:[
-        ["Mensagem pronta","A cobrança já abre com uma mensagem preparada para o cliente."],
-        ["Um clique para abrir","Use o botão Cobrar para abrir a conversa no WhatsApp."],
-        ["Você revisa","Confira e ajuste a mensagem antes de enviar."],
-        ["Envio manual","O envio final é feito por você diretamente no WhatsApp."]
-      ]
-    },
-    {
-      id:"relatorios",kicker:"RELATÓRIOS",
-      title:"Veja com clareza quanto foi cobrado e quanto entrou.",
-      text:"Acompanhe seus recebimentos por período e tenha uma visão mais clara do desempenho das suas cobranças.",
-      img:"/landing/relatorios.webp",alt:"Tela de relatórios do CobrançaPro",
-      resources:[
-        ["Visão por período","Analise os dados dos últimos 7, 30 ou 90 dias."],
-        ["Cobrado x recebido","Compare o que foi cobrado com o que efetivamente entrou."],
-        ["Taxa de recebimento","Acompanhe a taxa de recebimento do período selecionado."],
-        ["Datas personalizadas","Use períodos personalizados quando precisar de uma análise específica."]
-      ]
-    }
+    {id:"cobrancas",kicker:"COBRANÇAS",title:"Saiba o que está para receber e o que já passou do prazo.",text:"Crie e acompanhe suas cobranças com valor, vencimento, recorrência e status em um só lugar.",resources:[["Criar cobranças","Defina valor, vencimento e recorrência para cada cobrança."],["Status organizado","Veja o que está a receber, vencendo hoje, atrasado ou pago."],["Filtros por situação","Encontre rapidamente as cobranças que precisa acompanhar."],["Recebimentos","Registre os pagamentos e mantenha o histórico atualizado."]]},
+    {id:"clientes",kicker:"CLIENTES",title:"Tenha os dados dos seus clientes organizados.",text:"Cadastre clientes, encontre contatos rapidamente e mantenha as informações necessárias para suas cobranças em um só lugar.",resources:[["Cadastro completo","Guarde nome, telefone e e-mail de cada cliente."],["Busca rápida","Encontre um cliente sem procurar em conversas antigas."],["Ações do cliente","Acesse rapidamente as ações disponíveis em cada cadastro."],["Cobranças relacionadas","Consulte as cobranças ligadas aos seus clientes dentro do sistema."]]},
+    {id:"whatsapp",kicker:"WHATSAPP",title:"Cobre pelo WhatsApp com a mensagem pronta.",text:"O CobrançaPro abre o WhatsApp com uma mensagem preparada para a cobrança. Você revisa, ajusta se quiser e envia.",resources:[["Mensagem pronta","A cobrança já abre com uma mensagem preparada para o cliente."],["Um clique para abrir","Use o botão Cobrar para abrir a conversa no WhatsApp."],["Você revisa","Confira e ajuste a mensagem antes de enviar."],["Envio manual","O envio final é feito por você diretamente no WhatsApp."]]},
+    {id:"relatorios",kicker:"RELATÓRIOS",title:"Veja com clareza quanto foi cobrado e quanto entrou.",text:"Acompanhe seus recebimentos por período e tenha uma visão mais clara do desempenho das suas cobranças.",resources:[["Visão por período","Analise os dados dos últimos 7, 30 ou 90 dias."],["Cobrado x recebido","Compare o que foi cobrado com o que efetivamente entrou."],["Taxa de recebimento","Acompanhe a taxa de recebimento do período selecionado."],["Datas personalizadas","Use períodos personalizados quando precisar de uma análise específica."]]}
   ];
 
   const tabsImage=productTabs.find(tab=>tab.key===activeTab) || productTabs[0];
@@ -263,37 +219,28 @@ function Landing({session}) {
             <p className="lp-sub">Tudo o que você precisa para organizar clientes, cobranças, recebimentos e contatos.</p>
           </div>
 
-          <div className="lp-module-list">
+          <div className="lp-feature-grid">
             {modules.map((module,moduleIndex)=>(
-              <section id={module.id} className={"lp-module " + (moduleIndex%2 ? "lp-module-reverse" : "")} key={module.id}>
-                <div className="lp-module-media">
-                  <div className="lp-module-image">
-                    <img src={module.img} alt={module.alt} width="1400" height="900" loading="lazy" decoding="async" />
-                  </div>
+              <section id={module.id} className="lp-feature" key={module.id}>
+                <div className="lp-feature-icon" aria-hidden="true">
+                  {moduleIndex===0 ? <Receipt size={22}/> : moduleIndex===1 ? <Users size={22}/> : moduleIndex===2 ? <MessageCircle size={22}/> : <TrendingUp size={22}/>}
                 </div>
-
-                <div className="lp-module-copy">
-                  <p className="lp-kicker">{module.kicker}</p>
-                  <h2>{module.title}</h2>
-                  <p className="lp-module-lead">{module.text}</p>
-
-                  <div className="lp-resource-grid">
-                    {module.resources.map(([title,text],resourceIndex)=>(
-                      <article className="lp-resource" key={title}>
-                        <div className="lp-resource-icon" aria-hidden="true">
-                          {resourceIndex===0 ? <Check size={17}/> : resourceIndex===1 ? <Search size={17}/> : resourceIndex===2 ? <TrendingUp size={17}/> : <Receipt size={17}/>}
-                        </div>
-                        <div>
-                          <h3>{title}</h3>
-                          <p>{text}</p>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
+                <p className="lp-kicker">{module.kicker}</p>
+                <h2>{module.title}</h2>
+                <p className="lp-feature-lead">{module.text}</p>
+                <div className="lp-resource-grid">
+                  {module.resources.map(([title,text],resourceIndex)=>(
+                    <article className="lp-resource" key={title}>
+                      <div className="lp-resource-icon" aria-hidden="true">
+                        {resourceIndex===0 ? <Check size={17}/> : resourceIndex===1 ? <Search size={17}/> : resourceIndex===2 ? <TrendingUp size={17}/> : <Receipt size={17}/>}
+                      </div>
+                      <div><h3>{title}</h3><p>{text}</p></div>
+                    </article>
+                  ))}
                 </div>
               </section>
             ))}
-          </div>
+          </div>>
         </div>
       </section>
 
