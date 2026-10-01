@@ -445,3 +445,27 @@
     border-radius:23px;
   }
 }
+
+
+/* LANDING 5.3 — LOGO COM CONTRASTE NO DARK MODE */
+.lp-brand{
+  position:relative;
+}
+.lp-brand::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:url("/landing/logo.png") center / 100% 100% no-repeat;
+  filter:brightness(0) invert(1);
+  clip-path:inset(0 29% 0 0);
+  pointer-events:none;
+}
+.lp-brand img{
+  position:relative;
+  z-index:1;
+}
+@media(max-width:800px){
+  .lp-brand::after{
+    clip-path:inset(0 29% 0 0);
+  }
+}
