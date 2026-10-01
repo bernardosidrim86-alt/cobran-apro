@@ -8615,3 +8615,27 @@ body{
     animation:none!important;
   }
 }
+
+
+/* LANDING 5.1 — CORRIGE CAMADA DAS ANIMAÇÕES */
+.cp-lp::before{
+  z-index:2!important;
+  opacity:.82!important;
+  mix-blend-mode:multiply;
+}
+.cp-lp::after{
+  z-index:2!important;
+  opacity:.95!important;
+  mix-blend-mode:multiply;
+}
+.cp-lp>header,
+.cp-lp>main,
+.cp-lp>footer{
+  position:relative!important;
+  z-index:3!important;
+}
+.cp-lp>main>*,
+.cp-lp>footer>*{
+  position:relative;
+  z-index:3;
+}
