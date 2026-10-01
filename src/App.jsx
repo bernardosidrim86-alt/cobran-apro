@@ -131,84 +131,67 @@ function ScrollReveal({children, className="", delay=0}) {
 function Landing({session}) {
   useEffect(()=>{
     if(window.location.hash!=="#precos") return;
-    const timer=setTimeout(()=>document.getElementById("precos")?.scrollIntoView({behavior:"smooth",block:"start"}),80);
+    const scrollToPlans=()=>document.getElementById("precos")?.scrollIntoView({behavior:"smooth",block:"start"});
+    const timer=setTimeout(scrollToPlans,80);
     return()=>clearTimeout(timer);
   },[]);
-
-  return <div className="landing-v2">
-    <header className="site-header landing-header">
+  return <div>
+    <header className="site-header">
       <Link to="/" className="brand"><img className="brand-logo" src="/logo.png" alt="CobrançaPro" /></Link>
-      <nav><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#precos">Preços</a></nav>
-      <div className="header-actions"><Link to="/login" className="link-btn">Entrar</Link><Link to="/cadastro" className="header-cta">Começar grátis <ArrowRight size={14}/></Link></div>
+      <nav><a href="#recursos">Recursos</a><a href="#como">Como funciona</a><a href="#precos">Preços</a></nav>
+      <div className="header-actions"><Link to="/login" className="link-btn">Entrar</Link></div>
     </header>
-
     <main>
-      <section className="hero hero-v2">
-        <div className="hero-grid-bg"></div>
-        <div className="container hero-v2-inner">
-          <ScrollReveal className="hero-v2-copy">
-            <div className="eyebrow"><span className="dot"></span> Gestão financeira para pequenos negócios</div>
-            <h1>Você trabalha.<br/><span>O CobrançaPro cuida das cobranças.</span></h1>
-            <p>Clientes, cobranças, recebimentos e WhatsApp em um único lugar. Menos controle manual. Mais clareza sobre o seu dinheiro.</p>
-            <div className="hero-actions">
-              <Link to="/cadastro" className="btn btn-primary btn-lg">Começar grátis <ArrowRight size={17}/></Link>
-              <a href="#como" className="hero-text-link">Ver como funciona <ChevronRight size={15}/></a>
-            </div>
-            <div className="hero-proof"><span><Check size={14}/> 7 dias grátis</span><span><Check size={14}/> Sem cartão</span><span><Check size={14}/> Feito no Brasil</span></div>
-          </ScrollReveal>
-          <ScrollReveal className="hero-v2-visual" delay={120}>
-            <div className="hero-orb"></div>
-            <div className="floating-card floating-card-top"><span className="mini-icon success"><Check size={13}/></span><div><b>Recebimento confirmado</b><small>João Silva · R$ 1.490,00</small></div></div>
-            <div className="floating-card floating-card-bottom"><span className="mini-icon purple"><Bell size={13}/></span><div><b>12 cobranças hoje</b><small>R$ 4.820,00 a receber</small></div></div>
-            <DashboardPreview/>
-          </ScrollReveal>
+      <section className="hero container">
+        <div className="hero-copy">
+          <div className="eyebrow"><span className="dot"></span> Gestão de cobranças simples</div>
+          <h1>Receba no prazo.<br/><em>Sem ficar correndo atrás.</em></h1>
+          <p>Organize suas cobranças, veja quem precisa ser cobrado hoje e envie lembretes pelo WhatsApp em poucos cliques.</p>
+          <div className="hero-actions"><Link to="/cadastro" className="btn btn-primary btn-lg">Começar grátis <ArrowRight size={18}/></Link><Link to="/login" className="btn btn-secondary btn-lg">Entrar</Link><a href="#como" className="btn btn-secondary btn-lg">Ver como funciona</a></div>
+          <div className="trust"><Check size={16}/> Feito para pequenos negócios <Check size={16}/> 7 dias grátis</div>
         </div>
+        <DashboardPreview/>
       </section>
 
-      <section className="logo-strip"><div className="container"><span>FEITO PARA QUEM PRECISA RECEBER</span><div><b>Prestadores de serviço</b><b>Clínicas</b><b>Oficinas</b><b>Profissionais autônomos</b><b>Pequenas empresas</b></div></div></section>
-
-      <section id="como" className="section process-section"><div className="container">
-        <ScrollReveal><div className="section-heading process-heading"><span className="eyebrow">Como funciona</span><h2>Do cliente ao recebimento,<br/>sem complicar.</h2><p>O CobrançaPro tira a cobrança da sua cabeça e coloca tudo em um fluxo simples.</p></div></ScrollReveal>
-        <div className="process-grid">
-          {[["01","Cadastre","Adicione seus clientes e mantenha contatos e histórico organizados."],["02","Cobre","Crie a cobrança, defina o vencimento e envie pelo WhatsApp."],["03","Receba","Acompanhe pagamentos e saiba exatamente o que ainda falta receber."]].map((x,i)=><ScrollReveal key={x[0]} delay={i*90}><div className="process-card"><span className="process-number">{x[0]}</span><div className="process-line"></div><h3>{x[1]}</h3><p>{x[2]}</p></div></ScrollReveal>)}
+      <section id="como" className="section soft"><div className="container">
+        <ScrollReveal><div className="section-heading"><span className="eyebrow">Como funciona</span><h2>Uma visão clara de tudo que você precisa receber.</h2></div></ScrollReveal>
+        <div className="steps">
+          {[
+            ["01","Cadastre seus clientes","Tenha clientes, contatos e histórico organizados em um só lugar."],
+            ["02","Crie suas cobranças","Defina valor, vencimento e serviço. O CobrançaPro organiza tudo para você."],
+            ["03","Acompanhe e cobre","Veja o que está pendente e envie lembretes pelo WhatsApp em poucos cliques."]
+          ].map((x,i)=><ScrollReveal key={x[0]} delay={i*70}><div className="step"><span>{x[0]}</span><h3>{x[1]}</h3><p>{x[2]}</p></div></ScrollReveal>)}
         </div>
       </div></section>
 
-      <section id="recursos" className="product-section">
-        <div className="container">
-          <ScrollReveal><div className="section-heading"><span className="eyebrow">O produto</span><h2>Uma visão melhor do seu dinheiro.</h2><p>Em vez de espalhar informações em planilhas e conversas, tenha tudo organizado em uma única tela.</p></div></ScrollReveal>
-          <ScrollReveal delay={100} className="product-showcase">
-            <div className="product-copy"><span className="feature-index">01</span><h3>Veja o que precisa da sua atenção.</h3><p>O dashboard mostra o total a receber, o que está vencido e quais cobranças precisam de ação.</p><a href="#precos">Conhecer os planos <ArrowRight size={15}/></a></div>
-            <div className="product-screen"><img src="https://i.imgur.com/6ZO9UMY.png" alt="Dashboard do CobrançaPro"/></div>
-          </ScrollReveal>
-          <div className="feature-bento">
-            <ScrollReveal><div className="bento-card bento-large"><div><span className="feature-index">02</span><h3>Cobranças organizadas.</h3><p>Saiba quem deve, quanto deve e quando cobrar.</p></div><div className="fake-list"><div><span className="fake-avatar"></span><b>Maria Oliveira</b><strong>R$ 850,00</strong></div><div><span className="fake-avatar"></span><b>João Silva</b><strong>R$ 1.490,00</strong></div><div><span className="fake-avatar"></span><b>Lucas Santos</b><strong>R$ 620,00</strong></div></div></div></ScrollReveal>
-            <ScrollReveal delay={90}><div className="bento-card bento-whatsapp"><div className="bento-icon"><MessageCircle size={18}/></div><span className="feature-index">03</span><h3>Cobre pelo WhatsApp.</h3><p>Mensagens profissionais, prontas para enviar e acompanhar.</p><div className="message-bubble">Olá, João! Tudo certo? Sua cobrança de R$ 1.490,00 vence hoje. <span>09:42 ✓✓</span></div></div></ScrollReveal>
-            <ScrollReveal delay={180}><div className="bento-card bento-ai"><div className="bento-icon"><Sparkles size={18}/></div><span className="feature-index">04</span><h3>IA quando você precisar.</h3><p>Crie mensagens de cobrança adaptadas para cada situação.</p><div className="ai-line"><span></span><span></span><span></span></div></div></ScrollReveal>
-          </div>
+      <section id="recursos" className="section"><div className="container">
+        <ScrollReveal><div className="section-heading"><span className="eyebrow">Recursos</span><h2>Tudo que você precisa para receber melhor.</h2></div></ScrollReveal>
+        <div className="feature-grid">
+          {[
+            [LayoutDashboard,"Dashboard financeiro","Saiba exatamente quanto tem para receber e o que precisa de atenção."],
+            [Users,"Clientes","Tenha contatos, histórico e cobranças de cada cliente organizados."],
+            [Receipt,"Cobranças","Crie cobranças em segundos e acompanhe cada pagamento."],
+            [MessageCircle,"WhatsApp","Envie lembretes profissionais pelo WhatsApp sem precisar escrever tudo de novo."],
+            [Sparkles,"Assistente IA","Crie mensagens de cobrança adaptadas para cada situação."],
+            [TrendingUp,"Relatórios","Entenda seus recebimentos e acompanhe a evolução do negócio."]
+          ].map(([Icon,t,p],i)=><ScrollReveal key={t} delay={i*65}><div className="feature-card"><div className="icon-box"><Icon size={20}/></div><h3>{t}</h3><p>{p}</p></div></ScrollReveal>)}
         </div>
-      </section>
-
-      <section className="section benefits-section"><div className="container">
-        <ScrollReveal><div className="benefits-head"><div><span className="eyebrow">Por que usar</span><h2>Menos trabalho operacional.<br/>Mais controle.</h2></div><p>Feito para deixar o processo de cobrança mais previsível, sem transformar sua rotina em uma planilha gigante.</p></div></ScrollReveal>
-        <div className="benefits-grid">{[["01","Tudo em um lugar","Clientes, cobranças e recebimentos organizados."],["02","Cobrança mais rápida","Envie lembretes sem escrever a mesma mensagem toda vez."],["03","Clareza financeira","Entenda o que entrou, o que falta e o que está atrasado."],["04","Acesso de qualquer lugar","Use o sistema no computador ou no celular."]].map((x,i)=><ScrollReveal key={x[0]} delay={i*60}><div className="benefit"><span>{x[0]}</span><h3>{x[1]}</h3><p>{x[2]}</p></div></ScrollReveal>)}</div>
+        <div className="features-bottom-line"><Check size={16}/> Tudo em um só lugar. Sem planilhas e sem ficar procurando informação.</div>
       </div></section>
 
-      <section id="precos" className="section pricing-v2"><div className="container">
-        <ScrollReveal><div className="section-heading center"><span className="eyebrow">Preços</span><h2>Comece grátis.<br/>Cresça quando precisar.</h2><p>Teste por 7 dias, sem cartão de crédito.</p></div></ScrollReveal>
-        <div className="pricing">{PLAN_OPTIONS.map((plan,i)=><ScrollReveal key={plan.key} delay={i*70}><Price plan={plan} featured={plan.key==="profissional"} session={session}/></ScrollReveal>)}</div>
+      <section id="precos" className="section soft"><div className="container">
+        <ScrollReveal><div className="section-heading center"><span className="eyebrow">Preços</span><h2>Comece grátis. Faça upgrade quando precisar.</h2><p>Teste por 7 dias, sem cartão de crédito. Escolha o plano conforme seu negócio crescer.</p></div></ScrollReveal>
+        <div className="pricing">
+          {PLAN_OPTIONS.map((plan,i) => <ScrollReveal key={plan.key} delay={i*90}><Price plan={plan} featured={plan.key==="profissional"} session={session}/></ScrollReveal>)}
+        </div>
       </div></section>
 
-      <section className="faq-section"><div className="container faq-grid">
-        <ScrollReveal><div><span className="eyebrow">Dúvidas</span><h2>Antes de começar.</h2><p>O básico que você precisa saber sobre o CobrançaPro.</p></div></ScrollReveal>
-        <div className="faq-list">{[["Preciso cadastrar cartão?","Não. O teste grátis começa sem exigir cartão de crédito."],["Posso usar pelo celular?","Sim. O sistema é responsivo e funciona pelo navegador do celular."],["O WhatsApp é automático?","O envio automático depende da configuração do WhatsApp Business e dos templates aprovados na Meta."],["Posso cancelar meu plano?","Sim. Você pode encerrar a assinatura conforme as condições do seu plano."]].map(([q,a],i)=><ScrollReveal key={q} delay={i*60}><details><summary>{q}<Plus size={16}/></summary><p>{a}</p></details></ScrollReveal>)}</div>
-      </div></section>
-
-      <section className="cta cta-v2"><div className="container cta-v2-inner"><div><span className="eyebrow">Comece agora</span><h2>Chega de correr atrás.</h2><p>Organize suas cobranças e tenha uma visão clara do que precisa receber.</p></div><Link to="/cadastro" className="btn btn-white btn-lg">Começar grátis <ArrowRight size={18}/></Link></div></section>
+      <section className="cta"><div className="container cta-inner"><div className="cta-copy"><span className="eyebrow">Comece grátis</span><h2>Menos cobrança manual.<br/><span>Mais dinheiro recebido no prazo.</span></h2><p>Organize seus clientes, cobranças e recebimentos em um só lugar.</p></div><Link to="/cadastro" className="btn btn-white btn-lg">Criar minha conta <ArrowRight size={18}/></Link></div></section>
     </main>
-    <footer className="footer footer-v2"><div className="container"><div><strong>CobrançaPro</strong><span>Gestão de cobranças para pequenos negócios.</span></div><div><span>© 2026</span><Link to="/login">Entrar</Link><Link to="/cadastro">Criar conta</Link></div></div></footer>
+    <footer className="footer"><div className="container"><div><strong>CobrançaPro</strong><span>Receba no prazo. Sem ficar correndo atrás.</span></div><div><span>© 2026 CobrançaPro</span><Link to="/login">Entrar</Link><Link to="/cadastro">Criar conta</Link></div></div></footer>
   </div>;
 }
+
 function DashboardPreview() {
   return <div className="preview-wrap">
     <div className="glow"></div>
