@@ -5213,3 +5213,27 @@ tbody tr:hover{
     margin-right:0;
   }
 }
+
+/* LANDING — reforço da seção de recursos */
+.features-bottom-line{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin:28px auto 0;
+  color:#747681;
+  font-size:13px;
+  font-weight:600;
+}
+.features-bottom-line svg{
+  color:#5b5ce2;
+  flex:none;
+}
+@media(max-width:600px){
+  .features-bottom-line{
+    text-align:center;
+    font-size:12px;
+    line-height:1.5;
+    padding:0 10px;
+  }
+}
