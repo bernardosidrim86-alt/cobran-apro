@@ -160,6 +160,12 @@ function Landing({session}) {
     </header>
 
     <main>
+      <div className="cp-lp-ambient" aria-hidden="true">
+        <span className="cp-lp-ambient-orb orb-a"></span>
+        <span className="cp-lp-ambient-orb orb-b"></span>
+        <span className="cp-lp-ambient-orb orb-c"></span>
+        <span className="cp-lp-ambient-glow"></span>
+      </div>
       <section className="cp-lp-hero">
         <div className="cp-lp-container">
           <div className="cp-lp-hero-content">
