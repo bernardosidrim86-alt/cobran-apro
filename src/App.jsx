@@ -936,6 +936,83 @@ function Charges() {
     {selected&&<ChargeDetail charge={selected} onClose={()=>setSelected(null)} onPaid={()=>{setSelected(null);load();}}/>}
   </>;
 }
+function CalendarPage(){
+  const companyId=useCompany();
+  const [month,setMonth]=useState(()=>new Date(new Date().getFullYear(),new Date().getMonth(),1));
+  const [charges,setCharges]=useState([]);
+  const [payments,setPayments]=useState([]);
+  const [selectedDate,setSelectedDate]=useState(todayISO());
+
+  useEffect(()=>{
+    if(!companyId)return;
+    const start=new Date(month.getFullYear(),month.getMonth(),1);
+    const next=new Date(month.getFullYear(),month.getMonth()+1,1);
+    Promise.all([
+      supabase.from("charges").select("id,customer_id,description,amount,due_date,status,customers(name)").eq("company_id",companyId).gte("due_date",start.toISOString().slice(0,10)).lt("due_date",next.toISOString().slice(0,10)).order("due_date"),
+      supabase.from("payments").select("id,customer_id,amount,paid_at,payment_method,customers(name)").eq("company_id",companyId).gte("paid_at",start.toISOString()).lt("paid_at",next.toISOString()).order("paid_at")
+    ]).then(([c,p])=>{setCharges(c.data||[]);setPayments(p.data||[])});
+  },[companyId,month]);
+
+  const year=month.getFullYear(), m=month.getMonth();
+  const firstDay=new Date(year,m,1);
+  const offset=(firstDay.getDay()+6)%7;
+  const daysInMonth=new Date(year,m+1,0).getDate();
+  const cells=[];
+  for(let i=0;i<42;i++){
+    const day=i-offset+1;
+    if(day<1||day>daysInMonth){cells.push(null);continue;}
+    const iso=year+"-"+String(m+1).padStart(2,"0")+"-"+String(day).padStart(2,"0");
+    cells.push(iso);
+  }
+  const monthLabel=month.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+  const dayCharges=charges.filter(x=>x.due_date===selectedDate);
+  const dayPayments=payments.filter(x=>x.paid_at.slice(0,10)===selectedDate);
+  const selectedTotal=dayCharges.reduce((a,x)=>a+Number(x.amount||0),0);
+  const selectedReceived=dayPayments.reduce((a,x)=>a+Number(x.amount||0),0);
+
+  function shiftMonth(delta){
+    setMonth(new Date(year,m+delta,1));
+    setSelectedDate(new Date(year,m+delta,1).toISOString().slice(0,10));
+  }
+
+  return <div className="calendar-page">
+    <PageTitle title="Calendário financeiro" subtitle="Veja quando o dinheiro entra e quais cobranças vencem."/>
+    <div className="calendar-layout">
+      <div className="panel calendar-panel">
+        <div className="calendar-head">
+          <button type="button" className="calendar-nav-btn" onClick={()=>shiftMonth(-1)} aria-label="Mês anterior"><ChevronLeft size={18}/></button>
+          <h2>{monthLabel.charAt(0).toUpperCase()+monthLabel.slice(1)}</h2>
+          <button type="button" className="calendar-nav-btn" onClick={()=>shiftMonth(1)} aria-label="Próximo mês"><ChevronRight size={18}/></button>
+        </div>
+        <div className="calendar-weekdays">{["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(x=><span key={x}>{x}</span>)}</div>
+        <div className="calendar-grid">
+          {cells.map((iso,i)=>{
+            if(!iso)return <div className="calendar-cell empty-day" key={i}/>;
+            const chargeList=charges.filter(x=>x.due_date===iso);
+            const paymentList=payments.filter(x=>x.paid_at.slice(0,10)===iso);
+            const hasLate=chargeList.some(x=>x.status==="pending"&&x.due_date<todayISO());
+            return <button type="button" key={iso} className={"calendar-cell "+(selectedDate===iso?"selected":"")} onClick={()=>setSelectedDate(iso)}>
+              <span>{Number(iso.slice(-2))}</span>
+              <div className="calendar-dots">{chargeList.length>0&&<i className={hasLate?"late":"charge"} title="Cobrança"/>}{paymentList.length>0&&<i className="received" title="Recebimento"/>}</div>
+              {chargeList.length>0&&<small>{money(chargeList.reduce((a,x)=>a+Number(x.amount||0),0))}</small>}
+            </button>;
+          })}
+        </div>
+        <div className="calendar-legend"><span><i className="charge"/> Cobrança</span><span><i className="received"/> Recebimento</span><span><i className="late"/> Em atraso</span></div>
+      </div>
+      <div className="panel calendar-day-panel">
+        <div className="panel-head"><div><span className="panel-kicker">DIA SELECIONADO</span><h2>{new Date(selectedDate+"T12:00:00").toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"})}</h2><p>Movimentações previstas e registradas.</p></div></div>
+        <div className="calendar-day-summary"><div><span>A cobrar</span><b>{money(selectedTotal)}</b></div><div><span>Recebido</span><b>{money(selectedReceived)}</b></div></div>
+        <div className="calendar-events">
+          {dayCharges.map(x=><Link to="/app/cobrancas" className="calendar-event" key={x.id}><span className={x.status==="paid"?"event-dot paid":"event-dot charge"}/><div><b>{x.customers?.name||"Cliente"}</b><small>{x.description||"Cobrança"} · {x.status==="paid"?"Pago":"A receber"}</small></div><strong>{money(x.amount)}</strong></Link>)}
+          {dayPayments.map(x=><div className="calendar-event" key={x.id}><span className="event-dot paid"/><div><b>{x.customers?.name||"Cliente"}</b><small>Recebimento · {x.payment_method||"Pagamento"}</small></div><strong>+ {money(x.amount)}</strong></div>)}
+          {dayCharges.length===0&&dayPayments.length===0&&<Empty text="Nenhuma movimentação neste dia."/>}
+        </div>
+      </div>
+    </div>
+  </div>;
+}
+
 function Payments(){const companyId=useCompany();const [rows,setRows]=useState([]);useEffect(()=>{if(companyId)supabase.from("payments").select("*,customers(name),charges(description)").eq("company_id",companyId).order("paid_at",{ascending:false}).then(({data})=>setRows(data||[]));},[companyId]);const total=rows.reduce((a,x)=>a+Number(x.amount),0);return <div className="payments-page"><PageTitle title="Recebimentos" subtitle="Tudo que sua empresa já recebeu."/><div className="metric-grid three payments-metrics"><Metric title="Total recebido" value={money(total)} icon={Wallet} tone="success"/><Metric title="Recebido hoje" value={money(rows.filter(x=>x.paid_at.slice(0,10)===todayISO()).reduce((a,x)=>a+Number(x.amount),0))} icon={Check} tone="success"/><Metric title="Lançamentos" value={rows.length} icon={Receipt}/></div><div className="panel table-panel payments-table-panel"><div className="payments-table-head"><div><span>HISTÓRICO</span><b>Recebimentos registrados</b></div><small>{rows.length} {rows.length===1?"lançamento":"lançamentos"}</small></div>{rows.length===0?<Empty text="Nenhum recebimento registrado ainda."/>:<div className="payments-responsive-list">{rows.map(x=><div className="payments-responsive-row" key={x.id}><div className="payments-responsive-main"><b>{x.customers?.name||"Cliente"}</b><strong>{money(x.amount)}</strong></div><div className="payments-responsive-meta"><span>{new Date(x.paid_at).toLocaleDateString("pt-BR")}</span><span>{x.payment_method||"—"}</span></div></div>)}</div>}</div></div>
 }
 function Reports(){
