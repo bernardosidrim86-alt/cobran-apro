@@ -2218,3 +2218,40 @@ tbody tr:hover{background:#fafbff!important}
 .app-layout .global-search-count{
   color:#7d8797!important;
 }
+
+
+/* Correção final — atalhos do dashboard no dark mode */
+.app-layout .quick-actions,
+.app-layout .quick-actions-premium{
+  background:transparent!important;
+}
+.app-layout .quick-actions-premium a{
+  background:#151a23!important;
+  border:1px solid #2c333f!important;
+  color:#e8ecf2!important;
+  box-shadow:none!important;
+}
+.app-layout .quick-actions-premium a:hover{
+  background:#1c222c!important;
+  border-color:#41495a!important;
+  box-shadow:0 6px 18px rgba(0,0,0,.18)!important;
+}
+.app-layout .quick-actions-premium a>span{
+  background:rgba(102,107,228,.14)!important;
+  color:#969aff!important;
+}
+.app-layout .quick-actions-premium a>div{
+  background:transparent!important;
+}
+.app-layout .quick-actions-premium a>div b{
+  color:#edf0f5!important;
+}
+.app-layout .quick-actions-premium a>div small{
+  color:#7f8797!important;
+}
+.app-layout .quick-actions-premium a>svg{
+  color:#737b8d!important;
+}
+.app-layout .quick-actions-premium a:hover>svg{
+  color:#a0a4ff!important;
+}
