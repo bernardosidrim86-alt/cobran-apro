@@ -5146,3 +5146,31 @@ tbody tr:hover{
 @media(max-width:600px){.dashboard-real-preview{min-height:320px;border-radius:14px}.real-preview-sidebar{display:none}.real-preview-content{padding:12px}.real-preview-top b{font-size:14px}.real-preview-top small{font-size:6px}.real-preview-top button{font-size:6px;padding:7px}.real-preview-metrics{gap:5px}.real-preview-metrics>div{padding:7px}.real-preview-metrics strong{font-size:8px}.real-preview-cash{gap:15px;margin:10px 0 8px}.real-preview-row:nth-child(n+5){display:none}.real-preview-list{padding:8px}.real-preview-list-head b{font-size:8px}}
 
 .danger-action{color:#c94d56!important}.danger-menu-item{color:#c94d56!important}.danger-menu-item:disabled{opacity:.55;cursor:not-allowed}
+/* LANDING — dashboard screenshot preview */
+.dashboard-screenshot-preview{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+  padding:0;
+  background:#fff;
+  border:1px solid #e7e8f2;
+  border-radius:18px;
+  box-shadow:0 28px 80px rgba(37,37,106,.13);
+  line-height:0;
+}
+.dashboard-screenshot-image{
+  display:block;
+  width:100%;
+  height:auto;
+  max-width:none;
+}
+@media(max-width:900px){
+  .dashboard-screenshot-preview{
+    border-radius:15px;
+  }
+}
+@media(max-width:600px){
+  .dashboard-screenshot-preview{
+    border-radius:13px;
+  }
+}
