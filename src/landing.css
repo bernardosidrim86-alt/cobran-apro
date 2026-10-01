@@ -403,3 +403,45 @@
 .lp{
   animation:none!important;
 }
+
+
+/* LANDING 5.2 — REFINO DO MOCKUP DE CELULAR NO HERO */
+.lp-hero-shot{
+  position:relative;
+}
+.lp-phone-hero{
+  z-index:4;
+  width:188px;
+  left:-42px;
+  bottom:14px;
+  padding:6px;
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:28px;
+  background:#070a0e;
+  box-shadow:
+    0 28px 55px rgba(0,0,0,.42),
+    0 8px 20px rgba(0,0,0,.28);
+}
+.lp-phone-hero img{
+  border-radius:22px;
+}
+@media(max-width:1180px) and (min-width:641px){
+  .lp-phone-hero{
+    left:-24px;
+    width:176px;
+    bottom:12px;
+  }
+}
+@media(max-width:640px){
+  .lp-phone-hero{
+    width:226px;
+    padding:7px;
+    border-radius:29px;
+    bottom:auto;
+    left:auto;
+    box-shadow:0 26px 48px rgba(0,0,0,.38);
+  }
+  .lp-phone-hero img{
+    border-radius:23px;
+  }
+}
