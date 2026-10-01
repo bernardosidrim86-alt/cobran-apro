@@ -489,7 +489,7 @@ function Price({plan, featured, session, annual=false}) {
     window.location.href = "/cadastro?checkout=" + encodeURIComponent(checkoutUrl.toString());
   }
 
-  return <div className={\`price-card \${featured?"featured":""} \${isFree?"free-card":""}\`}>
+  return <div className={`price-card ${featured?"featured":""} ${isFree?"free-card":""}`}>
     {featured && <div className="popular">Mais escolhido</div>}
 
     <div className="price-head">
@@ -527,7 +527,7 @@ function Price({plan, featured, session, annual=false}) {
         : <button
             type="button"
             onClick={()=>startCheckout(annual ? plan.annualCheckout : plan.monthlyCheckout)}
-            className={\`btn \${featured ? "btn-primary" : "btn-secondary"} full\`}
+            className={`btn ${featured ? "btn-primary" : "btn-secondary"} full`}
           >
             {annual ? "Escolher plano anual" : "Escolher plano"}
             <ArrowRight size={16}/>
