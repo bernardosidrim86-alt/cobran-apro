@@ -605,6 +605,23 @@ function Dashboard({session}) {
       </div>
     </div>
 
+    <div className="dashboard-action-grid">
+      <div className="panel dashboard-tasks-panel">
+        <div className="panel-head"><div><span className="panel-kicker">CENTRAL DE TAREFAS</span><h2>O que merece atenção agora?</h2><p>Ações rápidas baseadas nas suas cobranças.</p></div></div>
+        <div className="dashboard-task-list">
+          <Link to="/app/cobrancas?filter=overdue" className="dashboard-task"><span className="task-icon danger"><Receipt size={17}/></span><div><b>Cobranças atrasadas</b><small>{data.charges.filter(c=>c.status==="pending"&&c.due_date<todayISO()).length} cobrança(s) precisam de cobrança</small></div><strong>{money(data.overdue)}</strong><ArrowRight size={15}/></Link>
+          <Link to="/app/cobrancas?filter=pending" className="dashboard-task"><span className="task-icon warning"><Receipt size={17}/></span><div><b>Vencendo hoje</b><small>{data.charges.filter(c=>c.status==="pending"&&c.due_date===todayISO()).length} cobrança(s) vencem hoje</small></div><strong>{money(data.today)}</strong><ArrowRight size={15}/></Link>
+          <Link to="/app/clientes" className="dashboard-task"><span className="task-icon"><Users size={17}/></span><div><b>Base de clientes</b><small>Veja clientes e todo o histórico financeiro</small></div><strong>{data.customers}</strong><ArrowRight size={15}/></Link>
+        </div>
+      </div>
+      <div className="panel dashboard-forecast-panel">
+        <div className="panel-head"><div><span className="panel-kicker">PRÓXIMOS 7 DIAS</span><h2>Previsão de recebimento</h2><p>O que está programado para entrar nos próximos dias.</p></div><Link to="/app/calendario" className="link-btn">Abrir calendário <ArrowRight size={15}/></Link></div>
+        <div className="dashboard-forecast-list">
+          {Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()+i);const iso=d.toISOString().slice(0,10);const items=data.charges.filter(c=>c.status==="pending"&&c.due_date===iso);const total=items.reduce((a,c)=>a+Number(c.amount||0),0);return <div className="dashboard-forecast-row" key={iso}><span>{i===0?"Hoje":d.toLocaleDateString("pt-BR",{weekday:"short"}).replace(".","")}<small>{d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}</small></span><div><i style={{width:(total?Math.max(8,Math.min(100,total/Math.max(1,data.receive)*100)):0)+"%"}}/></div><strong>{money(total)}</strong></div>})}
+        </div>
+      </div>
+    </div>
+
     <div className="dashboard-bottom-grid">
       <div className="panel">
         <div className="panel-head"><div><span className="panel-kicker">ATENÇÃO</span><h2>Quem eu preciso cobrar hoje?</h2><p>Clientes com cobrança vencendo hoje ou em atraso.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
