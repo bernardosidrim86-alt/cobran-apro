@@ -168,14 +168,15 @@ function Landing({session}) {
         <ScrollReveal><div className="section-heading"><span className="eyebrow">Recursos</span><h2>Tudo que você precisa para receber melhor.</h2></div></ScrollReveal>
         <div className="feature-grid">
           {[
-            [LayoutDashboard,"Dashboard financeiro","Veja a receber, vencendo hoje, atrasado e recebido."],
-            [Users,"Clientes","Cadastre clientes e acompanhe todo o histórico."],
-            [Receipt,"Cobranças","Crie, acompanhe e marque cobranças como pagas."],
-            [MessageCircle,"WhatsApp","Mensagens prontas para cobrar sem perder tempo."],
-            [Sparkles,"Assistente IA","Crie mensagens naturais para cada situação."],
-            [TrendingUp,"Relatórios","Acompanhe recebimentos e cobranças em um só lugar."]
+            [LayoutDashboard,"Dashboard financeiro","Saiba exatamente quanto tem para receber e o que precisa de atenção."],
+            [Users,"Clientes","Tenha contatos, histórico e cobranças de cada cliente organizados."],
+            [Receipt,"Cobranças","Crie cobranças em segundos e acompanhe cada pagamento."],
+            [MessageCircle,"WhatsApp","Envie lembretes profissionais pelo WhatsApp sem precisar escrever tudo de novo."],
+            [Sparkles,"Assistente IA","Crie mensagens de cobrança adaptadas para cada situação."],
+            [TrendingUp,"Relatórios","Entenda seus recebimentos e acompanhe a evolução do negócio."]
           ].map(([Icon,t,p],i)=><ScrollReveal key={t} delay={i*65}><div className="feature-card"><div className="icon-box"><Icon size={20}/></div><h3>{t}</h3><p>{p}</p></div></ScrollReveal>)}
         </div>
+        <div className="features-bottom-line"><Check size={16}/> Tudo em um só lugar. Sem planilhas e sem ficar procurando informação.</div>
       </div></section>
 
       <section id="precos" className="section soft"><div className="container">
