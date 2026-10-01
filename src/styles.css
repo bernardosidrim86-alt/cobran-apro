@@ -7668,3 +7668,11 @@ tbody tr:hover{
     border-radius:10px;
   }
 }
+
+
+/* LANDING 3.1 — HIDE HERO MOCKUP ON MOBILE */
+@media(max-width:520px){
+  .cp-lp-hero-product{
+    display:none!important;
+  }
+}
