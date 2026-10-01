@@ -157,10 +157,9 @@ function Landing({session}) {
         <ScrollReveal><div className="section-heading"><span className="eyebrow">Como funciona</span><h2>Uma visão clara de tudo que você precisa receber.</h2></div></ScrollReveal>
         <div className="steps">
           {[
-            ["01","Cadastre seus clientes","Tenha todos os contatos e históricos em um só lugar."],
-            ["02","Crie suas cobranças","Defina valor, vencimento, serviço e recorrência."],
-            ["03","Veja quem cobrar","O dashboard destaca automaticamente o que precisa de atenção."],
-            ["04","Envie pelo WhatsApp","Abra uma mensagem pronta e cobre de forma profissional."]
+            ["01","Cadastre seus clientes","Tenha clientes, contatos e histórico organizados em um só lugar."],
+            ["02","Crie suas cobranças","Defina valor, vencimento e serviço. O CobrançaPro organiza tudo para você."],
+            ["03","Acompanhe e cobre","Veja o que está pendente e envie lembretes pelo WhatsApp em poucos cliques."]
           ].map((x,i)=><ScrollReveal key={x[0]} delay={i*70}><div className="step"><span>{x[0]}</span><h3>{x[1]}</h3><p>{x[2]}</p></div></ScrollReveal>)}
         </div>
       </div></section>
