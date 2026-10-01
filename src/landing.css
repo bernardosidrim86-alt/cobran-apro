@@ -465,3 +465,21 @@
   background:url("/logo.png") center / 100% 100% no-repeat;
   clip-path:inset(0 0 0 72%);
 }
+
+
+/* Reveal das seções conforme entram na tela */
+@media (prefers-reduced-motion: no-preference){
+  .lp .scroll-reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1);
+    will-change:opacity,transform;
+  }
+  .lp .scroll-reveal.is-visible{
+    opacity:1;
+    transform:none;
+  }
+  .lp .scroll-reveal:nth-of-type(even){
+    transition-delay:.04s;
+  }
+}
