@@ -174,7 +174,7 @@ function Landing({session}) {
 
             <div className="cp-lp-hero-actions">
               <Link to="/cadastro" className="btn btn-primary btn-lg">Começar grátis <ArrowRight size={18}/></Link>
-              <a href="#como-funciona" className="btn btn-secondary btn-lg">Ver como funciona</a>
+              <a href="#como-funciona" className="btn btn-secondary btn-lg">Ver como funciona <ChevronRight size={18}/></a>
             </div>
 
             <div className="cp-lp-trust-row">
