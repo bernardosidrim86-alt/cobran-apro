@@ -7435,3 +7435,53 @@ tbody tr:hover{
     font-size:36px!important;
   }
 }
+
+
+/* LANDING 2.7 — PRICING DETAIL FINISH */
+.cp-lp-pricing-grid .price-annual{
+  justify-content:center;
+  gap:3px;
+  padding:7px 9px;
+  min-height:43px;
+  border:1px solid #e5e7ed;
+  border-radius:9px;
+  background:#f7f8fa;
+}
+.cp-lp-pricing-grid .price-annual span{
+  font-size:8px;
+  color:#8c909d;
+}
+.cp-lp-pricing-grid .price-annual strong{
+  font-size:9px;
+  color:#55596a;
+  font-weight:800;
+}
+.cp-lp-pricing-grid .price-card.featured .price-annual{
+  border-color:#dedff5;
+  background:#f7f7ff;
+}
+.cp-lp-pricing-grid .price-card.featured .price-annual strong{
+  color:#5b5ce2;
+}
+.cp-lp-pricing-grid .price-card.free-card .price-annual{
+  visibility:hidden;
+}
+.cp-lp-pricing-grid .price-card.free-card .price{
+  color:#5b5ce2;
+}
+.cp-lp-pricing-grid .price-card.free-card .price span{
+  color:#707486;
+}
+.cp-lp-pricing-grid .price-card.free-card .price-actions .btn{
+  background:#eef0f5;
+  border-color:#d1d5de;
+  color:#444858;
+}
+.cp-lp-pricing-grid .price-card.free-card .price-actions .btn:hover{
+  background:#e7eaf0;
+}
+@media(max-width:520px){
+  .cp-lp-pricing-grid .price-annual{
+    min-height:41px;
+  }
+}
