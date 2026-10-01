@@ -2183,3 +2183,38 @@ tbody tr:hover{background:#fafbff!important}
 .app-layout .attention-item small{
   color:#80899a!important;
 }
+
+
+/* Correção de contraste — busca global do header */
+.app-layout .header-search,
+.app-layout .global-search{
+  background:#11161e!important;
+  border-color:#303746!important;
+  color:#8993a4!important;
+  box-shadow:none!important;
+}
+.app-layout .header-search:focus-within,
+.app-layout .global-search:focus-within{
+  background:#151a23!important;
+  border-color:#5b62df!important;
+  box-shadow:0 0 0 3px rgba(91,98,223,.12)!important;
+}
+.app-layout .header-search input,
+.app-layout .global-search input{
+  background:transparent!important;
+  color:#edf0f5!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+.app-layout .header-search input::placeholder,
+.app-layout .global-search input::placeholder{
+  color:#6f798a!important;
+}
+.app-layout .header-search>svg,
+.app-layout .global-search>svg{
+  color:#858fa0!important;
+  flex:0 0 auto;
+}
+.app-layout .global-search-count{
+  color:#7d8797!important;
+}
