@@ -8476,3 +8476,12 @@ tbody tr:hover{
 .cp-lp [id="como-funciona"]{
   scroll-margin-top:92px;
 }
+
+
+/* LANDING 4.3 — LOGO MAIOR NO MOBILE */
+@media(max-width:800px){
+  .cp-lp-header .cp-lp-brand img{
+    width:160px;
+    max-width:160px;
+  }
+}
