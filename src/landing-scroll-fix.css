@@ -22,3 +22,8 @@ body{
   overflow:visible!important;
   clip-path:none!important;
 }
+
+/* Teste grátis: preço neutro para manter a paleta */
+.cp-lp-pricing-grid .price-card.free-card .price{
+  color:#202236!important;
+}
