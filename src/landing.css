@@ -446,26 +446,26 @@
   }
 }
 
-
-/* LANDING 5.3 — LOGO COM CONTRASTE NO DARK MODE */
+/* LANDING 5.3 — LOGO DARK: COBRANÇA BRANCA, PRO ORIGINAL */
 .lp-brand{
   position:relative;
+}
+.lp-brand img{
+  position:relative;
+  z-index:1;
+  filter:brightness(0) invert(1);
 }
 .lp-brand::after{
   content:"";
   position:absolute;
   inset:0;
-  background:url("/landing/logo.png") center / 100% 100% no-repeat;
-  filter:brightness(0) invert(1);
-  clip-path:inset(0 29% 0 0);
+  z-index:2;
   pointer-events:none;
-}
-.lp-brand img{
-  position:relative;
-  z-index:1;
+  background:url("/landing/logo.png") center / 100% 100% no-repeat;
+  clip-path:inset(0 0 0 72%);
 }
 @media(max-width:800px){
   .lp-brand::after{
-    clip-path:inset(0 29% 0 0);
+    clip-path:inset(0 0 0 72%);
   }
 }
