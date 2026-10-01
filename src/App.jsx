@@ -163,14 +163,11 @@ function Landing({session}) {
             <div className="cp-lp-eyebrow"><span className="cp-lp-dot"></span> Gestão de cobranças para pequenos negócios</div>
 
             <h1>
-              COBRANÇAS.<br/>
-              CLIENTES.<br/>
-              <span>DINHEIRO.</span><br/>
-              TUDO SOB CONTROLE.
+              Tenha controle sobre tudo o que você tem a receber.
             </h1>
 
             <p className="cp-lp-hero-sub">
-              Organize o que você tem para receber, acompanhe seus clientes e veja exatamente o que precisa de atenção. Tudo em um só lugar.
+              Organize clientes, cobranças e recebimentos em uma única visão. Saiba o que entrou, o que está pendente e o que precisa de atenção.
             </p>
 
             <div className="cp-lp-hero-actions">
@@ -194,7 +191,7 @@ function Landing({session}) {
 
       <section className="cp-lp-proof">
         <div className="cp-lp-container">
-          <p className="cp-lp-proof-label">Tudo que você precisa para organizar o dinheiro que ainda vai entrar.</p>
+          <p className="cp-lp-proof-label">Uma operação financeira mais organizada, do primeiro cliente ao recebimento.</p>
           <div className="cp-lp-proof-items">
             <span><Wallet size={17}/> A receber</span>
             <span><Receipt size={17}/> Cobranças</span>
