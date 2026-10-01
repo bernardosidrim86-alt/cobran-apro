@@ -5193,3 +5193,21 @@ tbody tr:hover{
 .dashboard-showcase-frame{width:100%;background:#fff;border:1px solid #e2e3ed;border-radius:24px;padding:10px;box-shadow:0 35px 100px rgba(37,37,106,.16);overflow:hidden}
 .dashboard-showcase-frame img{display:block;width:100%;height:auto;border-radius:16px}
 @media(max-width:600px){.dashboard-showcase-section{padding:70px 14px 80px}.dashboard-showcase-heading{margin-bottom:28px}.dashboard-showcase-heading h2{font-size:31px}.dashboard-showcase-heading p{font-size:13px}.dashboard-showcase-frame{padding:6px;border-radius:16px}.dashboard-showcase-frame img{border-radius:11px}}
+
+/* LANDING — hero mockup legível */
+@media(min-width:901px){
+  .hero{
+    grid-template-columns:1fr;
+    gap:34px;
+    align-items:start;
+    padding-top:62px;
+    padding-bottom:90px;
+  }
+  .hero-copy{
+    max-width:760px;
+  }
+  .dashboard-screenshot-preview{
+    width:100%;
+    max-width:1160px;
+  }
+}
