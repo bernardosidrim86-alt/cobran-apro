@@ -7640,3 +7640,31 @@ tbody tr:hover{
     margin-bottom:30px;
   }
 }
+
+
+/* LANDING 3.0 — MOBILE MOCKUP READABILITY */
+@media(max-width:520px){
+  .cp-lp-hero-product{
+    width:100%;
+    overflow:hidden;
+  }
+  .cp-lp-hero-product .dashboard-screenshot-preview{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    overscroll-behavior-x:contain;
+  }
+  .cp-lp-hero-product .dashboard-screenshot-preview::-webkit-scrollbar{
+    display:none;
+  }
+  .cp-lp-hero-product .dashboard-screenshot-image{
+    width:190%!important;
+    max-width:none!important;
+    height:auto;
+    border-radius:10px;
+  }
+}
