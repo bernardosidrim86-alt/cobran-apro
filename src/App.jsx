@@ -178,7 +178,7 @@ function Landing({session}) {
   return <div className="lp">
     <header className="lp-header">
       <div className="lp-wrap lp-header-in">
-        <Link to="/" className="lp-brand"><img src="/landing/logo-dark.svg" alt="CobrançaPro" width="148" height="46" /></Link>
+        <Link to="/" className="lp-brand"><img src="/logo.png" alt="CobrançaPro" /></Link>
         <nav className="lp-nav" aria-label="Seções da página"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#precos">Planos</a><a href="#duvidas">Dúvidas</a></nav>
         <div className="lp-header-cta">
           {session ? <Link to="/app" className="lp-btn lp-btn-primary lp-btn-sm">Abrir painel</Link> : <><Link to="/login" className="lp-link">Entrar</Link><Link to="/cadastro" className="lp-btn lp-btn-primary lp-btn-sm">Começar grátis</Link></>}
