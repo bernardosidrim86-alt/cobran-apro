@@ -153,23 +153,28 @@ function Landing({session}) {
         <DashboardPreview/>
       </section>
 
-      <section id="como" className="section soft product-story">
-        <div className="container">
-          <ScrollReveal><div className="section-heading center"><span className="eyebrow">Veja por dentro</span><h2>Um sistema feito para você saber o que precisa fazer.</h2><p>Sem planilhas espalhadas. Sem ficar procurando quem está devendo. O CobrançaPro coloca as informações importantes na sua frente.</p></div></ScrollReveal>
-          <ScrollReveal><div className="story-dashboard"><DashboardPreview/></div></ScrollReveal>
+      <section id="como" className="section soft"><div className="container">
+        <ScrollReveal><div className="section-heading"><span className="eyebrow">Como funciona</span><h2>Uma visão clara de tudo que você precisa receber.</h2></div></ScrollReveal>
+        <div className="steps">
+          {[
+            ["01","Cadastre seus clientes","Tenha todos os contatos e históricos em um só lugar."],
+            ["02","Crie suas cobranças","Defina valor, vencimento, serviço e recorrência."],
+            ["03","Veja quem cobrar","O dashboard destaca automaticamente o que precisa de atenção."],
+            ["04","Envie pelo WhatsApp","Abra uma mensagem pronta e cobre de forma profissional."]
+          ].map((x,i)=><ScrollReveal key={x[0]} delay={i*70}><div className="step"><span>{x[0]}</span><h3>{x[1]}</h3><p>{x[2]}</p></div></ScrollReveal>)}
         </div>
-      </section>
+      </div></section>
 
       <section id="recursos" className="section"><div className="container">
-        <ScrollReveal><div className="section-heading"><span className="eyebrow">Recursos</span><h2>Tudo que você precisa para receber melhor.</h2><p>Ferramentas simples para organizar clientes, cobranças e recebimentos em um só lugar.</p></div></ScrollReveal>
+        <ScrollReveal><div className="section-heading"><span className="eyebrow">Recursos</span><h2>Tudo que você precisa para receber melhor.</h2></div></ScrollReveal>
         <div className="feature-grid">
           {[
-            [LayoutDashboard,"Dashboard financeiro","Veja o que tem a receber, o que está vencendo e o que está atrasado."],
-            [Users,"Clientes","Cadastre clientes e acompanhe seus contatos e históricos."],
+            [LayoutDashboard,"Dashboard financeiro","Veja a receber, vencendo hoje, atrasado e recebido."],
+            [Users,"Clientes","Cadastre clientes e acompanhe todo o histórico."],
             [Receipt,"Cobranças","Crie, acompanhe e marque cobranças como pagas."],
-            [MessageCircle,"WhatsApp","Abra mensagens prontas para cobrar seus clientes em poucos cliques."],
-            [Sparkles,"Assistente IA","Crie mensagens de cobrança naturais para cada situação."],
-            [TrendingUp,"Relatórios","Acompanhe seus recebimentos e cobranças em um só lugar."]
+            [MessageCircle,"WhatsApp","Mensagens prontas para cobrar sem perder tempo."],
+            [Sparkles,"Assistente IA","Crie mensagens naturais para cada situação."],
+            [TrendingUp,"Relatórios","Acompanhe recebimentos e cobranças em um só lugar."]
           ].map(([Icon,t,p],i)=><ScrollReveal key={t} delay={i*65}><div className="feature-card"><div className="icon-box"><Icon size={20}/></div><h3>{t}</h3><p>{p}</p></div></ScrollReveal>)}
         </div>
       </div></section>
