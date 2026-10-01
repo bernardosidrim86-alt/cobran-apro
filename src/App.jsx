@@ -456,7 +456,7 @@ function Price({plan, featured, session, annual=false}) {
       return;
     }
 
-    window.location.href = \`/cadastro?checkout=\${encodeURIComponent(checkoutUrl.toString())}\`;
+    window.location.href = "/cadastro?checkout=" + encodeURIComponent(checkoutUrl.toString());
   }
 
   return <div className={\`price-card \${featured?"featured":""} \${isFree?"free-card":""}\`}>
