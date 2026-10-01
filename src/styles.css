@@ -8492,14 +8492,18 @@ html,body,#root{
 }
 
 
-/* LANDING 4.5 — SCROLL NATIVO E SEM TRAVAS */
+/* LANDING 4.6 — VIEWPORT COMO ÚNICO SCROLL CONTAINER */
 html{
   scroll-behavior:auto!important;
+  overflow-x:hidden;
 }
-html,body,#root{
-  overflow-y:auto!important;
-  height:auto!important;
+body{
   min-height:100%;
+  overflow-x:hidden;
+}
+#root{
+  min-height:100%;
+  overflow:visible;
 }
 .cp-lp{
   position:relative!important;
@@ -8509,5 +8513,5 @@ html,body,#root{
   overflow:visible!important;
   clip-path:none!important;
   touch-action:auto!important;
-  overscroll-behavior-y:auto!important;
+  overscroll-behavior:auto!important;
 }
