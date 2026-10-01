@@ -320,14 +320,44 @@ function Landing({session}) {
 
       <section className="cp-lp-dashboard-section">
         <div className="cp-lp-container">
-          <div className="cp-lp-centered-heading cp-lp-dashboard-heading">
-            <span className="cp-lp-label">Veja o produto</span>
-            <h2>Você olha e sabe o que precisa fazer.</h2>
-            <p>Uma visão pensada para transformar a sua rotina de cobrança em poucos passos claros.</p>
+          <div className="cp-lp-split-heading cp-lp-product-breakdown-heading">
+            <div>
+              <span className="cp-lp-label">Veja como funciona</span>
+              <h2>Do cliente ao recebimento, tudo fica visível.</h2>
+            </div>
+            <p>
+              O CobrançaPro organiza cada etapa da cobrança para você saber o que precisa ser feito sem ficar procurando informação.
+            </p>
           </div>
 
-          <div className="cp-lp-dashboard-showcase">
-            <DashboardPreview/>
+          <div className="cp-lp-product-breakdown">
+            <div className="cp-lp-breakdown-card">
+              <span className="cp-lp-breakdown-index">01</span>
+              <div className="cp-lp-breakdown-icon"><Users size={19}/></div>
+              <h3>Você cadastra o cliente</h3>
+              <p>Contato, histórico e cobranças ficam ligados ao mesmo cliente.</p>
+            </div>
+            <div className="cp-lp-breakdown-connector"></div>
+            <div className="cp-lp-breakdown-card">
+              <span className="cp-lp-breakdown-index">02</span>
+              <div className="cp-lp-breakdown-icon"><Receipt size={19}/></div>
+              <h3>Você cria a cobrança</h3>
+              <p>Defina valor, vencimento e acompanhe o status da cobrança.</p>
+            </div>
+            <div className="cp-lp-breakdown-connector"></div>
+            <div className="cp-lp-breakdown-card">
+              <span className="cp-lp-breakdown-index">03</span>
+              <div className="cp-lp-breakdown-icon"><MessageCircle size={19}/></div>
+              <h3>Você envia o lembrete</h3>
+              <p>Abra o WhatsApp do cliente e envie a mensagem em poucos cliques.</p>
+            </div>
+            <div className="cp-lp-breakdown-connector"></div>
+            <div className="cp-lp-breakdown-card">
+              <span className="cp-lp-breakdown-index">04</span>
+              <div className="cp-lp-breakdown-icon"><CircleDollarSign size={19}/></div>
+              <h3>Você registra o recebimento</h3>
+              <p>O valor pago entra no histórico e sua visão financeira fica atualizada.</p>
+            </div>
           </div>
         </div>
       </section>
