@@ -233,7 +233,7 @@ function Price({plan, featured, session}) {
     </div>
     <p>{plan.desc}</p>
     <div className="price"><small>R$</small>{plan.monthlyPrice}<span>{isFree ? "7 dias grátis" : "/mês"}</span></div>
-    {!isFree && <div className="price-annual"><b>R$ {plan.annualPrice}</b><span>/ano no plano anual</span></div>}
+    {!isFree && <div className="price-annual"><span>Plano anual disponível</span></div>}
     <div className="price-benefits-title">O que está incluído:</div>
     <div className="price-items">{plan.items.map(i=><div className="price-item" key={i}><Check size={16}/><span>{i}</span></div>)}</div>
     <div className="price-actions">
