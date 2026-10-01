@@ -180,7 +180,7 @@ function Landing({session}) {
       </div></section>
 
       <section id="precos" className="section soft"><div className="container">
-        <ScrollReveal><div className="section-heading center"><span className="eyebrow">Preços</span><h2>Escolha o plano ideal para sua empresa.</h2><p>Teste grátis por 7 dias. Sem cartão de crédito. Faça upgrade quando precisar.</p></div></ScrollReveal>
+        <ScrollReveal><div className="section-heading center"><span className="eyebrow">Preços</span><h2>Comece grátis. Faça upgrade quando precisar.</h2><p>Teste por 7 dias, sem cartão de crédito. Escolha o plano conforme seu negócio crescer.</p></div></ScrollReveal>
         <div className="pricing">
           {PLAN_OPTIONS.map((plan,i) => <ScrollReveal key={plan.key} delay={i*90}><Price plan={plan} featured={plan.key==="profissional"} session={session}/></ScrollReveal>)}
         </div>
