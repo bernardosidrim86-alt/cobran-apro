@@ -193,26 +193,47 @@ function Landing({session}) {
 }
 
 function DashboardPreview() {
-  const metrics=[["A receber","R$ 12.450,00","receive"],["Vencendo hoje","R$ 1.280,00","today"],["Atrasado","R$ 2.430,00","late"],["Total recebido","R$ 18.720,00","paid"]];
   return <div className="preview-wrap">
     <div className="glow"></div>
-    <div className="product-shot">
-      <div className="product-shot-bar"><span></span><span></span><span></span><div>app.cobrancapro.com.br</div></div>
-      <div className="product-shot-body">
-        <aside className="shot-sidebar">
-          <div className="shot-logo"><img src="/logo.png" alt=""/><b>CobrançaPro</b></div>
-          <div className="shot-nav"><span className="active"><LayoutDashboard size={14}/> Dashboard</span><span><Users size={14}/> Clientes</span><span><Receipt size={14}/> Cobranças</span><span><Wallet size={14}/> Recebimentos</span><span><TrendingUp size={14}/> Relatórios</span></div>
-          <div className="shot-settings"><Settings size={14}/> Configurações</div>
-        </aside>
-        <main className="shot-main">
-          <div className="shot-header"><div><small>VISÃO GERAL</small><h3>Olá, Lucas</h3><p>Acompanhe o que entrou, o que falta receber e o que precisa de atenção.</p></div><button><Plus size={14}/> Nova cobrança</button></div>
-          <div className="shot-metrics">{metrics.map(([label,value,type])=><div className="shot-metric" key={label}><div><span>{label}</span><strong>{value}</strong></div><i className={type}>{type==="receive"?<CircleDollarSign size={15}/>:type==="paid"?<Wallet size={15}/>:<Receipt size={15}/>}</i></div>)}</div>
-          <div className="shot-columns">
-            <section className="shot-card cash"><small>RESUMO</small><h4>Seu caixa</h4><p>Quanto você já recebeu e quanto ainda está em aberto.</p><div className="shot-cash-values"><div><span>Já recebido</span><b>R$ 18.720,00</b></div><div><span>A receber</span><b>R$ 12.450,00</b></div></div><div className="shot-progress-label"><span>Recebimento do total</span><b>60%</b></div><div className="shot-progress"><i></i></div></section>
-            <section className="shot-card attention"><small>ATENÇÃO</small><h4>Precisa de ação</h4><p>Prioridades para hoje.</p><strong>R$ 3.710,00</strong><span>em cobranças para acompanhar</span><div className="shot-alert"><div><i></i><b>R$ 2.430,00</b><span>em atraso</span></div><div><i></i><b>R$ 1.280,00</b><span>vencendo hoje</span></div></div></section>
+    <div className="preview dashboard-real-preview">
+      <div className="real-preview-sidebar">
+        <div className="real-preview-brand"><span>CP</span><b>CobrançaPro</b></div>
+        <div className="real-preview-nav">
+          <span className="active"><LayoutDashboard size={13}/> Dashboard</span>
+          <span><Users size={13}/> Clientes</span>
+          <span><Receipt size={13}/> Cobranças</span>
+          <span><Wallet size={13}/> Recebimentos</span>
+          <span><TrendingUp size={13}/> Relatórios</span>
+        </div>
+        <div className="real-preview-bottom"><Settings size={13}/> Configurações</div>
+      </div>
+      <div className="real-preview-content">
+        <div className="real-preview-top">
+          <div><span>VISÃO GERAL</span><b>Olá, Lucas</b><small>Acompanhe o que entrou e o que precisa de atenção.</small></div>
+          <button><Plus size={13}/> Nova cobrança</button>
+        </div>
+        <div className="real-preview-metrics">
+          <div><span>A receber</span><strong>R$ 12.450,00</strong><i><CircleDollarSign size={12}/></i></div>
+          <div><span>Vencendo hoje</span><strong>R$ 1.280,00</strong><i><Receipt size={12}/></i></div>
+          <div><span>Atrasado</span><strong>R$ 2.430,00</strong><i><Receipt size={12}/></i></div>
+          <div><span>Total recebido</span><strong>R$ 18.720,00</strong><i><Wallet size={12}/></i></div>
+        </div>
+        <div className="real-preview-main">
+          <div className="real-preview-panel">
+            <span className="panel-kicker">RESUMO</span><b>Seu caixa</b><small>Quanto você já recebeu e quanto ainda está em aberto.</small>
+            <div className="real-preview-cash"><span>Já recebido<strong>R$ 18.720,00</strong></span><span>A receber<strong>R$ 12.450,00</strong></span></div>
+            <div className="real-preview-progress"><span>Recebimento do total <b>60%</b></span><em><i></i></em></div>
           </div>
-          <section className="shot-card shot-list"><div className="shot-list-head"><div><small>ATENÇÃO</small><h4>Quem eu preciso cobrar hoje?</h4><p>Clientes com cobrança vencendo hoje ou em atraso.</p></div><b>Ver todas →</b></div>{[["J","João Silva","Mensalidade","R$ 350,00","Atrasado"],["M","Maria Souza","Serviço","R$ 180,00","Vence hoje"],["C","Carlos Lima","Consultoria","R$ 900,00","Atrasado"]].map(x=><div className="shot-row" key={x[1]}><i>{x[0]}</i><div><b>{x[1]}</b><span>{x[2]}</span></div><strong>{x[3]}</strong><em className={x[4]==="Atrasado"?"red":""}>{x[4]}</em></div>)}</section>
-        </main>
+          <div className="real-preview-panel attention">
+            <span className="panel-kicker">ATENÇÃO</span><b>Precisa de ação</b><small>Prioridades para hoje.</small>
+            <strong>R$ 3.710,00</strong>
+            <div><span>● R$ 2.430,00 <small>em atraso</small></span><span>● R$ 1.280,00 <small>vence hoje</small></span></div>
+          </div>
+        </div>
+        <div className="real-preview-list">
+          <div className="real-preview-list-head"><div><span className="panel-kicker">ATENÇÃO</span><b>Quem eu preciso cobrar hoje?</b></div><span>Ver todas →</span></div>
+          {[["J","João Silva","Mensalidade","R$ 350,00","Atrasado"],["M","Maria Souza","Serviço","R$ 180,00","Vence hoje"],["C","Carlos Lima","Consultoria","R$ 900,00","Atrasado"]].map(x=><div className="real-preview-row" key={x[1]}><span className="mini-avatar">{x[0]}</span><div><b>{x[1]}</b><small>{x[2]}</small></div><strong>{x[3]}</strong><em>{x[4]}</em></div>)}
+        </div>
       </div>
     </div>
   </div>;
