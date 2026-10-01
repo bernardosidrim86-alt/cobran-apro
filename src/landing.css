@@ -463,6 +463,6 @@
   pointer-events:none;
   background:url("/logo.png") center / 100% 100% no-repeat;
   filter:brightness(0) invert(1);
-  clip-path:inset(0 25% 0 26%);
+  clip-path:inset(0 29% 0 27%);
   transform:translateY(5px);
 }
