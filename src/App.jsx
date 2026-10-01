@@ -801,7 +801,6 @@ function Customers() {
 
   useEffect(()=>{
     if(!menu)return;
-    function closeOnOutside(){setMenu(null);setMenuPosition(null);}
     function reposition(){
       const button=document.querySelector(`.customer-menu-trigger[data-customer-id="${menu}"]`);
       if(!button){closeOnOutside();return;}
@@ -819,11 +818,9 @@ function Customers() {
     reposition();
     window.addEventListener("resize",reposition);
     window.addEventListener("scroll",reposition,true);
-    document.addEventListener("click",closeOnOutside);
     return()=>{
       window.removeEventListener("resize",reposition);
       window.removeEventListener("scroll",reposition,true);
-      document.removeEventListener("click",closeOnOutside);
     };
   },[menu]);
 
@@ -903,17 +900,24 @@ function Customers() {
   const activeCustomer=menu?rows.find(c=>c.id===menu):null;
 
   const floatingMenu=activeCustomer&&menuPosition?createPortal(
-    <div
-      className="customer-menu customer-menu-floating"
-      style={{position:"fixed",top:menuPosition.top,left:menuPosition.left,width:184,zIndex:2147483647}}
-      onClick={e=>e.stopPropagation()}
-    >
-      <button type="button" onClick={()=>showData(activeCustomer)}>Ver dados</button>
-      <button type="button" onClick={()=>whatsapp(activeCustomer)}>Abrir WhatsApp</button>
-      <button type="button" className="danger-menu-item" onClick={()=>removeCustomer(activeCustomer)} disabled={deleting}>
-        {deleting?"Excluindo...":"Excluir cliente"}
-      </button>
-    </div>,
+    <>
+      <button
+        type="button"
+        aria-label="Fechar menu de ações"
+        onClick={()=>{setMenu(null);setMenuPosition(null)}}
+        style={{position:"fixed",inset:0,border:0,padding:0,margin:0,background:"transparent",zIndex:2147483646,cursor:"default",pointerEvents:"auto"}}
+      />
+      <div
+        className="customer-menu customer-menu-floating"
+        style={{position:"fixed",top:menuPosition.top,left:menuPosition.left,width:184,zIndex:2147483647,pointerEvents:"auto"}}
+      >
+        <button type="button" onClick={()=>showData(activeCustomer)}>Ver dados</button>
+        <button type="button" onClick={()=>whatsapp(activeCustomer)}>Abrir WhatsApp</button>
+        <button type="button" className="danger-menu-item" onClick={()=>removeCustomer(activeCustomer)} disabled={deleting}>
+          {deleting?"Excluindo...":"Excluir cliente"}
+        </button>
+      </div>
+    </>,
     document.body
   ):null;
 
