@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Routes, Route, Navigate, Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowRight, Bell, Check, ChevronRight, CircleDollarSign, CreditCard,
-  LayoutDashboard, LogOut, Menu, MessageCircle, Plus, Receipt, Settings, Sun, Moon,
+  LayoutDashboard, LogOut, Menu, MessageCircle, Plus, Receipt, Settings,
   Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal, Lock
 } from "lucide-react";
 import { supabase } from "./lib/supabase";
@@ -129,8 +129,6 @@ function ScrollReveal({children, className="", delay=0}) {
 }
 
 function Landing({session}) {
-  const [darkMode,setDarkMode]=useState(false);
-
   useEffect(()=>{
     if(window.location.hash !== "#precos") return;
     const scrollToPlans=()=>document.getElementById("precos")?.scrollIntoView({behavior:"smooth",block:"start"});
@@ -138,7 +136,7 @@ function Landing({session}) {
     return()=>clearTimeout(timer);
   },[]);
 
-  return <div className={`cp-lp ${darkMode ? "cp-lp-dark" : ""}`}>
+  return <div className="cp-lp cp-lp-dark">
     <header className="cp-lp-header">
       <div className="cp-lp-header-inner">
         <Link to="/" className="cp-lp-brand">
@@ -153,15 +151,6 @@ function Landing({session}) {
 
         <div className="cp-lp-header-actions">
           <Link to="/login" className="cp-lp-login">Entrar</Link>
-          <button
-            type="button"
-            className="cp-lp-theme-toggle"
-            onClick={()=>setDarkMode(v=>!v)}
-            aria-label={darkMode ? "Ativar tema claro" : "Ativar tema escuro"}
-            title={darkMode ? "Tema claro" : "Tema escuro"}
-          >
-            {darkMode ? <Sun size={16}/> : <Moon size={16}/>}
-          </button>
           <Link to="/cadastro" className="btn btn-primary cp-lp-header-cta">Começar grátis</Link>
         </div>
       </div>
