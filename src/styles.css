@@ -8211,3 +8211,13 @@ tbody tr:hover{
   position:relative;
   z-index:1;
 }
+
+/* LANDING 3.9 — LARGER DESKTOP BRAND */
+@media(min-width:801px){
+  .cp-lp-header-inner{
+    min-height:74px;
+  }
+  .cp-lp-header .cp-lp-brand img{
+    width:182px;
+  }
+}
