@@ -446,7 +446,7 @@
   }
 }
 
-/* LANDING 5.3 — LOGO DARK: COBRANÇA BRANCA, PRO ORIGINAL */
+/* Logo da landing: mesma logo do SaaS, com Cobrança branca e Pro original */
 .lp-brand{
   position:relative;
 }
@@ -461,11 +461,6 @@
   inset:0;
   z-index:2;
   pointer-events:none;
-  background:url("/landing/logo.png") center / 100% 100% no-repeat;
+  background:url("/logo.png") center / 100% 100% no-repeat;
   clip-path:inset(0 0 0 72%);
-}
-@media(max-width:800px){
-  .lp-brand::after{
-    clip-path:inset(0 0 0 72%);
-  }
 }
