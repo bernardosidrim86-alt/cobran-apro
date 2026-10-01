@@ -8197,3 +8197,17 @@ tbody tr:hover{
     animation:none!important;
   }
 }
+
+/* LANDING 3.8 — FIX MOTION LAYER VISIBILITY */
+.cp-lp::before{
+  z-index:0!important;
+}
+.cp-lp::after{
+  z-index:0!important;
+}
+.cp-lp>header,
+.cp-lp>main,
+.cp-lp>footer{
+  position:relative;
+  z-index:1;
+}
