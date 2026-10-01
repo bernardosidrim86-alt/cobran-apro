@@ -260,26 +260,33 @@ function Landing({session}) {
           <div className="lp-heading lp-heading-center">
             <p className="lp-kicker">Recursos</p>
             <h2>Um lugar para cuidar de cada etapa da cobrança.</h2>
-            <p className="lp-sub">Conheça os módulos que fazem parte do CobrançaPro.</p>
+            <p className="lp-sub">Tudo o que você precisa para organizar clientes, cobranças, recebimentos e contatos.</p>
           </div>
 
           <div className="lp-module-list">
             {modules.map((module,moduleIndex)=>(
               <section id={module.id} className={"lp-module " + (moduleIndex%2 ? "lp-module-reverse" : "")} key={module.id}>
                 <div className="lp-module-media">
-                  <div className="lp-module-image"><img src={module.img} alt={module.alt} width="1400" height="900" loading="lazy" decoding="async" /></div>
+                  <div className="lp-module-image">
+                    <img src={module.img} alt={module.alt} width="1400" height="900" loading="lazy" decoding="async" />
+                  </div>
                 </div>
+
                 <div className="lp-module-copy">
                   <p className="lp-kicker">{module.kicker}</p>
                   <h2>{module.title}</h2>
                   <p className="lp-module-lead">{module.text}</p>
+
                   <div className="lp-resource-grid">
                     {module.resources.map(([title,text],resourceIndex)=>(
                       <article className="lp-resource" key={title}>
-                        <div className="lp-resource-image">
-                          <img src={module.img} alt="" aria-hidden="true" width="1400" height="900" loading="lazy" decoding="async" style={{"--lp-crop-x":(20 + (resourceIndex%4)*22) + "%"}} />
+                        <div className="lp-resource-icon" aria-hidden="true">
+                          {resourceIndex===0 ? <Check size={17}/> : resourceIndex===1 ? <Search size={17}/> : resourceIndex===2 ? <TrendingUp size={17}/> : <Receipt size={17}/>}
                         </div>
-                        <div><h3>{title}</h3><p>{text}</p></div>
+                        <div>
+                          <h3>{title}</h3>
+                          <p>{text}</p>
+                        </div>
                       </article>
                     ))}
                   </div>
