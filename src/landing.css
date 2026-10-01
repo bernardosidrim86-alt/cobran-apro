@@ -211,3 +211,195 @@
 .lp-billing button.active span{background:rgba(255,255,255,.16);color:#fff}
 #precos .price-billing-note{font-size:14px;line-height:1.45;color:var(--lp-muted)}
 #precos .price-billing-note strong{color:var(--lp-ink);font-weight:650}
+
+
+/* LANDING 5.1 — TEMA ESCURO REAL DA LANDING */
+.lp{
+  --lp-ink:#f3f5f8;
+  --lp-text:#d7dce5;
+  --lp-muted:#929baa;
+  --lp-line:#282f3b;
+  --lp-soft:#11161d;
+  --lp-brand:#7c82ff;
+  --lp-brand-d:#6970ef;
+  --lp-brand-soft:rgba(124,130,255,.14);
+  --lp-dark:#080b10;
+  background:#0b0f14!important;
+  color:var(--lp-text)!important;
+}
+
+/* Cabeçalho */
+.lp-header{
+  background:rgba(11,15,20,.9)!important;
+  border-bottom-color:#252c37!important;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.lp-nav a{color:#9aa2b1!important}
+.lp-nav a:hover{color:#eef1f6!important}
+.lp-link{color:#dfe4ec!important}
+.lp-link:hover{color:#9da3ff!important}
+
+/* Hero */
+.lp-hero{
+  background:
+    radial-gradient(70% 60% at 50% 0%,rgba(91,92,226,.18),transparent 72%),
+    linear-gradient(180deg,#0d1218 0%,#0b0f14 100%)!important;
+}
+.lp-hero h1,
+.lp-problem h2,
+.lp-heading h2,
+.lp-who h2,
+.lp-faq summary{
+  color:#f1f4f8!important;
+}
+.lp-hero h1 span{color:#8b91ff!important}
+.lp-lead{color:#b9c0cc!important}
+.lp-micro,
+.lp-caption,
+.lp-sub{color:#8992a2!important}
+.lp-kicker{color:#8b91ff!important}
+
+/* Botões */
+.lp-btn-ghost{
+  background:#151a22!important;
+  color:#e5e9ef!important;
+  border-color:#343b48!important;
+}
+.lp-btn-ghost:hover{
+  background:#1d232d!important;
+  border-color:#495262!important;
+  color:#fff!important;
+}
+
+/* Molduras / screenshots */
+.lp-frame{
+  background:#11161d!important;
+  border-color:#2d3440!important;
+  box-shadow:0 30px 60px -28px rgba(0,0,0,.65),0 2px 8px rgba(0,0,0,.35)!important;
+}
+.lp-frame-bar{
+  background:#181d25!important;
+  border-bottom-color:#2d3440!important;
+}
+.lp-frame-bar i{background:#4b5361!important}
+.lp-phone{
+  background:#05070a!important;
+  box-shadow:0 30px 50px -24px rgba(0,0,0,.75),0 2px 8px rgba(0,0,0,.45)!important;
+}
+
+/* Problema */
+.lp-problem{
+  background:#11161d!important;
+}
+.lp-problem-list li{
+  border-top-color:#29303b!important;
+}
+.lp-problem-list li:last-child{
+  border-bottom-color:#29303b!important;
+}
+.lp-problem-list b{color:#e9edf3!important}
+.lp-problem-list span{color:#929aaa!important}
+
+/* Seções e recursos */
+.lp-section{background:#0b0f14!important}
+.lp-soft{background:#11161d!important}
+.lp-step p{color:#aeb6c2!important}
+.lp-step-n{color:#8b91ff!important}
+.lp-crop{
+  background:#11161d!important;
+}
+.lp-crop img{
+  border-color:#2d3440!important;
+  box-shadow:0 20px 40px -26px rgba(0,0,0,.65)!important;
+}
+.lp-features>div{
+  border-top-color:#29303b!important;
+}
+.lp-features dt{color:#e8ecf2!important}
+.lp-features dd{color:#9099a8!important}
+.lp-who{background:#0b0f14!important}
+.lp-who-text{color:#697383!important}
+.lp-who-text b{color:#edf0f4!important}
+
+/* Planos */
+.lp-plans{background:#11161d!important}
+.lp-plans .price-card{
+  background:#141922!important;
+  border-color:#2c333f!important;
+  color:#e7ebf1!important;
+}
+.lp-plans .price-card.featured{
+  border-color:#7379ed!important;
+  box-shadow:0 18px 50px -26px rgba(91,92,226,.42)!important;
+}
+.lp-plans .price-card h3,
+.lp-plans .price-card strong,
+.lp-plans .price-card b,
+.lp-plans .price-card .price{
+  color:#f0f3f7!important;
+}
+.lp-plans .price-card p,
+.lp-plans .price-card span,
+.lp-plans .price-card li{
+  color:#99a1b0!important;
+}
+.lp-plans .price-card .btn-secondary{
+  background:#1a2029!important;
+  border-color:#343b49!important;
+  color:#e4e8ee!important;
+}
+.lp-plans .price-card .btn-secondary:hover{
+  background:#242b35!important;
+  color:#fff!important;
+}
+.lp-billing{
+  background:#141922!important;
+  border-color:#2d3440!important;
+}
+.lp-billing button{color:#9aa3b1!important}
+.lp-billing button.active{
+  background:#eceef6!important;
+  color:#161a22!important;
+}
+.lp-billing button span{
+  background:rgba(124,130,255,.15)!important;
+  color:#9ba1ff!important;
+}
+.lp-billing button.active span{
+  background:rgba(91,92,226,.18)!important;
+  color:#666dea!important;
+}
+#precos .price-billing-note{color:#858e9e!important}
+#precos .price-billing-note strong{color:#e6eaf0!important}
+
+/* FAQ */
+.lp-faq{
+  background:#0b0f14!important;
+}
+.lp-faq details{
+  border-top-color:#29303b!important;
+}
+.lp-faq details:last-child{
+  border-bottom-color:#29303b!important;
+}
+.lp-faq summary::after{color:#737d8d!important}
+.lp-faq details p{color:#949dac!important}
+
+/* CTA e rodapé */
+.lp-final{
+  background:linear-gradient(135deg,#454cc5 0%,#5e65dd 100%)!important;
+}
+.lp-final p{color:#dfe3ff!important}
+.lp-footer{
+  background:#080b10!important;
+  border-top-color:#252c37!important;
+  color:#7f8898!important;
+}
+.lp-footer a{color:#8993a3!important}
+.lp-footer a:hover{color:#fff!important}
+
+/* Mantém a landing leve, sem camadas animadas */
+.lp{
+  animation:none!important;
+}
