@@ -8515,3 +8515,18 @@ body{
   touch-action:auto!important;
   overscroll-behavior:auto!important;
 }
+
+
+/* LANDING 4.7 — REMOVE MOTION CONTÍNUO QUE PESAVA O SCROLL */
+.cp-lp::before,
+.cp-lp::after{
+  animation:none!important;
+  transform:none!important;
+  will-change:auto!important;
+}
+.cp-lp::after{
+  display:none!important;
+}
+.cp-lp{
+  animation:none!important;
+}
