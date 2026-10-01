@@ -380,3 +380,17 @@ tbody tr:hover{background:#fafbff!important}
     border-radius:14px!important;
   }
 }
+
+/* Menu flutuante de clientes: fora da tabela e acima de qualquer camada */
+.customer-menu-floating{
+  position:fixed!important;
+  z-index:2147483647!important;
+  pointer-events:auto!important;
+  transform:none!important;
+}
+.customer-menu-floating button{
+  position:relative!important;
+  z-index:2147483648!important;
+  pointer-events:auto!important;
+  cursor:pointer!important;
+}
