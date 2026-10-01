@@ -8530,3 +8530,88 @@ body{
 .cp-lp{
   animation:none!important;
 }
+
+
+/* LANDING 5.0 — FUNDO ANIMADO LEVE E SEM IMPACTO NO SCROLL */
+.cp-lp{
+  position:relative!important;
+  isolation:isolate;
+  overflow:visible!important;
+}
+
+.cp-lp::before{
+  content:"";
+  position:fixed;
+  inset:-16vh -12vw;
+  z-index:0!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 18% 22%,rgba(91,92,226,.16) 0,rgba(91,92,226,.08) 12%,transparent 30%),
+    radial-gradient(circle at 82% 38%,rgba(99,102,241,.13) 0,rgba(99,102,241,.06) 14%,transparent 31%),
+    radial-gradient(circle at 38% 86%,rgba(79,70,229,.09) 0,rgba(79,70,229,.04) 13%,transparent 29%);
+  transform:translate3d(0,0,0) scale(1);
+  opacity:.9;
+  animation:cpLpAmbientFloat 20s ease-in-out infinite alternate;
+  will-change:transform;
+}
+
+.cp-lp::after{
+  content:"";
+  position:fixed;
+  width:42vw;
+  height:42vw;
+  min-width:320px;
+  min-height:320px;
+  max-width:620px;
+  max-height:620px;
+  left:50%;
+  top:6vh;
+  z-index:0!important;
+  pointer-events:none!important;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(91,92,226,.055) 0,rgba(91,92,226,.025) 38%,transparent 70%);
+  transform:translate3d(-50%,0,0) scale(.92);
+  animation:cpLpAmbientPulse 12s ease-in-out infinite;
+  will-change:transform,opacity;
+}
+
+.cp-lp>header,
+.cp-lp>main,
+.cp-lp>footer{
+  position:relative;
+  z-index:1;
+}
+
+@keyframes cpLpAmbientFloat{
+  0%{transform:translate3d(-1.5vw,-1vh,0) scale(1)}
+  50%{transform:translate3d(1.2vw,1.2vh,0) scale(1.025)}
+  100%{transform:translate3d(2vw,-.8vh,0) scale(1.04)}
+}
+
+@keyframes cpLpAmbientPulse{
+  0%,100%{transform:translate3d(-50%,0,0) scale(.92);opacity:.55}
+  50%{transform:translate3d(-50%,2vh,0) scale(1.06);opacity:1}
+}
+
+@media(max-width:800px){
+  .cp-lp::before{
+    inset:-10vh -24vw;
+    opacity:.72;
+    animation-duration:25s;
+  }
+  .cp-lp::after{
+    width:78vw;
+    height:78vw;
+    min-width:240px;
+    min-height:240px;
+    top:8vh;
+    animation-duration:15s;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .cp-lp::before,
+  .cp-lp::after{
+    animation:none!important;
+  }
+}
