@@ -7855,3 +7855,13 @@ tbody tr:hover{
     animation:none!important;
   }
 }
+
+/* LANDING 3.4 — REMOVE LEGACY MOBILE ORBS */
+@media(max-width:520px){
+  .cp-lp-hero::before{
+    width:0!important;
+    height:0!important;
+    background:none!important;
+    animation:none!important;
+  }
+}
