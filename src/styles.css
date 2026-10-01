@@ -7966,3 +7966,152 @@ tbody tr:hover{
     animation:none!important;
   }
 }
+
+/* LANDING 3.6 — CONTINUOUS AURORA BACKGROUND */
+@keyframes cpLpAuroraMove{
+  0%{
+    transform:translate3d(-32%,18%,0) rotate(-11deg);
+    opacity:.10;
+  }
+  25%{
+    opacity:.17;
+  }
+  50%{
+    transform:translate3d(24%,-6%,0) rotate(-7deg);
+    opacity:.11;
+  }
+  75%{
+    opacity:.19;
+  }
+  100%{
+    transform:translate3d(82%,14%,0) rotate(-12deg);
+    opacity:.10;
+  }
+}
+@keyframes cpLpAuroraMoveReverse{
+  0%{
+    transform:translate3d(78%,8%,0) rotate(12deg);
+    opacity:.07;
+  }
+  50%{
+    transform:translate3d(-12%,-10%,0) rotate(7deg);
+    opacity:.14;
+  }
+  100%{
+    transform:translate3d(-72%,14%,0) rotate(13deg);
+    opacity:.07;
+  }
+}
+@keyframes cpLpAmbientSheen{
+  0%{transform:translateX(-120%) skewX(-18deg);opacity:0}
+  15%{opacity:.12}
+  44%{opacity:.035}
+  58%{opacity:0}
+  100%{transform:translateX(220%) skewX(-18deg);opacity:0}
+}
+
+.cp-lp{
+  background-image:
+    radial-gradient(ellipse 44% 34% at 8% 6%,rgba(91,92,226,.12),transparent 70%),
+    radial-gradient(ellipse 40% 30% at 92% 25%,rgba(113,99,239,.075),transparent 72%),
+    radial-gradient(ellipse 46% 32% at 12% 88%,rgba(91,92,226,.055),transparent 74%);
+  background-size:160% 160%,145% 145%,155% 155%;
+  animation:cpLpAmbientDrift 20s ease-in-out infinite;
+}
+
+.cp-lp section::before{
+  content:"";
+  position:absolute;
+  inset:-8%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    linear-gradient(110deg,
+      transparent 0 28%,
+      rgba(91,92,226,.035) 38%,
+      rgba(117,104,238,.06) 46%,
+      rgba(91,92,226,.025) 53%,
+      transparent 64%);
+  filter:blur(18px);
+  transform:translate3d(-18%,12%,0) rotate(-6deg);
+  animation:cpLpAuroraMove 17s cubic-bezier(.45,.05,.25,1) infinite;
+  opacity:.9;
+}
+.cp-lp section::after{
+  content:"";
+  position:absolute;
+  width:75%;
+  height:46%;
+  top:22%;
+  left:12%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    linear-gradient(104deg,
+      transparent 0 32%,
+      rgba(91,92,226,.025) 40%,
+      rgba(91,92,226,.055) 49%,
+      rgba(126,108,244,.025) 57%,
+      transparent 70%);
+  filter:blur(22px);
+  transform:translate3d(55%,4%,0) rotate(7deg);
+  animation:cpLpAuroraMoveReverse 23s cubic-bezier(.4,0,.25,1) infinite;
+}
+.cp-lp-hero::before,
+.cp-lp-pricing::before,
+.cp-lp-final-cta::before{
+  opacity:1;
+  background:
+    radial-gradient(ellipse 35% 48% at 20% 48%,rgba(91,92,226,.09),transparent 70%),
+    linear-gradient(108deg,transparent 0 39%,rgba(255,255,255,.10) 48%,transparent 60%);
+  filter:blur(8px);
+}
+.cp-lp-hero::after,
+.cp-lp-pricing::after,
+.cp-lp-final-cta::after{
+  top:0;
+  left:-60%;
+  width:55%;
+  height:100%;
+  background:linear-gradient(105deg,transparent 0%,rgba(255,255,255,.15) 50%,transparent 80%);
+  filter:blur(24px);
+  transform:translateX(-120%) skewX(-18deg);
+  animation:cpLpAmbientSheen 11s cubic-bezier(.4,0,.2,1) infinite;
+  opacity:1;
+}
+.cp-lp-pricing::after{animation-delay:3.5s}
+.cp-lp-final-cta::after{animation-delay:7s}
+
+.cp-lp section > *{
+  position:relative;
+  z-index:1;
+}
+
+@media(max-width:800px){
+  .cp-lp{
+    background-size:185% 185%,170% 170%,180% 180%;
+    animation-duration:25s;
+  }
+  .cp-lp section::before{
+    opacity:.82;
+    filter:blur(14px);
+    animation-duration:19s;
+  }
+  .cp-lp section::after{
+    width:105%;
+    left:-2%;
+    opacity:.82;
+    animation-duration:25s;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .cp-lp,
+  .cp-lp section::before,
+  .cp-lp section::after,
+  .cp-lp-hero::after,
+  .cp-lp-pricing::after,
+  .cp-lp-final-cta::after{
+    animation:none!important;
+  }
+}
