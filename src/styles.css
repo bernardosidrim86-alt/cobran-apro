@@ -8466,3 +8466,13 @@ tbody tr:hover{
     min-height:42px;
   }
 }
+
+
+/* LANDING 4.2 — FIX ANCHOR NAVIGATION / PAGE SCROLL */
+.cp-lp{
+  overflow:visible!important;
+  clip-path:inset(0);
+}
+.cp-lp [id="como-funciona"]{
+  scroll-margin-top:92px;
+}
