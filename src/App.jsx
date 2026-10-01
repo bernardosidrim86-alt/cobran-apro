@@ -637,6 +637,8 @@ function Customers() {
   const [menuPosition,setMenuPosition]=useState(null);
   const [form,setForm]=useState({name:"",phone:"",email:"",notes:""});
   const [deleting,setDeleting]=useState(false);
+  const [customerView,setCustomerView]=useState(null);
+  const [history,setHistory]=useState({charges:[],payments:[],loading:false});
 
   async function load(){
     if(!companyId)return;
@@ -685,6 +687,16 @@ function Customers() {
     };
   },[menuCustomer]);
 
+  async function openCustomer(c){
+    setCustomerView(c);
+    setHistory({charges:[],payments:[],loading:true});
+    const [{data:charges},{data:payments}]=await Promise.all([
+      supabase.from("charges").select("id,description,amount,due_date,status,payment_method").eq("company_id",companyId).eq("customer_id",c.id).order("due_date",{ascending:false}),
+      supabase.from("payments").select("id,amount,paid_at,payment_method,charge_id").eq("company_id",companyId).eq("customer_id",c.id).order("paid_at",{ascending:false})
+    ]);
+    setHistory({charges:charges||[],payments:payments||[],loading:false});
+  }
+
   async function save(e){
     e.preventDefault();
     const {data:user}=await supabase.auth.getUser();
@@ -727,10 +739,7 @@ function Customers() {
     closeMenu();
   }
 
-  function showData(c){
-    closeMenu();
-    alert(`Cliente: ${c.name}\nTelefone: ${c.phone||"Não informado"}\nE-mail: ${c.email||"Não informado"}`);
-  }
+  function showData(c){closeMenu();openCustomer(c);}
 
   const filtered=rows.filter(x=>(x.name+" "+(x.phone||"")+" "+(x.email||"")).toLowerCase().includes(search.toLowerCase()));
 
@@ -769,7 +778,7 @@ function Customers() {
         {filtered.length===0?<Empty text="Você ainda não possui clientes."/>:<table>
           <thead><tr><th>Cliente</th><th>Telefone</th><th>E-mail</th><th>Criado em</th><th className="customer-actions-head"></th></tr></thead>
           <tbody>
-            {filtered.map(c=><tr key={c.id}>
+            {filtered.map(c=><tr key={c.id} onClick={()=>openCustomer(c)} style={{cursor:"pointer"}}>
               <td><b>{c.name}</b></td>
               <td>{c.phone||"—"}</td>
               <td>{c.email||"—"}</td>
@@ -805,6 +814,35 @@ function Customers() {
       </form>
     </div>}
     {floatingMenu}
+    {customerView&&<div className="modal-backdrop">
+      <div className="modal customer-history-modal">
+        <button type="button" className="modal-x" onClick={()=>setCustomerView(null)}><X/></button>
+        <div className="modal-head">
+          <div className="icon-box"><UserRound/></div>
+          <div><h2>{customerView.name}</h2><p>Histórico completo do cliente</p></div>
+        </div>
+        <div className="customer-history-contact">
+          <span>{customerView.phone||"Telefone não informado"}</span>
+          <span>{customerView.email||"E-mail não informado"}</span>
+        </div>
+        {history.loading?<div className="customer-history-loading">Carregando histórico...</div>:<>
+          <div className="customer-history-kpis">
+            <div><span>Total pago</span><b>{money(history.payments.reduce((a,x)=>a+Number(x.amount||0),0))}</b></div>
+            <div><span>Em aberto</span><b>{money(history.charges.filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.amount||0),0))}</b></div>
+            <div><span>Cobranças</span><b>{history.charges.length}</b></div>
+            <div><span>Pagamentos</span><b>{history.payments.length}</b></div>
+          </div>
+          <div className="customer-history-timeline">
+            {[...history.charges.map(x=>({date:x.due_date+"T12:00:00",type:"charge",title:"Cobrança criada",detail:x.description||"Cobrança",value:Number(x.amount||0),status:x.status})),...history.payments.map(x=>({date:x.paid_at,type:"payment",title:"Pagamento recebido",detail:x.payment_method||"Pagamento",value:Number(x.amount||0)}))].sort((a,b)=>new Date(b.date)-new Date(a.date)).map((item,i)=><div className="customer-history-event" key={i}>
+              <span className={item.type==="payment"?"event-dot paid":"event-dot charge"}></span>
+              <div><b>{item.title}</b><span>{item.detail}</span><small>{new Date(item.date).toLocaleDateString("pt-BR")} · {item.type==="charge"?(item.status==="paid"?"Pago":"A receber"): "Recebido"}</small></div>
+              <strong>{money(item.value)}</strong>
+            </div>)}
+            {history.charges.length===0&&history.payments.length===0&&<Empty text="Ainda não há movimentações para este cliente."/>}
+          </div>
+        </>}
+      </div>
+    </div>}
   </>;
 }
 function Charges() {
