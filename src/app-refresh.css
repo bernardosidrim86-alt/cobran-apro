@@ -434,3 +434,11 @@ tbody tr:hover{background:#fafbff!important}
 .customer-menu-floating .danger-menu-item{
   color:#d33d4b!important;
 }
+
+
+/* Posicionamento do menu flutuante: vence as regras antigas do dropdown */
+.customer-menu-floating{
+  top:var(--menu-top)!important;
+  left:var(--menu-left)!important;
+  right:auto!important;
+}
