@@ -445,3 +445,23 @@
     border-radius:23px;
   }
 }
+
+/* Logo da landing: mesma logo do SaaS, com Cobrança branca e Pro original */
+.lp-brand{
+  position:relative;
+}
+.lp-brand img{
+  position:relative;
+  z-index:1;
+  filter:brightness(0) invert(1);
+  transform:translateY(5px);
+}
+.lp-brand::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  background:url("/logo.png") center / 100% 100% no-repeat;
+  clip-path:inset(0 0 0 72%);
+}
