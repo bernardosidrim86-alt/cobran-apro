@@ -130,330 +130,163 @@ function ScrollReveal({children, className="", delay=0}) {
 }
 
 
+function BrowserFrame({src, alt, width, height, priority}) {
+  return <div className="lp-frame">
+    <div className="lp-frame-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+    <img src={src} alt={alt} width={width} height={height} loading={priority?"eager":"lazy"} decoding="async" />
+  </div>;
+}
+
+function PhoneFrame({src, alt, className=""}) {
+  return <div className={`lp-phone ${className}`}><img src={src} alt={alt} width="620" height="1341" loading="lazy" decoding="async" /></div>;
+}
+
 function Landing({session}) {
   const [annualBilling,setAnnualBilling]=useState(false);
-
   useEffect(()=>{
-    if(window.location.hash !== "#precos") return;
-    const timer=setTimeout(()=>document.getElementById("precos")?.scrollIntoView({behavior:"auto",block:"start"}),80);
+    if(window.location.hash!=="#precos") return;
+    const scrollToPlans=()=>document.getElementById("precos")?.scrollIntoView({behavior:"auto",block:"start"});
+    const timer=setTimeout(scrollToPlans,80);
     return()=>clearTimeout(timer);
   },[]);
 
-  return <div className="cp-lp">
-    <header className="cp-lp-header">
-      <div className="cp-lp-header-inner">
-        <Link to="/" className="cp-lp-brand">
-          <img src="/logo.png" alt="CobrançaPro" />
-        </Link>
+  const steps=[
+    {n:"01",title:"Cadastre seus clientes",text:"Nome, telefone e e-mail de cada cliente em um só lugar, com busca rápida. Nada de procurar contato em conversa antiga.",img:"/landing/clientes.webp",alt:"Lista de clientes do CobrançaPro com telefone e e-mail"},
+    {n:"02",title:"Crie as cobranças",text:"Defina valor, vencimento e recorrência. O sistema separa sozinho o que está a receber, o que vence hoje, o que atrasou e o que já foi pago.",img:"/landing/cobrancas.webp",alt:"Lista de cobranças com status pago, a receber e atrasado"},
+    {n:"03",title:"Cobre pelo WhatsApp",text:"Um clique abre o WhatsApp com a mensagem de cobrança pronta. Você confere, ajusta se quiser e envia. Quando o cliente pagar, registre o recebimento.",crop:"/landing/cobrar.webp",alt:"Cobranças atrasadas com o botão Cobrar ao lado de cada cliente"},
+    {n:"04",title:"Acompanhe o resultado",text:"Veja quanto entrou, quanto está em aberto e a taxa de recebimento por período, de 7 dias até datas personalizadas.",img:"/landing/relatorios.webp",alt:"Relatórios com gráfico de cobrado e recebido por período"},
+  ];
+  const features=[
+    ["Painel financeiro","A receber, vencendo hoje, atrasado e recebido, logo na primeira tela."],
+    ["Clientes","Cadastro com telefone e e-mail, organizado e fácil de buscar."],
+    ["Cobranças","Status automático, filtros por situação e recorrência."],
+    ["Recebimentos","Histórico de tudo o que já foi pago, com cliente, valor e forma."],
+    ["Relatórios","Gráficos de cobrado e recebido para 7, 30 ou 90 dias."],
+    ["WhatsApp por link","Mensagem pronta para cada cobrança. Você revisa e envia."],
+    ["Assistente de cobrança","Mensagens de cobrança adaptadas a cada situação, para você revisar e usar."],
+    ["Celular e computador","Funciona direto no navegador, sem instalar nada."],
+  ];
+  const faq=[
+    ["Preciso de cartão de crédito para testar?","Não. O teste dura 7 dias e não pede cartão de crédito."],
+    ["Como funciona a cobrança pelo WhatsApp?","Em cada cobrança há um botão que abre a conversa do cliente no WhatsApp com a mensagem de cobrança pronta. Você confere e envia."],
+    ["Funciona no celular?","Sim. Funciona no navegador do celular e do computador, sem instalar nada."],
+    ["Posso mudar de plano depois?","Sim. Você pode começar pelo teste e escolher outro plano quando precisar."],
+    ["Como é feito o pagamento da assinatura?","A assinatura, mensal ou anual, é processada pela Perfect Pay."],
+    ["Meus dados ficam separados dos de outras empresas?","Sim. Cada empresa acessa apenas os próprios clientes, cobranças e recebimentos."],
+  ];
 
-        <nav className="cp-lp-nav" aria-label="Navegação principal">
-          <a href="#recursos">Recursos</a>
-          <a href="#como-funciona">Como funciona</a>
-          <a href="#precos">Preços</a>
-        </nav>
-
-        <div className="cp-lp-header-actions">
-          <Link to="/login" className="cp-lp-login">Entrar</Link>
-          <Link to="/cadastro" className="btn btn-primary cp-lp-header-cta">Começar grátis</Link>
+  return <div className="lp">
+    <header className="lp-header">
+      <div className="lp-wrap lp-header-in">
+        <Link to="/" className="lp-brand"><img src="/landing/logo.png" alt="CobrançaPro" width="148" height="46" /></Link>
+        <nav className="lp-nav" aria-label="Seções da página"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#precos">Planos</a><a href="#duvidas">Dúvidas</a></nav>
+        <div className="lp-header-cta">
+          {session ? <Link to="/app" className="lp-btn lp-btn-primary lp-btn-sm">Abrir painel</Link> : <><Link to="/login" className="lp-link">Entrar</Link><Link to="/cadastro" className="lp-btn lp-btn-primary lp-btn-sm">Começar grátis</Link></>}
         </div>
       </div>
     </header>
 
     <main>
-     <section className="cp-lp-hero">
-        <div className="cp-lp-container">
-          <div className="cp-lp-hero-content">
-            <div className="cp-lp-eyebrow"><span className="cp-lp-dot"></span> Gestão de cobranças para pequenos negócios</div>
-
-            <h1>
-              Tenha controle sobre tudo o que você tem a receber.
-            </h1>
-
-            <p className="cp-lp-hero-sub">
-              Organize clientes, cobranças e recebimentos em uma única visão. Saiba o que entrou, o que está pendente e o que precisa de atenção.
-            </p>
-
-            <div className="cp-lp-hero-actions">
-              <Link to="/cadastro" className="btn btn-primary btn-lg">Começar grátis <ArrowRight size={18}/></Link>
-              <a href="#como-funciona" className="btn btn-secondary btn-lg">Ver como funciona <ChevronRight size={18}/></a>
+      <section className="lp-hero">
+        <div className="lp-wrap lp-hero-grid">
+          <div className="lp-hero-copy">
+            <p className="lp-kicker">Gestão de cobranças para pequenos negócios</p>
+            <h1>Todo o dinheiro que você tem a receber, <span>em uma tela só.</span></h1>
+            <p className="lp-lead">Cadastre clientes, crie cobranças e veja na hora quem pagou, quem vence hoje e quem está atrasado. Cobre pelo WhatsApp com a mensagem pronta.</p>
+            <div className="lp-cta-row">
+              <Link to="/cadastro" className="lp-btn lp-btn-primary lp-btn-lg">Começar grátis <ArrowRight size={18}/></Link>
+              <a href="#como" className="lp-btn lp-btn-ghost lp-btn-lg">Ver como funciona</a>
             </div>
-
-            <div className="cp-lp-trust-row">
-              <span><Check size={15}/> 7 dias grátis</span>
-              <span><Check size={15}/> Sem cartão de crédito</span>
-              <span><Check size={15}/> Feito para pequenos negócios</span>
-            </div>
+            <p className="lp-micro">7 dias grátis · Sem cartão de crédito</p>
           </div>
-
-          <div className="cp-lp-hero-product" aria-label="Prévia do dashboard do CobrançaPro">
-            <div className="cp-lp-product-glow"></div>
-            <DashboardPreview/>
+          <div className="lp-hero-shot">
+            <BrowserFrame src="/landing/dash.webp" alt="Painel do CobrançaPro mostrando valores a receber, atrasados e recebidos" width="1600" height="1000" priority />
+            <PhoneFrame src="/landing/m-dash.webp" alt="Painel do CobrançaPro no celular" className="lp-phone-hero" />
+            <p className="lp-caption">Telas reais do sistema, com dados de exemplo.</p>
           </div>
         </div>
       </section>
 
-      <section className="cp-lp-proof">
-        <div className="cp-lp-container">
-          <p className="cp-lp-proof-label">Uma operação financeira mais organizada, do primeiro cliente ao recebimento.</p>
-          <div className="cp-lp-proof-items">
-            <span><Wallet size={17}/> A receber</span>
-            <span><Receipt size={17}/> Cobranças</span>
-            <span><Users size={17}/> Clientes</span>
-            <span><MessageCircle size={17}/> WhatsApp</span>
-            <span><TrendingUp size={17}/> Recebimentos</span>
+      <section className="lp-problem">
+        <div className="lp-wrap lp-problem-grid">
+          <h2>Cobrança espalhada em planilha, caderno e WhatsApp vira dinheiro esquecido.</h2>
+          <ul className="lp-problem-list">
+            <li><b>Você esquece quem venceu.</b><span>Sem um lugar único, o atraso só aparece quando o caixa aperta.</span></li>
+            <li><b>Você não sabe quanto já entrou.</b><span>Somar pagamentos de várias fontes toma tempo e raramente fecha.</span></li>
+            <li><b>Cobrar dá trabalho, então fica para depois.</b><span>Achar o telefone, lembrar o valor e escrever a mensagem pesa na hora de cobrar.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="como" className="lp-section">
+        <div className="lp-wrap">
+          <div className="lp-heading"><p className="lp-kicker">Como funciona</p><h2>Do cadastro ao dinheiro na conta, em quatro passos.</h2></div>
+          <div className="lp-steps">
+            {steps.map(st=><article className="lp-step" key={st.n}>
+              <div className="lp-step-text"><span className="lp-step-n">{st.n}</span><h3>{st.title}</h3><p>{st.text}</p></div>
+              <div className="lp-step-media">
+                {st.crop ? <div className="lp-crop"><img src={st.crop} alt={st.alt} width="1200" height="568" loading="lazy" decoding="async" /></div> : <BrowserFrame src={st.img} alt={st.alt} width="1400" height="900" />}
+              </div>
+            </article>)}
           </div>
         </div>
       </section>
 
-      <section className="cp-lp-section cp-lp-problem" id="como-funciona">
-        <div className="cp-lp-container">
-          <div className="cp-lp-split-heading">
-            <div>
-              <span className="cp-lp-label">O problema</span>
-              <h2>Seu dia não deveria ser uma busca por quem está devendo.</h2>
-            </div>
-            <p>
-              Planilhas, mensagens antigas e anotações espalhadas tornam uma coisa simples desnecessariamente difícil: saber o que já entrou, o que falta entrar e quem precisa de atenção.
-            </p>
-          </div>
+      <section id="recursos" className="lp-section lp-soft">
+        <div className="lp-wrap">
+          <div className="lp-heading"><p className="lp-kicker">Recursos</p><h2>O que vem no sistema.</h2></div>
+          <dl className="lp-features">
+            {features.map(([t,d])=><div key={t}><dt>{t}</dt><dd>{d}</dd></div>)}
+          </dl>
+        </div>
+      </section>
 
-          <div className="cp-lp-problem-grid">
-            <div className="cp-lp-problem-card">
-              <span className="cp-lp-problem-number">01</span>
-              <h3>Cobranças esquecidas</h3>
-              <p>Quando a informação fica espalhada, fica fácil deixar uma cobrança passar.</p>
-            </div>
-            <div className="cp-lp-problem-card">
-              <span className="cp-lp-problem-number">02</span>
-              <h3>Clientes desorganizados</h3>
-              <p>Nome, contato, histórico e cobranças precisam estar juntos para fazer sentido.</p>
-            </div>
-            <div className="cp-lp-problem-card">
-              <span className="cp-lp-problem-number">03</span>
-              <h3>Dinheiro sem visão</h3>
-              <p>Você precisa bater o olho e entender o que está a receber e o que já foi pago.</p>
-            </div>
+      <section className="lp-who">
+        <div className="lp-wrap">
+          <p className="lp-kicker">Para quem é</p>
+          <p className="lp-who-text">Feito para quem precisa receber: <b>prestadores de serviço</b>, <b>barbearias e salões</b>, <b>clínicas e consultórios</b>, <b>oficinas e negócios locais</b>, <b>profissionais autônomos</b> e <b>pequenas empresas</b> que cobram todo mês.</p>
+        </div>
+      </section>
+
+      <section id="precos" className="lp-section lp-soft lp-plans">
+        <div className="lp-wrap">
+          <div className="lp-heading"><p className="lp-kicker">Planos</p><h2>Comece de graça. Faça upgrade quando precisar.</h2><p className="lp-sub">Teste por 7 dias, sem cartão de crédito. A assinatura é processada pela Perfect Pay.</p></div>
+          <div className="lp-billing" role="group" aria-label="Periodicidade do plano">
+            <button type="button" className={!annualBilling?"active":""} onClick={()=>setAnnualBilling(false)}>Mensal</button>
+            <button type="button" className={annualBilling?"active":""} onClick={()=>setAnnualBilling(true)}>Anual <span>Economize 20%</span></button>
+          </div>
+          <div className="pricing">
+            {PLAN_OPTIONS.map(plan => <Price key={plan.key} plan={plan} featured={plan.key==="profissional"} session={session} annual={annualBilling}/>)}
           </div>
         </div>
       </section>
 
-      <section className="cp-lp-section cp-lp-solution" id="recursos">
-        <div className="cp-lp-container">
-          <div className="cp-lp-centered-heading">
-            <span className="cp-lp-label">A solução</span>
-            <h2>Uma visão clara de tudo que você precisa receber.</h2>
-            <p>O CobrançaPro junta as partes da sua rotina que normalmente ficam espalhadas.</p>
-          </div>
-
-          <div className="cp-lp-feature-grid">
-            <article className="cp-lp-feature-card cp-lp-feature-large">
-              <div className="cp-lp-feature-top">
-                <div className="cp-lp-feature-icon"><LayoutDashboard size={20}/></div>
-                <span>01</span>
-              </div>
-              <h3>Dashboard financeiro</h3>
-              <p>Veja quanto tem a receber, quanto já recebeu e o que precisa de atenção sem abrir várias telas.</p>
-              <div className="cp-lp-mini-dashboard">
-                <div><span>Total a receber</span><strong>R$ 12.480,00</strong></div>
-                <div><span>Recebido</span><strong>R$ 8.240,00</strong></div>
-              </div>
-            </article>
-
-            <article className="cp-lp-feature-card">
-              <div className="cp-lp-feature-top">
-                <div className="cp-lp-feature-icon"><Users size={20}/></div>
-                <span>02</span>
-              </div>
-              <h3>Clientes</h3>
-              <p>Tenha contatos, histórico e cobranças organizados por cliente.</p>
-              <div className="cp-lp-feature-line"><span>João da Silva</span><b>3 cobranças</b></div>
-              <div className="cp-lp-feature-line"><span>Maria Souza</span><b>1 cobrança</b></div>
-            </article>
-
-            <article className="cp-lp-feature-card">
-              <div className="cp-lp-feature-top">
-                <div className="cp-lp-feature-icon"><Receipt size={20}/></div>
-                <span>03</span>
-              </div>
-              <h3>Cobranças</h3>
-              <p>Crie e acompanhe cobranças com valor, vencimento e status.</p>
-              <div className="cp-lp-status-list">
-                <span><i className="pending"></i> Pendente</span>
-                <span><i className="late"></i> Em atraso</span>
-                <span><i className="paid"></i> Pago</span>
-              </div>
-            </article>
-
-            <article className="cp-lp-feature-card">
-              <div className="cp-lp-feature-top">
-                <div className="cp-lp-feature-icon"><MessageCircle size={20}/></div>
-                <span>04</span>
-              </div>
-              <h3>WhatsApp</h3>
-              <p>Abra a conversa do cliente e envie o lembrete sem reescrever tudo.</p>
-              <div className="cp-lp-whatsapp-chip">Enviar lembrete <ArrowRight size={14}/></div>
-            </article>
-
-            <article className="cp-lp-feature-card">
-              <div className="cp-lp-feature-top">
-                <div className="cp-lp-feature-icon"><CircleDollarSign size={20}/></div>
-                <span>05</span>
-              </div>
-              <h3>Recebimentos</h3>
-              <p>Registre o que entrou e mantenha seu histórico financeiro organizado.</p>
-              <div className="cp-lp-receive-amount">+ R$ 780,00</div>
-            </article>
-
-            <article className="cp-lp-feature-card cp-lp-feature-accent">
-              <div className="cp-lp-feature-top">
-                <div className="cp-lp-feature-icon"><Sparkles size={20}/></div>
-                <span>06</span>
-              </div>
-              <h3>Assistente de cobrança</h3>
-              <p>Crie mensagens de cobrança adaptadas para situações diferentes.</p>
-              <div className="cp-lp-ai-note">“Oi, João! Tudo bem? Passando para lembrar que a cobrança...”</div>
-            </article>
-          </div>
-
-          <div className="cp-lp-feature-bottom"><Check size={17}/> Tudo em um só lugar, com uma rotina mais simples de acompanhar.</div>
-        </div>
-      </section>
-
-      <section className="cp-lp-dashboard-section">
-        <div className="cp-lp-container">
-          <div className="cp-lp-split-heading cp-lp-product-breakdown-heading">
-            <div>
-              <span className="cp-lp-label">Veja como funciona</span>
-              <h2>Do cliente ao recebimento, tudo fica visível.</h2>
-            </div>
-            <p>
-              O CobrançaPro organiza cada etapa da cobrança para você saber o que precisa ser feito sem ficar procurando informação.
-            </p>
-          </div>
-
-          <div className="cp-lp-product-breakdown">
-            <div className="cp-lp-breakdown-card">
-              <span className="cp-lp-breakdown-index">01</span>
-              <div className="cp-lp-breakdown-icon"><Users size={19}/></div>
-              <h3>Você cadastra o cliente</h3>
-              <p>Contato, histórico e cobranças ficam ligados ao mesmo cliente.</p>
-            </div>
-            <div className="cp-lp-breakdown-connector"></div>
-            <div className="cp-lp-breakdown-card">
-              <span className="cp-lp-breakdown-index">02</span>
-              <div className="cp-lp-breakdown-icon"><Receipt size={19}/></div>
-              <h3>Você cria a cobrança</h3>
-              <p>Defina valor, vencimento e acompanhe o status da cobrança.</p>
-            </div>
-            <div className="cp-lp-breakdown-connector"></div>
-            <div className="cp-lp-breakdown-card">
-              <span className="cp-lp-breakdown-index">03</span>
-              <div className="cp-lp-breakdown-icon"><MessageCircle size={19}/></div>
-              <h3>Você envia o lembrete</h3>
-              <p>Abra o WhatsApp do cliente e envie a mensagem em poucos cliques.</p>
-            </div>
-            <div className="cp-lp-breakdown-connector"></div>
-            <div className="cp-lp-breakdown-card">
-              <span className="cp-lp-breakdown-index">04</span>
-              <div className="cp-lp-breakdown-icon"><CircleDollarSign size={19}/></div>
-              <h3>Você registra o recebimento</h3>
-              <p>O valor pago entra no histórico e sua visão financeira fica atualizada.</p>
-            </div>
+      <section id="duvidas" className="lp-section">
+        <div className="lp-wrap lp-faq-grid">
+          <div className="lp-heading"><p className="lp-kicker">Dúvidas</p><h2>Perguntas frequentes.</h2></div>
+          <div className="lp-faq">
+            {faq.map(([q,a])=><details key={q}><summary>{q}</summary><p>{a}</p></details>)}
           </div>
         </div>
       </section>
 
-      <section className="cp-lp-section cp-lp-audience">
-        <div className="cp-lp-container">
-          <div className="cp-lp-centered-heading">
-            <span className="cp-lp-label">Para quem é</span>
-            <h2>Feito para quem precisa receber.</h2>
-            <p>De quem trabalha sozinho a pequenas equipes que precisam organizar sua operação.</p>
-          </div>
-
-          <div className="cp-lp-audience-grid">
-            <div><span>01</span><strong>Prestadores de serviço</strong><p>Organize clientes e pagamentos recorrentes.</p></div>
-            <div><span>02</span><strong>Barbearias e salões</strong><p>Acompanhe o que está pendente sem depender de memória.</p></div>
-            <div><span>03</span><strong>Clínicas e consultórios</strong><p>Tenha histórico e cobranças centralizados.</p></div>
-            <div><span>04</span><strong>Oficinas e negócios locais</strong><p>Veja rapidamente o que precisa ser recebido.</p></div>
-            <div><span>05</span><strong>Profissionais autônomos</strong><p>Troque anotações soltas por uma visão organizada.</p></div>
-            <div><span>06</span><strong>Pequenas empresas</strong><p>Comece simples e aumente o controle conforme crescer.</p></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="precos" className="cp-lp-section cp-lp-pricing">
-        <div className="cp-lp-container">
-          <div className="cp-lp-centered-heading">
-            <span className="cp-lp-label">Preços</span>
-            <h2>Comece grátis. Faça upgrade quando precisar.</h2>
-            <p>Teste por 7 dias e escolha o plano conforme a sua operação evoluir.</p>
-          </div>
-
-          <div className="cp-lp-pricing-controls">
-            <div className="cp-lp-billing-toggle" role="group" aria-label="Periodicidade do plano">
-              <button type="button" className={!annualBilling ? "active" : ""} onClick={()=>setAnnualBilling(false)}>Mensal</button>
-              <button type="button" className={annualBilling ? "active" : ""} onClick={()=>setAnnualBilling(true)}>
-                Anual <span>Economize 20%</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="cp-lp-pricing-wrap">
-            <div className="pricing cp-lp-pricing-grid">
-              {PLAN_OPTIONS.map((plan,i) => <ScrollReveal key={plan.key} delay={i*70}><Price plan={plan} featured={plan.key==="profissional"} session={session} annual={annualBilling}/></ScrollReveal>)}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="cp-lp-section cp-lp-faq">
-        <div className="cp-lp-container">
-          <div className="cp-lp-faq-heading">
-            <span className="cp-lp-label">Perguntas frequentes</span>
-            <h2>Antes de começar, tire suas dúvidas.</h2>
-          </div>
-
-          <div className="cp-lp-faq-list">
-            <details><summary>Posso testar o CobrançaPro grátis?</summary><p>Sim. O período de teste mostrado na plataforma é de 7 dias e não exige cartão de crédito.</p></details>
-            <details><summary>Preciso usar cartão para criar minha conta?</summary><p>Não. O cadastro para testar o produto não exige cartão de crédito.</p></details>
-            <details><summary>Posso cadastrar meus clientes e cobranças?</summary><p>Sim. O sistema foi estruturado para centralizar clientes, cobranças, recebimentos e histórico.</p></details>
-            <details><summary>Consigo acompanhar o que ainda tenho para receber?</summary><p>Sim. O dashboard e a área de cobranças mostram os valores e os status para você acompanhar sua operação.</p></details>
-            <details><summary>Consigo cobrar pelo WhatsApp?</summary><p>Você pode abrir a conversa do cliente pelo sistema e enviar o lembrete diretamente pelo WhatsApp.</p></details>
-            <details><summary>Posso mudar de plano depois?</summary><p>Sim. A página de preços permite escolher outro plano conforme sua necessidade.</p></details>
-          </div>
-        </div>
-      </section>
-
-      <section className="cp-lp-final-cta">
-        <div className="cp-lp-container">
-          <div>
-            <span className="cp-lp-label">Comece agora</span>
-            <h2>Menos cobrança manual.<br/><span>Mais controle do seu dinheiro.</span></h2>
-            <p>Organize clientes, cobranças e recebimentos em um só lugar.</p>
-          </div>
-          <Link to="/cadastro" className="btn btn-white btn-lg">Criar minha conta <ArrowRight size={18}/></Link>
+      <section className="lp-final">
+        <div className="lp-wrap lp-final-in">
+          <div><h2>Chega de planilha para saber quem está te devendo.</h2><p>7 dias grátis · Sem cartão de crédito</p></div>
+          <Link to="/cadastro" className="lp-btn lp-btn-light lp-btn-lg">Começar grátis <ArrowRight size={18}/></Link>
         </div>
       </section>
     </main>
 
-    <footer className="cp-lp-footer">
-      <div className="cp-lp-container">
-        <div className="cp-lp-footer-main">
-          <Link to="/" className="cp-lp-brand"><img src="/logo.png" alt="CobrançaPro" /></Link>
-          <p>Receba no prazo. Sem ficar correndo atrás.</p>
-        </div>
-        <div className="cp-lp-footer-links">
-          <a href="#recursos">Recursos</a>
-          <a href="#como-funciona">Como funciona</a>
-          <a href="#precos">Preços</a>
-          <Link to="/login">Entrar</Link>
-        </div>
-        <div className="cp-lp-footer-bottom">© 2026 CobrançaPro</div>
+    <footer className="lp-footer">
+      <div className="lp-wrap lp-footer-in">
+        <span>© 2026 CobrançaPro</span>
+        <nav aria-label="Rodapé"><a href="#precos">Planos</a><Link to="/login">Entrar</Link><Link to="/cadastro">Criar conta</Link></nav>
       </div>
     </footer>
   </div>;
 }
+
 function DashboardPreview() {
   return <div className="preview-wrap">
     <div className="glow"></div>
