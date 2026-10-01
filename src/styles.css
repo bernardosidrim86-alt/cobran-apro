@@ -7865,3 +7865,104 @@ tbody tr:hover{
     animation:none!important;
   }
 }
+
+/* LANDING 3.5 — VISIBLE PREMIUM MOTION */
+@keyframes cpLpAmbientDrift{
+  0%,100%{background-position:0% 0%,100% 15%,50% 100%}
+  50%{background-position:18% 12%,82% 28%,42% 88%}
+}
+@keyframes cpLpGridMove{
+  0%,100%{transform:translate3d(0,0,0)}
+  50%{transform:translate3d(16px,-12px,0)}
+}
+@keyframes cpLpLightSweep{
+  0%,100%{transform:translateX(-35%) rotate(-10deg);opacity:0}
+  12%{opacity:.22}
+  42%{opacity:.08}
+  58%{opacity:0}
+  100%{transform:translateX(150%) rotate(-10deg);opacity:0}
+}
+
+.cp-lp{
+  background-image:
+    radial-gradient(38% 24% at 5% 7%,rgba(91,92,226,.11),transparent 72%),
+    radial-gradient(34% 27% at 96% 35%,rgba(122,104,245,.075),transparent 74%),
+    radial-gradient(42% 26% at 20% 92%,rgba(91,92,226,.06),transparent 76%);
+  background-size:135% 135%,125% 125%,130% 130%;
+  background-position:0% 0%,100% 15%,50% 100%;
+  animation:cpLpAmbientDrift 24s ease-in-out infinite;
+}
+
+.cp-lp section{
+  position:relative;
+  overflow:hidden;
+}
+.cp-lp section::before{
+  opacity:.58;
+  background:
+    repeating-linear-gradient(90deg,transparent 0 72px,rgba(91,92,226,.045) 72px 73px),
+    repeating-linear-gradient(0deg,transparent 0 72px,rgba(91,92,226,.038) 72px 73px);
+  animation:cpLpGridMove 18s ease-in-out infinite;
+}
+.cp-lp section::after{
+  content:"";
+  position:absolute;
+  left:-18%;
+  top:12%;
+  width:58%;
+  height:70%;
+  pointer-events:none;
+  z-index:0;
+  background:radial-gradient(ellipse at center,rgba(91,92,226,.07),transparent 68%);
+  filter:blur(20px);
+  animation:cpLpLightSweep 16s cubic-bezier(.4,0,.2,1) infinite;
+}
+.cp-lp-dashboard-section::after{
+  left:48%;
+  top:0;
+  width:44%;
+  height:100%;
+  animation-delay:3s;
+}
+.cp-lp-audience::after{
+  left:auto;
+  right:-18%;
+  animation-delay:6s;
+}
+.cp-lp-faq::after{
+  left:34%;
+  top:18%;
+  width:42%;
+  height:64%;
+  animation-delay:9s;
+}
+.cp-lp section > *{
+  position:relative;
+  z-index:1;
+}
+
+@media(max-width:800px){
+  .cp-lp{
+    animation-duration:30s;
+    background-size:170% 170%,155% 155%,165% 165%;
+  }
+  .cp-lp section::before{
+    opacity:.38;
+    animation-duration:22s;
+  }
+  .cp-lp section::after{
+    opacity:.65;
+    width:72%;
+    height:60%;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .cp-lp{
+    animation:none!important;
+  }
+  .cp-lp section::before,
+  .cp-lp section::after{
+    animation:none!important;
+  }
+}
