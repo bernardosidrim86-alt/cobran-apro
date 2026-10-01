@@ -195,49 +195,16 @@ function Landing({session}) {
 function DashboardPreview() {
   return <div className="preview-wrap">
     <div className="glow"></div>
-    <div className="preview dashboard-real-preview">
-      <div className="real-preview-sidebar">
-        <div className="real-preview-brand"><span>CP</span><b>CobrançaPro</b></div>
-        <div className="real-preview-nav">
-          <span className="active"><LayoutDashboard size={13}/> Dashboard</span>
-          <span><Users size={13}/> Clientes</span>
-          <span><Receipt size={13}/> Cobranças</span>
-          <span><Wallet size={13}/> Recebimentos</span>
-          <span><TrendingUp size={13}/> Relatórios</span>
-        </div>
-        <div className="real-preview-bottom"><Settings size={13}/> Configurações</div>
-      </div>
-      <div className="real-preview-content">
-        <div className="real-preview-top">
-          <div><span>VISÃO GERAL</span><b>Olá, Lucas</b><small>Acompanhe o que entrou e o que precisa de atenção.</small></div>
-          <button><Plus size={13}/> Nova cobrança</button>
-        </div>
-        <div className="real-preview-metrics">
-          <div><span>A receber</span><strong>R$ 12.450,00</strong><i><CircleDollarSign size={12}/></i></div>
-          <div><span>Vencendo hoje</span><strong>R$ 1.280,00</strong><i><Receipt size={12}/></i></div>
-          <div><span>Atrasado</span><strong>R$ 2.430,00</strong><i><Receipt size={12}/></i></div>
-          <div><span>Total recebido</span><strong>R$ 18.720,00</strong><i><Wallet size={12}/></i></div>
-        </div>
-        <div className="real-preview-main">
-          <div className="real-preview-panel">
-            <span className="panel-kicker">RESUMO</span><b>Seu caixa</b><small>Quanto você já recebeu e quanto ainda está em aberto.</small>
-            <div className="real-preview-cash"><span>Já recebido<strong>R$ 18.720,00</strong></span><span>A receber<strong>R$ 12.450,00</strong></span></div>
-            <div className="real-preview-progress"><span>Recebimento do total <b>60%</b></span><em><i></i></em></div>
-          </div>
-          <div className="real-preview-panel attention">
-            <span className="panel-kicker">ATENÇÃO</span><b>Precisa de ação</b><small>Prioridades para hoje.</small>
-            <strong>R$ 3.710,00</strong>
-            <div><span>● R$ 2.430,00 <small>em atraso</small></span><span>● R$ 1.280,00 <small>vence hoje</small></span></div>
-          </div>
-        </div>
-        <div className="real-preview-list">
-          <div className="real-preview-list-head"><div><span className="panel-kicker">ATENÇÃO</span><b>Quem eu preciso cobrar hoje?</b></div><span>Ver todas →</span></div>
-          {[["J","João Silva","Mensalidade","R$ 350,00","Atrasado"],["M","Maria Souza","Serviço","R$ 180,00","Vence hoje"],["C","Carlos Lima","Consultoria","R$ 900,00","Atrasado"]].map(x=><div className="real-preview-row" key={x[1]}><span className="mini-avatar">{x[0]}</span><div><b>{x[1]}</b><small>{x[2]}</small></div><strong>{x[3]}</strong><em>{x[4]}</em></div>)}
-        </div>
-      </div>
+    <div className="preview dashboard-screenshot-preview">
+      <img
+        src="https://i.imgur.com/6ZO9UMY.png"
+        alt="Prévia do dashboard do CobrançaPro"
+        className="dashboard-screenshot-image"
+      />
     </div>
   </div>;
 }
+
 function Price({plan, featured, session}) {
   const isFree = !!plan.free;
   function startCheckout(url) {
