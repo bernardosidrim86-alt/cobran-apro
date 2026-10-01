@@ -6411,3 +6411,289 @@ tbody tr:hover{
   .cp-lp-faq{padding-top:75px;padding-bottom:75px}
   .cp-lp-final-cta{padding:72px 0}
 }
+
+
+/* LANDING 2.2 — DARK THEME PREVIEW */
+.cp-lp-theme-toggle{
+  width:36px;
+  height:36px;
+  display:grid;
+  place-items:center;
+  flex:none;
+  border:1px solid #e3e4ec;
+  border-radius:10px;
+  background:#fff;
+  color:#5d6070;
+  cursor:pointer;
+  transition:background .2s ease,border-color .2s ease,color .2s ease,transform .2s ease;
+}
+.cp-lp-theme-toggle:hover{
+  transform:translateY(-1px);
+  border-color:#d3d4df;
+  color:#4f51d4;
+  background:#fafaff;
+}
+.cp-lp-dark{
+  background:#0b0c12;
+  color:#f3f4f8;
+}
+.cp-lp-dark .cp-lp-header{
+  background:rgba(11,12,18,.82);
+  border-bottom-color:#20222d;
+  box-shadow:0 1px 0 rgba(255,255,255,.02);
+}
+.cp-lp-dark .cp-lp-nav a,
+.cp-lp-dark .cp-lp-login{
+  color:#a4a7b5;
+}
+.cp-lp-dark .cp-lp-nav a:hover,
+.cp-lp-dark .cp-lp-login:hover{
+  color:#fff;
+}
+.cp-lp-dark .cp-lp-theme-toggle{
+  background:#151722;
+  border-color:#292c39;
+  color:#e4e6ef;
+}
+.cp-lp-dark .cp-lp-theme-toggle:hover{
+  background:#1b1e2a;
+  border-color:#3a3d4c;
+  color:#fff;
+}
+.cp-lp-dark .cp-lp-hero{
+  background:
+    radial-gradient(circle at 50% -5%,rgba(91,92,226,.20),transparent 31%),
+    linear-gradient(180deg,#0b0c12 0%,#0b0c12 68%,#10111a 100%);
+}
+.cp-lp-dark .cp-lp-eyebrow{
+  border-color:rgba(128,129,240,.22);
+  background:rgba(91,92,226,.10);
+}
+.cp-lp-dark .cp-lp-hero h1{
+  color:#f5f6fa;
+}
+.cp-lp-dark .cp-lp-hero-sub{
+  color:#a3a6b4;
+}
+.cp-lp-dark .cp-lp-hero-actions .btn-secondary{
+  background:#151722;
+  border-color:#2b2e3b;
+  color:#e4e6ee;
+}
+.cp-lp-dark .cp-lp-hero-actions .btn-secondary:hover{
+  background:#1b1e29;
+  border-color:#3b3f4e;
+}
+.cp-lp-dark .cp-lp-trust-row{
+  color:#888b9b;
+}
+.cp-lp-dark .cp-lp-trust-row span:not(:last-child)::after{
+  background:#454854;
+}
+.cp-lp-dark .cp-lp-product-glow{
+  background:rgba(91,92,226,.28);
+}
+.cp-lp-dark .cp-lp-hero-product .dashboard-screenshot-preview{
+  border-color:#343746;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.06) inset,
+    0 24px 55px rgba(0,0,0,.30),
+    0 55px 120px rgba(0,0,0,.24);
+}
+.cp-lp-dark .cp-lp-proof{
+  background:#0f1017;
+  border-color:#20222d;
+}
+.cp-lp-dark .cp-lp-proof-label{
+  color:#747887;
+}
+.cp-lp-dark .cp-lp-proof-items span{
+  color:#b3b6c2;
+}
+.cp-lp-dark .cp-lp-problem{
+  background:#12131b;
+}
+.cp-lp-dark .cp-lp-section{
+  border-color:#20222d;
+}
+.cp-lp-dark .cp-lp-split-heading h2,
+.cp-lp-dark .cp-lp-centered-heading h2,
+.cp-lp-dark .cp-lp-faq-heading h2{
+  color:#f0f1f6;
+}
+.cp-lp-dark .cp-lp-split-heading p,
+.cp-lp-dark .cp-lp-centered-heading>p{
+  color:#9296a6;
+}
+.cp-lp-dark .cp-lp-problem-card,
+.cp-lp-dark .cp-lp-feature-card,
+.cp-lp-dark .cp-lp-audience-grid>div,
+.cp-lp-dark .cp-lp-faq-list details{
+  background:#161720;
+  border-color:#292c37;
+  box-shadow:0 10px 30px rgba(0,0,0,.13);
+}
+.cp-lp-dark .cp-lp-problem-card:hover,
+.cp-lp-dark .cp-lp-feature-card:hover,
+.cp-lp-dark .cp-lp-audience-grid>div:hover{
+  border-color:#3b3e4d;
+  box-shadow:0 18px 45px rgba(0,0,0,.19);
+}
+.cp-lp-dark .cp-lp-problem-card h3,
+.cp-lp-dark .cp-lp-feature-card h3,
+.cp-lp-dark .cp-lp-audience-grid strong{
+  color:#eceef4;
+}
+.cp-lp-dark .cp-lp-problem-card p,
+.cp-lp-dark .cp-lp-feature-card p,
+.cp-lp-dark .cp-lp-audience-grid p{
+  color:#9599a8;
+}
+.cp-lp-dark .cp-lp-problem-number,
+.cp-lp-dark .cp-lp-feature-top>span,
+.cp-lp-dark .cp-lp-audience-grid span{
+  color:#676b7b;
+}
+.cp-lp-dark .cp-lp-feature-icon{
+  background:rgba(91,92,226,.13);
+  color:#9495ff;
+  box-shadow:none;
+}
+.cp-lp-dark .cp-lp-feature-large{
+  background:
+    radial-gradient(circle at 85% 10%,rgba(91,92,226,.13),transparent 28%),
+    #161720;
+}
+.cp-lp-dark .cp-lp-feature-accent{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(91,92,226,.14),transparent 35%),
+    #171824;
+}
+.cp-lp-dark .cp-lp-mini-dashboard>div{
+  background:#101118;
+  border-color:#292c37;
+  box-shadow:none;
+}
+.cp-lp-dark .cp-lp-mini-dashboard span,
+.cp-lp-dark .cp-lp-feature-line,
+.cp-lp-dark .cp-lp-status-list span{
+  color:#8d91a0;
+}
+.cp-lp-dark .cp-lp-mini-dashboard strong,
+.cp-lp-dark .cp-lp-feature-line b{
+  color:#ebedf4;
+}
+.cp-lp-dark .cp-lp-feature-line{
+  border-bottom-color:#292c37;
+}
+.cp-lp-dark .cp-lp-whatsapp-chip{
+  background:#20212d;
+  color:#9b9cff;
+}
+.cp-lp-dark .cp-lp-ai-note{
+  background:#101118;
+  border-color:#292c37;
+  color:#9296a6;
+}
+.cp-lp-dark .cp-lp-feature-bottom{
+  color:#7f8392;
+}
+.cp-lp-dark .cp-lp-dashboard-section{
+  background:
+    radial-gradient(circle at 50% 12%,rgba(91,92,226,.09),transparent 28%),
+    #0f1017;
+  border-color:#20222d;
+}
+.cp-lp-dark .cp-lp-dashboard-showcase:before{
+  background:rgba(91,92,226,.16);
+}
+.cp-lp-dark .cp-lp-dashboard-showcase .dashboard-screenshot-preview{
+  border-color:#343746;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.05) inset,
+    0 35px 80px rgba(0,0,0,.28);
+}
+.cp-lp-dark .cp-lp-audience{
+  background:#0b0c12;
+}
+.cp-lp-dark .cp-lp-pricing{
+  background:linear-gradient(180deg,#11121a 0%,#0f1017 100%);
+  border-color:#20222d;
+}
+.cp-lp-dark .cp-lp-pricing-grid .price-card{
+  background:#161720;
+  border-color:#292c37!important;
+  color:#e7e9ef;
+}
+.cp-lp-dark .cp-lp-pricing-grid .price-card.featured{
+  border-color:#5556cf!important;
+  box-shadow:
+    0 0 0 1px rgba(91,92,226,.09),
+    0 25px 70px rgba(44,45,130,.20)!important;
+}
+.cp-lp-dark .cp-lp-pricing-grid .price-card .price{
+  color:#f0f1f6;
+}
+.cp-lp-dark .cp-lp-pricing-grid .price-card .price small{
+  color:#a6a9b6;
+}
+.cp-lp-dark .cp-lp-pricing-grid .price-card .price span,
+.cp-lp-dark .cp-lp-pricing-grid .price-card>p,
+.cp-lp-dark .cp-lp-pricing-grid .price-annual,
+.cp-lp-dark .cp-lp-pricing-grid .price-note{
+  color:#858998;
+}
+.cp-lp-dark .cp-lp-pricing-grid .price-benefits-title{
+  color:#a7aab7;
+  border-top-color:#292c37;
+}
+.cp-lp-dark .cp-lp-pricing-grid .price-item{
+  color:#aeb1bd;
+}
+.cp-lp-dark .cp-lp-faq{
+  background:#0b0c12;
+}
+.cp-lp-dark .cp-lp-faq-list details{
+  background:#11121a;
+}
+.cp-lp-dark .cp-lp-faq-list summary{
+  color:#e8eaf0;
+}
+.cp-lp-dark .cp-lp-faq-list summary:after{
+  color:#777b8b;
+}
+.cp-lp-dark .cp-lp-faq-list details p{
+  color:#9296a5;
+}
+.cp-lp-dark .cp-lp-final-cta{
+  background:
+    radial-gradient(circle at 80% 15%,rgba(153,154,255,.18),transparent 25%),
+    linear-gradient(135deg,#4b4dc7 0%,#5f60d9 100%);
+}
+.cp-lp-dark .cp-lp-final-cta h2{
+  color:#fff;
+}
+.cp-lp-dark .cp-lp-final-cta h2 span{
+  color:#dfe0ff;
+  opacity:.66;
+}
+.cp-lp-dark .cp-lp-final-cta p{
+  color:#d0d1f1;
+}
+.cp-lp-dark .cp-lp-footer{
+  background:#090a0f;
+  border-top-color:#20222d;
+}
+.cp-lp-dark .cp-lp-footer-main p,
+.cp-lp-dark .cp-lp-footer-bottom{
+  color:#6f7280;
+}
+.cp-lp-dark .cp-lp-footer-links a{
+  color:#989ba9;
+}
+@media(max-width:520px){
+  .cp-lp-theme-toggle{
+    width:34px;
+    height:34px;
+  }
+}
