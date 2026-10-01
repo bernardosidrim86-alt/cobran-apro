@@ -1575,3 +1575,596 @@ tbody tr:hover{background:#fafbff!important}
     box-shadow:18px 0 48px rgba(0,0,0,.35)!important;
   }
 }
+
+
+/* =========================================================
+   DARK MODE — CORREÇÕES DE COMPONENTES
+   Tudo abaixo permanece restrito ao SaaS interno.
+   ========================================================= */
+
+/* Header, sidebar e navegação */
+.app-layout .logout{
+  color:#858e9e!important;
+}
+.app-layout .logout:hover{
+  background:#1b2028!important;
+  color:#eef1f6!important;
+}
+.app-layout .user-mini-button{
+  color:#e7ebf1!important;
+}
+.app-layout .user-mini-button:hover{
+  background:#1b2028!important;
+}
+.app-layout .user-mini .avatar{
+  background:#292f49!important;
+  color:#a3a7ff!important;
+}
+.app-layout .side-nav-sub{
+  border-left-color:#2e3440!important;
+}
+.app-layout .side-nav-sub a{
+  color:#858e9e!important;
+}
+.app-layout .side-nav-sub a:hover{
+  background:#1b2028!important;
+  color:#eef1f6!important;
+}
+.app-layout .side-nav-sub a.active{
+  background:rgba(115,119,242,.13)!important;
+  color:#969aff!important;
+}
+.app-layout .mobile-sidebar-close{
+  background:#202631!important;
+  color:#dce1e8!important;
+}
+.app-layout .mobile-sidebar-close:hover{
+  background:#292f3b!important;
+}
+
+/* Header dropdowns */
+.app-layout .header-dropdown{
+  background:#171c25!important;
+  border-color:#343b49!important;
+  color:#e8ecf2!important;
+  box-shadow:0 24px 55px rgba(0,0,0,.42)!important;
+}
+.app-layout .dropdown-head{
+  border-bottom-color:#2a303b!important;
+}
+.app-layout .dropdown-head b{
+  color:#f0f2f6!important;
+}
+.app-layout .dropdown-head span{
+  color:#7d8696!important;
+}
+.app-layout .notification-item{
+  color:#e5e9ef!important;
+}
+.app-layout .notification-item:hover{
+  background:#202631!important;
+}
+.app-layout .notification-item b{
+  color:#e8ecf2!important;
+}
+.app-layout .notification-item span{
+  color:#7f8797!important;
+}
+.app-layout .notification-item>svg{
+  color:#798292!important;
+}
+.app-layout .dropdown-empty{
+  color:#80899a!important;
+}
+.app-layout .profile-dropdown>a,
+.app-layout .profile-dropdown>button{
+  color:#dce1e8!important;
+}
+.app-layout .profile-dropdown>a:hover,
+.app-layout .profile-dropdown>button:hover{
+  background:#202631!important;
+  color:#fff!important;
+}
+.app-layout .profile-dropdown svg:last-child{
+  color:#6f7889!important;
+}
+.app-layout .dropdown-divider{
+  background:#2a303b!important;
+}
+.app-layout .notification-dot{
+  color:#fff!important;
+}
+
+/* Banner do teste */
+.app-layout .trial-banner{
+  background:#171c2b!important;
+  border-color:#343b55!important;
+  color:#a4a8ff!important;
+}
+.app-layout .trial-banner span{
+  color:#aeb3c2!important;
+}
+.app-layout .trial-banner strong{
+  color:#f0f2f7!important;
+}
+.app-layout .trial-banner a{
+  color:#9a9eff!important;
+}
+
+/* Elementos genéricos de formulário */
+.app-layout .field>span{
+  color:#9ca4b3!important;
+}
+.app-layout .modal .field>span,
+.app-layout .settings-panel .field>span,
+.app-layout .ai-result>.field>span{
+  color:#c4cad4!important;
+}
+.app-layout .choice{
+  background:#171c25!important;
+  border-color:#303746!important;
+  color:#cbd1db!important;
+}
+.app-layout .choice:hover{
+  background:#202631!important;
+  border-color:#414958!important;
+}
+.app-layout .choice.selected{
+  background:rgba(102,107,228,.14)!important;
+  border-color:#6066df!important;
+  color:#a0a4ff!important;
+}
+.app-layout .success-box{
+  background:#153121!important;
+  border:1px solid #255238!important;
+  color:#72d69a!important;
+}
+.app-layout .error{
+  background:#351b1e!important;
+  border-color:#5b292e!important;
+  color:#ff8e8e!important;
+}
+
+/* Modais e detalhes de cobrança */
+.app-layout .modal{
+  background:#171c25!important;
+  color:#edf0f5!important;
+}
+.app-layout .modal .icon-box,
+.app-layout .modal-head .icon-box{
+  background:rgba(102,107,228,.14)!important;
+  border-color:#363d4d!important;
+  color:#969aff!important;
+}
+.app-layout .modal-x{
+  background:#222833!important;
+  color:#aeb6c3!important;
+}
+.app-layout .modal-x:hover{
+  background:#2b323e!important;
+  color:#f3f5f8!important;
+}
+.app-layout .detail-grid{
+  background:#12171f!important;
+  border-color:#2d3440!important;
+}
+.app-layout .detail-grid>div+div{
+  border-left-color:#2d3440!important;
+}
+.app-layout .detail-grid span{
+  color:#7f8898!important;
+}
+.app-layout .detail-grid b{
+  color:#edf0f5!important;
+}
+.app-layout .message-box{
+  background:#12171f!important;
+  border-color:#2d3440!important;
+  color:#cbd2dc!important;
+}
+.app-layout .modal-note{
+  color:#7b8494!important;
+}
+.app-layout .repeat-summary{
+  background:#12171f!important;
+  border-color:#2d3440!important;
+}
+.app-layout .repeat-summary>div+div{
+  border-top-color:#2d3440!important;
+}
+.app-layout .repeat-summary span{
+  color:#7f8898!important;
+}
+.app-layout .repeat-summary b{
+  color:#edf0f5!important;
+}
+
+/* Menu flutuante dos clientes está em portal fora do .app-layout */
+.customer-menu-floating,
+.customer-menu{
+  background:#171c25!important;
+  border-color:#343b49!important;
+  color:#e8ecf2!important;
+  box-shadow:0 20px 50px rgba(0,0,0,.48)!important;
+}
+.customer-menu-floating button,
+.customer-menu button{
+  background:transparent!important;
+  color:#dce1e8!important;
+}
+.customer-menu-floating button:hover,
+.customer-menu button:hover{
+  background:#222832!important;
+  color:#fff!important;
+}
+.customer-menu-floating .danger-menu-item,
+.customer-menu .danger-menu-item{
+  color:#f17676!important;
+}
+.customer-menu-floating .danger-menu-item:hover,
+.customer-menu .danger-menu-item:hover{
+  background:rgba(238,102,102,.11)!important;
+  color:#ff8a8a!important;
+}
+
+/* Clientes */
+.app-layout .company-profile-editor{
+  color:#e8ecf2!important;
+}
+.app-layout .company-profile-editor p{
+  color:#7f8797!important;
+}
+.app-layout .company-profile-avatar{
+  background:#202631!important;
+  border-color:#343b49!important;
+  color:#a1a6ff!important;
+}
+.app-layout .upload-avatar-btn{
+  color:#dce1e8!important;
+}
+
+/* Dashboard */
+.app-layout .dashboard-overview-panel,
+.app-layout .attention-panel{
+  background:var(--app-surface)!important;
+}
+.app-layout .attention-panel{
+  background:linear-gradient(145deg,#151a23 0%,#171a27 100%)!important;
+}
+.app-layout .attention-list{
+  border-top-color:#292f3a!important;
+}
+.app-layout .attention-item{
+  color:#e6e9ef!important;
+  border-bottom-color:#292f3a!important;
+}
+.app-layout .attention-item b{
+  color:#edf0f5!important;
+}
+.app-layout .attention-item small{
+  color:#80899a!important;
+}
+.app-layout .attention-item>svg{
+  color:#747d8d!important;
+}
+.app-layout .attention-dot.danger{
+  box-shadow:0 0 0 4px rgba(238,102,102,.10)!important;
+}
+.app-layout .attention-dot.warning{
+  box-shadow:0 0 0 4px rgba(228,165,66,.10)!important;
+}
+.app-layout .cash-summary{
+  border-bottom-color:#2a303b!important;
+}
+.app-layout .cash-summary div+div{
+  border-left-color:#2a303b!important;
+}
+.app-layout .progress-track{
+  background:#252b35!important;
+}
+.app-layout .dashboard-progress-row{
+  color:#8a93a3!important;
+}
+.app-layout .dashboard-progress-row b{
+  color:#a0a4ff!important;
+}
+.app-layout .quick-actions-premium a{
+  color:#e7ebf1!important;
+}
+.app-layout .quick-actions-premium a:hover{
+  background:#1c222c!important;
+  border-color:#2d3440!important;
+}
+.app-layout .dashboard-client-count{
+  border-top-color:#2a303b!important;
+}
+.app-layout .dashboard-client-count strong{
+  color:#9da1ff!important;
+}
+
+/* Tabelas e badges */
+.app-layout table th{
+  background:#11161e!important;
+}
+.app-layout .badge.green{
+  background:#183524!important;
+  color:#72d69a!important;
+}
+.app-layout .badge.red{
+  background:#351c1f!important;
+  color:#ff8d8d!important;
+}
+.app-layout .badge.yellow{
+  background:#382d17!important;
+  color:#f2c86e!important;
+}
+.app-layout .badge.gray{
+  background:#282e38!important;
+  color:#b1b8c5!important;
+}
+.app-layout .charge-repeat-action{
+  background:#1b2029!important;
+  border-color:#343b49!important;
+  color:#dce1e8!important;
+}
+.app-layout .charge-repeat-action:hover{
+  background:#222833!important;
+  border-color:#555ce0!important;
+  color:#a0a4ff!important;
+}
+
+/* Recebimentos */
+.app-layout .payments-table-head{
+  border-bottom-color:#2a303b!important;
+}
+.app-layout .payments-table-head b{
+  color:#edf0f5!important;
+}
+.app-layout .payments-table-head small,
+.app-layout .payments-table-head span{
+  color:#80899a!important;
+}
+.app-layout .payments-responsive-row{
+  border-bottom-color:#292f3a!important;
+}
+.app-layout .payments-responsive-main b,
+.app-layout .payments-responsive-main strong{
+  color:#edf0f5!important;
+}
+.app-layout .payments-responsive-meta span{
+  color:#7f8897!important;
+}
+
+/* Relatórios */
+.app-layout .report-toolbar .report-periods button,
+.app-layout .report-periods button{
+  background:#171c25!important;
+  border-color:#303746!important;
+  color:#aeb6c3!important;
+}
+.app-layout .report-periods button:hover{
+  background:#202631!important;
+  border-color:#414958!important;
+  color:#eef1f6!important;
+}
+.app-layout .report-periods button.active{
+  background:rgba(102,107,228,.14)!important;
+  border-color:#555bd7!important;
+  color:#a0a4ff!important;
+}
+.app-layout .report-dates input{
+  background:#10141b!important;
+  border-color:#303746!important;
+  color:#edf0f5!important;
+}
+.app-layout .report-heading{
+  border-bottom-color:#2a303b!important;
+}
+.app-layout .report-heading h2{
+  color:#edf0f5!important;
+}
+.app-layout .report-heading p{
+  color:#7f8898!important;
+}
+.app-layout .report-legend span,
+.app-layout .report-y-labels span,
+.app-layout .report-bar-col small,
+.app-layout .report-footer span{
+  color:#7e8797!important;
+}
+.app-layout .report-bars{
+  border-bottom-color:#2b313c!important;
+}
+.app-layout .report-footer{
+  border-top-color:#2b313c!important;
+}
+.app-layout .report-status>div{
+  background:#12171f!important;
+  border-color:#2b323e!important;
+}
+.app-layout .report-status span{
+  color:#aab2bf!important;
+}
+.app-layout .report-status b{
+  color:#eef1f5!important;
+}
+.app-layout .report-rank{
+  border-bottom-color:#2b313c!important;
+}
+.app-layout .report-rank>span{
+  background:rgba(102,107,228,.14)!important;
+  color:#9ca0ff!important;
+}
+.app-layout .report-rank b{
+  color:#edf0f5!important;
+}
+.app-layout .report-rank em{
+  background:#292f38!important;
+}
+.app-layout .report-rank strong{
+  color:#e8ecf2!important;
+}
+.app-layout .report-summary-list>div{
+  border-bottom-color:#2b313c!important;
+}
+.app-layout .report-summary-list>div:nth-child(even){
+  border-left-color:#2b313c!important;
+}
+.app-layout .report-summary-list span{
+  color:#7f8898!important;
+}
+.app-layout .report-summary-list b{
+  color:#eef1f5!important;
+}
+.app-layout .report-skeleton>div{
+  background:linear-gradient(90deg,#20252e,#171c24,#20252e)!important;
+}
+.app-layout .donut{
+  box-shadow:none!important;
+}
+.app-layout .donut:after{
+  background:#171c25!important;
+}
+.app-layout .donut strong{
+  color:#eef1f5!important;
+}
+.app-layout .donut span{
+  color:#7f8898!important;
+}
+
+/* Assistente IA */
+.app-layout .ai-chat-messages{
+  background:#11161e!important;
+}
+.app-layout .ai-chat-empty{
+  color:#dce1e8!important;
+}
+.app-layout .ai-chat-empty>b{
+  color:#edf0f5!important;
+}
+.app-layout .ai-chat-empty>span{
+  color:#7f8898!important;
+}
+.app-layout .ai-chat-icon,
+.app-layout .ai-locked-icon{
+  background:rgba(102,107,228,.14)!important;
+  color:#969aff!important;
+}
+.app-layout .ai-suggestions button{
+  background:#171c25!important;
+  border-color:#303746!important;
+  color:#aeb6c3!important;
+}
+.app-layout .ai-suggestions button:hover{
+  background:#202631!important;
+  border-color:#5158da!important;
+  color:#a0a4ff!important;
+}
+.app-layout .ai-message{
+  background:#171c25!important;
+  border-color:#2f3642!important;
+}
+.app-layout .ai-message.user{
+  background:rgba(102,107,228,.13)!important;
+  border-color:#454bc6!important;
+}
+.app-layout .ai-message span{
+  color:#969aff!important;
+}
+.app-layout .ai-message p{
+  color:#d1d7e0!important;
+}
+.app-layout .ai-chat-input{
+  background:#151a23!important;
+  border-top-color:#2a303b!important;
+}
+.app-layout .ai-chat-input input{
+  background:#10141b!important;
+  border-color:#303746!important;
+  color:#edf0f5!important;
+}
+.app-layout .ai-result{
+  background:#151a23!important;
+}
+.app-layout .ai-result .generated,
+.app-layout .generated{
+  background:#11161e!important;
+  border-color:#303746!important;
+  color:#d1d7e0!important;
+}
+.app-layout .ai-locked-panel{
+  background:#151a23!important;
+  border-color:#343b49!important;
+}
+.app-layout .ai-locked-panel h2{
+  color:#edf0f5!important;
+}
+.app-layout .ai-locked-panel>p{
+  color:#7f8898!important;
+}
+.app-layout .ai-locked-panel>small{
+  color:#818a9a!important;
+}
+.app-layout .ai-locked-panel>small b{
+  color:#eef1f5!important;
+}
+.app-layout .ai-locked-features span{
+  background:#12171f!important;
+  border-color:#2d3440!important;
+  color:#aeb6c3!important;
+}
+
+/* Configurações */
+.app-layout .settings-panel .connection,
+.app-layout .connection,
+.app-layout .plan-box{
+  background:#12171f!important;
+  border-color:#2d3440!important;
+}
+.app-layout .settings-panel .connection b,
+.app-layout .plan-box b{
+  color:#eef1f5!important;
+}
+.app-layout .settings-panel .connection small,
+.app-layout .plan-box span{
+  color:#7f8898!important;
+}
+.app-layout .settings-divider{
+  border-color:#2b313c!important;
+}
+.app-layout .automation-card{
+  background:#151a23!important;
+  border-color:#2d3440!important;
+}
+.app-layout .automation-card h3{
+  color:#edf0f5!important;
+}
+.app-layout .automation-card p,
+.app-layout .automation-card small{
+  color:#7f8898!important;
+}
+.app-layout .toggle-row{
+  color:#d6dbe3!important;
+}
+.app-layout .company-profile-editor{
+  border-color:#2d3440!important;
+}
+.app-layout .settings-panel>small{
+  color:#7f8898!important;
+}
+
+/* Calendário */
+.app-layout .calendar-cell>small{
+  color:#7f8898!important;
+}
+.app-layout .calendar-empty-day b{
+  color:#aeb6c3!important;
+}
+.app-layout .calendar-empty-day span{
+  color:#727c8d!important;
+}
+
+/* Scrollbar do sistema, sem alterar a landing */
+.app-layout{
+  scrollbar-color:#313847 #11151c;
+}
