@@ -7016,3 +7016,183 @@ tbody tr:hover{
     background:#e8ebf1;
   }
 }
+
+
+/* LANDING 2.5 — LIGHT PREMIUM / VISIBLE SECTION CONTRAST */
+.cp-lp{
+  background:#e9edf3;
+}
+
+.cp-lp-header{
+  background:rgba(239,242,247,.96);
+  border-bottom:1px solid #d3d8e2;
+}
+
+.cp-lp-hero{
+  background:
+    radial-gradient(circle at 50% -5%,rgba(91,92,226,.12),transparent 29%),
+    linear-gradient(180deg,#f0f3f8 0%,#e7ebf1 100%);
+  border-bottom:1px solid #d6dbe4;
+}
+
+.cp-lp-hero h1{
+  color:#171a29;
+}
+
+.cp-lp-hero-sub{
+  color:#565b6b;
+}
+
+.cp-lp-hero-actions .btn-secondary{
+  background:#edf0f5;
+  border-color:#cbd0db;
+  color:#373b4b;
+}
+
+.cp-lp-trust-row{
+  color:#626777;
+}
+
+.cp-lp-proof{
+  background:#dfe4ec;
+  border-top:1px solid #d2d7e0;
+  border-bottom:1px solid #cfd4de;
+}
+
+.cp-lp-proof-label{
+  color:#666b7a;
+}
+
+.cp-lp-proof-items span{
+  color:#353a4a;
+}
+
+.cp-lp-section{
+  background:#f1f3f7;
+}
+
+.cp-lp-problem{
+  background:#e1e5ec;
+  border-top:1px solid #d0d5de;
+  border-bottom:1px solid #ccd2dc;
+}
+
+.cp-lp-problem-card,
+.cp-lp-feature-card,
+.cp-lp-audience-grid>div,
+.cp-lp-faq-list details{
+  background:#ffffff;
+  border-color:#d1d5df;
+  box-shadow:0 10px 26px rgba(26,31,54,.065);
+}
+
+.cp-lp-problem-card:hover,
+.cp-lp-feature-card:hover,
+.cp-lp-audience-grid>div:hover{
+  border-color:#bfc5d2;
+  box-shadow:0 18px 44px rgba(26,31,54,.11);
+}
+
+.cp-lp-solution{
+  background:#f0f2f6;
+}
+
+.cp-lp-feature-large{
+  background:
+    radial-gradient(circle at 85% 5%,rgba(91,92,226,.08),transparent 28%),
+    #ffffff;
+}
+
+.cp-lp-feature-accent{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(91,92,226,.11),transparent 34%),
+    #f7f7ff;
+}
+
+.cp-lp-dashboard-section{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(91,92,226,.09),transparent 30%),
+    #dfe4ec;
+  border-top:1px solid #ccd2dc;
+  border-bottom:1px solid #cbd1db;
+}
+
+.cp-lp-dashboard-showcase .dashboard-screenshot-preview,
+.cp-lp-hero-product .dashboard-screenshot-preview{
+  border-color:#c5cbd6;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 24px 55px rgba(26,31,55,.12),
+    0 48px 110px rgba(26,31,55,.12);
+}
+
+.cp-lp-audience{
+  background:#f1f3f7;
+}
+
+.cp-lp-audience-grid>div{
+  background:#ffffff;
+}
+
+.cp-lp-pricing{
+  background:#dfe4ec;
+  border-top:1px solid #cbd1db;
+  border-bottom:1px solid #cbd1db;
+}
+
+.cp-lp-pricing-grid .price-card{
+  background:#ffffff;
+  border-color:#cdd2dc!important;
+  box-shadow:0 12px 32px rgba(26,31,55,.075);
+}
+
+.cp-lp-pricing-grid .price-card.featured{
+  background:#fbfbff;
+  border-color:#a8ace3!important;
+  box-shadow:
+    0 0 0 1px rgba(91,92,226,.07),
+    0 26px 70px rgba(91,92,226,.18)!important;
+}
+
+.cp-lp-faq{
+  background:#edf0f5;
+}
+
+.cp-lp-faq-list details{
+  background:#fafbfd;
+}
+
+.cp-lp-final-cta{
+  background:
+    radial-gradient(circle at 85% 10%,rgba(255,255,255,.16),transparent 25%),
+    linear-gradient(135deg,#5052d4 0%,#6769e5 100%);
+}
+
+.cp-lp-footer{
+  background:#dfe3ea;
+  border-top-color:#cbd0da;
+}
+
+@media(max-width:520px){
+  .cp-lp-hero{
+    background:
+      radial-gradient(circle at 50% 0%,rgba(91,92,226,.12),transparent 34%),
+      #edf0f5;
+  }
+
+  .cp-lp-proof{
+    background:#dfe4ec;
+  }
+
+  .cp-lp-problem{
+    background:#e1e5ec;
+  }
+
+  .cp-lp-dashboard-section{
+    background:#dfe4ec;
+  }
+
+  .cp-lp-pricing{
+    background:#dfe4ec;
+  }
+}
