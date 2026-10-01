@@ -786,7 +786,7 @@ function Customers() {
   const [rows,setRows]=useState([]);
   const [search,setSearch]=useState("");
   const [open,setOpen]=useState(false);
-  const [menu,setMenu]=useState(null);
+  const [menuCustomer,setMenuCustomer]=useState(null);
   const [menuPosition,setMenuPosition]=useState(null);
   const [form,setForm]=useState({name:"",phone:"",email:"",notes:""});
   const [deleting,setDeleting]=useState(false);
@@ -799,51 +799,44 @@ function Customers() {
 
   useEffect(()=>{load()},[companyId]);
 
+  function closeMenu(){
+    setMenuCustomer(null);
+    setMenuPosition(null);
+  }
+
+  function getMenuPosition(button){
+    const rect=button.getBoundingClientRect();
+    const menuWidth=190;
+    const menuHeight=152;
+    const gap=6;
+    let left=rect.right-menuWidth;
+    let top=rect.bottom+gap;
+    if(left<10)left=10;
+    if(left+menuWidth>window.innerWidth-10)left=Math.max(10,window.innerWidth-menuWidth-10);
+    if(top+menuHeight>window.innerHeight-10)top=Math.max(10,rect.top-menuHeight-gap);
+    return {top,left};
+  }
+
+  function openMenu(c,e){
+    e.preventDefault();
+    e.stopPropagation();
+    setMenuPosition(getMenuPosition(e.currentTarget));
+    setMenuCustomer(c);
+  }
+
   useEffect(()=>{
-    if(!menu)return;
+    if(!menuCustomer)return;
     function reposition(){
-      const button=document.querySelector(`.customer-menu-trigger[data-customer-id="${menu}"]`);
-      if(!button){closeOnOutside();return;}
-      const rect=button.getBoundingClientRect();
-      const menuWidth=184;
-      const menuHeight=150;
-      const gap=6;
-      let left=rect.right-menuWidth;
-      let top=rect.bottom+gap;
-      if(left<10)left=10;
-      if(left+menuWidth>window.innerWidth-10)left=window.innerWidth-menuWidth-10;
-      if(top+menuHeight>window.innerHeight-10)top=Math.max(10,rect.top-menuHeight-gap);
-      setMenuPosition({top,left});
+      const button=document.querySelector(`.customer-menu-trigger[data-customer-id="${menuCustomer.id}"]`);
+      if(button)setMenuPosition(getMenuPosition(button));
     }
-    reposition();
     window.addEventListener("resize",reposition);
     window.addEventListener("scroll",reposition,true);
     return()=>{
       window.removeEventListener("resize",reposition);
       window.removeEventListener("scroll",reposition,true);
     };
-  },[menu]);
-
-  function openMenu(id,e){
-    e.stopPropagation();
-    const button=e.currentTarget;
-    const rect=button.getBoundingClientRect();
-    const menuWidth=184;
-    const menuHeight=150;
-    const gap=6;
-    let left=rect.right-menuWidth;
-    let top=rect.bottom+gap;
-    if(left<10)left=10;
-    if(left+menuWidth>window.innerWidth-10)left=window.innerWidth-menuWidth-10;
-    if(top+menuHeight>window.innerHeight-10)top=Math.max(10,rect.top-menuHeight-gap);
-    if(menu===id){
-      setMenu(null);
-      setMenuPosition(null);
-    }else{
-      setMenu(id);
-      setMenuPosition({top,left});
-    }
-  }
+  },[menuCustomer]);
 
   async function save(e){
     e.preventDefault();
@@ -874,8 +867,7 @@ function Customers() {
     const {error}=await supabase.from("customers").delete().eq("id",c.id).eq("company_id",companyId);
     if(error)alert(error.message);
     else{
-      setMenu(null);
-      setMenuPosition(null);
+      closeMenu();
       load();
     }
     setDeleting(false);
@@ -885,35 +877,31 @@ function Customers() {
     const phone=(c.phone||"").replace(/\D/g,"");
     const message=`Oi! Tudo bem, ${c.name}? Passando para falar com você.`;
     window.open(phone?`https://wa.me/${phone}?text=${encodeURIComponent(message)}`:`https://wa.me/?text=${encodeURIComponent(message)}`,"_blank");
-    setMenu(null);
-    setMenuPosition(null);
+    closeMenu();
   }
 
   function showData(c){
-    setMenu(null);
-    setMenuPosition(null);
+    closeMenu();
     alert(`Cliente: ${c.name}\nTelefone: ${c.phone||"Não informado"}\nE-mail: ${c.email||"Não informado"}`);
   }
 
   const filtered=rows.filter(x=>(x.name+" "+(x.phone||"")+" "+(x.email||"")).toLowerCase().includes(search.toLowerCase()));
 
-  const activeCustomer=menu?rows.find(c=>c.id===menu):null;
-
-  const floatingMenu=activeCustomer&&menuPosition?createPortal(
+  const floatingMenu=menuCustomer&&menuPosition?createPortal(
     <>
       <button
         type="button"
         aria-label="Fechar menu de ações"
-        onClick={()=>{setMenu(null);setMenuPosition(null)}}
-        style={{position:"fixed",inset:0,border:0,padding:0,margin:0,background:"transparent",zIndex:2147483646,cursor:"default",pointerEvents:"auto"}}
+        onClick={closeMenu}
+        style={{position:"fixed",inset:0,border:0,padding:0,margin:0,background:"transparent",zIndex:2147483646,cursor:"default"}}
       />
       <div
         className="customer-menu customer-menu-floating"
-        style={{position:"fixed",top:menuPosition.top,left:menuPosition.left,width:184,zIndex:2147483647,pointerEvents:"auto"}}
+        style={{position:"fixed",top:menuPosition.top,left:menuPosition.left,width:190,zIndex:2147483647,pointerEvents:"auto"}}
       >
-        <button type="button" onClick={()=>showData(activeCustomer)}>Ver dados</button>
-        <button type="button" onClick={()=>whatsapp(activeCustomer)}>Abrir WhatsApp</button>
-        <button type="button" className="danger-menu-item" onClick={()=>removeCustomer(activeCustomer)} disabled={deleting}>
+        <button type="button" onClick={()=>showData(menuCustomer)}>Ver dados</button>
+        <button type="button" onClick={()=>whatsapp(menuCustomer)}>Abrir WhatsApp</button>
+        <button type="button" className="danger-menu-item" onClick={()=>removeCustomer(menuCustomer)} disabled={deleting}>
           {deleting?"Excluindo...":"Excluir cliente"}
         </button>
       </div>
@@ -943,9 +931,9 @@ function Customers() {
                 <button
                   type="button"
                   data-customer-id={c.id}
-                  className={`customer-menu-trigger ${menu===c.id?"active":""}`}
+                  className={`customer-menu-trigger ${menuCustomer?.id===c.id?"active":""}`}
                   aria-label={`Ações de ${c.name}`}
-                  onClick={e=>openMenu(c.id,e)}
+                  onClick={e=>openMenu(c,e)}
                 >
                   <MoreHorizontal size={19}/>
                 </button>
@@ -955,7 +943,6 @@ function Customers() {
         </table>}
       </div>
     </div>
-    {floatingMenu}
     {open&&<div className="modal-backdrop">
       <form className="modal" onSubmit={save}>
         <button type="button" className="modal-x" onClick={()=>setOpen(false)}><X/></button>
@@ -970,9 +957,9 @@ function Customers() {
         </div>
       </form>
     </div>}
+    {floatingMenu}
   </>;
 }
-
 function Charges() {
   const companyId=useCompany();
   const loc=useLocation();
