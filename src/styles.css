@@ -8115,3 +8115,85 @@ tbody tr:hover{
     animation:none!important;
   }
 }
+
+/* LANDING 3.7 — PERFORMANCE PASS + LIGHTWEIGHT MOTION */
+@keyframes cpLpLiteOrb{
+  0%,100%{transform:translate3d(-8%,-3%,0) scale(.96);opacity:.18}
+  50%{transform:translate3d(12%,8%,0) scale(1.08);opacity:.28}
+}
+@keyframes cpLpLiteSweep{
+  0%{transform:translate3d(-120%,0,0) rotate(-14deg);opacity:0}
+  14%{opacity:.10}
+  46%{opacity:.035}
+  58%{opacity:0}
+  100%{transform:translate3d(240%,0,0) rotate(-14deg);opacity:0}
+}
+
+/* Desliga as camadas pesadas introduzidas nas tentativas anteriores. */
+.cp-lp{
+  animation:none!important;
+  background:#e9edf3!important;
+}
+.cp-lp section::before,
+.cp-lp section::after,
+.cp-lp-hero::before,
+.cp-lp-hero::after,
+.cp-lp-pricing::before,
+.cp-lp-pricing::after,
+.cp-lp-final-cta::before,
+.cp-lp-final-cta::after{
+  display:none!important;
+  animation:none!important;
+  filter:none!important;
+}
+
+/* Apenas duas camadas globais, leves e aceleradas por GPU. */
+.cp-lp::before{
+  content:"";
+  position:absolute;
+  inset:-18%;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(30% 24% at 15% 18%,rgba(91,92,226,.14),transparent 72%),
+    radial-gradient(28% 22% at 84% 45%,rgba(112,101,239,.10),transparent 72%),
+    radial-gradient(26% 20% at 25% 84%,rgba(91,92,226,.07),transparent 72%);
+  transform:translate3d(0,0,0) scale(1);
+  animation:cpLpLiteOrb 18s ease-in-out infinite;
+  will-change:transform,opacity;
+}
+
+.cp-lp::after{
+  content:"";
+  position:absolute;
+  top:-15%;
+  left:-22%;
+  width:34%;
+  height:130%;
+  z-index:-1;
+  pointer-events:none;
+  background:linear-gradient(105deg,transparent 0%,rgba(255,255,255,.16) 50%,transparent 100%);
+  transform:translate3d(-120%,0,0) rotate(-14deg);
+  animation:cpLpLiteSweep 14s cubic-bezier(.4,0,.2,1) infinite;
+  will-change:transform,opacity;
+}
+
+@media(max-width:800px){
+  .cp-lp::before{
+    inset:-12%;
+    background:
+      radial-gradient(34% 24% at 8% 18%,rgba(91,92,226,.11),transparent 72%),
+      radial-gradient(32% 22% at 92% 54%,rgba(112,101,239,.075),transparent 72%);
+    animation-duration:22s;
+  }
+  .cp-lp::after{
+    width:46%;
+    opacity:.8;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .cp-lp::before,
+  .cp-lp::after{
+    animation:none!important;
+  }
+}
