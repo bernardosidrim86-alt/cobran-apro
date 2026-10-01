@@ -204,6 +204,76 @@
   border-radius:16px!important;
   box-shadow:0 4px 16px rgba(28,31,62,.035)!important;
 }
+
+/* Clientes — menu dos 3 pontos sempre acima da tabela e realmente clicável */
+.panel.table-panel:has(.customers-table-wrap){
+  overflow:visible!important;
+}
+.customers-table-wrap{
+  position:relative!important;
+  overflow:visible!important;
+}
+.customers-table-wrap table{
+  position:relative;
+  z-index:1;
+}
+.customers-table-wrap tbody tr{
+  position:relative;
+}
+.customer-actions-cell{
+  position:relative!important;
+  z-index:30!important;
+}
+.customer-actions-cell:has(.customer-menu){
+  z-index:100!important;
+}
+.customer-menu-trigger{
+  position:relative!important;
+  z-index:101!important;
+  pointer-events:auto!important;
+  cursor:pointer!important;
+}
+.customer-menu{
+  position:absolute!important;
+  right:0!important;
+  top:calc(100% + 6px)!important;
+  z-index:10000!important;
+  pointer-events:auto!important;
+  min-width:170px;
+  padding:5px;
+  background:#fff;
+  border:1px solid #e0e3eb;
+  border-radius:12px;
+  box-shadow:0 16px 38px rgba(20,24,52,.16);
+}
+.customer-menu button{
+  position:relative!important;
+  z-index:10001!important;
+  pointer-events:auto!important;
+  display:block;
+  width:100%;
+  min-height:36px;
+  padding:8px 10px;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:#45495b;
+  text-align:left;
+  font:600 11px/1.2 Inter,system-ui,sans-serif;
+  cursor:pointer!important;
+}
+.customer-menu button:hover{
+  background:#f4f5fa;
+  color:#25283a;
+}
+.customer-menu .danger-menu-item{
+  color:#d33d4b;
+}
+.customer-menu .danger-menu-item:hover{
+  background:#fff1f2;
+  color:#c62f3e;
+}
+
 table{font-size:11px!important}
 th{
   color:#979baa!important;
@@ -284,6 +354,12 @@ tbody tr:hover{background:#fafbff!important}
   }
   .sidebar{
     width:min(292px,86vw)!important;
+  }
+  .panel.table-panel:has(.customers-table-wrap){
+    overflow:visible!important;
+  }
+  .customers-table-wrap{
+    overflow:visible!important;
   }
 }
 @media(max-width:600px){
