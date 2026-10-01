@@ -7196,3 +7196,242 @@ tbody tr:hover{
     background:#dfe4ec;
   }
 }
+
+
+/* LANDING 2.6 — PRICING: PREMIUM SAAS PRESENTATION */
+.cp-lp-pricing{
+  padding-top:110px;
+  padding-bottom:120px;
+}
+.cp-lp-pricing .cp-lp-centered-heading{
+  max-width:700px;
+  margin-bottom:48px;
+}
+.cp-lp-pricing .cp-lp-centered-heading h2{
+  font-size:clamp(38px,4.5vw,54px);
+}
+.cp-lp-pricing .cp-lp-centered-heading>p{
+  max-width:560px;
+}
+
+.cp-lp-pricing-wrap{
+  position:relative;
+}
+.cp-lp-pricing-wrap::before{
+  content:"";
+  position:absolute;
+  inset:20px 6% auto;
+  height:180px;
+  background:radial-gradient(ellipse at center,rgba(91,92,226,.10),transparent 70%);
+  filter:blur(24px);
+  pointer-events:none;
+}
+.cp-lp-pricing-grid{
+  position:relative;
+  z-index:1;
+  gap:16px!important;
+}
+
+.cp-lp-pricing-grid .scroll-reveal{
+  display:flex;
+}
+
+.cp-lp-pricing-grid .price-card{
+  position:relative;
+  width:100%;
+  min-height:0;
+  padding:28px!important;
+  border-radius:20px!important;
+  display:flex;
+  flex-direction:column;
+  background:#fff;
+  border:1px solid #cfd4de!important;
+  box-shadow:
+    0 8px 20px rgba(24,28,55,.045),
+    0 1px 1px rgba(24,28,55,.03);
+}
+
+.cp-lp-pricing-grid .price-card.free-card{
+  background:#f7f8fa;
+}
+
+.cp-lp-pricing-grid .price-card.featured{
+  transform:translateY(-8px)!important;
+  border:1px solid #969ae0!important;
+  background:#fff;
+  box-shadow:
+    0 0 0 1px rgba(91,92,226,.08),
+    0 18px 45px rgba(61,63,150,.13),
+    0 35px 75px rgba(61,63,150,.08)!important;
+}
+
+.cp-lp-pricing-grid .price-card.featured::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:20px;
+  pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(91,92,226,.045);
+}
+
+.cp-lp-pricing-grid .price-card .popular{
+  top:-1px;
+  right:20px;
+  left:auto;
+  padding:7px 11px;
+  border-radius:0 0 9px 9px;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  box-shadow:0 7px 18px rgba(91,92,226,.18);
+}
+
+.cp-lp-pricing-grid .price-head{
+  padding-right:65px;
+}
+.cp-lp-pricing-grid .price-kicker{
+  color:#8a8e9d;
+  font-size:9px;
+  letter-spacing:.11em;
+}
+.cp-lp-pricing-grid .price-card.featured .price-kicker{
+  color:#5b5ce2;
+}
+.cp-lp-pricing-grid .price-head h3{
+  margin-top:3px;
+  font-size:24px;
+  line-height:1.1;
+  letter-spacing:-.035em;
+}
+.cp-lp-pricing-grid .price-card>p{
+  min-height:58px;
+  margin-top:12px;
+  color:#666a79;
+  font-size:11px;
+  line-height:1.65;
+}
+
+.cp-lp-pricing-grid .price{
+  margin:24px 0 4px;
+  display:flex;
+  align-items:baseline;
+  gap:3px;
+  color:#202236;
+  font-size:40px!important;
+  line-height:1;
+  letter-spacing:-.055em;
+}
+.cp-lp-pricing-grid .price small{
+  font-size:15px;
+  letter-spacing:-.02em;
+}
+.cp-lp-pricing-grid .price span{
+  margin-left:3px;
+  color:#898d9b;
+  font-size:10px;
+  letter-spacing:0;
+  font-weight:650;
+}
+
+.cp-lp-pricing-grid .price-annual{
+  min-height:30px;
+  color:#8a8e9c;
+  font-size:9px;
+}
+.cp-lp-pricing-grid .price-annual span{
+  color:#8a8e9c;
+}
+
+.cp-lp-pricing-grid .price-benefits-title{
+  margin:20px 0 10px;
+  padding-top:18px;
+  border-top:1px solid #eceef3;
+  color:#515566;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.02em;
+}
+.cp-lp-pricing-grid .price-items{
+  display:grid;
+  gap:2px;
+}
+.cp-lp-pricing-grid .price-item{
+  display:flex;
+  gap:8px;
+  padding:4px 0;
+  color:#5f6372;
+  font-size:10px;
+  line-height:1.45;
+}
+.cp-lp-pricing-grid .price-item svg{
+  width:14px;
+  height:14px;
+  margin-top:0;
+  padding:2px;
+  border-radius:50%;
+  background:#f0f0ff;
+  color:#5b5ce2;
+}
+
+.cp-lp-pricing-grid .price-actions{
+  margin-top:22px;
+  gap:8px;
+}
+.cp-lp-pricing-grid .price-actions .btn{
+  min-height:42px;
+  border-radius:10px;
+  font-size:10px;
+  font-weight:800;
+}
+.cp-lp-pricing-grid .price-actions .btn-secondary{
+  background:#f7f8fa;
+  border-color:#d9dce4;
+  color:#454959;
+}
+.cp-lp-pricing-grid .price-actions .btn-secondary:hover{
+  background:#f0f2f6;
+  border-color:#c9cdd7;
+}
+.cp-lp-pricing-grid .price-actions .btn-primary{
+  background:#5b5ce2;
+  border-color:#5b5ce2;
+  box-shadow:0 8px 22px rgba(91,92,226,.17);
+}
+.cp-lp-pricing-grid .price-note{
+  min-height:25px;
+  margin-top:11px;
+  color:#9a9da8;
+  font-size:8px;
+}
+
+@media(max-width:1100px){
+  .cp-lp-pricing-grid .price-card.featured{
+    transform:none!important;
+  }
+}
+@media(max-width:800px){
+  .cp-lp-pricing{
+    padding-top:90px;
+    padding-bottom:95px;
+  }
+}
+@media(max-width:520px){
+  .cp-lp-pricing{
+    padding-top:74px;
+    padding-bottom:78px;
+  }
+  .cp-lp-pricing .cp-lp-centered-heading{
+    margin-bottom:34px;
+  }
+  .cp-lp-pricing-grid .price-card{
+    padding:23px!important;
+    border-radius:18px!important;
+  }
+  .cp-lp-pricing-grid .price-card .popular{
+    right:17px;
+  }
+  .cp-lp-pricing-grid .price{
+    font-size:36px!important;
+  }
+}
