@@ -153,19 +153,6 @@ function Landing({session}) {
         <DashboardPreview/>
       </section>
 
-      <section className="dashboard-showcase-section">
-        <div className="dashboard-showcase-container">
-          <div className="dashboard-showcase-heading">
-            <span>Seu financeiro em um só lugar</span>
-            <h2>Tenha uma visão completa do seu negócio.</h2>
-            <p>Veja cobranças, recebimentos e o que precisa de atenção direto no dashboard do CobrançaPro.</p>
-          </div>
-          <div className="dashboard-showcase-frame">
-            <img src="https://i.imgur.com/6ZO9UMY.png" alt="Dashboard do CobrançaPro" />
-          </div>
-        </div>
-      </section>
-
       <section id="como" className="section soft"><div className="container">
         <ScrollReveal><div className="section-heading"><span className="eyebrow">Como funciona</span><h2>Uma visão clara de tudo que você precisa receber.</h2></div></ScrollReveal>
         <div className="steps">
