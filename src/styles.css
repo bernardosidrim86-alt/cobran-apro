@@ -5149,8 +5149,8 @@ tbody tr:hover{
 /* LANDING — dashboard screenshot preview */
 .dashboard-screenshot-preview{
   position:relative;
-  width:92%;
-  max-width:760px;
+  width:112%;
+  max-width:900px;
   margin:0 auto;
   overflow:hidden;
   padding:0;
@@ -5168,11 +5168,17 @@ tbody tr:hover{
 }
 @media(max-width:900px){
   .dashboard-screenshot-preview{
+    width:105%;
+    max-width:none;
+    margin-left:auto;
+    margin-right:auto;
     border-radius:15px;
   }
 }
 @media(max-width:600px){
   .dashboard-screenshot-preview{
+    width:100%;
+    max-width:none;
     border-radius:13px;
   }
 }
