@@ -2168,3 +2168,18 @@ tbody tr:hover{background:#fafbff!important}
 .app-layout{
   scrollbar-color:#313847 #11151c;
 }
+
+
+/* Correção de contraste — bloco "Precisa de ação" */
+.app-layout .attention-value{
+  color:#f1f3f7!important;
+}
+.app-layout .attention-label{
+  color:#858e9e!important;
+}
+.app-layout .attention-item b{
+  color:#edf0f5!important;
+}
+.app-layout .attention-item small{
+  color:#80899a!important;
+}
