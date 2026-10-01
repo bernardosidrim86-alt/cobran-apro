@@ -7676,3 +7676,49 @@ tbody tr:hover{
     display:none!important;
   }
 }
+
+/* LANDING 3.2 — MOBILE AMBIENT MOTION */
+@keyframes cpMobileOrbFloatA{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(28px,18px,0) scale(1.08)}
+}
+@keyframes cpMobileOrbFloatB{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(-24px,26px,0) scale(.94)}
+}
+@media(max-width:520px){
+  .cp-lp-hero{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+  }
+  .cp-lp-hero::before,
+  .cp-lp-hero::after{
+    content:"";
+    position:absolute;
+    pointer-events:none;
+    border-radius:50%;
+    filter:blur(12px);
+    z-index:-1;
+  }
+  .cp-lp-hero::before{
+    width:220px;
+    height:220px;
+    top:8%;
+    left:-95px;
+    background:radial-gradient(circle,rgba(91,92,226,.18) 0%,rgba(91,92,226,.08) 38%,transparent 72%);
+    animation:cpMobileOrbFloatA 8s ease-in-out infinite;
+  }
+  .cp-lp-hero::after{
+    width:190px;
+    height:190px;
+    top:42%;
+    right:-85px;
+    background:radial-gradient(circle,rgba(123,104,245,.14) 0%,rgba(123,104,245,.06) 40%,transparent 72%);
+    animation:cpMobileOrbFloatB 10s ease-in-out infinite;
+  }
+  .cp-lp-hero-content{
+    position:relative;
+    z-index:1;
+  }
+}
