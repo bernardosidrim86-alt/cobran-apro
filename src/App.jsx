@@ -134,7 +134,7 @@ function scrollLandingTo(id){
   const header=document.querySelector(".cp-lp-header");
   const offset=(header?.getBoundingClientRect().height||0)+12;
   const top=el.getBoundingClientRect().top+window.scrollY-offset;
-  window.scrollTo({top:Math.max(0,top),behavior:"smooth"});
+  window.scrollTo({top:Math.max(0,top),behavior:"auto"});
 }
 
 function Landing({session}) {
@@ -142,7 +142,7 @@ function Landing({session}) {
 
   useEffect(()=>{
     if(window.location.hash !== "#precos") return;
-    const scrollToPlans=()=>document.getElementById("precos")?.scrollIntoView({behavior:"smooth",block:"start"});
+    const scrollToPlans=()=>scrollLandingTo("precos");
     const timer=setTimeout(scrollToPlans,80);
     return()=>clearTimeout(timer);
   },[]);
