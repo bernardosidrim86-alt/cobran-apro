@@ -8490,3 +8490,24 @@ html,body,#root{
     max-width:160px;
   }
 }
+
+
+/* LANDING 4.5 — SCROLL NATIVO E SEM TRAVAS */
+html{
+  scroll-behavior:auto!important;
+}
+html,body,#root{
+  overflow-y:auto!important;
+  height:auto!important;
+  min-height:100%;
+}
+.cp-lp{
+  position:relative!important;
+  height:auto!important;
+  min-height:100vh;
+  max-height:none!important;
+  overflow:visible!important;
+  clip-path:none!important;
+  touch-action:auto!important;
+  overscroll-behavior-y:auto!important;
+}
