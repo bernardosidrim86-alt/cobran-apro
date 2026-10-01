@@ -143,8 +143,6 @@ function PhoneFrame({src, alt, className=""}) {
 
 function Landing({session}) {
   const [annualBilling,setAnnualBilling]=useState(false);
-  const [activeTab,setActiveTab]=useState("dashboard");
-
   useEffect(()=>{
     if(window.location.hash!=="#precos") return;
     const scrollToPlans=()=>document.getElementById("precos")?.scrollIntoView({behavior:"auto",block:"start"});
@@ -152,153 +150,107 @@ function Landing({session}) {
     return()=>clearTimeout(timer);
   },[]);
 
-  const productTabs=[
-    {key:"dashboard",label:"Dashboard",img:"/landing/dash.webp",alt:"Dashboard do CobrançaPro"},
-    {key:"clientes",label:"Clientes",img:"/landing/clientes.webp",alt:"Clientes cadastrados no CobrançaPro"},
-    {key:"cobrancas",label:"Cobranças",img:"/landing/cobrancas.webp",alt:"Cobranças do CobrançaPro"},
-    {key:"relatorios",label:"Relatórios",img:"/landing/relatorios.webp",alt:"Relatórios do CobrançaPro"},
+  const steps=[
+    {n:"01",title:"Cadastre seus clientes",text:"Nome, telefone e e-mail de cada cliente em um só lugar, com busca rápida. Nada de procurar contato em conversa antiga.",img:"/landing/clientes.webp",alt:"Lista de clientes do CobrançaPro com telefone e e-mail"},
+    {n:"02",title:"Crie as cobranças",text:"Defina valor, vencimento e recorrência. O sistema separa sozinho o que está a receber, o que vence hoje, o que atrasou e o que já foi pago.",img:"/landing/cobrancas.webp",alt:"Lista de cobranças com status pago, a receber e atrasado"},
+    {n:"03",title:"Cobre pelo WhatsApp",text:"Um clique abre o WhatsApp com a mensagem de cobrança pronta. Você confere, ajusta se quiser e envia. Quando o cliente pagar, registre o recebimento.",crop:"/landing/cobrar.webp",alt:"Cobranças atrasadas com o botão Cobrar ao lado de cada cliente"},
+    {n:"04",title:"Acompanhe o resultado",text:"Veja quanto entrou, quanto está em aberto e a taxa de recebimento por período, de 7 dias até datas personalizadas.",img:"/landing/relatorios.webp",alt:"Relatórios com gráfico de cobrado e recebido por período"},
   ];
-
-  const modules=[
-    {
-      id:"cobrancas",kicker:"COBRANÇAS",
-      title:"Saiba o que está para receber e o que já passou do prazo.",
-      text:"Crie e acompanhe suas cobranças com valor, vencimento, recorrência e status em um só lugar.",
-      img:"/landing/cobrancas.webp",alt:"Tela de cobranças do CobrançaPro",
-      resources:[
-        ["Criar cobranças","Defina valor, vencimento e recorrência para cada cobrança."],
-        ["Status organizado","Veja o que está a receber, vencendo hoje, atrasado ou pago."],
-        ["Filtros por situação","Encontre rapidamente as cobranças que precisa acompanhar."],
-        ["Recebimentos","Registre os pagamentos e mantenha o histórico atualizado."]
-      ]
-    },
-    {
-      id:"clientes",kicker:"CLIENTES",
-      title:"Tenha os dados dos seus clientes organizados.",
-      text:"Cadastre clientes, encontre contatos rapidamente e mantenha as informações necessárias para suas cobranças em um só lugar.",
-      img:"/landing/clientes.webp",alt:"Tela de clientes do CobrançaPro",
-      resources:[
-        ["Cadastro completo","Guarde nome, telefone e e-mail de cada cliente."],
-        ["Busca rápida","Encontre um cliente sem procurar em conversas antigas."],
-        ["Ações do cliente","Acesse rapidamente as ações disponíveis em cada cadastro."],
-        ["Cobranças relacionadas","Consulte as cobranças ligadas aos seus clientes dentro do sistema."]
-      ]
-    },
-    {
-      id:"whatsapp",kicker:"WHATSAPP",
-      title:"Cobre pelo WhatsApp com a mensagem pronta.",
-      text:"O CobrançaPro abre o WhatsApp com uma mensagem preparada para a cobrança. Você revisa, ajusta se quiser e envia.",
-      img:"/landing/cobrar.webp",alt:"Ação de cobrança pelo WhatsApp no CobrançaPro",
-      resources:[
-        ["Mensagem pronta","A cobrança já abre com uma mensagem preparada para o cliente."],
-        ["Um clique para abrir","Use o botão Cobrar para abrir a conversa no WhatsApp."],
-        ["Você revisa","Confira e ajuste a mensagem antes de enviar."],
-        ["Envio manual","O envio final é feito por você diretamente no WhatsApp."]
-      ]
-    },
-    {
-      id:"relatorios",kicker:"RELATÓRIOS",
-      title:"Veja com clareza quanto foi cobrado e quanto entrou.",
-      text:"Acompanhe seus recebimentos por período e tenha uma visão mais clara do desempenho das suas cobranças.",
-      img:"/landing/relatorios.webp",alt:"Tela de relatórios do CobrançaPro",
-      resources:[
-        ["Visão por período","Analise os dados dos últimos 7, 30 ou 90 dias."],
-        ["Cobrado x recebido","Compare o que foi cobrado com o que efetivamente entrou."],
-        ["Taxa de recebimento","Acompanhe a taxa de recebimento do período selecionado."],
-        ["Datas personalizadas","Use períodos personalizados quando precisar de uma análise específica."]
-      ]
-    }
+  const features=[
+    ["Painel financeiro","A receber, vencendo hoje, atrasado e recebido, logo na primeira tela."],
+    ["Clientes","Cadastro com telefone e e-mail, organizado e fácil de buscar."],
+    ["Cobranças","Status automático, filtros por situação e recorrência."],
+    ["Recebimentos","Histórico de tudo o que já foi pago, com cliente, valor e forma."],
+    ["Relatórios","Gráficos de cobrado e recebido para 7, 30 ou 90 dias."],
+    ["WhatsApp por link","Mensagem pronta para cada cobrança. Você revisa e envia."],
+    ["Assistente de cobrança","Mensagens de cobrança adaptadas a cada situação, para você revisar e usar."],
+    ["Celular e computador","Funciona direto no navegador, sem instalar nada."],
   ];
-
-  const tabsImage=productTabs.find(tab=>tab.key===activeTab) || productTabs[0];
+  const faq=[
+    ["Preciso de cartão de crédito para testar?","Não. O teste dura 7 dias e não pede cartão de crédito."],
+    ["Como funciona a cobrança pelo WhatsApp?","Em cada cobrança há um botão que abre a conversa do cliente no WhatsApp com a mensagem de cobrança pronta. Você confere e envia."],
+    ["Funciona no celular?","Sim. Funciona no navegador do celular e do computador, sem instalar nada."],
+    ["Posso mudar de plano depois?","Sim. Você pode começar pelo teste e escolher outro plano quando precisar."],
+    ["Como é feito o pagamento da assinatura?","A assinatura, mensal ou anual, é processada pela Perfect Pay."],
+    ["Meus dados ficam separados dos de outras empresas?","Sim. Cada empresa acessa apenas os próprios clientes, cobranças e recebimentos."],
+  ];
 
   return <div className="lp">
     <header className="lp-header">
       <div className="lp-wrap lp-header-in">
         <Link to="/" className="lp-brand"><img src="/landing/logo.png" alt="CobrançaPro" width="148" height="46" /></Link>
-        <nav className="lp-nav" aria-label="Seções da página">
-          <a href="#modulos">Recursos</a>
-          <a href="#precos">Planos</a>
-        </nav>
+        <nav className="lp-nav" aria-label="Seções da página"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#precos">Planos</a><a href="#duvidas">Dúvidas</a></nav>
         <div className="lp-header-cta">
-          {session
-            ? <Link to="/app" className="lp-btn lp-btn-primary lp-btn-sm">Abrir painel</Link>
-            : <><Link to="/login" className="lp-link">Entrar</Link><Link to="/cadastro" className="lp-btn lp-btn-primary lp-btn-sm">Começar grátis</Link></>}
+          {session ? <Link to="/app" className="lp-btn lp-btn-primary lp-btn-sm">Abrir painel</Link> : <><Link to="/login" className="lp-link">Entrar</Link><Link to="/cadastro" className="lp-btn lp-btn-primary lp-btn-sm">Começar grátis</Link></>}
         </div>
       </div>
     </header>
 
     <main>
       <section className="lp-hero">
-        <div className="lp-wrap">
+        <div className="lp-wrap lp-hero-grid">
           <div className="lp-hero-copy">
-            <p className="lp-kicker">Controle de cobranças para pequenos negócios</p>
-            <h1>Tenha suas cobranças organizadas em <span>um só lugar.</span></h1>
-            <p className="lp-lead">Cadastre clientes, acompanhe cobranças, registre recebimentos e cobre pelo WhatsApp com uma mensagem pronta.</p>
+            <p className="lp-kicker">Gestão de cobranças para pequenos negócios</p>
+            <h1>Todo o dinheiro que você tem a receber, <span>em uma tela só.</span></h1>
+            <p className="lp-lead">Cadastre clientes, crie cobranças e veja na hora quem pagou, quem vence hoje e quem está atrasado. Cobre pelo WhatsApp com a mensagem pronta.</p>
             <div className="lp-cta-row">
               <Link to="/cadastro" className="lp-btn lp-btn-primary lp-btn-lg">Começar grátis <ArrowRight size={18}/></Link>
+              <a href="#como" className="lp-btn lp-btn-ghost lp-btn-lg">Ver como funciona</a>
             </div>
+            <p className="lp-micro">7 dias grátis · Sem cartão de crédito</p>
           </div>
-
-          <div className="lp-product-preview" aria-label="Prévia do CobrançaPro">
-            <div className="lp-tabs" role="tablist" aria-label="Prévia do produto">
-              {productTabs.map(tab=>(
-                <button key={tab.key} type="button" role="tab" aria-selected={activeTab===tab.key} className={activeTab===tab.key ? "active" : ""} onClick={()=>setActiveTab(tab.key)}>
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-            <div className="lp-tab-panel">
-              <BrowserFrame src={tabsImage.img} alt={tabsImage.alt} width="1400" height="900" priority={activeTab==="dashboard"} />
-            </div>
+          <div className="lp-hero-shot">
+            <BrowserFrame src="/landing/dash.webp" alt="Painel do CobrançaPro mostrando valores a receber, atrasados e recebidos" width="1600" height="1000" priority />
+            <PhoneFrame src="/landing/m-dash.webp" alt="Painel do CobrançaPro no celular" className="lp-phone-hero" />
+            <p className="lp-caption">Telas reais do sistema, com dados de exemplo.</p>
           </div>
         </div>
       </section>
 
-      <section id="modulos" className="lp-modules">
+      <section className="lp-problem">
+        <div className="lp-wrap lp-problem-grid">
+          <h2>Cobrança espalhada em planilha, caderno e WhatsApp vira dinheiro esquecido.</h2>
+          <ul className="lp-problem-list">
+            <li><b>Você esquece quem venceu.</b><span>Sem um lugar único, o atraso só aparece quando o caixa aperta.</span></li>
+            <li><b>Você não sabe quanto já entrou.</b><span>Somar pagamentos de várias fontes toma tempo e raramente fecha.</span></li>
+            <li><b>Cobrar dá trabalho, então fica para depois.</b><span>Achar o telefone, lembrar o valor e escrever a mensagem pesa na hora de cobrar.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="como" className="lp-section">
         <div className="lp-wrap">
-          <div className="lp-heading lp-heading-center">
-            <p className="lp-kicker">Recursos</p>
-            <h2>Um lugar para cuidar de cada etapa da cobrança.</h2>
-            <p className="lp-sub">Conheça os módulos que fazem parte do CobrançaPro.</p>
-          </div>
-
-          <div className="lp-module-list">
-            {modules.map((module,moduleIndex)=>(
-              <section id={module.id} className={"lp-module " + (moduleIndex%2 ? "lp-module-reverse" : "")} key={module.id}>
-                <div className="lp-module-media">
-                  <div className="lp-module-image"><img src={module.img} alt={module.alt} width="1400" height="900" loading="lazy" decoding="async" /></div>
-                </div>
-                <div className="lp-module-copy">
-                  <p className="lp-kicker">{module.kicker}</p>
-                  <h2>{module.title}</h2>
-                  <p className="lp-module-lead">{module.text}</p>
-                  <div className="lp-resource-grid">
-                    {module.resources.map(([title,text],resourceIndex)=>(
-                      <article className="lp-resource" key={title}>
-                        <div className="lp-resource-image">
-                          <img src={module.img} alt="" aria-hidden="true" width="1400" height="900" loading="lazy" decoding="async" style={{"--lp-crop-x":(20 + (resourceIndex%4)*22) + "%"}} />
-                        </div>
-                        <div><h3>{title}</h3><p>{text}</p></div>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            ))}
+          <div className="lp-heading"><p className="lp-kicker">Como funciona</p><h2>Do cadastro ao dinheiro na conta, em quatro passos.</h2></div>
+          <div className="lp-steps">
+            {steps.map(st=><article className="lp-step" key={st.n}>
+              <div className="lp-step-text"><span className="lp-step-n">{st.n}</span><h3>{st.title}</h3><p>{st.text}</p></div>
+              <div className="lp-step-media">
+                {st.crop ? <div className="lp-crop"><img src={st.crop} alt={st.alt} width="1200" height="568" loading="lazy" decoding="async" /></div> : <BrowserFrame src={st.img} alt={st.alt} width="1400" height="900" />}
+              </div>
+            </article>)}
           </div>
         </div>
       </section>
 
-      {/* PROVA SOCIAL: preencher somente quando houver depoimentos, logos, métricas ou avaliações reais. */}
+      <section id="recursos" className="lp-section lp-soft">
+        <div className="lp-wrap">
+          <div className="lp-heading"><p className="lp-kicker">Recursos</p><h2>O que vem no sistema.</h2></div>
+          <dl className="lp-features">
+            {features.map(([t,d])=><div key={t}><dt>{t}</dt><dd>{d}</dd></div>)}
+          </dl>
+        </div>
+      </section>
+
+      <section className="lp-who">
+        <div className="lp-wrap">
+          <p className="lp-kicker">Para quem é</p>
+          <p className="lp-who-text">Feito para quem precisa receber: <b>prestadores de serviço</b>, <b>barbearias e salões</b>, <b>clínicas e consultórios</b>, <b>oficinas e negócios locais</b>, <b>profissionais autônomos</b> e <b>pequenas empresas</b> que cobram todo mês.</p>
+        </div>
+      </section>
 
       <section id="precos" className="lp-section lp-soft lp-plans">
         <div className="lp-wrap">
-          <div className="lp-heading">
-            <p className="lp-kicker">Planos</p>
-            <h2>Comece de graça. Faça upgrade quando precisar.</h2>
-            <p className="lp-sub">Teste por 7 dias, sem cartão de crédito. A assinatura é processada pela Perfect Pay.</p>
-          </div>
+          <div className="lp-heading"><p className="lp-kicker">Planos</p><h2>Comece de graça. Faça upgrade quando precisar.</h2><p className="lp-sub">Teste por 7 dias, sem cartão de crédito. A assinatura é processada pela Perfect Pay.</p></div>
           <div className="lp-billing" role="group" aria-label="Periodicidade do plano">
             <button type="button" className={!annualBilling?"active":""} onClick={()=>setAnnualBilling(false)}>Mensal</button>
             <button type="button" className={annualBilling?"active":""} onClick={()=>setAnnualBilling(true)}>Anual <span>Economize 20%</span></button>
@@ -309,32 +261,27 @@ function Landing({session}) {
         </div>
       </section>
 
+      <section id="duvidas" className="lp-section">
+        <div className="lp-wrap lp-faq-grid">
+          <div className="lp-heading"><p className="lp-kicker">Dúvidas</p><h2>Perguntas frequentes.</h2></div>
+          <div className="lp-faq">
+            {faq.map(([q,a])=><details key={q}><summary>{q}</summary><p>{a}</p></details>)}
+          </div>
+        </div>
+      </section>
+
       <section className="lp-final">
         <div className="lp-wrap lp-final-in">
-          <div>
-            <p className="lp-kicker">Comece agora</p>
-            <h2>Organize suas cobranças e saiba o que você tem a receber.</h2>
-            <p>Comece grátis e conheça o CobrançaPro.</p>
-          </div>
+          <div><h2>Chega de planilha para saber quem está te devendo.</h2><p>7 dias grátis · Sem cartão de crédito</p></div>
           <Link to="/cadastro" className="lp-btn lp-btn-light lp-btn-lg">Começar grátis <ArrowRight size={18}/></Link>
         </div>
       </section>
     </main>
 
     <footer className="lp-footer">
-      <div className="lp-wrap">
-        <div className="lp-footer-top">
-          <div className="lp-footer-brand">
-            <img src="/landing/logo.png" alt="CobrançaPro" width="148" height="46" />
-            <p>Controle de cobranças para pequenos negócios.</p>
-          </div>
-          <div className="lp-footer-columns">
-            <div><h3>Produto</h3><a href="#modulos">Recursos</a><a href="#precos">Preços</a></div>
-            <div><h3>Suporte</h3><Link to="/login">Entrar</Link><Link to="/cadastro">Criar conta</Link></div>
-            <div><h3>Empresa</h3><a href="#precos">Planos</a><Link to="/cadastro">Começar grátis</Link></div>
-          </div>
-        </div>
-        <div className="lp-footer-bottom"><span>© 2026 CobrançaPro</span></div>
+      <div className="lp-wrap lp-footer-in">
+        <span>© 2026 CobrançaPro</span>
+        <nav aria-label="Rodapé"><a href="#precos">Planos</a><Link to="/login">Entrar</Link><Link to="/cadastro">Criar conta</Link></nav>
       </div>
     </footer>
   </div>;
