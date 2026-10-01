@@ -129,6 +129,8 @@ function ScrollReveal({children, className="", delay=0}) {
 }
 
 function Landing({session}) {
+  const [annualBilling,setAnnualBilling]=useState(false);
+
   useEffect(()=>{
     if(window.location.hash !== "#precos") return;
     const scrollToPlans=()=>document.getElementById("precos")?.scrollIntoView({behavior:"smooth",block:"start"});
@@ -357,9 +359,18 @@ function Landing({session}) {
             <p>Teste por 7 dias e escolha o plano conforme a sua operação evoluir.</p>
           </div>
 
+          <div className="cp-lp-pricing-controls">
+            <div className="cp-lp-billing-toggle" role="group" aria-label="Periodicidade do plano">
+              <button type="button" className={!annualBilling ? "active" : ""} onClick={()=>setAnnualBilling(false)}>Mensal</button>
+              <button type="button" className={annualBilling ? "active" : ""} onClick={()=>setAnnualBilling(true)}>
+                Anual <span>Economize 20%</span>
+              </button>
+            </div>
+          </div>
+
           <div className="cp-lp-pricing-wrap">
             <div className="pricing cp-lp-pricing-grid">
-              {PLAN_OPTIONS.map((plan,i) => <ScrollReveal key={plan.key} delay={i*70}><Price plan={plan} featured={plan.key==="profissional"} session={session}/></ScrollReveal>)}
+              {PLAN_OPTIONS.map((plan,i) => <ScrollReveal key={plan.key} delay={i*70}><Price plan={plan} featured={plan.key==="profissional"} session={session} annual={annualBilling}/></ScrollReveal>)}
             </div>
           </div>
         </div>
@@ -425,13 +436,16 @@ function DashboardPreview() {
   </div>;
 }
 
-function Price({plan, featured, session}) {
+function Price({plan, featured, session, annual=false}) {
   const isFree = !!plan.free;
+  const displayPrice = annual ? plan.annualPrice : plan.monthlyPrice;
+  const periodLabel = annual ? "/ano" : "/mês";
+
   function startCheckout(url) {
     if (!url) return;
 
     const checkoutUrl = new URL(url);
-    if (!["checkout.perfectpay.com.br","go.perfectpay.com.br"].includes(checkoutUrl.hostname)) {
+    if (["checkout.perfectpay.com.br","go.perfectpay.com.br"].includes(checkoutUrl.hostname) === false) {
       console.error("Checkout inválido.");
       return;
     }
@@ -442,30 +456,59 @@ function Price({plan, featured, session}) {
       return;
     }
 
-    // Toda compra paga precisa estar vinculada a uma conta do CobrançaPro.
-    // Leva o checkout diretamente para a tela de cadastro e preserva o plano na URL.
-    window.location.href = `/cadastro?checkout=${encodeURIComponent(checkoutUrl.toString())}`;
+    window.location.href = \`/cadastro?checkout=\${encodeURIComponent(checkoutUrl.toString())}\`;
   }
-  return <div className={`price-card ${featured?"featured":""} ${isFree?"free-card":""}`}>
+
+  return <div className={\`price-card \${featured?"featured":""} \${isFree?"free-card":""}\`}>
     {featured && <div className="popular">Mais escolhido</div>}
+
     <div className="price-head">
-      <div><span className="price-kicker">{isFree ? "PARA COMEÇAR" : plan.key==="business" ? "PARA EQUIPES" : plan.key==="profissional" ? "PARA CRESCER" : "PARA ORGANIZAR"}</span><h3>{plan.title}</h3></div>
+      <div>
+        <span className="price-kicker">
+          {isFree ? "PARA COMEÇAR" : plan.key==="business" ? "PARA EQUIPES" : plan.key==="profissional" ? "PARA CRESCER" : "PARA ORGANIZAR"}
+        </span>
+        <h3>{plan.title}</h3>
+      </div>
     </div>
+
     <p>{plan.desc}</p>
-    <div className="price"><small>R$</small>{plan.monthlyPrice}<span>{isFree ? "7 dias grátis" : "/mês"}</span></div>
-    {!isFree && <div className="price-annual"><span>Plano anual</span><strong>Economize 20% · R$ {plan.annualPrice}/ano</strong></div>}
-    <div className="price-benefits-title">O que está incluído:</div>
-    <div className="price-items">{plan.items.map(i=><div className="price-item" key={i}><Check size={16}/><span>{i}</span></div>)}</div>
-    <div className="price-actions">
-      {isFree ? <Link to="/cadastro" className="btn btn-secondary full">Testar por 7 dias <ArrowRight size={16}/></Link> : <>
-        <button type="button" onClick={()=>startCheckout(plan.monthlyCheckout)} className={`btn ${featured?"btn-primary":"btn-secondary"} full`}>Assinar mensal</button>
-        <button type="button" onClick={()=>startCheckout(plan.annualCheckout)} className="btn btn-secondary full">Assinar anual</button>
-      </>}
+
+    <div className="price">
+      <small>R$</small>{displayPrice}
+      <span>{isFree ? "7 dias grátis" : periodLabel}</span>
     </div>
-    <div className="price-note">{isFree ? "7 dias grátis · Sem cartão de crédito." : `Economize no anual: R$ ${plan.annualPrice}/ano`}</div>
+
+    <div className="price-billing-note">
+      {isFree
+        ? "Sem cartão de crédito."
+        : annual
+          ? <><strong>R$ {(Number(plan.annualPrice.replace(".","").replace(",","."))/12).toFixed(2).replace(".",",")} por mês</strong> no plano anual</>
+          : "Cancele quando quiser."}
+    </div>
+
+    <div className="price-benefits-title">O que está incluído</div>
+    <div className="price-items">
+      {plan.items.map(i=><div className="price-item" key={i}><Check size={16}/><span>{i}</span></div>)}
+    </div>
+
+    <div className="price-actions">
+      {isFree
+        ? <Link to="/cadastro" className="btn btn-secondary full">Começar grátis <ArrowRight size={16}/></Link>
+        : <button
+            type="button"
+            onClick={()=>startCheckout(annual ? plan.annualCheckout : plan.monthlyCheckout)}
+            className={\`btn \${featured ? "btn-primary" : "btn-secondary"} full\`}
+          >
+            {annual ? "Escolher plano anual" : "Escolher plano"}
+            <ArrowRight size={16}/>
+          </button>}
+    </div>
+
+    <div className="price-note">
+      {isFree ? "7 dias grátis · Sem cartão de crédito." : annual ? "Cobrança anual" : "Cobrança mensal"}
+    </div>
   </div>;
 }
-
 function AuthLayout({children,title,subtitle}) {
   return <div className="auth-page"><div className="auth-card"><Link to="/" className="brand auth-brand"><img className="brand-logo" src="/logo.png" alt="CobrançaPro" /></Link><div className="auth-heading"><h1>{title}</h1><p>{subtitle}</p></div>{children}</div></div>
 }
