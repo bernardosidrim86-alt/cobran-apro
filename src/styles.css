@@ -9044,3 +9044,88 @@ html[data-theme="dark"] .theme-switch{
 html[data-theme="dark"] .theme-choice.active{
   background:#303157!important;
 }
+
+
+/* Dark mode — camada global para textos e números neutros */
+html[data-theme="dark"] .app-layout h1,
+html[data-theme="dark"] .app-layout h2,
+html[data-theme="dark"] .app-layout h3,
+html[data-theme="dark"] .app-layout h4,
+html[data-theme="dark"] .app-layout h5,
+html[data-theme="dark"] .app-layout h6,
+html[data-theme="dark"] .app-layout p,
+html[data-theme="dark"] .app-layout span,
+html[data-theme="dark"] .app-layout b,
+html[data-theme="dark"] .app-layout strong,
+html[data-theme="dark"] .app-layout small,
+html[data-theme="dark"] .app-layout label,
+html[data-theme="dark"] .app-layout td,
+html[data-theme="dark"] .app-layout th{
+  color:#dfe1e7;
+}
+
+html[data-theme="dark"] .app-layout h1,
+html[data-theme="dark"] .app-layout h2,
+html[data-theme="dark"] .app-layout h3,
+html[data-theme="dark"] .app-layout h4,
+html[data-theme="dark"] .app-layout h5,
+html[data-theme="dark"] .app-layout h6,
+html[data-theme="dark"] .app-layout b,
+html[data-theme="dark"] .app-layout strong{
+  color:#f3f4f6;
+}
+
+/* Valores numéricos e títulos que usam divs em vez de tags de texto */
+html[data-theme="dark"] .app-layout [class*="value"],
+html[data-theme="dark"] .app-layout [class*="amount"],
+html[data-theme="dark"] .app-layout [class*="count"],
+html[data-theme="dark"] .app-layout [class*="total"],
+html[data-theme="dark"] .app-layout [class*="number"],
+html[data-theme="dark"] .app-layout [class*="price"]{
+  color:#f3f4f6;
+}
+
+/* Textos secundários */
+html[data-theme="dark"] .app-layout [class*="muted"],
+html[data-theme="dark"] .app-layout [class*="label"],
+html[data-theme="dark"] .app-layout [class*="subtle"],
+html[data-theme="dark"] .app-layout [class*="note"]{
+  color:#9b9da8;
+}
+
+/* Elementos que precisam continuar coloridos */
+html[data-theme="dark"] .app-layout .charge-status,
+html[data-theme="dark"] .app-layout .charge-status *,
+html[data-theme="dark"] .app-layout .status-dot,
+html[data-theme="dark"] .app-layout .notification-dot,
+html[data-theme="dark"] .app-layout .danger,
+html[data-theme="dark"] .app-layout .warning,
+html[data-theme="dark"] .app-layout .paid{
+  color:inherit;
+}
+
+/* Superfícies que ainda possam estar herdando branco */
+html[data-theme="dark"] .app-layout .quick-action,
+html[data-theme="dark"] .app-layout .quick-actions,
+html[data-theme="dark"] .app-layout .dashboard-task,
+html[data-theme="dark"] .app-layout .customer-menu,
+html[data-theme="dark"] .app-layout .searchbox,
+html[data-theme="dark"] .app-layout .toolbar,
+html[data-theme="dark"] .app-layout .report-toolbar,
+html[data-theme="dark"] .app-layout .report-layout,
+html[data-theme="dark"] .app-layout .report-main,
+html[data-theme="dark"] .app-layout .report-secondary{
+  background:#191a22!important;
+  color:#dfe1e7!important;
+  border-color:#2d2f3a!important;
+}
+html[data-theme="dark"] .app-layout .quick-action *,
+html[data-theme="dark"] .app-layout .quick-actions *,
+html[data-theme="dark"] .app-layout .dashboard-task *,
+html[data-theme="dark"] .app-layout .customer-menu *,
+html[data-theme="dark"] .app-layout .report-toolbar *,
+html[data-theme="dark"] .app-layout .report-layout *,
+html[data-theme="dark"] .app-layout .report-main *,
+html[data-theme="dark"] .app-layout .report-secondary *{
+  color:inherit;
+}
