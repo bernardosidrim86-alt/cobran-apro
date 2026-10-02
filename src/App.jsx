@@ -4,7 +4,7 @@ import { Routes, Route, Navigate, Link, useLocation, useNavigate } from "react-r
 import {
   ArrowRight, Bell, Check, ChevronRight, CircleDollarSign, CreditCard,
   CalendarDays, ChevronLeft, LayoutDashboard, LogOut, Menu, MessageCircle, Plus, Receipt, Settings,
-  Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal, Lock
+  Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal, Lock, Sun, Moon
 } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import { PLAN_OPTIONS } from "./lib/plans";
@@ -508,8 +508,19 @@ await supabase.from("company_settings").upsert({company_id:companyId,default_pay
 }
 
 function AppShell({session}) {
-  useEffect(()=>{ try { localStorage.removeItem("cobrancapro-theme"); } catch {} document.documentElement.removeAttribute("data-theme"); }, []);
   const nav=useNavigate(); const loc=useLocation(); const [mobile,setMobile]=useState(false); const [notificationsOpen,setNotificationsOpen]=useState(false); const [profileOpen,setProfileOpen]=useState(false); const [notificationCount,setNotificationCount]=useState(0); const [trialBlocked,setTrialBlocked]=useState(false); const [trialLoading,setTrialLoading]=useState(true); const [trialDays,setTrialDays]=useState(TRIAL_DAYS); const [currentPlan,setCurrentPlan]=useState("free"); const [expiredPaidSubscription,setExpiredPaidSubscription]=useState(false); const touchStartX=React.useRef(null); const touchStartY=React.useRef(null); const pointerStartX=React.useRef(null); const pointerStartY=React.useRef(null);
+  const [theme,setTheme]=useState(()=>{
+    try { return localStorage.getItem("cobrancapro-theme")==="dark" ? "dark" : "light"; }
+    catch { return "light"; }
+  });
+  useEffect(()=>{
+    if(theme==="dark") document.documentElement.setAttribute("data-theme","dark");
+    else document.documentElement.removeAttribute("data-theme");
+    try { localStorage.setItem("cobrancapro-theme",theme); } catch {}
+    return ()=>{
+      document.documentElement.removeAttribute("data-theme");
+    };
+  },[theme]);
   const fullName=session.user.user_metadata?.full_name||"Usuário"; const email=session.user.email||""; const initials=(fullName||email||"U").slice(0,1).toUpperCase(); const [companyAvatar,setCompanyAvatar]=useState("");
   const [companyId,setCompanyId]=useState(null);
   const [globalSearch,setGlobalSearch]=useState("");
@@ -556,7 +567,7 @@ function AppShell({session}) {
       </div>}
     </div>
     {links.slice(3).map(([path,Icon,label])=>{const locked=path==="/app/ia"&&!hasAIAccess;return <Link onClick={()=>{setMobile(false);if(locked){setTrialBlocked(false);}}} className={loc.pathname===path?"active":""} to={path} key={path}><Icon size={18}/>{label}{locked&&<Lock size={13} className="nav-lock"/>}</Link>;})}
-  </div><div className="side-bottom"><button className="user-mini user-mini-button" onClick={openProfile}><div className="avatar">{initials}</div><div><b>{fullName}</b><span>{email}</span></div></button><button onClick={logout} className="logout"><LogOut size={17}/> Sair</button></div></aside><div className="app-main"><header className="app-header"><button className="mobile-menu" onClick={()=>setMobile(x=>!x)}><Menu/></button><div className="header-search global-search"><Search size={17}/><input placeholder="Buscar clientes ou cobranças..." value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)} /><span className="global-search-count">{globalSearch.trim().length>=2?(globalResults.customers.length+globalResults.charges.length):""}</span>{globalSearch.trim().length>=2&&<div className="global-search-results">{globalResults.customers.length===0&&globalResults.charges.length===0?<div className="global-search-empty">Nenhum resultado encontrado.</div>:<>{globalResults.customers.length>0&&<><div className="global-search-section">Clientes</div>{globalResults.customers.map(c=><Link key={c.id} to={"/app/clientes?q="+encodeURIComponent(c.name)} onClick={()=>setGlobalSearch("")}><Users size={15}/><div><b>{c.name}</b><span>{c.phone||c.email||"Cliente"}</span></div></Link>)}</>}{globalResults.charges.length>0&&<><div className="global-search-section">Cobranças</div>{globalResults.charges.map(c=><Link key={c.id} to={"/app/cobrancas?q="+encodeURIComponent(c.description||c.customers?.name||"")} onClick={()=>setGlobalSearch("")}><Receipt size={15}/><div><b>{c.customers?.name||"Cliente"} · {money(c.amount)}</b><span>{c.description||"Cobrança"} · {new Date(c.due_date+"T12:00:00").toLocaleDateString("pt-BR")}</span></div></Link>)}</>}</>}</div>}</div><div className="header-right"><div className="header-menu"><button className={`header-icon-button ${notificationsOpen?"active":""}`} onClick={openNotifications} aria-label="Notificações"><Bell size={18}/>{notificationCount>0&&<span className="notification-dot">{notificationCount>9?"9+":notificationCount}</span>}</button>{notificationsOpen&&<div className="header-dropdown notifications-dropdown"><div className="dropdown-head"><div><b>Notificações</b><span>{notificationCount ? notificationCount+" cobrança(s) precisam de atenção." : "Tudo em dia por aqui."}</span></div></div>{notificationCount?<Link to="/app/cobrancas" onClick={()=>setNotificationsOpen(false)} className="notification-item"><div className="dropdown-icon danger"><Receipt size={16}/></div><div><b>Cobranças vencidas ou vencendo hoje</b><span>Veja as cobranças que precisam de atenção.</span></div><ChevronRight size={15}/></Link>:<div className="dropdown-empty"><Check size={18}/><span>Nenhuma notificação nova.</span></div>}</div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session}/>}/><Route path="clientes" element={<Customers/>}/><Route path="cobrancas" element={<Charges/>}/><Route path="recebimentos" element={<Payments/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/><Route path="configuracoes/*" element={<SettingsPage canUseAI={hasAIAccess}/>}/><Route path="*" element={<Navigate to="/app" replace/>}/></Routes></div></div></div>
+  </div><div className="side-bottom"><button className="user-mini user-mini-button" onClick={openProfile}><div className="avatar">{initials}</div><div><b>{fullName}</b><span>{email}</span></div></button><button onClick={logout} className="logout"><LogOut size={17}/> Sair</button></div></aside><div className="app-main"><header className="app-header"><button className="mobile-menu" onClick={()=>setMobile(x=>!x)}><Menu/></button><div className="header-search global-search"><Search size={17}/><input placeholder="Buscar clientes ou cobranças..." value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)} /><span className="global-search-count">{globalSearch.trim().length>=2?(globalResults.customers.length+globalResults.charges.length):""}</span>{globalSearch.trim().length>=2&&<div className="global-search-results">{globalResults.customers.length===0&&globalResults.charges.length===0?<div className="global-search-empty">Nenhum resultado encontrado.</div>:<>{globalResults.customers.length>0&&<><div className="global-search-section">Clientes</div>{globalResults.customers.map(c=><Link key={c.id} to={"/app/clientes?q="+encodeURIComponent(c.name)} onClick={()=>setGlobalSearch("")}><Users size={15}/><div><b>{c.name}</b><span>{c.phone||c.email||"Cliente"}</span></div></Link>)}</>}{globalResults.charges.length>0&&<><div className="global-search-section">Cobranças</div>{globalResults.charges.map(c=><Link key={c.id} to={"/app/cobrancas?q="+encodeURIComponent(c.description||c.customers?.name||"")} onClick={()=>setGlobalSearch("")}><Receipt size={15}/><div><b>{c.customers?.name||"Cliente"} · {money(c.amount)}</b><span>{c.description||"Cobrança"} · {new Date(c.due_date+"T12:00:00").toLocaleDateString("pt-BR")}</span></div></Link>)}</>}</>}</div>}</div><div className="header-right"><div className="theme-switch" role="group" aria-label="Tema do sistema"><button type="button" className={`theme-choice ${theme==="light"?"active":""}`} onClick={()=>setTheme("light")} aria-label="Modo claro" aria-pressed={theme==="light"} title="Modo claro"><Sun size={17}/></button><button type="button" className={`theme-choice ${theme==="dark"?"active":""}`} onClick={()=>setTheme("dark")} aria-label="Modo escuro" aria-pressed={theme==="dark"} title="Modo escuro"><Moon size={17}/></button></div><div className="header-menu"><button className={`header-icon-button ${notificationsOpen?"active":""}`} onClick={openNotifications} aria-label="Notificações"><Bell size={18}/>{notificationCount>0&&<span className="notification-dot">{notificationCount>9?"9+":notificationCount}</span>}</button>{notificationsOpen&&<div className="header-dropdown notifications-dropdown"><div className="dropdown-head"><div><b>Notificações</b><span>{notificationCount ? notificationCount+" cobrança(s) precisam de atenção." : "Tudo em dia por aqui."}</span></div></div>{notificationCount?<Link to="/app/cobrancas" onClick={()=>setNotificationsOpen(false)} className="notification-item"><div className="dropdown-icon danger"><Receipt size={16}/></div><div><b>Cobranças vencidas ou vencendo hoje</b><span>Veja as cobranças que precisam de atenção.</span></div><ChevronRight size={15}/></Link>:<div className="dropdown-empty"><Check size={18}/><span>Nenhuma notificação nova.</span></div>}</div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session}/>}/><Route path="clientes" element={<Customers/>}/><Route path="cobrancas" element={<Charges/>}/><Route path="recebimentos" element={<Payments/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/><Route path="configuracoes/*" element={<SettingsPage canUseAI={hasAIAccess}/>}/><Route path="*" element={<Navigate to="/app" replace/>}/></Routes></div></div></div>
 }
 
 function useCompany() {
@@ -629,63 +640,16 @@ function Dashboard({session}) {
       <Metric title="Total recebido" value={money(data.paid)} icon={Wallet} tone="success"/>
     </div>
 
-    <div className="dashboard-main-grid">
-      <div className="panel dashboard-overview-panel">
-        <div className="panel-head">
-          <div><span className="panel-kicker">RESUMO</span><h2>Seu caixa</h2><p>Quanto você já recebeu e quanto ainda está em aberto.</p></div>
-        </div>
-        <div className="cash-summary">
-          <div><span>Já recebido</span><strong>{money(data.paid)}</strong></div>
-          <div><span>A receber</span><strong>{money(data.receive)}</strong></div>
-        </div>
-        <div className="dashboard-progress-row"><span>Recebimento do total</span><b>{progress}%</b></div>
-        <div className="progress-track"><div style={{width:progress+"%"}}/></div>
-      </div>
-
-      <div className="panel attention-panel">
-        <div className="panel-head">
-          <div><span className="panel-kicker">ATENÇÃO</span><h2>Precisa de ação</h2><p>Prioridades para hoje.</p></div>
-        </div>
-        <div className="attention-value">{money(attention)}</div>
-        <span className="attention-label">em cobranças para acompanhar</span>
-        <div className="attention-list">
-          <Link to="/app/cobrancas?filter=overdue" className="attention-item"><span className="attention-dot danger"/><div><b>{money(data.overdue)}</b><small>em atraso</small></div><ArrowRight size={16}/></Link>
-          <Link to="/app/cobrancas?filter=today" className="attention-item"><span className="attention-dot warning"/><div><b>{money(data.today)}</b><small>vencendo hoje</small></div><ArrowRight size={16}/></Link>
-        </div>
-      </div>
-    </div>
-
     <div className="dashboard-action-grid">
-      <div className="panel dashboard-tasks-panel">
-        <div className="panel-head"><div><span className="panel-kicker">CENTRAL DE TAREFAS</span><h2>O que merece atenção agora?</h2><p>Ações rápidas baseadas nas suas cobranças.</p></div></div>
-        <div className="dashboard-task-list">
-          <Link to="/app/cobrancas?filter=overdue" className="dashboard-task"><span className="task-icon danger"><Receipt size={17}/></span><div><b>Cobranças atrasadas</b><small>{data.charges.filter(c=>c.status==="pending"&&c.due_date<todayISO()).length} cobrança(s) precisam de cobrança</small></div><strong>{money(data.overdue)}</strong><ArrowRight size={15}/></Link>
-          <Link to="/app/cobrancas?filter=pending" className="dashboard-task"><span className="task-icon warning"><Receipt size={17}/></span><div><b>Vencendo hoje</b><small>{data.charges.filter(c=>c.status==="pending"&&c.due_date===todayISO()).length} cobrança(s) vencem hoje</small></div><strong>{money(data.today)}</strong><ArrowRight size={15}/></Link>
-          <Link to="/app/clientes" className="dashboard-task"><span className="task-icon"><Users size={17}/></span><div><b>Base de clientes</b><small>Veja clientes e todo o histórico financeiro</small></div><strong>{data.customers}</strong><ArrowRight size={15}/></Link>
-        </div>
+      <div className="panel">
+        <div className="panel-head"><div><span className="panel-kicker">ATENÇÃO</span><h2>Quem eu preciso cobrar hoje?</h2><p>Clientes com cobrança vencendo hoje ou em atraso.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
+        {data.charges.filter(c=>c.status==="pending"&&c.due_date<=todayISO()).length===0 ? <Empty text="Nenhuma cobrança precisa de atenção hoje."/> : <div className="charge-list">{data.charges.filter(c=>c.status==="pending"&&c.due_date<=todayISO()).slice(0,6).map(c=><div className="charge-row" key={c.id}><div className="charge-person"><span className="person-avatar">{(c.customers?.name||"C").slice(0,1).toUpperCase()}</span><div><b>{c.customers?.name||"Cliente"}</b><span>{c.description||"Cobrança"}</span></div></div><strong>{money(c.amount)}</strong><span className={`charge-status ${c.due_date<todayISO()?"overdue":"today"}`}><i></i>{c.due_date<todayISO()?"Atrasado":"Vence hoje"}</span></div>)}</div>}
       </div>
       <div className="panel dashboard-forecast-panel">
         <div className="panel-head"><div><span className="panel-kicker">PRÓXIMOS 7 DIAS</span><h2>Previsão de recebimento</h2><p>O que está programado para entrar nos próximos dias.</p></div><Link to="/app/calendario" className="link-btn">Abrir calendário <ArrowRight size={15}/></Link></div>
         <div className="dashboard-forecast-list">
           {Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()+i);const iso=d.toISOString().slice(0,10);const items=data.charges.filter(c=>c.status==="pending"&&c.due_date===iso);const total=items.reduce((a,c)=>a+Number(c.amount||0),0);return <div className="dashboard-forecast-row" key={iso}><span>{i===0?"Hoje":d.toLocaleDateString("pt-BR",{weekday:"short"}).replace(".","")}<small>{d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}</small></span><div><i style={{width:(total?Math.max(8,Math.min(100,total/Math.max(1,data.receive)*100)):0)+"%"}}/></div><strong>{money(total)}</strong></div>})}
         </div>
-      </div>
-    </div>
-
-    <div className="dashboard-bottom-grid">
-      <div className="panel">
-        <div className="panel-head"><div><span className="panel-kicker">ATENÇÃO</span><h2>Quem eu preciso cobrar hoje?</h2><p>Clientes com cobrança vencendo hoje ou em atraso.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
-        {data.charges.filter(c=>c.status==="pending"&&c.due_date<=todayISO()).length===0 ? <Empty text="Nenhuma cobrança precisa de atenção hoje."/> : <div className="charge-list">{data.charges.filter(c=>c.status==="pending"&&c.due_date<=todayISO()).slice(0,6).map(c=><div className="charge-row" key={c.id}><div className="charge-person"><span className="person-avatar">{(c.customers?.name||"C").slice(0,1).toUpperCase()}</span><div><b>{c.customers?.name||"Cliente"}</b><span>{c.description||"Cobrança"}</span></div></div><strong>{money(c.amount)}</strong><span className={`charge-status ${c.due_date<todayISO()?"overdue":"today"}`}><i></i>{c.due_date<todayISO()?"Atrasado":"Vence hoje"}</span></div>)}</div>}
-      </div>
-
-      <div className="panel quick-panel">
-        <div className="panel-head"><div><span className="panel-kicker">ATALHOS</span><h2>O que você quer fazer?</h2><p>Acesse as tarefas mais usadas.</p></div></div>
-        <div className="quick-actions quick-actions-premium">
-          <Link to="/app/clientes"><span><Users size={18}/></span><div><b>Novo cliente</b><small>Cadastrar cliente</small></div><ArrowRight size={16}/></Link>
-          <Link to="/app/cobrancas"><span><CircleDollarSign size={18}/></span><div><b>Nova cobrança</b><small>Criar uma cobrança</small></div><ArrowRight size={16}/></Link>
-          <Link to="/app/ia"><span><Sparkles size={18}/></span><div><b>Mensagem com IA</b><small>Preparar uma cobrança</small></div><ArrowRight size={16}/></Link>
-        </div>
-        <div className="dashboard-client-count"><div><span>Clientes cadastrados</span><small>Total da sua base</small></div><strong>{data.customers}</strong></div>
       </div>
     </div>
   </div>;
