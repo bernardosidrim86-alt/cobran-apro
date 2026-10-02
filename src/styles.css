@@ -8797,3 +8797,250 @@ html[data-theme="dark"] .theme-choice.active{
   .theme-switch{gap:2px}
   .theme-choice{width:30px;height:28px}
 }
+
+
+/* Tema escuro definitivo do app */
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --cp-ink:#f3f4f6;
+  --cp-muted:#a0a2ad;
+  --cp-subtle:#858793;
+  --cp-line:#2c2e38;
+  --cp-bg:#111218;
+  --cp-surface:#191a22;
+}
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root,
+html[data-theme="dark"] .app-layout,
+html[data-theme="dark"] .app-main,
+html[data-theme="dark"] .page,
+html[data-theme="dark"] .soft,
+html[data-theme="dark"] .auth-page{
+  background:#111218!important;
+  color:#f3f4f6!important;
+}
+
+html[data-theme="dark"] .app-header{
+  background:#181920!important;
+  border-color:#2b2d37!important;
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .sidebar{
+  background:#181920!important;
+  border-color:#2b2d37!important;
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .side-nav a,
+html[data-theme="dark"] .side-nav-parent{
+  color:#a9abb5!important;
+}
+html[data-theme="dark"] .side-nav a:hover,
+html[data-theme="dark"] .side-nav-parent:hover{
+  background:#22232c!important;
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .side-nav a.active,
+html[data-theme="dark"] .side-nav-parent.active{
+  background:#2a2b4c!important;
+  color:#c7c8ff!important;
+}
+
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .metric,
+html[data-theme="dark"] .table-panel,
+html[data-theme="dark"] .settings-panel,
+html[data-theme="dark"] .connection,
+html[data-theme="dark"] .plan-box,
+html[data-theme="dark"] .generated,
+html[data-theme="dark"] .report-card,
+html[data-theme="dark"] .calendar-panel,
+html[data-theme="dark"] .calendar-summary-card,
+html[data-theme="dark"] .calendar-day-panel,
+html[data-theme="dark"] .ai-chat-panel,
+html[data-theme="dark"] .ai-locked-panel,
+html[data-theme="dark"] .automation-card{
+  background:#191a22!important;
+  color:#f3f4f6!important;
+  border-color:#2d2f3a!important;
+  box-shadow:none!important;
+}
+
+html[data-theme="dark"] .page-title h1,
+html[data-theme="dark"] .panel-head h2,
+html[data-theme="dark"] .dashboard-hero h1,
+html[data-theme="dark"] .price-card h3,
+html[data-theme="dark"] .report-heading h2,
+html[data-theme="dark"] .calendar-head h2,
+html[data-theme="dark"] .settings-panel h2,
+html[data-theme="dark"] .ai-chat-panel h2{
+  color:#f5f5f7!important;
+}
+html[data-theme="dark"] .page-title p,
+html[data-theme="dark"] .panel-head p,
+html[data-theme="dark"] .dashboard-hero p,
+html[data-theme="dark"] .metric span,
+html[data-theme="dark"] .charge-person span,
+html[data-theme="dark"] .quick-actions-premium small,
+html[data-theme="dark"] .dashboard-client-count span,
+html[data-theme="dark"] .settings-panel>p,
+html[data-theme="dark"] .report-card p,
+html[data-theme="dark"] .report-footer,
+html[data-theme="dark"] .payments-table-head small,
+html[data-theme="dark"] .payments-table-head span{
+  color:#9b9da8!important;
+}
+
+html[data-theme="dark"] .header-search,
+html[data-theme="dark"] .searchbox,
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select{
+  background:#20212a!important;
+  color:#f2f3f5!important;
+  border-color:#353742!important;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder{
+  color:#777a86!important;
+}
+
+html[data-theme="dark"] .btn-secondary{
+  background:#20212a!important;
+  color:#e5e6eb!important;
+  border-color:#383a46!important;
+}
+html[data-theme="dark"] .btn-secondary:hover{
+  background:#292a34!important;
+  border-color:#474a58!important;
+}
+html[data-theme="dark"] .btn-primary{
+  color:#fff!important;
+  background:#5b5ce2!important;
+}
+
+html[data-theme="dark"] table,
+html[data-theme="dark"] th,
+html[data-theme="dark"] td,
+html[data-theme="dark"] .payments-table-head,
+html[data-theme="dark"] .payments-table th,
+html[data-theme="dark"] .payments-table td{
+  color:#d5d7de!important;
+  border-color:#2b2d36!important;
+}
+html[data-theme="dark"] th{
+  background:#20212a!important;
+  color:#aeb0ba!important;
+}
+html[data-theme="dark"] tbody tr:hover,
+html[data-theme="dark"] .charge-row:hover,
+html[data-theme="dark"] .attention-item:hover{
+  background:#20212a!important;
+}
+
+html[data-theme="dark"] .cash-summary,
+html[data-theme="dark"] .dashboard-page .panel-head,
+html[data-theme="dark"] .dashboard-page .charge-list,
+html[data-theme="dark"] .dashboard-page .charge-row,
+html[data-theme="dark"] .dashboard-page .attention-item,
+html[data-theme="dark"] .dashboard-page .quick-actions-premium a + a,
+html[data-theme="dark"] .price-card .price-benefits-title,
+html[data-theme="dark"] .price-card .price-actions,
+html[data-theme="dark"] .payments-table-head{
+  border-color:#2b2d36!important;
+}
+
+html[data-theme="dark"] .attention-value,
+html[data-theme="dark"] .metric b,
+html[data-theme="dark"] .metric strong,
+html[data-theme="dark"] .cash-summary strong,
+html[data-theme="dark"] .attention-item b,
+html[data-theme="dark"] .charge-row>strong,
+html[data-theme="dark"] .quick-actions-premium b,
+html[data-theme="dark"] .charge-main b,
+html[data-theme="dark"] .charge-value b,
+html[data-theme="dark"] .charge-person b,
+html[data-theme="dark"] .dashboard-task b,
+html[data-theme="dark"] .report-kpis b{
+  color:#f3f4f6!important;
+}
+
+html[data-theme="dark"] .filters,
+html[data-theme="dark"] .settings-nav,
+html[data-theme="dark"] .calendar-nav-btn,
+html[data-theme="dark"] .calendar-today-btn,
+html[data-theme="dark"] .toggle-row{
+  background:#191a22!important;
+  border-color:#2d2f3a!important;
+  color:#d9dae0!important;
+}
+html[data-theme="dark"] .filters button{
+  color:#9ea0ab!important;
+}
+html[data-theme="dark"] .filters button.selected{
+  background:#2a2b4c!important;
+  color:#c7c8ff!important;
+}
+
+html[data-theme="dark"] .header-dropdown,
+html[data-theme="dark"] .modal{
+  background:#191a22!important;
+  border-color:#30323d!important;
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .profile-dropdown>a,
+html[data-theme="dark"] .profile-dropdown>button,
+html[data-theme="dark"] .notification-item{
+  color:#dedfe5!important;
+}
+html[data-theme="dark"] .profile-dropdown>a:hover,
+html[data-theme="dark"] .profile-dropdown>button:hover,
+html[data-theme="dark"] .notification-item:hover{
+  background:#22232c!important;
+}
+
+html[data-theme="dark"] .empty,
+html[data-theme="dark"] .empty.small,
+html[data-theme="dark"] .modal-note,
+html[data-theme="dark"] .report-status,
+html[data-theme="dark"] .ai-chat-empty{
+  color:#9b9da8!important;
+}
+
+html[data-theme="dark"] .progress-track{
+  background:#292b35!important;
+}
+html[data-theme="dark"] .mini-bar{
+  background:#3a3d61!important;
+}
+
+html[data-theme="dark"] .calendar-cell{
+  background:#191a22!important;
+  border-color:#2d2f38!important;
+}
+html[data-theme="dark"] .calendar-cell:hover{
+  background:#22232c!important;
+}
+html[data-theme="dark"] .calendar-day-number,
+html[data-theme="dark"] .calendar-day-values{
+  color:#dfe0e5!important;
+}
+
+html[data-theme="dark"] .payments-responsive-row,
+html[data-theme="dark"] .payments-table-panel,
+html[data-theme="dark"] .customer-history-event,
+html[data-theme="dark"] .detail-grid > div,
+html[data-theme="dark"] .message-box,
+html[data-theme="dark"] .repeat-summary{
+  background:#191a22!important;
+  border-color:#2d2f38!important;
+  color:#e5e6eb!important;
+}
+
+html[data-theme="dark"] .theme-switch{
+  background:#20212a!important;
+  border-color:#353742!important;
+}
+html[data-theme="dark"] .theme-choice.active{
+  background:#303157!important;
+}
