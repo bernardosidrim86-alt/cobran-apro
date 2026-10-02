@@ -9323,3 +9323,262 @@ html[data-theme="dark"] .app-layout .customers-table-wrap tbody td:first-child b
 html[data-theme="dark"] .app-layout .customers-table-wrap tbody tr:hover td:first-child b{
   color:#f3f4f6!important;
 }
+
+
+/* Dark mode — varredura final de superfícies e estados do SaaS */
+html[data-theme="dark"] .app-layout{
+  --cp-ink:#f3f4f6;
+  --cp-text:#f3f4f6;
+  --cp-muted:#a0a2ad;
+  --cp-subtle:#858793;
+  --cp-line:#2c2e38;
+  --cp-bg:#111218;
+  --cp-surface:#191a22;
+  --cp-card:#191a22;
+  --cp-brand:#a7a9ff;
+  --cp-primary:#a7a9ff;
+  --cp-primary-dark:#898cf2;
+  --cp-brand-dark:#898cf2;
+}
+
+html[data-theme="dark"] .app-layout .app-main,
+html[data-theme="dark"] .app-layout .page{
+  background:#111218!important;
+}
+
+/* Cabeçalho, busca e menus */
+html[data-theme="dark"] .app-layout .header-search,
+html[data-theme="dark"] .app-layout .header-search:focus-within{
+  background:#20212a!important;
+  color:#f3f4f6!important;
+  border-color:#353742!important;
+}
+html[data-theme="dark"] .app-layout .mobile-sidebar-close{
+  background:#292a32!important;
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .app-layout .header-icon-button,
+html[data-theme="dark"] .app-layout .avatar-button,
+html[data-theme="dark"] .app-layout .user-mini-button{
+  background:transparent!important;
+  color:#b8bac5!important;
+}
+html[data-theme="dark"] .app-layout .header-icon-button:hover,
+html[data-theme="dark"] .app-layout .header-icon-button.active,
+html[data-theme="dark"] .app-layout .avatar-button:hover,
+html[data-theme="dark"] .app-layout .avatar-button.active,
+html[data-theme="dark"] .app-layout .user-mini-button:hover{
+  background:#292a34!important;
+  color:#c5c6ff!important;
+}
+html[data-theme="dark"] .app-layout .header-dropdown,
+html[data-theme="dark"] .app-layout .profile-dropdown,
+html[data-theme="dark"] .app-layout .global-search-results{
+  background:#191a22!important;
+  border-color:#30323d!important;
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .app-layout .notification-item:hover,
+html[data-theme="dark"] .app-layout .profile-dropdown>a:hover,
+html[data-theme="dark"] .app-layout .profile-dropdown>button:hover,
+html[data-theme="dark"] .app-layout .global-search-results a:hover{
+  background:#22232c!important;
+  color:#f0f1f5!important;
+}
+
+/* Cards e ações rápidas */
+html[data-theme="dark"] .app-layout .quick-actions a,
+html[data-theme="dark"] .app-layout .quick-actions-premium a{
+  background:#191a22!important;
+  border-color:#2d2f3a!important;
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .app-layout .quick-actions a:hover,
+html[data-theme="dark"] .app-layout .quick-actions-premium a:hover{
+  background:#22232c!important;
+  border-color:#3a3c49!important;
+  color:#f0f1f5!important;
+}
+html[data-theme="dark"] .app-layout .quick-actions a svg,
+html[data-theme="dark"] .app-layout .quick-actions-premium a>span{
+  background:#2a2b4c!important;
+  color:#c7c8ff!important;
+}
+
+/* Clientes */
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel tbody tr,
+html[data-theme="dark"] .app-layout .filters + .panel.table-panel tbody tr{
+  background:#191a22!important;
+  border-color:#2d2f3a!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel tbody tr:hover,
+html[data-theme="dark"] .app-layout .filters + .panel.table-panel tbody tr:hover{
+  background:#22232c!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel td,
+html[data-theme="dark"] .app-layout .filters + .panel.table-panel td{
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel td:first-child b,
+html[data-theme="dark"] .app-layout .filters + .panel.table-panel td:first-child b,
+html[data-theme="dark"] .app-layout .filters + .panel.table-panel td:nth-child(3) b{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel td:last-child .customer-menu-trigger{
+  background:#20212a!important;
+  border-color:#3a3c49!important;
+  color:#bfc1cb!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel td:last-child .customer-menu-trigger:hover,
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel td:last-child .customer-menu-trigger.active{
+  background:#2d2f3b!important;
+  border-color:#4a4d5c!important;
+  color:#c7c8ff!important;
+}
+html[data-theme="dark"] .app-layout .customer-menu{
+  background:#191a22!important;
+  border-color:#30323d!important;
+}
+html[data-theme="dark"] .app-layout .customer-menu button:hover{
+  background:#22232c!important;
+  color:#c7c8ff!important;
+}
+
+/* Cobranças, recebimentos e tabelas */
+html[data-theme="dark"] .app-layout .filters button,
+html[data-theme="dark"] .app-layout .reports-page .report-periods button,
+html[data-theme="dark"] .app-layout .charge-repeat-action{
+  background:#20212a!important;
+  border-color:#383a46!important;
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .app-layout .filters button:hover,
+html[data-theme="dark"] .app-layout .reports-page .report-periods button:hover,
+html[data-theme="dark"] .app-layout .charge-repeat-action:hover{
+  background:#292b35!important;
+  border-color:#4a4d5c!important;
+  color:#eceef3!important;
+}
+html[data-theme="dark"] .app-layout .filters button.selected,
+html[data-theme="dark"] .app-layout .reports-page .report-periods button.active{
+  background:#303157!important;
+  border-color:#4b4d76!important;
+  color:#c7c8ff!important;
+}
+html[data-theme="dark"] .app-layout .payments-table tbody tr,
+html[data-theme="dark"] .app-layout .payments-responsive-row,
+html[data-theme="dark"] .app-layout .payments-table-panel .payments-responsive-list{
+  background:#191a22!important;
+  border-color:#2d2f3a!important;
+}
+html[data-theme="dark"] .app-layout .payments-table tbody tr:hover,
+html[data-theme="dark"] .app-layout .payments-responsive-row:hover{
+  background:#22232c!important;
+}
+html[data-theme="dark"] .app-layout .payments-table td,
+html[data-theme="dark"] .app-layout .payments-responsive-row{
+  color:#dfe1e7!important;
+}
+
+/* Relatórios */
+html[data-theme="dark"] .app-layout .reports-page .report-dates input,
+html[data-theme="dark"] .app-layout .report-dates input{
+  background:#20212a!important;
+  color:#f3f4f6!important;
+  border-color:#353742!important;
+}
+html[data-theme="dark"] .app-layout .report-rank>span,
+html[data-theme="dark"] .app-layout .rank{
+  background:#292b35!important;
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .app-layout .report-rank em,
+html[data-theme="dark"] .app-layout .rank-main>div{
+  background:#30323b!important;
+}
+
+/* Assistente */
+html[data-theme="dark"] .app-layout .ai-chat-messages{
+  background:#15161d!important;
+}
+html[data-theme="dark"] .app-layout .ai-message,
+html[data-theme="dark"] .app-layout .ai-chat-input,
+html[data-theme="dark"] .app-layout .ai-suggestions button,
+html[data-theme="dark"] .app-layout .ai-result .generated{
+  background:#191a22!important;
+  border-color:#2d2f3a!important;
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .app-layout .ai-message.user{
+  background:#292b49!important;
+  border-color:#40436c!important;
+}
+html[data-theme="dark"] .app-layout .ai-suggestions button:hover{
+  background:#252731!important;
+  border-color:#45485a!important;
+  color:#c7c8ff!important;
+}
+html[data-theme="dark"] .app-layout .ai-chat-input input{
+  background:#20212a!important;
+  color:#f3f4f6!important;
+  border-color:#353742!important;
+}
+
+/* Configurações */
+html[data-theme="dark"] .app-layout .settings-nav,
+html[data-theme="dark"] .app-layout .settings-panel,
+html[data-theme="dark"] .app-layout .connection,
+html[data-theme="dark"] .app-layout .plan-box,
+html[data-theme="dark"] .app-layout .company-profile-editor{
+  background:#191a22!important;
+  border-color:#2d2f3a!important;
+}
+html[data-theme="dark"] .app-layout .settings-nav button:hover{
+  background:#22232c!important;
+  color:#f0f1f5!important;
+}
+html[data-theme="dark"] .app-layout .settings-nav button.active{
+  background:#303157!important;
+  color:#c7c8ff!important;
+}
+html[data-theme="dark"] .app-layout .upload-avatar-btn{
+  background:#20212a!important;
+  border-color:#383a46!important;
+  color:#e5e6eb!important;
+}
+
+/* Modais e detalhes */
+html[data-theme="dark"] .app-layout .modal,
+html[data-theme="dark"] .app-layout .modal:has(.detail-grid) .detail-grid,
+html[data-theme="dark"] .app-layout .modal:has(.repeat-summary) .repeat-summary,
+html[data-theme="dark"] .app-layout .message-box{
+  background:#191a22!important;
+  border-color:#2d2f3a!important;
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .app-layout .modal-x{
+  background:#292a32!important;
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .app-layout .modal-x:hover{
+  background:#353743!important;
+  color:#fff!important;
+}
+html[data-theme="dark"] .app-layout .detail-grid > div + div{
+  border-left-color:#343640!important;
+}
+
+/* Hover de linhas e superfícies neutras: nunca voltar para branco */
+html[data-theme="dark"] .app-layout tbody tr:hover,
+html[data-theme="dark"] .app-layout .charge-row:hover,
+html[data-theme="dark"] .app-layout .attention-item:hover,
+html[data-theme="dark"] .app-layout .preview-row:hover{
+  background:#22232c!important;
+}
+html[data-theme="dark"] .app-layout .dashboard-page .quick-panel .quick-actions-premium a:hover{
+  background:transparent!important;
+}
+html[data-theme="dark"] .app-layout .empty-icon{
+  background:#23252f!important;
+  color:#9da0ac!important;
+}
