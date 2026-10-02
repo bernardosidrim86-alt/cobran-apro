@@ -912,7 +912,7 @@ function ChargeDetail({charge,onClose,onPaid,customers=[]}){
         <label className="field">
           <span>Método</span>
           <select value={editForm.payment_method} onChange={e=>setEditForm({...editForm,payment_method:e.target.value})}>
-            ["Pix","Dinheiro","Cartão","Transferência","Outro"].map(x=><option key={x}>{x}</option>)
+            {["Pix","Dinheiro","Cartão","Transferência","Outro"].map(x=><option key={x}>{x}</option>)}
           </select>
         </label>
         <label className="field">
@@ -967,7 +967,7 @@ function ChargeDetail({charge,onClose,onPaid,customers=[]}){
             ? <Button type="button" onClick={openRepeat}><Receipt size={16}/> Repetir cobrança</Button>
             : <>
               <Button type="button" variant="secondary" onClick={()=>{
-                const phone=(charge.customers?.phone||"").replace(/\\D/g,"");
+                const phone=(charge.customers?.phone||"").replace(/\D/g,"");
                 const message="Oi! Tudo bem? Passando para lembrar da cobrança de "+money(charge.amount)+" com vencimento em "+new Date(charge.due_date+"T12:00:00").toLocaleDateString("pt-BR")+". Quando puder, consegue verificar? Obrigado!";
                 window.open(phone?"https://wa.me/"+phone+"?text="+encodeURIComponent(message):"https://wa.me/?text="+encodeURIComponent(message),"_blank");
               }}>Abrir WhatsApp</Button>
