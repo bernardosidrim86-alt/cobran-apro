@@ -1151,26 +1151,19 @@ function Customers() {
   const filtered=rows.filter(x=>(x.name+" "+(x.phone||"")+" "+(x.email||"")).toLowerCase().includes(search.toLowerCase()));
 
   const floatingMenu=menuCustomer&&menuPosition?createPortal(
-    <>
-      <button
-        type="button"
-        aria-label="Fechar menu de ações"
-        onClick={closeMenu}
-        style={{position:"fixed",inset:0,border:0,padding:0,margin:0,background:"transparent",zIndex:2147483646,cursor:"default"}}
-      />
-      <div
-        className="customer-menu customer-menu-floating"
-        style={{position:"fixed",top:menuPosition.top+"px",left:menuPosition.left+"px",width:190,zIndex:2147483647,pointerEvents:"auto"}}
-        onClick={e=>e.stopPropagation()}
-      >
-        <button type="button" onClick={()=>openCustomerEditor(menuCustomer)}>Editar</button>
-        <button type="button" onClick={()=>showData(menuCustomer)}>Ver dados</button>
-        <button type="button" onClick={()=>whatsapp(menuCustomer)}>Abrir WhatsApp</button>
-        <button type="button" className="danger-menu-item" onClick={()=>removeCustomer(menuCustomer)} disabled={deleting}>
-          {deleting?"Excluindo...":"Excluir cliente"}
-        </button>
-      </div>
-    </>,
+    <div
+      className="customer-menu customer-menu-floating"
+      style={{position:"fixed",top:menuPosition.top+"px",left:menuPosition.left+"px",width:190,zIndex:2147483647,pointerEvents:"auto",display:"block"}}
+      onMouseDown={e=>e.stopPropagation()}
+      onClick={e=>e.stopPropagation()}
+    >
+      <button type="button" onClick={()=>openCustomerEditor(menuCustomer)}>Editar</button>
+      <button type="button" onClick={()=>showData(menuCustomer)}>Ver dados</button>
+      <button type="button" onClick={()=>whatsapp(menuCustomer)}>Abrir WhatsApp</button>
+      <button type="button" className="danger-menu-item" onClick={()=>removeCustomer(menuCustomer)} disabled={deleting}>
+        {deleting?"Excluindo...":"Excluir cliente"}
+      </button>
+    </div>,
     document.body
   ):null;
 
