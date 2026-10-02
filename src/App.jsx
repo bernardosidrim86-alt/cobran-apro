@@ -1160,7 +1160,7 @@ function Customers() {
       />
       <div
         className="customer-menu customer-menu-floating"
-        style={{position:"fixed",width:190,zIndex:2147483647,pointerEvents:"auto","--menu-top":menuPosition.top+"px","--menu-left":menuPosition.left+"px"}}
+        style={{position:"fixed",top:menuPosition.top+"px",left:menuPosition.left+"px",width:190,zIndex:2147483647,pointerEvents:"auto"}}
       >
         <button type="button" onClick={()=>openCustomerEditor(menuCustomer)}>Editar</button>
         <button type="button" onClick={()=>showData(menuCustomer)}>Ver dados</button>
