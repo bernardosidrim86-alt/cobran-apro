@@ -172,7 +172,7 @@ function Landing({session}) {
 
     items.forEach((el,index)=>{
       el.classList.add("lp-animate");
-      el.style.setProperty("--reveal-order", index);
+      el.style.setProperty("--reveal-delay", `${Math.min(index % 4, 3) * 45}ms`);
     });
 
     if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
@@ -180,37 +180,20 @@ function Landing({session}) {
       return;
     }
 
-    let ticking=false;
-    let revealing=false;
-    const revealNext=()=>{
-      if(revealing) return;
-      const trigger=window.innerHeight*0.9;
-      const next=items.find(el=>!el.classList.contains("is-visible") && el.getBoundingClientRect().top < trigger);
-      if(!next) return;
-      revealing=true;
-      next.classList.add("is-visible");
-      window.setTimeout(()=>{
-        revealing=false;
-        revealNext();
-      },120);
-    };
-
-    const onScroll=()=>{
-      if(ticking) return;
-      ticking=true;
-      requestAnimationFrame(()=>{
-        ticking=false;
-        revealNext();
+    const observer=new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
       });
-    };
+    },{
+      threshold:0.08,
+      rootMargin:"0px 0px -5% 0px"
+    });
 
-    revealNext();
-    window.addEventListener("scroll",onScroll,{passive:true});
-    window.addEventListener("resize",onScroll);
-    return()=>{
-      window.removeEventListener("scroll",onScroll);
-      window.removeEventListener("resize",onScroll);
-    };
+    items.forEach(el=>observer.observe(el));
+    return()=>observer.disconnect();
   },[]);
 
   const steps=[
