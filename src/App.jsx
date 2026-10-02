@@ -336,7 +336,7 @@ function Landing({session}) {
       <section className="lp-final">
         <div className="lp-wrap lp-final-in">
           <div><h2>Chega de planilha para saber quem está te devendo.</h2><p>7 dias grátis · Sem cartão de crédito</p></div>
-          <Link to="/cadastro" className="lp-btn lp-btn-light lp-btn-lg">Começar grátis <ArrowRight size={18}/></Link>
+          <Link to="/cadastro" className="lp-final-cta">Começar grátis <ArrowRight size={18}/></Link>
         </div>
       </section>
     </main>
