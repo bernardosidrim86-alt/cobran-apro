@@ -466,20 +466,22 @@
   clip-path:inset(0 0 0 72%);
 }
 
-
-/* Reveal das seções conforme entram na tela */
-@media (prefers-reduced-motion: no-preference){
-  .lp .scroll-reveal{
+/* Reveal individual conforme a pessoa desce */
+@media (prefers-reduced-motion:no-preference){
+  .lp .lp-animate{
     opacity:0;
-    transform:translateY(28px);
-    transition:opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1);
+    transform:translateY(24px);
+    transition:opacity .55s ease, transform .55s cubic-bezier(.22,1,.36,1);
     will-change:opacity,transform;
   }
-  .lp .scroll-reveal.is-visible{
+  .lp .lp-animate.is-visible{
     opacity:1;
     transform:none;
   }
-  .lp .scroll-reveal:nth-of-type(even){
-    transition-delay:.04s;
+}
+@media (prefers-reduced-motion:reduce){
+  .lp .lp-animate{
+    opacity:1;
+    transform:none;
   }
 }
