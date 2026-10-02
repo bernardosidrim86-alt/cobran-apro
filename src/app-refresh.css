@@ -1025,3 +1025,120 @@ tbody tr:hover{background:#fafbff!important}
   .calendar-day-values{padding-top:8px;gap:2px}
   .calendar-day-values span{font-size:7px}
 }
+
+
+
+/* Dark mode — calendário financeiro */
+html[data-theme="dark"] .app-layout .calendar-summary-card{
+  background:#191a22!important;
+  border-color:#2d2f3a!important;
+  box-shadow:none!important;
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .app-layout .calendar-summary-card span{
+  color:#9b9da8!important;
+}
+html[data-theme="dark"] .app-layout .calendar-summary-card strong{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .calendar-summary-card small{
+  color:#858793!important;
+}
+html[data-theme="dark"] .app-layout .calendar-summary-card.danger strong{
+  color:#ff9ba3!important;
+}
+html[data-theme="dark"] .app-layout .calendar-current-label{
+  background:#303157!important;
+  color:#c7c8ff!important;
+}
+html[data-theme="dark"] .app-layout .calendar-current-label.muted{
+  background:transparent!important;
+}
+html[data-theme="dark"] .app-layout .calendar-today-btn,
+html[data-theme="dark"] .app-layout .calendar-nav-btn{
+  background:#20212a!important;
+  border-color:#383a46!important;
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .app-layout .calendar-today-btn:hover,
+html[data-theme="dark"] .app-layout .calendar-nav-btn:hover{
+  background:#292b35!important;
+  border-color:#4a4d5c!important;
+  color:#c7c8ff!important;
+}
+html[data-theme="dark"] .app-layout .calendar-weekdays span{
+  color:#858793!important;
+}
+html[data-theme="dark"] .app-layout .calendar-cell{
+  background:#191a22!important;
+  border-color:#2d2f3a!important;
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .app-layout .calendar-cell:hover{
+  background:#22232c!important;
+  border-color:#444756!important;
+}
+html[data-theme="dark"] .app-layout .calendar-cell.today{
+  background:#202238!important;
+  border-color:#7579d7!important;
+}
+html[data-theme="dark"] .app-layout .calendar-cell.selected{
+  background:#252742!important;
+  border-color:#777be5!important;
+  box-shadow:0 0 0 2px rgba(119,123,229,.14)!important;
+}
+html[data-theme="dark"] .app-layout .calendar-day-number,
+html[data-theme="dark"] .app-layout .calendar-cell>span{
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .app-layout .calendar-day-values .charge{
+  color:#a9adff!important;
+}
+html[data-theme="dark"] .app-layout .calendar-day-values .received{
+  color:#72d19b!important;
+}
+html[data-theme="dark"] .app-layout .calendar-day-values .late{
+  color:#ff8f98!important;
+}
+html[data-theme="dark"] .app-layout .calendar-day-today{
+  background:#5b5ce2!important;
+  color:#fff!important;
+}
+html[data-theme="dark"] .app-layout .calendar-legend{
+  border-top-color:#2d2f3a!important;
+  color:#9b9da8!important;
+}
+html[data-theme="dark"] .app-layout .calendar-day-summary>div{
+  background:#20212a!important;
+  border-color:#30323d!important;
+}
+html[data-theme="dark"] .app-layout .calendar-day-summary span{
+  color:#9b9da8!important;
+}
+html[data-theme="dark"] .app-layout .calendar-day-summary b{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .calendar-event{
+  color:#e5e6eb!important;
+  border-bottom-color:#2d2f3a!important;
+}
+html[data-theme="dark"] .app-layout .calendar-event:hover{
+  background:#22232c!important;
+}
+html[data-theme="dark"] .app-layout .calendar-event b,
+html[data-theme="dark"] .app-layout .calendar-event strong{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .calendar-event small{
+  color:#9b9da8!important;
+}
+html[data-theme="dark"] .app-layout .calendar-empty-day{
+  color:#9b9da8!important;
+}
+html[data-theme="dark"] .app-layout .calendar-empty-day svg{
+  color:#858793!important;
+}
+html[data-theme="dark"] .app-layout .calendar-cell.empty-day{
+  background:transparent!important;
+  border-color:transparent!important;
+}
