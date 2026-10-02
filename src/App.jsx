@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
 import { Routes, Route, Navigate, Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowRight, Bell, Check, ChevronRight, CircleDollarSign, CreditCard,
@@ -989,7 +988,6 @@ function Customers() {
   useEffect(()=>{const q=new URLSearchParams(loc.search).get("q");if(q)setSearch(q)},[loc.search]);
   const [open,setOpen]=useState(false);
   const [menuCustomer,setMenuCustomer]=useState(null);
-  const [menuPosition,setMenuPosition]=useState(null);
   const [form,setForm]=useState({name:"",phone:"",email:"",notes:""});
   const [deleting,setDeleting]=useState(false);
   const [editingCustomer,setEditingCustomer]=useState(null);
@@ -1009,42 +1007,13 @@ function Customers() {
 
   function closeMenu(){
     setMenuCustomer(null);
-    setMenuPosition(null);
-  }
-
-  function getMenuPosition(button){
-    const rect=button.getBoundingClientRect();
-    const menuWidth=190;
-    const menuHeight=195;
-    const gap=6;
-    let left=rect.right-menuWidth;
-    let top=rect.bottom+gap;
-    if(left<10)left=10;
-    if(left+menuWidth>window.innerWidth-10)left=Math.max(10,window.innerWidth-menuWidth-10);
-    if(top+menuHeight>window.innerHeight-10)top=Math.max(10,rect.top-menuHeight-gap);
-    return {top,left};
   }
 
   function openMenu(c,e){
     e.preventDefault();
     e.stopPropagation();
-    setMenuPosition(getMenuPosition(e.currentTarget));
-    setMenuCustomer(c);
+    setMenuCustomer(prev=>prev?.id===c.id?null:c);
   }
-
-  useEffect(()=>{
-    if(!menuCustomer)return;
-    function reposition(){
-      const button=document.querySelector(".customer-menu-trigger[data-customer-id=\"" + menuCustomer.id + "\"]");
-      if(button)setMenuPosition(getMenuPosition(button));
-    }
-    window.addEventListener("resize",reposition);
-    window.addEventListener("scroll",reposition,true);
-    return()=>{
-      window.removeEventListener("resize",reposition);
-      window.removeEventListener("scroll",reposition,true);
-    };
-  },[menuCustomer]);
 
   async function openCustomer(c){
     setCustomerView(c);
@@ -1150,23 +1119,6 @@ function Customers() {
 
   const filtered=rows.filter(x=>(x.name+" "+(x.phone||"")+" "+(x.email||"")).toLowerCase().includes(search.toLowerCase()));
 
-  const floatingMenu=menuCustomer&&menuPosition?createPortal(
-    <div
-      className="customer-menu customer-menu-floating"
-      style={{position:"fixed",top:menuPosition.top+"px",left:menuPosition.left+"px",width:190,zIndex:2147483647,pointerEvents:"auto",display:"block"}}
-      onMouseDown={e=>e.stopPropagation()}
-      onClick={e=>e.stopPropagation()}
-    >
-      <button type="button" onClick={()=>openCustomerEditor(menuCustomer)}>Editar</button>
-      <button type="button" onClick={()=>showData(menuCustomer)}>Ver dados</button>
-      <button type="button" onClick={()=>whatsapp(menuCustomer)}>Abrir WhatsApp</button>
-      <button type="button" className="danger-menu-item" onClick={()=>removeCustomer(menuCustomer)} disabled={deleting}>
-        {deleting?"Excluindo...":"Excluir cliente"}
-      </button>
-    </div>,
-    document.body
-  ):null;
-
   return <>
     <PageTitle title="Clientes" subtitle="Organize seus clientes e acompanhe o histórico." action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Novo cliente</Button>}/>
     <div className="toolbar">
@@ -1188,13 +1140,20 @@ function Customers() {
               <td className="customer-actions-cell">
                 <button
                   type="button"
-                  data-customer-id={c.id}
                   className={"customer-menu-trigger "+(menuCustomer?.id===c.id?"active":"")}
                   aria-label={"Ações de "+c.name}
-                  onClick={e=>{e.stopPropagation();openMenu(c,e)}}
+                  onClick={e=>openMenu(c,e)}
                 >
                   <MoreHorizontal size={19}/>
                 </button>
+                {menuCustomer?.id===c.id&&<div className="customer-menu customer-menu-inline" onClick={e=>e.stopPropagation()} onMouseDown={e=>e.stopPropagation()}>
+                  <button type="button" onClick={()=>openCustomerEditor(c)}>Editar</button>
+                  <button type="button" onClick={()=>showData(c)}>Ver dados</button>
+                  <button type="button" onClick={()=>whatsapp(c)}>Abrir WhatsApp</button>
+                  <button type="button" className="danger-menu-item" onClick={()=>removeCustomer(c)} disabled={deleting}>
+                    {deleting?"Excluindo...":"Excluir cliente"}
+                  </button>
+                </div>}
               </td>
             </tr>)}
           </tbody>
