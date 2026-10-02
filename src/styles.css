@@ -8744,3 +8744,56 @@ body{
   animation:none!important;
   transition:none!important;
 }
+
+/* Seletor de tema do SaaS */
+.theme-switch{
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  padding:3px;
+  border:1px solid #e5e5ea;
+  border-radius:10px;
+  background:#fff;
+}
+.theme-choice{
+  width:32px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  color:#777982;
+  cursor:pointer;
+  transition:background .15s,color .15s,box-shadow .15s;
+}
+.theme-choice:hover{
+  background:#f5f5f8;
+  color:#5b5ce2;
+}
+.theme-choice.active{
+  background:#eeeeff;
+  color:#5b5ce2;
+  box-shadow:inset 0 0 0 1px rgba(91,92,226,.08);
+}
+html[data-theme="dark"] .theme-switch{
+  background:#202128;
+  border-color:#34353e;
+}
+html[data-theme="dark"] .theme-choice{
+  color:#a7a8b2;
+}
+html[data-theme="dark"] .theme-choice:hover{
+  background:#292a34;
+  color:#b0b1ff;
+}
+html[data-theme="dark"] .theme-choice.active{
+  background:#303157;
+  color:#c5c6ff;
+  box-shadow:inset 0 0 0 1px rgba(176,177,255,.12);
+}
+@media(max-width:700px){
+  .theme-switch{gap:2px}
+  .theme-choice{width:30px;height:28px}
+}
