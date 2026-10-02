@@ -9314,3 +9314,12 @@ html[data-theme="dark"] .app-layout .ai-suggestions button:hover{
   background:#252731!important;
   color:#e9eaf0!important;
 }
+
+
+/* Dark mode — nomes dos clientes */
+html[data-theme="dark"] .app-layout .customers-table-wrap tbody td:first-child b{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .customers-table-wrap tbody tr:hover td:first-child b{
+  color:#f3f4f6!important;
+}
