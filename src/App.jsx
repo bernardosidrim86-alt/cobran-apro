@@ -151,34 +151,60 @@ function Landing({session}) {
   },[]);
 
   useEffect(()=>{
-    const items=[...document.querySelectorAll(".lp .scroll-reveal")];
+    const selectors=[
+      ".lp-problem-grid > h2",
+      ".lp-problem-list > li",
+      "#como .lp-heading",
+      "#como .lp-step",
+      "#recursos .lp-heading",
+      "#recursos .lp-features > div",
+      ".lp-who-text",
+      "#precos .lp-heading",
+      "#precos .lp-billing",
+      "#precos .price-card",
+      "#duvidas .lp-heading",
+      "#duvidas .lp-faq > details",
+      ".lp-final-in > div",
+      ".lp-final-in > a"
+    ];
+    const items=[...document.querySelectorAll(selectors.join(","))];
     if(!items.length) return;
+
+    items.forEach((el,index)=>{
+      el.classList.add("lp-animate");
+      el.style.setProperty("--reveal-order", index);
+    });
+
     if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
       items.forEach(el=>el.classList.add("is-visible"));
       return;
     }
 
     let ticking=false;
-    const revealVisible=()=>{
-      ticking=false;
-      const trigger=window.innerHeight*0.88;
-      items.forEach((el,index)=>{
-        if(el.classList.contains("is-visible")) return;
-        const top=el.getBoundingClientRect().top;
-        if(top < trigger){
-          el.style.setProperty("--reveal-delay", `${Math.min(index*35,180)}ms`);
-          el.classList.add("is-visible");
-        }
-      });
+    let revealing=false;
+    const revealNext=()=>{
+      if(revealing) return;
+      const trigger=window.innerHeight*0.9;
+      const next=items.find(el=>!el.classList.contains("is-visible") && el.getBoundingClientRect().top < trigger);
+      if(!next) return;
+      revealing=true;
+      next.classList.add("is-visible");
+      window.setTimeout(()=>{
+        revealing=false;
+        revealNext();
+      },120);
     };
 
     const onScroll=()=>{
       if(ticking) return;
       ticking=true;
-      requestAnimationFrame(revealVisible);
+      requestAnimationFrame(()=>{
+        ticking=false;
+        revealNext();
+      });
     };
 
-    revealVisible();
+    revealNext();
     window.addEventListener("scroll",onScroll,{passive:true});
     window.addEventListener("resize",onScroll);
     return()=>{
@@ -244,7 +270,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section className="lp-problem scroll-reveal">
+      <section className="lp-problem">
         <div className="lp-wrap lp-problem-grid">
           <h2>Cobrança espalhada em planilha, caderno e WhatsApp vira dinheiro esquecido.</h2>
           <ul className="lp-problem-list">
@@ -255,7 +281,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="como" className="lp-section scroll-reveal">
+      <section id="como" className="lp-section">
         <div className="lp-wrap">
           <div className="lp-heading"><p className="lp-kicker">Como funciona</p><h2>Do cadastro ao dinheiro na conta, em quatro passos.</h2></div>
           <div className="lp-steps">
@@ -269,7 +295,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="recursos" className="lp-section lp-soft scroll-reveal">
+      <section id="recursos" className="lp-section lp-soft">
         <div className="lp-wrap">
           <div className="lp-heading"><p className="lp-kicker">Recursos</p><h2>O que vem no sistema.</h2></div>
           <dl className="lp-features">
@@ -278,14 +304,14 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section className="lp-who scroll-reveal">
+      <section className="lp-who">
         <div className="lp-wrap">
           <p className="lp-kicker">Para quem é</p>
           <p className="lp-who-text">Feito para quem precisa receber: <b>prestadores de serviço</b>, <b>barbearias e salões</b>, <b>clínicas e consultórios</b>, <b>oficinas e negócios locais</b>, <b>profissionais autônomos</b> e <b>pequenas empresas</b> que cobram todo mês.</p>
         </div>
       </section>
 
-      <section id="precos" className="lp-section lp-soft lp-plans scroll-reveal">
+      <section id="precos" className="lp-section lp-soft lp-plans">
         <div className="lp-wrap">
           <div className="lp-heading"><p className="lp-kicker">Planos</p><h2>Comece de graça. Faça upgrade quando precisar.</h2><p className="lp-sub">Teste por 7 dias, sem cartão de crédito. A assinatura é processada pela Perfect Pay.</p></div>
           <div className="lp-billing" role="group" aria-label="Periodicidade do plano">
@@ -307,7 +333,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section className="lp-final scroll-reveal">
+      <section className="lp-final">
         <div className="lp-wrap lp-final-in">
           <div><h2>Chega de planilha para saber quem está te devendo.</h2><p>7 dias grátis · Sem cartão de crédito</p></div>
           <Link to="/cadastro" className="lp-btn lp-btn-light lp-btn-lg">Começar grátis <ArrowRight size={18}/></Link>
