@@ -9161,3 +9161,58 @@ html[data-theme="dark"] .customer-menu button:hover{
   background:#22232c!important;
   color:#c7c8ff!important;
 }
+
+
+/* Dark mode — estados de hover sem fundos brancos */
+html[data-theme="dark"] .app-layout .side-nav a:hover,
+html[data-theme="dark"] .app-layout .side-nav-parent:hover,
+html[data-theme="dark"] .app-layout .quick-action:hover,
+html[data-theme="dark"] .app-layout .quick-actions-premium a:hover,
+html[data-theme="dark"] .app-layout .customer-menu-trigger:hover,
+html[data-theme="dark"] .app-layout .customer-menu-trigger.active,
+html[data-theme="dark"] .app-layout .filters button:hover,
+html[data-theme="dark"] .app-layout .settings-nav button:hover,
+html[data-theme="dark"] .app-layout .ai-suggestions button:hover,
+html[data-theme="dark"] .app-layout .user-mini-button:hover,
+html[data-theme="dark"] .app-layout .logout:hover,
+html[data-theme="dark"] .app-layout .notification-item:hover,
+html[data-theme="dark"] .app-layout .profile-dropdown>a:hover,
+html[data-theme="dark"] .app-layout .profile-dropdown>button:hover,
+html[data-theme="dark"] .app-layout tbody tr:hover,
+html[data-theme="dark"] .app-layout .charge-row:hover{
+  background:#22232c!important;
+  color:#e8e9ef!important;
+}
+
+html[data-theme="dark"] .app-layout .quick-action:hover *,
+html[data-theme="dark"] .app-layout .quick-actions-premium a:hover *,
+html[data-theme="dark"] .app-layout .customer-menu-trigger:hover *,
+html[data-theme="dark"] .app-layout .customer-menu-trigger.active *,
+html[data-theme="dark"] .app-layout .filters button:hover *,
+html[data-theme="dark"] .app-layout .settings-nav button:hover *,
+html[data-theme="dark"] .app-layout .ai-suggestions button:hover *,
+html[data-theme="dark"] .app-layout .user-mini-button:hover *,
+html[data-theme="dark"] .app-layout .logout:hover *,
+html[data-theme="dark"] .app-layout .notification-item:hover *,
+html[data-theme="dark"] .app-layout .profile-dropdown>a:hover *,
+html[data-theme="dark"] .app-layout .profile-dropdown>button:hover *{
+  color:inherit!important;
+}
+
+html[data-theme="dark"] .app-layout .side-nav a:hover svg,
+html[data-theme="dark"] .app-layout .side-nav-parent:hover svg{
+  color:inherit!important;
+}
+
+html[data-theme="dark"] .app-layout .btn-primary:hover{
+  background:#4f50d4!important;
+  color:#fff!important;
+}
+html[data-theme="dark"] .app-layout .btn-secondary:hover{
+  background:#292a34!important;
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .app-layout .theme-choice:hover{
+  background:#292a34!important;
+  color:#c5c6ff!important;
+}
