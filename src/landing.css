@@ -475,7 +475,6 @@
     opacity:0;
     transform:translateY(24px);
     transition:opacity .55s ease var(--reveal-delay,0ms), transform .55s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms);
-    will-change:opacity,transform;
   }
   .lp .lp-animate.is-visible{
     opacity:1;
