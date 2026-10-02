@@ -1,0 +1,82 @@
+/* Dashboard: ajuste visual leve (camada final, só tela do Dashboard) */
+html body .app-layout .dashboard-page{--dp-line:#e8e9ef;--dp-muted:#6b6e7b;--dp-ink:#17181c;display:grid;gap:20px;max-width:1240px}
+html body .app-layout .dashboard-page>*{margin:0!important}
+
+/* Cabeçalho */
+html body .app-layout .dashboard-page .dashboard-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+html body .app-layout .dashboard-page .dashboard-hero .eyebrow{font-size:11px!important;letter-spacing:.08em}
+html body .app-layout .dashboard-page .dashboard-hero h1{font-size:28px!important;line-height:1.15;letter-spacing:-.03em;margin:6px 0 6px!important;color:var(--dp-ink)}
+html body .app-layout .dashboard-page .dashboard-hero p{font-size:14px!important;color:var(--dp-muted);margin:0!important}
+html body .app-layout .dashboard-page .dashboard-hero .btn{font-size:14px!important;padding:11px 18px!important;border-radius:10px}
+
+/* Métricas */
+html body .app-layout .dashboard-page .dashboard-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px!important}
+html body .app-layout .dashboard-page .metric{padding:20px!important;border:1px solid var(--dp-line)!important;border-radius:14px!important;background:#fff;box-shadow:0 1px 2px rgba(20,20,40,.04)!important}
+html body .app-layout .dashboard-page .metric-icon{width:38px!important;height:38px!important;border-radius:10px!important;margin-bottom:14px!important}
+html body .app-layout .dashboard-page .metric span{font-size:13px!important;color:var(--dp-muted)!important;font-weight:500}
+html body .app-layout .dashboard-page .metric strong,
+html body .app-layout .dashboard-page .metric b{font-size:26px!important;line-height:1.2;letter-spacing:-.03em;margin-top:6px!important;color:var(--dp-ink)}
+
+/* Painéis */
+html body .app-layout .dashboard-page .panel{padding:22px!important;border:1px solid var(--dp-line)!important;border-radius:14px!important;background:#fff;box-shadow:0 1px 2px rgba(20,20,40,.04)!important}
+html body .app-layout .dashboard-page .panel-head{margin-bottom:18px!important;gap:12px}
+html body .app-layout .dashboard-page .panel-kicker{display:block;font-size:11px!important;font-weight:700;letter-spacing:.08em;color:#5b5ce2!important;margin-bottom:4px}
+html body .app-layout .dashboard-page .panel-head h2{font-size:17px!important;line-height:1.3;letter-spacing:-.02em;color:var(--dp-ink)}
+html body .app-layout .dashboard-page .panel-head p{font-size:13px!important;color:var(--dp-muted)!important;margin-top:4px!important;line-height:1.5}
+html body .app-layout .dashboard-page .link-btn{font-size:13px!important;font-weight:600;color:#5b5ce2;white-space:nowrap}
+
+/* Seu caixa */
+html body .app-layout .dashboard-page .cash-summary span{font-size:13px!important;color:var(--dp-muted)}
+html body .app-layout .dashboard-page .cash-summary strong{font-size:24px!important;letter-spacing:-.03em}
+html body .app-layout .dashboard-page .dashboard-progress-row{font-size:13px!important;color:var(--dp-muted)}
+html body .app-layout .dashboard-page .dashboard-progress-row b{color:var(--dp-ink)}
+html body .app-layout .dashboard-page .progress-track{height:8px!important;border-radius:99px!important;background:#eceef5!important}
+html body .app-layout .dashboard-page .progress-track div{border-radius:99px!important;background:#5b5ce2!important}
+
+/* Precisa de ação */
+html body .app-layout .dashboard-page .attention-value{font-size:30px!important;letter-spacing:-.04em;color:var(--dp-ink)}
+html body .app-layout .dashboard-page .attention-label{font-size:13px!important;color:var(--dp-muted)}
+html body .app-layout .dashboard-page .attention-item b{font-size:15px!important}
+html body .app-layout .dashboard-page .attention-item small{font-size:12px!important;color:var(--dp-muted)}
+html body .app-layout .dashboard-page .attention-item{padding:12px 14px!important;border-radius:10px!important}
+
+/* Central de tarefas e previsão */
+html body .app-layout .dashboard-page .dashboard-task{padding:13px 10px!important;gap:12px}
+html body .app-layout .dashboard-page .dashboard-task b{font-size:14px!important;color:var(--dp-ink)}
+html body .app-layout .dashboard-page .dashboard-task small{font-size:12px!important;color:var(--dp-muted)!important;margin-top:3px}
+html body .app-layout .dashboard-page .dashboard-task>strong{font-size:14px!important}
+html body .app-layout .dashboard-page .task-icon{width:36px;height:36px;border-radius:10px}
+html body .app-layout .dashboard-page .dashboard-forecast-row{padding:10px 0!important;gap:12px}
+html body .app-layout .dashboard-page .dashboard-forecast-row>span{font-size:13px!important;font-weight:600;min-width:52px}
+html body .app-layout .dashboard-page .dashboard-forecast-row>span small{font-size:11px!important}
+html body .app-layout .dashboard-page .dashboard-forecast-row>div{height:8px!important;border-radius:99px!important}
+html body .app-layout .dashboard-page .dashboard-forecast-row>strong{font-size:13px!important;min-width:84px;text-align:right}
+
+/* Quem cobrar hoje */
+html body .app-layout .dashboard-page .charge-row{padding:13px 0!important;gap:12px}
+html body .app-layout .dashboard-page .charge-person b{font-size:14px!important;color:var(--dp-ink)}
+html body .app-layout .dashboard-page .charge-person span:not(.person-avatar){font-size:12px!important;color:var(--dp-muted)}
+html body .app-layout .dashboard-page .person-avatar{width:36px!important;height:36px!important;font-size:14px!important}
+html body .app-layout .dashboard-page .charge-row>strong{font-size:14px!important}
+html body .app-layout .dashboard-page .charge-status{font-size:12px!important;font-weight:600}
+
+/* Atalhos */
+html body .app-layout .dashboard-page .quick-actions-premium a{padding:13px 14px!important;border-radius:12px!important}
+html body .app-layout .dashboard-page .quick-actions-premium b{font-size:14px!important}
+html body .app-layout .dashboard-page .quick-actions-premium small{font-size:12px!important;color:var(--dp-muted)}
+html body .app-layout .dashboard-page .dashboard-client-count span{font-size:13px!important}
+html body .app-layout .dashboard-page .dashboard-client-count small{font-size:12px!important}
+html body .app-layout .dashboard-page .dashboard-client-count>strong{font-size:22px!important}
+html body .app-layout .dashboard-page .empty{font-size:13px!important}
+
+/* Responsivo */
+@media(max-width:1100px){html body .app-layout .dashboard-page .dashboard-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+  html body .app-layout .dashboard-page{gap:16px}
+  html body .app-layout .dashboard-page .dashboard-hero h1{font-size:24px!important}
+  html body .app-layout .dashboard-page .dashboard-hero-actions,
+  html body .app-layout .dashboard-page .dashboard-hero .btn{width:100%}
+  html body .app-layout .dashboard-page .metric{padding:16px!important}
+  html body .app-layout .dashboard-page .metric strong,
+  html body .app-layout .dashboard-page .metric b{font-size:22px!important}
+  html body .app-layout .dashboard-page .panel{padding:18px!important}
