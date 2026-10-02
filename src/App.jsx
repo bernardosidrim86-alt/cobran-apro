@@ -812,6 +812,7 @@ function ChargeDetail({charge,onClose,onPaid,customers=[]}){
     }
     const {count}=await query;
     if(plan.maxCharges!==null&&(count||0)>=plan.maxCharges){
+      alert("O plano "+plan.title+" permite até "+plan.maxCharges+" cobranças por mês. Faça upgrade para adicionar mais.");
       setSaving(false);
       return;
     }
@@ -825,7 +826,9 @@ function ChargeDetail({charge,onClose,onPaid,customers=[]}){
       status:"pending",
       recurrence:"none"
     });
-    if(!error){
+    if(error){
+      alert(error.message);
+    }else{
       setRepeating(false);
       onPaid();
     }
@@ -837,13 +840,13 @@ function ChargeDetail({charge,onClose,onPaid,customers=[]}){
     setDeleting(true);
     const {error:paymentError}=await supabase.from("payments").delete().eq("charge_id",charge.id).eq("company_id",charge.company_id);
     if(paymentError){
+      alert(paymentError.message);
       setDeleting(false);
       return;
     }
     const {error}=await supabase.from("charges").delete().eq("id",charge.id).eq("company_id",charge.company_id);
-    if(!error){
-      onPaid();
-    }
+    if(error) alert(error.message);
+    else onPaid();
     setDeleting(false);
   }
 
@@ -879,6 +882,8 @@ function ChargeDetail({charge,onClose,onPaid,customers=[]}){
         });
       }
       onPaid();
+    }else{
+      alert(error.message);
     }
     setSaving(false);
   }
