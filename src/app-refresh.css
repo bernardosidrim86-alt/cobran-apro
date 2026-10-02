@@ -1142,3 +1142,81 @@ html[data-theme="dark"] .app-layout .calendar-cell.empty-day{
   background:transparent!important;
   border-color:transparent!important;
 }
+
+
+/* =========================================================
+   DARK MODE — DASHBOARD FINAL
+   Última camada para vencer os estilos claros do app-refresh
+   ========================================================= */
+html[data-theme="dark"] .app-layout .dashboard-page .metric,
+html[data-theme="dark"] .app-layout .dashboard-page .panel{background:#191a22!important;border-color:#2d2f3a!important;color:#e5e6eb!important;box-shadow:none!important}
+html[data-theme="dark"] .app-layout .dashboard-page .metric:hover,
+html[data-theme="dark"] .app-layout .dashboard-page .panel:hover{background:#191a22!important;border-color:#3a3c49!important;box-shadow:none!important;transform:none!important}
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-hero h1,
+html[data-theme="dark"] .app-layout .dashboard-page .panel-head h2,
+html[data-theme="dark"] .app-layout .dashboard-page .metric strong,
+html[data-theme="dark"] .app-layout .dashboard-page .metric b,
+html[data-theme="dark"] .app-layout .dashboard-page .cash-summary strong,
+html[data-theme="dark"] .app-layout .dashboard-page .attention-value,
+html[data-theme="dark"] .app-layout .dashboard-page .attention-item b,
+html[data-theme="dark"] .app-layout .dashboard-page .charge-row>strong,
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-task b,
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-task>strong,
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-forecast-row>strong,
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-client-count>strong{color:#f3f4f6!important}
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-hero p,
+html[data-theme="dark"] .app-layout .dashboard-page .panel-head p,
+html[data-theme="dark"] .app-layout .dashboard-page .metric span,
+html[data-theme="dark"] .app-layout .dashboard-page .cash-summary span,
+html[data-theme="dark"] .app-layout .dashboard-page .attention-label,
+html[data-theme="dark"] .app-layout .dashboard-page .charge-person span,
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-task small,
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-forecast-row>span small,
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-client-count span,
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-client-count small{color:#9b9da8!important}
+
+html[data-theme="dark"] .app-layout .dashboard-page .metric-icon{background:#2a2b4c!important;color:#c7c8ff!important}
+html[data-theme="dark"] .app-layout .dashboard-page .metric-icon.warning{background:#3a3019!important;color:#f2cb72!important}
+html[data-theme="dark"] .app-layout .dashboard-page .metric-icon.danger{background:#3a2024!important;color:#ff9ba3!important}
+html[data-theme="dark"] .app-layout .dashboard-page .metric-icon.success{background:#173524!important;color:#8ee0ae!important}
+
+html[data-theme="dark"] .app-layout .dashboard-page .cash-summary,
+html[data-theme="dark"] .app-layout .dashboard-page .cash-summary div + div,
+html[data-theme="dark"] .app-layout .dashboard-page .attention-list,
+html[data-theme="dark"] .app-layout .dashboard-page .attention-item,
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-client-count{border-color:#2d2f3a!important}
+html[data-theme="dark"] .app-layout .dashboard-page .progress-track{background:#292b35!important}
+
+html[data-theme="dark"] .app-layout .dashboard-page .attention-panel{background:#191a22!important}
+html[data-theme="dark"] .app-layout .dashboard-page .attention-item{background:transparent!important;color:#e5e6eb!important}
+html[data-theme="dark"] .app-layout .dashboard-page .attention-item:hover{background:#22232c!important}
+html[data-theme="dark"] .app-layout .dashboard-page .attention-item svg{color:#aeb0ba!important}
+html[data-theme="dark"] .app-layout .dashboard-page .attention-item:hover svg{color:#c7c8ff!important}
+
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-task{background:transparent!important;border-bottom-color:#2d2f3a!important;color:#e5e6eb!important}
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-task:hover{background:#22232c!important;border-radius:9px!important}
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-task>svg{color:#aeb0ba!important}
+html[data-theme="dark"] .app-layout .dashboard-page .task-icon{background:#2a2b4c!important;color:#c7c8ff!important}
+html[data-theme="dark"] .app-layout .dashboard-page .task-icon.warning{background:#3a3019!important;color:#f2cb72!important}
+html[data-theme="dark"] .app-layout .dashboard-page .task-icon.danger{background:#3a2024!important;color:#ff9ba3!important}
+
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-forecast-row{color:#e5e6eb!important}
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-forecast-row>span{color:#dfe1e7!important}
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-forecast-row>div{background:#30323b!important}
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-forecast-row>div i{background:#777be5!important}
+
+html[data-theme="dark"] .app-layout .dashboard-page .charge-row{background:transparent!important;border-bottom-color:#2d2f3a!important;color:#e5e6eb!important}
+html[data-theme="dark"] .app-layout .dashboard-page .charge-row:hover{background:#22232c!important}
+html[data-theme="dark"] .app-layout .dashboard-page .charge-person .person-avatar{background:#2a2b4c!important;color:#c7c8ff!important}
+html[data-theme="dark"] .app-layout .dashboard-page .charge-person b{color:#f3f4f6!important}
+
+html[data-theme="dark"] .app-layout .dashboard-page .quick-actions-premium a{background:transparent!important;border-color:#2d2f3a!important;color:#e5e6eb!important;box-shadow:none!important}
+html[data-theme="dark"] .app-layout .dashboard-page .quick-actions-premium a:hover{background:#22232c!important;border-color:#3a3c49!important;box-shadow:none!important;transform:none!important}
+html[data-theme="dark"] .app-layout .dashboard-page .quick-actions-premium a>span{background:#2a2b4c!important;color:#c7c8ff!important}
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-client-count{background:transparent!important}
+html[data-theme="dark"] .app-layout .dashboard-page .dashboard-client-count svg{color:#bfc1cb!important}
+
+html[data-theme="dark"] .app-layout .dashboard-page .link-btn{color:#aeb0ff!important}
+html[data-theme="dark"] .app-layout .dashboard-page .link-btn:hover{color:#c7c8ff!important}
+html[data-theme="dark"] .app-layout .dashboard-page a:focus-visible,
+html[data-theme="dark"] .app-layout .dashboard-page button:focus-visible{box-shadow:0 0 0 3px rgba(102,107,210,.18)!important}
