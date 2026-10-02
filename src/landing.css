@@ -88,6 +88,8 @@
 /* ---------- Seções ---------- */
 .lp-section{padding:112px 0}
 .lp-soft{background:var(--lp-soft)}
+.lp main{background:#fff}
+.lp main > section{position:relative}
 .lp-heading{max-width:640px;margin-bottom:56px}
 .lp-heading h2,.lp-who h2,.lp-final h2{font-size:clamp(28px,3.4vw,42px);line-height:1.12;letter-spacing:-.03em}
 .lp-sub{margin-top:14px;font-size:17px;color:var(--lp-muted)}
@@ -466,12 +468,13 @@
   clip-path:inset(0 0 0 72%);
 }
 
-/* Reveal individual conforme a pessoa desce */
+
+/* Reveal individual no scroll, sem esconder seções inteiras */
 @media (prefers-reduced-motion:no-preference){
   .lp .lp-animate{
     opacity:0;
     transform:translateY(24px);
-    transition:opacity .55s ease, transform .55s cubic-bezier(.22,1,.36,1);
+    transition:opacity .55s ease var(--reveal-delay,0ms), transform .55s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms);
     will-change:opacity,transform;
   }
   .lp .lp-animate.is-visible{
@@ -480,8 +483,8 @@
   }
 }
 @media (prefers-reduced-motion:reduce){
-  .lp .lp-animate{
-    opacity:1;
-    transform:none;
-  }
+  .lp .lp-animate{opacity:1;transform:none}
+}
+.lp main > section#precos + section#duvidas{
+  background:#fff;
 }
