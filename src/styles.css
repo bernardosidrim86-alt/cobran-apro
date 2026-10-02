@@ -9582,3 +9582,32 @@ html[data-theme="dark"] .app-layout .empty-icon{
   background:#23252f!important;
   color:#9da0ac!important;
 }
+
+
+/* Dark mode — badges de status das cobranças */
+html[data-theme="dark"] .app-layout .badge{
+  border:1px solid transparent!important;
+}
+html[data-theme="dark"] .app-layout .badge.green{
+  background:#173524!important;
+  color:#8ee0ae!important;
+  border-color:#28563a!important;
+}
+html[data-theme="dark"] .app-layout .badge.red{
+  background:#3a2024!important;
+  color:#ff9ba3!important;
+  border-color:#5d3037!important;
+}
+html[data-theme="dark"] .app-layout .badge.yellow{
+  background:#3a3019!important;
+  color:#f2cb72!important;
+  border-color:#5b4a27!important;
+}
+html[data-theme="dark"] .app-layout .badge.gray{
+  background:#292b34!important;
+  color:#c1c3cc!important;
+  border-color:#3a3c46!important;
+}
+html[data-theme="dark"] .app-layout .badge:hover{
+  filter:brightness(1.08);
+}
