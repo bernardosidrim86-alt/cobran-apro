@@ -9216,3 +9216,101 @@ html[data-theme="dark"] .app-layout .theme-choice:hover{
   background:#292a34!important;
   color:#c5c6ff!important;
 }
+
+
+/* Dark mode — eliminar superfícies brancas restantes */
+html[data-theme="dark"] .app-layout .btn-secondary,
+html[data-theme="dark"] .app-layout .metric,
+html[data-theme="dark"] .app-layout .panel,
+html[data-theme="dark"] .app-layout .table-panel,
+html[data-theme="dark"] .app-layout .settings-nav,
+html[data-theme="dark"] .app-layout .settings-panel,
+html[data-theme="dark"] .app-layout .connection,
+html[data-theme="dark"] .app-layout .plan-box,
+html[data-theme="dark"] .app-layout .generated,
+html[data-theme="dark"] .app-layout .report-card,
+html[data-theme="dark"] .app-layout .calendar-panel,
+html[data-theme="dark"] .app-layout .calendar-summary-card,
+html[data-theme="dark"] .app-layout .calendar-day-panel,
+html[data-theme="dark"] .app-layout .ai-chat-panel,
+html[data-theme="dark"] .app-layout .ai-locked-panel,
+html[data-theme="dark"] .app-layout .automation-card,
+html[data-theme="dark"] .app-layout .quick-action,
+html[data-theme="dark"] .app-layout .customer-menu,
+html[data-theme="dark"] .app-layout .header-dropdown,
+html[data-theme="dark"] .app-layout .modal,
+html[data-theme="dark"] .app-layout .filters,
+html[data-theme="dark"] .app-layout .searchbox,
+html[data-theme="dark"] .app-layout .toolbar,
+html[data-theme="dark"] .app-layout .report-toolbar,
+html[data-theme="dark"] .app-layout .report-layout,
+html[data-theme="dark"] .app-layout .report-main,
+html[data-theme="dark"] .app-layout .report-secondary,
+html[data-theme="dark"] .app-layout .report-periods,
+html[data-theme="dark"] .app-layout .ai-suggestions button,
+html[data-theme="dark"] .app-layout .ai-chat-input,
+html[data-theme="dark"] .app-layout .empty-icon{
+  background:#191a22!important;
+  color:#e1e3e8!important;
+  border-color:#2d2f3a!important;
+}
+
+html[data-theme="dark"] .app-layout .field input,
+html[data-theme="dark"] .app-layout .field textarea,
+html[data-theme="dark"] .app-layout .field select,
+html[data-theme="dark"] .app-layout .ai-chat-input input,
+html[data-theme="dark"] .app-layout .report-dates input{
+  background:#20212a!important;
+  color:#f3f4f6!important;
+  border-color:#353742!important;
+}
+
+html[data-theme="dark"] .app-layout .report-skeleton div,
+html[data-theme="dark"] .app-layout .rank,
+html[data-theme="dark"] .app-layout .report-rank>span{
+  background:#292b35!important;
+}
+
+html[data-theme="dark"] .app-layout .donut:after,
+html[data-theme="dark"] .app-layout .status-ring:after{
+  background:#191a22!important;
+}
+
+html[data-theme="dark"] .app-layout .report-heading h2,
+html[data-theme="dark"] .app-layout .report-footer b,
+html[data-theme="dark"] .app-layout .report-rank b,
+html[data-theme="dark"] .app-layout .report-rank strong,
+html[data-theme="dark"] .app-layout .report-summary-list b,
+html[data-theme="dark"] .app-layout .status-list b,
+html[data-theme="dark"] .app-layout .chart-foot b,
+html[data-theme="dark"] .app-layout .status-ring b,
+html[data-theme="dark"] .app-layout .donut strong,
+html[data-theme="dark"] .app-layout .connection b,
+html[data-theme="dark"] .app-layout .plan-box b,
+html[data-theme="dark"] .app-layout .plan-box strong,
+html[data-theme="dark"] .app-layout .report-card>strong{
+  color:#f3f4f6!important;
+}
+
+html[data-theme="dark"] .app-layout .report-heading p,
+html[data-theme="dark"] .app-layout .report-footer,
+html[data-theme="dark"] .app-layout .report-rank em + *,
+html[data-theme="dark"] .app-layout .report-summary-list span,
+html[data-theme="dark"] .app-layout .status-list,
+html[data-theme="dark"] .app-layout .status-ring span,
+html[data-theme="dark"] .app-layout .donut span,
+html[data-theme="dark"] .app-layout .legend,
+html[data-theme="dark"] .app-layout .chart-foot,
+html[data-theme="dark"] .app-layout .chart-col small,
+html[data-theme="dark"] .app-layout .connection small,
+html[data-theme="dark"] .app-layout .plan-box span{
+  color:#9b9da8!important;
+}
+
+/* Hover no dark: nenhuma superfície neutra volta para branco */
+html[data-theme="dark"] .app-layout .report-periods button:hover,
+html[data-theme="dark"] .app-layout .report-dates input:hover,
+html[data-theme="dark"] .app-layout .ai-suggestions button:hover{
+  background:#252731!important;
+  color:#e9eaf0!important;
+}
