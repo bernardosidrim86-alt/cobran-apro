@@ -1192,8 +1192,6 @@ function Customers() {
       </form>
     </div>}
 
-    {floatingMenu}
-
     {customerView&&<div className="modal-backdrop">
       <div className="modal customer-history-modal">
         <button type="button" className="modal-x" onClick={()=>setCustomerView(null)}><X/></button>
