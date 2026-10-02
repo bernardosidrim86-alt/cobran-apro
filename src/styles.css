@@ -9129,3 +9129,35 @@ html[data-theme="dark"] .app-layout .report-main *,
 html[data-theme="dark"] .app-layout .report-secondary *{
   color:inherit;
 }
+
+
+/* Clientes — nomes visíveis no dark mode */
+html[data-theme="dark"] .toolbar + .panel.table-panel td,
+html[data-theme="dark"] .filters + .panel.table-panel td{
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .toolbar + .panel.table-panel td:first-child b,
+html[data-theme="dark"] .filters + .panel.table-panel td:first-child b,
+html[data-theme="dark"] .filters + .panel.table-panel td:nth-child(3) b,
+html[data-theme="dark"] .payments-table td:first-child b,
+html[data-theme="dark"] .payments-table td:nth-child(2) b{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .customer-avatar{
+  background:#2a2b4c!important;
+  color:#c7c8ff!important;
+}
+html[data-theme="dark"] .customer-menu-trigger{
+  color:#aeb0ba!important;
+}
+html[data-theme="dark"] .customer-menu{
+  background:#191a22!important;
+  border-color:#30323d!important;
+}
+html[data-theme="dark"] .customer-menu button{
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .customer-menu button:hover{
+  background:#22232c!important;
+  color:#c7c8ff!important;
+}
