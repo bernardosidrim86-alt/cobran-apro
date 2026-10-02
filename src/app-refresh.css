@@ -1220,3 +1220,202 @@ html[data-theme="dark"] .app-layout .dashboard-page .link-btn{color:#aeb0ff!impo
 html[data-theme="dark"] .app-layout .dashboard-page .link-btn:hover{color:#c7c8ff!important}
 html[data-theme="dark"] .app-layout .dashboard-page a:focus-visible,
 html[data-theme="dark"] .app-layout .dashboard-page button:focus-visible{box-shadow:0 0 0 3px rgba(102,107,210,.18)!important}
+
+
+/* =========================================================
+   DARK MODE — CLIENTES FINAL
+   Última camada visual da página Clientes
+   ========================================================= */
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel{
+  background:#191a22!important;
+  border-color:#2d2f3a!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel .customers-table-wrap{
+  background:transparent!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel table{
+  background:transparent!important;
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel thead{
+  background:transparent!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel th{
+  background:transparent!important;
+  color:#858793!important;
+  border-bottom-color:#2d2f3a!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel tbody tr{
+  background:#191a22!important;
+  color:#dfe1e7!important;
+  border-color:#2d2f3a!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel tbody tr:hover{
+  background:#22232c!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel td{
+  background:transparent!important;
+  color:#bfc1cb!important;
+  border-bottom-color:#2d2f3a!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel td:first-child,
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel td:first-child b{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel td:nth-child(2),
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel td:nth-child(3),
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel td:nth-child(4){
+  color:#b3b5c0!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel .customer-actions-cell{
+  background:transparent!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel .customer-menu-trigger,
+html[data-theme="dark"] .app-layout .customer-menu-floating button{
+  background:#20212a!important;
+  border-color:#3a3c49!important;
+  color:#c6c8d1!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel .customer-menu-trigger:hover,
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel .customer-menu-trigger.active{
+  background:#2d2f3b!important;
+  border-color:#4a4d5c!important;
+  color:#c7c8ff!important;
+}
+html[data-theme="dark"] .app-layout .customer-menu-floating{
+  background:#191a22!important;
+  border-color:#30323d!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.42)!important;
+}
+html[data-theme="dark"] .app-layout .customer-menu-floating button{
+  background:transparent!important;
+  border-color:transparent!important;
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .app-layout .customer-menu-floating button:hover{
+  background:#22232c!important;
+  color:#c7c8ff!important;
+}
+html[data-theme="dark"] .app-layout .customer-menu-floating .danger-menu-item{
+  color:#ff9ba3!important;
+}
+html[data-theme="dark"] .app-layout .customer-menu-floating .danger-menu-item:hover{
+  background:#3a2024!important;
+  color:#ffb1b8!important;
+}
+html[data-theme="dark"] .app-layout .toolbar + .panel.table-panel + .modal-backdrop,
+html[data-theme="dark"] .app-layout .modal-backdrop{
+  background:rgba(0,0,0,.58)!important;
+}
+html[data-theme="dark"] .app-layout .modal{
+  background:#191a22!important;
+  border-color:#2d2f3a!important;
+  color:#e5e6eb!important;
+  box-shadow:0 30px 90px rgba(0,0,0,.46)!important;
+}
+html[data-theme="dark"] .app-layout .modal .modal-head h2{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .modal .modal-head p{
+  color:#9b9da8!important;
+}
+html[data-theme="dark"] .app-layout .modal .icon-box{
+  background:#2a2b4c!important;
+  color:#c7c8ff!important;
+}
+html[data-theme="dark"] .app-layout .modal .field>span{
+  color:#bfc1cb!important;
+}
+html[data-theme="dark"] .app-layout .modal .field input,
+html[data-theme="dark"] .app-layout .modal .field textarea,
+html[data-theme="dark"] .app-layout .modal .field select{
+  background:#20212a!important;
+  border-color:#353742!important;
+  color:#f3f4f6!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .app-layout .modal .field input::placeholder,
+html[data-theme="dark"] .app-layout .modal .field textarea::placeholder{
+  color:#777a86!important;
+}
+html[data-theme="dark"] .app-layout .modal .field input:focus,
+html[data-theme="dark"] .app-layout .modal .field textarea:focus,
+html[data-theme="dark"] .app-layout .modal .field select:focus{
+  border-color:#666bd2!important;
+  box-shadow:0 0 0 3px rgba(102,107,210,.16)!important;
+}
+html[data-theme="dark"] .app-layout .modal .modal-x{
+  background:#292a32!important;
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .app-layout .modal .modal-x:hover{
+  background:#353743!important;
+  color:#fff!important;
+}
+html[data-theme="dark"] .app-layout .modal .btn-secondary{
+  background:#20212a!important;
+  border-color:#383a46!important;
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .app-layout .modal .btn-secondary:hover{
+  background:#292b35!important;
+  border-color:#4a4d5c!important;
+  color:#fff!important;
+}
+html[data-theme="dark"] .app-layout .customer-history-contact{
+  color:#9b9da8!important;
+}
+html[data-theme="dark"] .app-layout .customer-history-kpis>div{
+  background:#20212a!important;
+  border-color:#30323d!important;
+}
+html[data-theme="dark"] .app-layout .customer-history-kpis span{
+  color:#9b9da8!important;
+}
+html[data-theme="dark"] .app-layout .customer-history-kpis b{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .customer-history-event{
+  border-bottom-color:#2d2f3a!important;
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .app-layout .customer-history-event b{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .customer-history-event span{
+  color:#c0c2cc!important;
+}
+html[data-theme="dark"] .app-layout .customer-history-event small,
+html[data-theme="dark"] .app-layout .customer-history-loading{
+  color:#858793!important;
+}
+html[data-theme="dark"] .app-layout .customer-history-event strong{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .customer-history-timeline{
+  scrollbar-color:#484b59 transparent;
+}
+html[data-theme="dark"] .app-layout .empty,
+html[data-theme="dark"] .app-layout .empty.small{
+  color:#9b9da8!important;
+}
+html[data-theme="dark"] .app-layout .toolbar .searchbox{
+  background:#20212a!important;
+  border-color:#353742!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .app-layout .toolbar .searchbox:focus-within{
+  border-color:#666bd2!important;
+  box-shadow:0 0 0 3px rgba(102,107,210,.16)!important;
+}
+html[data-theme="dark"] .app-layout .toolbar .searchbox svg{
+  color:#9da0ac!important;
+}
+html[data-theme="dark"] .app-layout .toolbar .searchbox input{
+  background:transparent!important;
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .toolbar .searchbox input::placeholder{
+  color:#777a86!important;
+}
