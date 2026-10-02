@@ -6,6 +6,7 @@ import "./styles.css";
 import "./landing-scroll-fix.css";
 import "./app-refresh.css";
 import "./landing.css";
+import "./dashboard-polish.css";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
