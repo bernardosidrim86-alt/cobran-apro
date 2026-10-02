@@ -151,23 +151,40 @@ function Landing({session}) {
   },[]);
 
   useEffect(()=>{
-    const items=document.querySelectorAll(".lp .scroll-reveal");
+    const items=[...document.querySelectorAll(".lp .scroll-reveal")];
     if(!items.length) return;
-    const reduceMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if(reduceMotion){
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
       items.forEach(el=>el.classList.add("is-visible"));
       return;
     }
-    const observer=new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
+
+    let ticking=false;
+    const revealVisible=()=>{
+      ticking=false;
+      const trigger=window.innerHeight*0.88;
+      items.forEach((el,index)=>{
+        if(el.classList.contains("is-visible")) return;
+        const top=el.getBoundingClientRect().top;
+        if(top < trigger){
+          el.style.setProperty("--reveal-delay", `${Math.min(index*35,180)}ms`);
+          el.classList.add("is-visible");
         }
       });
-    },{threshold:0.12,rootMargin:"0px 0px -7% 0px"});
-    items.forEach(el=>observer.observe(el));
-    return()=>observer.disconnect();
+    };
+
+    const onScroll=()=>{
+      if(ticking) return;
+      ticking=true;
+      requestAnimationFrame(revealVisible);
+    };
+
+    revealVisible();
+    window.addEventListener("scroll",onScroll,{passive:true});
+    window.addEventListener("resize",onScroll);
+    return()=>{
+      window.removeEventListener("scroll",onScroll);
+      window.removeEventListener("resize",onScroll);
+    };
   },[]);
 
   const steps=[
