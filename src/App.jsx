@@ -324,7 +324,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="duvidas" className="lp-section scroll-reveal">
+      <section id="duvidas" className="lp-section">
         <div className="lp-wrap lp-faq-grid">
           <div className="lp-heading"><p className="lp-kicker">Dúvidas</p><h2>Perguntas frequentes.</h2></div>
           <div className="lp-faq">
