@@ -1161,6 +1161,7 @@ function Customers() {
       <div
         className="customer-menu customer-menu-floating"
         style={{position:"fixed",top:menuPosition.top+"px",left:menuPosition.left+"px",width:190,zIndex:2147483647,pointerEvents:"auto"}}
+        onClick={e=>e.stopPropagation()}
       >
         <button type="button" onClick={()=>openCustomerEditor(menuCustomer)}>Editar</button>
         <button type="button" onClick={()=>showData(menuCustomer)}>Ver dados</button>
@@ -1197,7 +1198,7 @@ function Customers() {
                   data-customer-id={c.id}
                   className={"customer-menu-trigger "+(menuCustomer?.id===c.id?"active":"")}
                   aria-label={"Ações de "+c.name}
-                  onClick={e=>openMenu(c,e)}
+                  onClick={e=>{e.stopPropagation();openMenu(c,e)}}
                 >
                   <MoreHorizontal size={19}/>
                 </button>
