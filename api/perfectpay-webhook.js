@@ -357,7 +357,6 @@ export default async function handler(req, res) {
     // Perfect Pay already sends the next billing date for subscriptions.
     // Use it as the expiration date so a monthly plan does not inherit a
     // stale/far-future date from a previous test or renewal.
-
     const baseDate =
       hasValidNextChargeDate
         ? nextChargeDate
