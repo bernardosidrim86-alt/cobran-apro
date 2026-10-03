@@ -1108,7 +1108,7 @@ function Customers() {
 
   }
 
-  function showData(c){closeMenu();openCustomer(c);}
+  function showData(c){openCustomer(c);}
 
   const filtered=rows.filter(x=>(x.name+" "+(x.phone||"")+" "+(x.email||"")).toLowerCase().includes(search.toLowerCase()));
 
@@ -1144,7 +1144,7 @@ function Customers() {
                     </button>
                   </div>
                 </details>
-              
+              </td>
             </tr>)}
           </tbody>
         </table>}
@@ -1180,19 +1180,6 @@ function Customers() {
           <Button type="submit" disabled={editingSaving}>{editingSaving?"Salvando...":"Salvar alterações"}</Button>
         </div>
       </form>
-    </div>}
-
-    {menuCustomer&&<div className="modal-backdrop" onClick={closeMenu}>
-      <div className="modal action-sheet" onClick={e=>e.stopPropagation()}>
-        <button type="button" className="modal-x" onClick={closeMenu}><X/></button>
-        <div className="modal-head"><div className="icon-box"><UserRound/></div><div><h2>{menuCustomer.name}</h2><p>{menuCustomer.phone||menuCustomer.email||"Escolha uma ação"}</p></div></div>
-        <div className="action-sheet-list">
-          <button type="button" onClick={()=>{const x=menuCustomer;closeMenu();openCustomerEditor(x);}}>Editar dados</button>
-          <button type="button" onClick={()=>{const x=menuCustomer;closeMenu();showData(x);}}>Ver dados e histórico</button>
-          <button type="button" onClick={()=>{const x=menuCustomer;closeMenu();whatsapp(x);}}>Abrir WhatsApp</button>
-          <button type="button" className="danger-menu-item" onClick={()=>{const x=menuCustomer;closeMenu();removeCustomer(x);}} disabled={deleting}>{deleting?"Excluindo...":"Excluir cliente"}</button>
-        </div>
-      </div>
     </div>}
 
     {customerView&&<div className="modal-backdrop">
