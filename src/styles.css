@@ -9772,3 +9772,109 @@ html[data-theme="dark"] .app-layout .ai-locked-features span{
 html[data-theme="dark"] .app-layout .ai-locked-features svg{
   color:#72d19b!important;
 }
+
+
+/* Clientes — menu de ações novo, independente do menu antigo */
+.client-actions-head{
+  width:56px;
+  text-align:right;
+}
+.client-actions-cell{
+  position:relative;
+  width:56px;
+  text-align:right;
+  overflow:visible !important;
+}
+.client-action-details{
+  position:relative;
+  display:inline-block;
+}
+.client-action-details > summary{
+  list-style:none;
+}
+.client-action-details > summary::-webkit-details-marker{
+  display:none;
+}
+.client-action-button{
+  width:34px;
+  height:34px;
+  padding:0;
+  border:1px solid transparent;
+  border-radius:9px;
+  background:transparent;
+  color:#777;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+.client-action-button:hover,
+.client-action-details[open] .client-action-button{
+  background:#f5f5f8;
+  border-color:#e5e5ea;
+  color:#5051d1;
+}
+.client-action-menu{
+  position:absolute;
+  top:calc(100% + 6px);
+  right:0;
+  z-index:10000;
+  width:190px;
+  padding:5px;
+  background:#fff;
+  border:1px solid #e5e5e8;
+  border-radius:10px;
+  box-shadow:0 14px 35px #00000022;
+}
+.client-action-menu button{
+  display:block;
+  width:100%;
+  padding:10px 11px;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  color:#333;
+  text-align:left;
+  font-size:12px;
+  cursor:pointer;
+}
+.client-action-menu button:hover{
+  background:#f5f5f8;
+  color:#5051d1;
+}
+.client-action-menu .client-action-danger{
+  color:#c0392b;
+}
+.client-action-menu .client-action-danger:hover{
+  background:#fff0f0;
+  color:#b52e22;
+}
+.panel.table-panel:has(.client-action-details[open]){
+  overflow:visible !important;
+}
+.customers-table-wrap{
+  overflow:visible !important;
+}
+
+@media (max-width:700px){
+  .client-actions-cell{
+    display:block !important;
+    position:absolute !important;
+    top:7px !important;
+    right:7px !important;
+    width:34px !important;
+    height:34px !important;
+    margin:0 !important;
+    padding:0 !important;
+    z-index:1000 !important;
+  }
+  .client-action-button{
+    width:32px;
+    height:32px;
+    border-color:#e5e5ea;
+    background:#fff;
+  }
+  .client-action-menu{
+    right:0;
+    width:180px;
+  }
+}
