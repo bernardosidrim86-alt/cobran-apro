@@ -55,8 +55,6 @@ function detectPlan(payload) {
   const name = normalize(payload?.plan?.name);
   const amount = Number(payload?.sale_amount);
 
-  // Prefer the unique Perfect Pay plan code.
-  // This avoids relying on the plan name or price when the code is available.
   for (const plan of PLANS) {
     if (planCode === plan.monthlyPlanCode) {
       return { ...plan, cycle: "monthly" };
@@ -67,7 +65,6 @@ function detectPlan(payload) {
     }
   }
 
-  // Fallback for older/unusual webhook payloads.
   for (const plan of PLANS) {
     if (name.includes(plan.key)) {
       if (amountMatches(amount, plan.monthly)) {
@@ -82,7 +79,6 @@ function detectPlan(payload) {
     }
   }
 
-  // Final fallback by amount only.
   for (const plan of PLANS) {
     if (amountMatches(amount, plan.monthly)) {
       return { ...plan, cycle: "monthly" };
@@ -108,6 +104,52 @@ function getCustomerEmail(payload) {
     .toLowerCase();
 }
 
+async function findUserByEmail(email) {
+  if (!email) return null;
+
+  const perPage = 1000;
+  let page = 1;
+
+  while (page <= 100) {
+    const { data: usersData, error: usersError } =
+      await supabaseAdmin.auth.admin.listUsers({ page, perPage });
+
+    if (usersError) throw usersError;
+
+    const user = usersData.users.find(
+      (item) => String(item.email || "").toLowerCase() === email
+    );
+
+    if (user) return user;
+
+    if (usersData.users.length < perPage) break;
+    page += 1;
+  }
+
+  return null;
+}
+
+async function findUserByMetadata(metadataIdentifier) {
+  if (
+    !metadataIdentifier ||
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      metadataIdentifier
+    )
+  ) {
+    return null;
+  }
+
+  const { data: linkedUserData, error: linkedUserError } =
+    await supabaseAdmin.auth.admin.getUserById(metadataIdentifier);
+
+  if (linkedUserError) {
+    console.error("Erro ao localizar usuário pelo metadata:", linkedUserError);
+    return null;
+  }
+
+  return linkedUserData?.user || null;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "method_not_allowed" });
@@ -127,9 +169,20 @@ export default async function handler(req, res) {
     }
 
     const status = Number(payload?.sale_status_enum);
+    const email = getCustomerEmail(payload);
+    const metadataIdentifier = String(
+      payload?.metadata?.utm_content ||
+      payload?.metadata?.src ||
+      ""
+    ).trim();
 
-    // Temporary diagnostic for Perfect Pay subscription-event testing.
-    // Do not log customer email, token, or the full payload.
+    let supabaseProjectHost = null;
+    try {
+      supabaseProjectHost = new URL(SUPABASE_URL).host;
+    } catch {
+      supabaseProjectHost = "invalid_url";
+    }
+
     console.log("PerfectPay webhook diagnostic", {
       sale_code: String(payload?.code || "").trim() || null,
       sale_status_enum: Number.isFinite(status) ? status : null,
@@ -141,21 +194,14 @@ export default async function handler(req, res) {
       subscription_status: payload?.subscription?.status || null,
       subscription_status_event: payload?.subscription?.status_event || null,
       subscription_next_charge_date: payload?.subscription?.next_charge_date || null,
+      email_present: Boolean(email),
+      metadata_uuid_present: Boolean(metadataIdentifier),
+      supabase_project_host: supabaseProjectHost,
     });
-
-    const email = getCustomerEmail(payload);
-    const metadataIdentifier = String(
-      payload?.metadata?.utm_content ||
-      payload?.metadata?.src ||
-      ""
-    ).trim();
 
     const subscriptionStatus = normalize(payload?.subscription?.status);
     const subscriptionStatusEvent = normalize(payload?.subscription?.status_event);
 
-    // Perfect Pay can send subscription lifecycle events with sale_status_enum
-    // still equal to "approved". Treat explicit subscription cancellation/
-    // expiration/inactivation events as revocation too.
     const subscriptionRevoked =
       /cancelad|cancell|expired|vencid|inativ/.test(subscriptionStatus) ||
       /cancelad|cancell|expired|vencid|inativ/.test(subscriptionStatusEvent);
@@ -172,79 +218,59 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, ignored: true, status });
     }
 
-    let user = null;
+    // Always prefer the current account found by the Perfect Pay customer email.
+    // This prevents an old/deleted CobrançaPro UUID in metadata from selecting
+    // the wrong user after the database was rebuilt.
+    let user = await findUserByEmail(email);
+    let userResolution = user ? "email" : null;
 
-    // Prefer the CobrançaPro account identifier sent through Perfect Pay metadata.
-    if (
-      metadataIdentifier &&
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-        metadataIdentifier
-      )
-    ) {
-      const { data: linkedUserData, error: linkedUserError } =
-        await supabaseAdmin.auth.admin.getUserById(metadataIdentifier);
-
-      if (linkedUserError) {
-        console.error("Erro ao localizar usuário pelo metadata:", linkedUserError);
-      } else {
-        user = linkedUserData?.user || null;
-      }
+    // Metadata remains a fallback for legacy payloads that do not contain the
+    // buyer email.
+    if (!user) {
+      user = await findUserByMetadata(metadataIdentifier);
+      userResolution = user ? "metadata" : null;
     }
 
-    // Backward-compatible fallback for purchases without the account identifier.
-    // Search all Auth pages instead of only the first 1,000 users.
-    if (!user && email) {
-      const perPage = 1000;
-      let page = 1;
-
-      while (!user) {
-        const { data: usersData, error: usersError } =
-          await supabaseAdmin.auth.admin.listUsers({ page, perPage });
-
-        if (usersError) throw usersError;
-
-        user = usersData.users.find(
-          (item) => String(item.email || "").toLowerCase() === email
-        );
-
-        if (
-          user ||
-          usersData.users.length < perPage ||
-          page >= 100
-        ) {
-          break;
-        }
-
-        page += 1;
-      }
-    }
+    console.log("PerfectPay webhook user resolution", {
+      resolution: userResolution,
+      user_found: Boolean(user),
+    });
 
     if (!user) {
       return res.status(404).json({
         ok: false,
         error: "user_not_found",
-        email: email || null,
-        metadata_identifier: metadataIdentifier || null,
+        email_present: Boolean(email),
+        metadata_uuid_present: Boolean(metadataIdentifier),
       });
     }
 
     const { data: currentProfile, error: profileError } = await supabaseAdmin
       .from("profiles")
-      .select("plan, subscription_status, subscription_expires_at")
+      .select("id, plan, subscription_status, subscription_expires_at")
       .eq("id", user.id)
       .maybeSingle();
 
     if (profileError) throw profileError;
 
+    console.log("PerfectPay webhook profile lookup", {
+      profile_found: Boolean(currentProfile),
+      current_plan: currentProfile?.plan || null,
+      current_status: currentProfile?.subscription_status || null,
+      user_resolution: userResolution,
+    });
+
+    if (!currentProfile) {
+      return res.status(500).json({
+        ok: false,
+        error: "profile_not_found",
+      });
+    }
+
     if (revoked) {
-      // A subscription cancellation should keep the paid plan active until
-      // the already-paid period ends. Sale-level revocations (refund,
-      // chargeback, rejection, etc.) revoke access immediately.
       const cancellationKeepsAccess =
         subscriptionRevoked && [2, 8, 10].includes(status);
 
-      // Never revoke a newer/different paid plan because an old Perfect Pay
-      // transaction changed state later.
       const incomingPlan = detectPlan(payload);
 
       if (
@@ -260,7 +286,7 @@ export default async function handler(req, res) {
         });
       }
 
-      const { error } = await supabaseAdmin
+      const { data: updatedProfile, error } = await supabaseAdmin
         .from("profiles")
         .update(
           cancellationKeepsAccess
@@ -274,9 +300,23 @@ export default async function handler(req, res) {
                 subscription_expires_at: new Date().toISOString(),
               }
         )
-        .eq("id", user.id);
+        .eq("id", user.id)
+        .select("id, plan, subscription_status, subscription_expires_at")
+        .maybeSingle();
 
       if (error) throw error;
+
+      if (!updatedProfile) {
+        return res.status(500).json({ ok: false, error: "profile_update_failed" });
+      }
+
+      console.log("PerfectPay webhook update", {
+        action: cancellationKeepsAccess
+          ? "subscription_cancelled_until_expiration"
+          : "subscription_revoked",
+        plan: updatedProfile.plan,
+        status: updatedProfile.subscription_status,
+      });
 
       return res.status(200).json({
         ok: true,
@@ -314,8 +354,6 @@ export default async function handler(req, res) {
       currentExpiresAt &&
       currentExpiresAt > new Date();
 
-    // An older webhook for a cheaper plan must not downgrade an active
-    // subscription purchased later.
     if (
       currentIsActive &&
       (planRank[plan.key] ?? 0) < (planRank[currentPlanKey] ?? 0)
@@ -335,10 +373,6 @@ export default async function handler(req, res) {
     const hasValidNextChargeDate =
       nextChargeDate && !Number.isNaN(nextChargeDate.getTime()) && nextChargeDate > now;
 
-    // Perfect Pay can send both "approved" and "completed" for the same sale.
-    // Ignore a completed event only when it does not carry a newer billing
-    // date. A renewal can arrive as "completed" with a next_charge_date that
-    // is later than the current expiration, and that event must extend access.
     if (
       status === 10 &&
       currentIsActive &&
@@ -354,9 +388,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // Perfect Pay already sends the next billing date for subscriptions.
-    // Use it as the expiration date so a monthly plan does not inherit a
-    // stale/far-future date from a previous test or renewal.
     const baseDate =
       hasValidNextChargeDate
         ? nextChargeDate
@@ -371,7 +402,7 @@ export default async function handler(req, res) {
           plan.cycle === "annual" ? plan.daysAnnual : plan.daysMonthly
         );
 
-    const { error } = await supabaseAdmin
+    const { data: updatedProfile, error } = await supabaseAdmin
       .from("profiles")
       .update({
         plan: plan.key,
@@ -379,9 +410,22 @@ export default async function handler(req, res) {
         subscription_status: "active",
         subscription_expires_at: expiresAt,
       })
-      .eq("id", user.id);
+      .eq("id", user.id)
+      .select("id, plan, billing_cycle, subscription_status, subscription_expires_at")
+      .maybeSingle();
 
     if (error) throw error;
+
+    if (!updatedProfile) {
+      return res.status(500).json({ ok: false, error: "profile_update_failed" });
+    }
+
+    console.log("PerfectPay webhook update", {
+      action: "subscription_activated",
+      plan: updatedProfile.plan,
+      billing_cycle: updatedProfile.billing_cycle,
+      status: updatedProfile.subscription_status,
+    });
 
     return res.status(200).json({
       ok: true,
