@@ -155,6 +155,37 @@ revoke all on function private.my_company_id() from public, anon;
 grant usage on schema private to authenticated;
 grant execute on function private.my_company_id() to authenticated;
 
+drop policy if exists "company own" on public.companies;
+create policy "company own" on public.companies for all to authenticated using (id = (select private.my_company_id())) with check (id = (select private.my_company_id()));
+drop policy if exists "profile own" on public.profiles;
+drop policy if exists "profile own select" on public.profiles;
+drop policy if exists "profile own update" on public.profiles;
+create policy "profile own select" on public.profiles for select to authenticated using (id = (select auth.uid()));
+create policy "profile own update" on public.profiles for update to authenticated using (id = (select auth.uid())) with check (id = (select auth.uid()));
+drop policy if exists "customers company" on public.customers;
+create policy "customers company" on public.customers for all to authenticated using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
+drop policy if exists "charges company" on public.charges;
+create policy "charges company" on public.charges for all to authenticated using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
+drop policy if exists "payments company" on public.payments;
+create policy "payments company" on public.payments for all to authenticated using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
+drop policy if exists "ai company" on public.ai_settings;
+create policy "ai company" on public.ai_settings for all to authenticated using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
+drop policy if exists "settings company" on public.company_settings;
+create policy "settings company" on public.company_settings for all to authenticated using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
+drop policy if exists "messages company" on public.message_logs;
+create policy "messages company" on public.message_logs for all to authenticated using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
+alter table public.subscriptions enable row level security;
+drop policy if exists "subscription own" on public.subscriptions;
+drop policy if exists "subscription own select" on public.subscriptions;
+create policy "subscription own select" on public.subscriptions for select to authenticated using (user_id = (select auth.uid()));
+create or replace function private.create_my_company_impl(p_name text, p_segment text default null, p_phone text default null) returns uuid language plpgsql security definer set search_path = '' as $fn$ declare v_company_id uuid; begin if (select auth.uid()) is null then raise exception 'not authenticated'; end if; select company_id into v_company_id from public.profiles where id = (select auth.uid()); if v_company_id is not null then return v_company_id; end if; insert into public.companies (name, segment, phone) values (coalesce(nullif(trim(p_name), ''), 'Minha empresa'), nullif(trim(coalesce(p_segment, '')), ''), nullif(trim(coalesce(p_phone, '')), '')) returning id into v_company_id; update public.profiles set company_id = v_company_id where id = (select auth.uid()) and company_id is null; return v_company_id; end; $fn$;
+revoke all on function private.create_my_company_impl(text, text, text) from public, anon;
+grant usage on schema private to authenticated;
+grant execute on function private.create_my_company_impl(text, text, text) to authenticated;
+create or replace function public.create_my_company(p_name text, p_segment text default null, p_phone text default null) returns uuid language sql security invoker set search_path = '' as $fn$ select private.create_my_company_impl($1, $2, $3); $fn$;
+revoke all on function public.create_my_company(text, text, text) from public, anon;
+grant execute on function public.create_my_company(text, text, text) to authenticated;
+
 -- Trigger para criar perfil após cadastro.
 create or replace function public.handle_new_user()
 returns trigger
@@ -222,8 +253,6 @@ alter table public.message_logs add column if not exists error text;
 create unique index if not exists message_logs_automation_once_idx on public.message_logs(charge_id, automation_key) where charge_id is not null and automation_key is not null;
 
 revoke all on function public.handle_new_user() from public, anon, authenticated;
-revoke all on function public.my_company_id() from public, anon;
-grant execute on function public.my_company_id() to authenticated;
 
 
 -- Hardening: client roles get only the Data API operations used by the app.
