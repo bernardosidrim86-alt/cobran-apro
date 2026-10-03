@@ -10040,3 +10040,22 @@ html[data-theme="dark"] .app-layout .ai-locked-features svg{
   color:#c0392b !important;
   background:transparent !important;
 }
+
+
+/* Clientes — garantir que os modais de dados/edição fiquem acima do backdrop */
+.modal-backdrop{
+  z-index:999999 !important;
+  isolation:isolate !important;
+}
+.modal-backdrop > .modal{
+  position:relative !important;
+  z-index:1000000 !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  transform:none !important;
+  animation:none !important;
+  pointer-events:auto !important;
+}
+.modal-backdrop > .modal.customer-history-modal{
+  display:block !important;
+}
