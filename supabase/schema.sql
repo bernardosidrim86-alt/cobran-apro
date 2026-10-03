@@ -137,74 +137,23 @@ alter table public.ai_settings enable row level security;
 alter table public.company_settings enable row level security;
 alter table public.message_logs enable row level security;
 
+create schema if not exists private;
+
 create or replace function private.my_company_id()
 returns uuid
 language sql
 stable
 security definer
 set search_path = ''
-as $
-  select company_id from public.profiles where id = (select auth.uid())
-$;
-
-drop policy if exists "company own" on public.companies;
-create policy "company own" on public.companies for all using (id = (select private.my_company_id())) with check (id = (select private.my_company_id()));
-
-drop policy if exists "profile own" on public.profiles;
-create policy "profile own select" on public.profiles for select to authenticated using (id = (select auth.uid()));
-create policy "profile own update" on public.profiles for update to authenticated using (id = (select auth.uid())) with check (id = (select auth.uid()));
-
-drop policy if exists "customers company" on public.customers;
-create policy "customers company" on public.customers for all using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
-
-drop policy if exists "charges company" on public.charges;
-create policy "charges company" on public.charges for all using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
-
-drop policy if exists "payments company" on public.payments;
-create policy "payments company" on public.payments for all using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
-
-drop policy if exists "ai company" on public.ai_settings;
-create policy "ai company" on public.ai_settings for all using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
-
-drop policy if exists "settings company" on public.company_settings;
-create policy "settings company" on public.company_settings for all using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
-
-drop policy if exists "messages company" on public.message_logs;
-create policy "messages company" on public.message_logs for all using (company_id = (select private.my_company_id())) with check (company_id = (select private.my_company_id()));
-
--- Cria a empresa do usuário no onboarding (RLS impede o insert direto antes do vínculo).
-create or replace function public.create_my_company(p_name text, p_segment text default null, p_phone text default null)
-returns uuid
-language plpgsql
-security definer
-set search_path = public
 as $$
-declare
-  v_company_id uuid;
-begin
-  if auth.uid() is null then
-    raise exception 'not authenticated';
-  end if;
-
-  select company_id into v_company_id from public.profiles where id = auth.uid();
-  if v_company_id is not null then
-    return v_company_id;
-  end if;
-
-  insert into public.companies (name, segment, phone)
-  values (coalesce(nullif(trim(p_name), ''), 'Minha empresa'), p_segment, p_phone)
-  returning id into v_company_id;
-
-  insert into public.profiles (id, company_id)
-  values (auth.uid(), v_company_id)
-  on conflict (id) do update set company_id = excluded.company_id;
-
-  return v_company_id;
-end;
+  select company_id
+  from public.profiles
+  where id = (select auth.uid())
 $$;
 
-revoke all on function public.create_my_company(text, text, text) from public, anon;
-grant execute on function public.create_my_company(text, text, text) to authenticated;
+revoke all on function private.my_company_id() from public, anon;
+grant usage on schema private to authenticated;
+grant execute on function private.my_company_id() to authenticated;
 
 -- Trigger para criar perfil após cadastro.
 create or replace function public.handle_new_user()
@@ -283,7 +232,6 @@ grant select on table public.profiles to authenticated;
 grant update (full_name) on table public.profiles to authenticated;
 revoke all on table public.subscriptions from anon, authenticated;
 grant select on table public.subscriptions to authenticated;
-revoke all on function public.my_company_id() from public, anon, authenticated;
 revoke all on table public.companies, public.customers, public.charges, public.payments, public.ai_settings, public.company_settings, public.message_logs, public.whatsapp_automation_settings, public.whatsapp_connections from anon;
 revoke execute on function public.create_my_company(text, text, text) from public, anon;
 grant execute on function public.create_my_company(text, text, text) to authenticated;
