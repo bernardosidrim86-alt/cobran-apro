@@ -7,15 +7,54 @@ create table if not exists public.companies (
   segment text,
   phone text,
   currency text not null default 'BRL',
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  avatar_url text
 );
 
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   company_id uuid references public.companies(id) on delete set null,
   full_name text,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  email text,
+  plan text not null default 'free' check (plan in ('free','essencial','profissional','business')),
+  billing_cycle text check (billing_cycle is null or billing_cycle in ('monthly','annual')),
+  subscription_status text not null default 'inactive' check (subscription_status in ('inactive','pending','active','cancelled','refunded','expired')),
+  subscription_expires_at timestamptz,
+  updated_at timestamptz not null default now()
 );
+
+create table if not exists public.subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  company_id uuid references public.companies(id) on delete set null,
+  provider text not null default 'perfectpay',
+  provider_plan_code text,
+  provider_sale_code text unique,
+  plan text not null check (plan in ('essencial','profissional','business')),
+  billing_cycle text not null check (billing_cycle in ('monthly','annual')),
+  status text not null default 'pending' check (status in ('pending','active','cancelled','refunded','expired')),
+  amount numeric,
+  currency text not null default 'BRL',
+  customer_email text,
+  expires_at timestamptz,
+  last_event_status text,
+  last_event_at timestamptz,
+  raw_payload jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists subscriptions_user_id_idx on public.subscriptions(user_id);
+create index if not exists subscriptions_company_id_idx on public.subscriptions(company_id);
+
+alter table public.subscriptions enable row level security;
+
+drop policy if exists "subscriptions own" on public.subscriptions;
+create policy "subscriptions own" on public.subscriptions
+  for all to authenticated
+  using (user_id = auth.uid())
+  with check (user_id = auth.uid());
 
 create table if not exists public.customers (
   id uuid primary key default gen_random_uuid(),
@@ -174,8 +213,8 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, full_name)
-  values (new.id, coalesce(new.raw_user_meta_data->>'full_name', ''))
+  insert into public.profiles (id, full_name, email)
+  values (new.id, coalesce(new.raw_user_meta_data->>'full_name', ''), new.email)
   on conflict (id) do nothing;
   return new;
 end;
@@ -231,3 +270,7 @@ create policy "whatsapp connections company" on public.whatsapp_connections for 
 alter table public.message_logs add column if not exists automation_key text;
 alter table public.message_logs add column if not exists error text;
 create unique index if not exists message_logs_automation_once_idx on public.message_logs(charge_id, automation_key) where charge_id is not null and automation_key is not null;
+
+revoke all on function public.handle_new_user() from public, anon, authenticated;
+revoke all on function public.my_company_id() from public, anon;
+grant execute on function public.my_company_id() to authenticated;
