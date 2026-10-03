@@ -11,7 +11,7 @@ export default async function handler(req,res){
     if(!accessToken) return res.status(401).json({error:"Você precisa estar logado para usar o Assistente IA."});
 
     const supabaseUrl=process.env.SUPABASE_URL;
-    const supabaseKey=process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    const supabaseKey=process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
     if(!supabaseUrl||!supabaseKey) return res.status(500).json({error:"Supabase não configurado."});
     const sbHeaders={apikey:supabaseKey,Authorization:"Bearer "+accessToken};
 
