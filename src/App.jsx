@@ -1217,21 +1217,27 @@ function Customers() {
       </form>
     </div>}
 
-    {editingCustomer&&<div className="modal-backdrop">
-      <form className="modal" onSubmit={saveCustomerEdit}>
-        <button type="button" className="modal-x" onClick={()=>setEditingCustomer(null)}><X/></button>
-        <div className="modal-head"><div className="icon-box"><UserRound/></div><div><h2>Editar cliente</h2><p>Atualize os dados do cliente.</p></div></div>
-        {editingError&&<div className="error">{editingError}</div>}
-        <Input label="Nome" value={editingForm.name} onChange={e=>setEditingForm({...editingForm,name:e.target.value})} required/>
-        <Input label="Telefone" value={editingForm.phone} onChange={e=>setEditingForm({...editingForm,phone:e.target.value})}/>
-        <Input label="E-mail" type="email" value={editingForm.email} onChange={e=>setEditingForm({...editingForm,email:e.target.value})}/>
-        <label className="field"><span>Observações</span><textarea value={editingForm.notes} onChange={e=>setEditingForm({...editingForm,notes:e.target.value})}/></label>
-        <div className="modal-actions">
-          <Button type="button" variant="secondary" onClick={()=>setEditingCustomer(null)}>Cancelar</Button>
-          <Button type="submit" disabled={editingSaving}>{editingSaving?"Salvando...":"Salvar alterações"}</Button>
-        </div>
-      </form>
-    </div>}
+    {editingCustomer&&createPortal(
+      <div className="client-modal-root" role="dialog" aria-modal="true" aria-label="Editar cliente">
+        <form className="client-modal-card" onSubmit={saveCustomerEdit}>
+          <button type="button" className="client-modal-close" onClick={()=>setEditingCustomer(null)} aria-label="Fechar"><X size={18}/></button>
+          <div className="client-modal-head">
+            <div className="client-modal-icon"><UserRound size={19}/></div>
+            <div><h2>Editar cliente</h2><p>Atualize os dados do cliente.</p></div>
+          </div>
+          {editingError&&<div className="error">{editingError}</div>}
+          <Input label="Nome" value={editingForm.name} onChange={e=>setEditingForm({...editingForm,name:e.target.value})} required/>
+          <Input label="Telefone" value={editingForm.phone} onChange={e=>setEditingForm({...editingForm,phone:e.target.value})}/>
+          <Input label="E-mail" type="email" value={editingForm.email} onChange={e=>setEditingForm({...editingForm,email:e.target.value})}/>
+          <label className="field"><span>Observações</span><textarea value={editingForm.notes} onChange={e=>setEditingForm({...editingForm,notes:e.target.value})}/></label>
+          <div className="modal-actions">
+            <Button type="button" variant="secondary" onClick={()=>setEditingCustomer(null)}>Cancelar</Button>
+            <Button type="submit" disabled={editingSaving}>{editingSaving?"Salvando...":"Salvar alterações"}</Button>
+          </div>
+        </form>
+      </div>,
+      document.body
+    )}
 
     {clientMenu&&clientMenuPosition&&createPortal(
       <div
@@ -1254,42 +1260,44 @@ function Customers() {
       document.body
     )}
 
-    {customerView&&<div className="modal-backdrop">
-      <div className="modal customer-history-modal">
-        <button type="button" className="modal-x" onClick={()=>setCustomerView(null)}><X/></button>
-        <div className="modal-head">
-          <div className="icon-box"><UserRound/></div>
-          <div><h2>{customerView.name}</h2><p>Histórico completo do cliente</p></div>
-        </div>
-        <div className="customer-history-contact">
-          <span>{customerView.phone||"Telefone não informado"}</span>
-          <span>{customerView.email||"E-mail não informado"}</span>
-        </div>
-        {history.loading?<div className="customer-history-loading">Carregando histórico...</div>:<>
-          <div className="customer-history-kpis">
-            <div><span>Total pago</span><b>{money(history.payments.reduce((a,x)=>a+Number(x.amount||0),0))}</b></div>
-            <div><span>Em aberto</span><b>{money(history.charges.filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.amount||0),0))}</b></div>
-            <div><span>Cobranças</span><b>{history.charges.length}</b></div>
-            <div><span>Pagamentos</span><b>{history.payments.length}</b></div>
+    {customerView&&createPortal(
+      <div className="client-modal-root" role="dialog" aria-modal="true" aria-label={"Dados de "+customerView.name}>
+        <div className="client-modal-card client-modal-history">
+          <button type="button" className="client-modal-close" onClick={()=>setCustomerView(null)} aria-label="Fechar"><X size={18}/></button>
+          <div className="client-modal-head">
+            <div className="client-modal-icon"><UserRound size={19}/></div>
+            <div><h2>{customerView.name}</h2><p>Histórico completo do cliente</p></div>
           </div>
-          <div className="customer-history-timeline">
-            {[...history.charges.map(x=>({date:x.due_date+"T12:00:00",type:"charge",title:"Cobrança criada",detail:x.description||"Cobrança",value:Number(x.amount||0),status:x.status})),...history.payments.map(x=>({date:x.paid_at,type:"payment",title:"Pagamento recebido",detail:x.payment_method||"Pagamento",value:Number(x.amount||0)}))].sort((a,b)=>new Date(b.date)-new Date(a.date)).map((item,i)=><div className="customer-history-event" key={i}>
-              <span className={item.type==="payment"?"event-dot paid":"event-dot charge"}></span>
-              <div><b>{item.title}</b><span>{item.detail}</span><small>{new Date(item.date).toLocaleDateString("pt-BR")} · {item.type==="charge"?(item.status==="paid"?"Pago":"A receber"): "Recebido"}</small></div>
-              <strong>{money(item.value)}</strong>
-            </div>)}
-            {history.charges.length===0&&history.payments.length===0&&<Empty text="Ainda não há movimentações para este cliente."/>}
+          <div className="customer-history-contact">
+            <span>{customerView.phone||"Telefone não informado"}</span>
+            <span>{customerView.email||"E-mail não informado"}</span>
           </div>
-        </>}
-        <div className="modal-actions">
-          <Button type="button" variant="secondary" onClick={()=>openCustomerEditor(customerView)}>Editar cliente</Button>
-          <Button type="button" onClick={()=>setCustomerView(null)}>Fechar</Button>
+          {history.loading?<div className="customer-history-loading">Carregando histórico...</div>:<>
+            <div className="customer-history-kpis">
+              <div><span>Total pago</span><b>{money(history.payments.reduce((a,x)=>a+Number(x.amount||0),0))}</b></div>
+              <div><span>Em aberto</span><b>{money(history.charges.filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.amount||0),0))}</b></div>
+              <div><span>Cobranças</span><b>{history.charges.length}</b></div>
+              <div><span>Pagamentos</span><b>{history.payments.length}</b></div>
+            </div>
+            <div className="customer-history-timeline">
+              {[...history.charges.map(x=>({date:x.due_date+"T12:00:00",type:"charge",title:"Cobrança criada",detail:x.description||"Cobrança",value:Number(x.amount||0),status:x.status})),...history.payments.map(x=>({date:x.paid_at,type:"payment",title:"Pagamento recebido",detail:x.payment_method||"Pagamento",value:Number(x.amount||0)}))].sort((a,b)=>new Date(b.date)-new Date(a.date)).map((item,i)=><div className="customer-history-event" key={i}>
+                <span className={item.type==="payment"?"event-dot paid":"event-dot charge"}></span>
+                <div><b>{item.title}</b><span>{item.detail}</span><small>{new Date(item.date).toLocaleDateString("pt-BR")} · {item.type==="charge"?(item.status==="paid"?"Pago":"A receber"):"Recebido"}</small></div>
+                <strong>{money(item.value)}</strong>
+              </div>)}
+              {history.charges.length===0&&history.payments.length===0&&<Empty text="Ainda não há movimentações para este cliente."/>}
+            </div>
+          </>}
+          <div className="modal-actions">
+            <Button type="button" variant="secondary" onClick={()=>openCustomerEditor(customerView)}>Editar cliente</Button>
+            <Button type="button" onClick={()=>setCustomerView(null)}>Fechar</Button>
+          </div>
         </div>
-      </div>
-    </div>}
+      </div>,
+      document.body
+    )}
   </>;
 }
-
 function Charges() {
   const companyId=useCompany();
   const loc=useLocation();
