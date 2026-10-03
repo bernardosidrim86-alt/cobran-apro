@@ -8,6 +8,7 @@ import "./app-refresh.css";
 import "./landing.css";
 import "./dashboard-polish.css";
 import "./dark-mode.css";
+import "./polish-v2.css";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
