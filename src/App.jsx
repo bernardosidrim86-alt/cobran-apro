@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
 import { Routes, Route, Navigate, Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowRight, Bell, Check, ChevronRight, CircleDollarSign, CreditCard,
@@ -559,7 +558,7 @@ function AppShell({session}) {
   const hasAIAccess=currentPlan==="profissional"||currentPlan==="business";
   const links=[["/app",LayoutDashboard,"Dashboard"],["/app/clientes",Users,"Clientes"],["/app/cobrancas",Receipt,"Cobranças"],["/app/recebimentos",Wallet,"Recebimentos"],["/app/calendario",CalendarDays,"Calendário"],["/app/relatorios",TrendingUp,"Relatórios"],["/app/ia",Sparkles,"Assistente IA"],["/app/configuracoes",Settings,"Configurações"]];
   return <div className="app-layout" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onPointerDown={handlePointerDown} onPointerUp={handlePointerUp}>{mobile&&<button className="sidebar-backdrop" aria-label="Fechar menu" onClick={()=>setMobile(false)}></button>}<aside className={`sidebar ${mobile?"open":""}`}><div className="mobile-sidebar-head"><Link to="/" className="brand side-brand"><img className="brand-logo" src="/logo.png" alt="CobrançaPro" /></Link>{mobile&&<button className="mobile-sidebar-close" onClick={()=>setMobile(false)} aria-label="Fechar menu"><X size={20}/></button>}</div><div className="side-nav">
-    {links.slice(0,2).map(([path,Icon,label])=><Link onClick={()=>setMobile(false)} className={loc.pathname===path?"active":""} to={path} key={path}><Icon size={18}/>{label}</Link>)}
+    {links.slice(0,2).map(([path,Icon,label])=><Link onClick={e=>{e.stopPropagation();setMobile(false);nav(path)}} className={loc.pathname===path?"active":""} to={path} key={path}><Icon size={18}/>{label}</Link>)}
     <div className="side-nav-group">
       <button type="button" className={"side-nav-parent "+(loc.pathname.startsWith("/app/cobrancas")?"active":"")} onClick={()=>setChargesOpen(x=>!x)}>
         <Receipt size={18}/><span>Cobranças</span><ChevronRight size={14} className={chargesOpen?"side-nav-chevron open":"side-nav-chevron"}/>
@@ -661,23 +660,330 @@ function Dashboard({session}) {
 function Metric({title,value,icon:Icon,tone=""}){return <div className="metric"><div className={`metric-icon ${tone}`}><Icon size={19}/></div><span>{title}</span><strong>{value}</strong></div>;}
 function PageTitle({title,subtitle,action}){return <div className="page-title"><div><h1>{title}</h1><p>{subtitle}</p></div>{action}</div>;}
 function Empty({text}){return <div className="empty"><Receipt size={24}/><span>{text}</span></div>;}
-function ChargeDetail({charge,onClose,onPaid}){
+function ChargeDetail({charge,onClose,onPaid,customers=[]}){
+  const [saving,setSaving]=useState(false);
+  const [deleting,setDeleting]=useState(false);
+  const [repeating,setRepeating]=useState(false);
   const [editing,setEditing]=useState(false);
-  const [ef,setEf]=useState({description:charge.description||"",amount:charge.amount,due_date:charge.due_date,payment_method:charge.payment_method||"Pix"});
+  const [repeatDate,setRepeatDate]=useState("");
+  const [editForm,setEditForm]=useState({
+    customer_id:charge.customer_id||"",
+    description:charge.description||"",
+    amount:String(charge.amount??""),
+    due_date:charge.due_date||todayISO(),
+    payment_method:charge.payment_method||"Pix",
+    recurrence:charge.recurrence||"none",
+    notes:charge.notes||""
+  });
+  const [editError,setEditError]=useState("");
+
+  useEffect(()=>{
+    setEditing(false);
+    setEditError("");
+    setEditForm({
+      customer_id:charge.customer_id||"",
+      description:charge.description||"",
+      amount:String(charge.amount??""),
+      due_date:charge.due_date||todayISO(),
+      payment_method:charge.payment_method||"Pix",
+      recurrence:charge.recurrence||"none",
+      notes:charge.notes||""
+    });
+  },[charge.id]);
+
+  function addDays(date,days){
+    const d=new Date(date+"T12:00:00");
+    d.setDate(d.getDate()+days);
+    return d.toISOString().slice(0,10);
+  }
+
+  function addMonths(date,months){
+    const d=new Date(date+"T12:00:00");
+    const day=d.getDate();
+    const target=new Date(d.getFullYear(),d.getMonth()+months,1,12);
+    const last=new Date(target.getFullYear(),target.getMonth()+1,0,12).getDate();
+    target.setDate(Math.min(day,last));
+    return target.toISOString().slice(0,10);
+  }
+
+  function nextMonthDate(date){
+    const d=new Date(date+"T12:00:00");
+    const next=new Date(d.getFullYear(),d.getMonth()+1,1,12);
+    const lastDay=new Date(next.getFullYear(),next.getMonth()+1,0,12).getDate();
+    next.setDate(Math.min(d.getDate(),lastDay));
+    return next.toISOString().slice(0,10);
+  }
+
+  function openRepeat(){
+    setRepeatDate(nextMonthDate(charge.due_date));
+    setRepeating(true);
+    setEditing(false);
+  }
+
   async function saveEdit(e){
     e.preventDefault();
-    const amount=Number(ef.amount);
-    if(!(amount>0)){toast("Informe um valor maior que zero.");return;}
-    const {error}=await supabase.from("charges").update({description:ef.description,amount,due_date:ef.due_date,payment_method:ef.payment_method}).eq("id",charge.id);
-    if(error)toast(error.message);
-    else{toast("Cobrança atualizada.","success");onPaid();}
-  }const [saving,setSaving]=useState(false);const [deleting,setDeleting]=useState(false);const [repeating,setRepeating]=useState(false);const [repeatDate,setRepeatDate]=useState("");function addDays(date,days){const d=new Date(date+"T12:00:00");d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}function addMonths(date,months){const d=new Date(date+"T12:00:00");const day=d.getDate();const target=new Date(d.getFullYear(),d.getMonth()+months,1,12);const last=new Date(target.getFullYear(),target.getMonth()+1,0,12).getDate();target.setDate(Math.min(day,last));return target.toISOString().slice(0,10)}function nextMonthDate(date){const d=new Date(date+"T12:00:00");const year=d.getFullYear();const month=d.getMonth();const day=d.getDate();const next=new Date(year,month+1,1,12);const lastDay=new Date(next.getFullYear(),next.getMonth()+1,0,12).getDate();next.setDate(Math.min(day,lastDay));return next.toISOString().slice(0,10);}function openRepeat(){setRepeatDate(nextMonthDate(charge.due_date));setRepeating(true);}async function repeat(){setSaving(true);const {data:user}=await supabase.auth.getUser();const {data:profile}=await supabase.from("profiles").select("plan").eq("id",user.user.id).single();const plan=PLAN_OPTIONS.find(p=>p.key===(profile?.plan||"free"))||PLAN_OPTIONS[0];let query=supabase.from("charges").select("id",{count:"exact",head:true}).eq("company_id",charge.company_id);if(plan.maxCharges!==null){const startOfMonth=new Date();startOfMonth.setDate(1);const firstDay=startOfMonth.toISOString().slice(0,10);const nextMonth=new Date(startOfMonth.getFullYear(),startOfMonth.getMonth()+1,1);const nextDay=nextMonth.toISOString().slice(0,10);query=query.gte("created_at",firstDay).lt("created_at",nextDay);}const {count}=await query;if(plan.maxCharges!==null&&(count||0)>=plan.maxCharges){toast(`O plano ${plan.title} permite até ${plan.maxCharges} cobranças por mês. Faça upgrade para adicionar mais.`);setSaving(false);return;}const {error}=await supabase.from("charges").insert({company_id:charge.company_id,customer_id:charge.customer_id,description:charge.description,amount:Number(charge.amount),due_date:repeatDate,payment_method:charge.payment_method,status:"pending",recurrence:"none"});if(error){toast(error.message);}else{setRepeating(false);onPaid();onClose();}setSaving(false);}async function removeCharge(){if(!(await confirmDialog("Excluir esta cobrança? Essa ação não pode ser desfeita.",{confirmText:"Excluir",danger:true})))return;setDeleting(true);const {error:paymentError}=await supabase.from("payments").delete().eq("charge_id",charge.id);if(paymentError){toast(paymentError.message);setDeleting(false);return;}const {error}=await supabase.from("charges").delete().eq("id",charge.id).eq("company_id",charge.company_id);if(error)toast(error.message);else{onPaid();onClose();}setDeleting(false);}async function paid(){setSaving(true);const {error}=await supabase.from("charges").update({status:"paid"}).eq("id",charge.id);if(!error){await supabase.from("payments").insert({company_id:charge.company_id,customer_id:charge.customer_id,charge_id:charge.id,amount:charge.amount,payment_method:charge.payment_method,paid_at:new Date().toISOString()});if(charge.recurrence&&charge.recurrence!=="none"){const nextDate=charge.recurrence==="weekly"?addDays(charge.due_date,7):charge.recurrence==="biweekly"?addDays(charge.due_date,14):charge.recurrence==="annual"?addMonths(charge.due_date,12):addMonths(charge.due_date,1);await supabase.from("charges").insert({company_id:charge.company_id,customer_id:charge.customer_id,description:charge.description,amount:Number(charge.amount),due_date:nextDate,payment_method:charge.payment_method,status:"pending",recurrence:charge.recurrence});}onPaid();onClose();}else toast(error.message);setSaving(false);}return <div className="modal-backdrop"><div className="modal"><button className="modal-x" onClick={onClose}><X/></button>{editing?<form onSubmit={saveEdit}><div className="modal-head"><div className="icon-box"><Receipt/></div><div><h2>Editar cobrança</h2><p>Atualize os dados desta cobrança.</p></div></div>
-      <Input label="Descrição" value={ef.description} onChange={e=>setEf({...ef,description:e.target.value})} required/>
-      <Input label="Valor" type="number" step="0.01" value={ef.amount} onChange={e=>setEf({...ef,amount:e.target.value})} required/>
-      <Input label="Vencimento" type="date" value={ef.due_date} onChange={e=>setEf({...ef,due_date:e.target.value})} required/>
-      <label className="field"><span>Método</span><select value={ef.payment_method} onChange={e=>setEf({...ef,payment_method:e.target.value})}>{["Pix","Dinheiro","Cartão","Transferência","Outro"].map(x=><option key={x}>{x}</option>)}</select></label>
-      <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setEditing(false)}>Cancelar</Button><Button type="submit">Salvar alterações</Button></div></form>:repeating?<><div className="modal-head"><div className="icon-box"><Receipt/></div><div><h2>Repetir cobrança</h2><p>Crie a próxima mensalidade para o mesmo cliente.</p></div></div><div className="repeat-summary"><div><span>Cliente</span><b>{charge.customers?.name}</b></div><div><span>Descrição</span><b>{charge.description}</b></div><div><span>Valor</span><b>{money(charge.amount)}</b></div></div><Input label="Novo vencimento" type="date" value={repeatDate} onChange={e=>setRepeatDate(e.target.value)} required/><div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setRepeating(false)}>Voltar</Button><Button type="button" onClick={repeat} disabled={saving}>{saving?"Criando...":"Criar próxima cobrança"}</Button></div></>:<><div className="modal-head"><div className="icon-box"><Receipt/></div><div><h2>{charge.customers?.name}</h2><p>{charge.description}</p></div></div><div className="detail-grid"><div><span>Valor</span><b>{money(charge.amount)}</b></div><div><span>Vencimento</span><b>{new Date(charge.due_date+"T12:00:00").toLocaleDateString("pt-BR")}</b></div><div><span>Método</span><b>{charge.payment_method}</b></div></div><div className="message-box">Oi! Tudo bem? Passando para lembrar da cobrança de {money(charge.amount)} com vencimento em {new Date(charge.due_date+"T12:00:00").toLocaleDateString("pt-BR")}. Quando puder, consegue verificar? Obrigado!</div><div className="modal-actions">{charge.status!=="paid"&&<Button type="button" variant="secondary" onClick={()=>setEditing(true)}>Editar</Button>}<Button type="button" variant="secondary" className="danger-action" onClick={removeCharge} disabled={deleting}>{deleting?"Excluindo...":"Excluir cobrança"}</Button>{charge.status==="paid"?<Button onClick={openRepeat}><Receipt size={16}/> Repetir cobrança</Button>:<><Button variant="secondary" onClick={()=>{const phone=(charge.customers?.phone||"").replace(/\D/g,"");const message=`Oi! Tudo bem? Passando para lembrar da cobrança de ${money(charge.amount)} com vencimento em ${new Date(charge.due_date+"T12:00:00").toLocaleDateString("pt-BR")}. Quando puder, consegue verificar? Obrigado!`;window.open(phone?`https://wa.me/${phone}?text=${encodeURIComponent(message)}`:`https://wa.me/?text=${encodeURIComponent(message)}`,"_blank")}}>Abrir WhatsApp</Button><Button onClick={paid} disabled={saving}><Check size={16}/> Marcar como pago</Button></>}</div><p className="modal-note">{charge.status==="paid"?"A cobrança original continua como paga. A nova cobrança será criada para o mesmo cliente.":"O botão do WhatsApp abre uma conversa com a mensagem preenchida. Ele não simula um envio pela plataforma."}</p></>}</div></div>
+    setEditError("");
+    const amount=Number(editForm.amount);
+    if(!Number.isFinite(amount)||amount<=0){
+      setEditError("Informe um valor maior que zero.");
+      return;
+    }
+    if(!editForm.customer_id){
+      setEditError("Selecione um cliente.");
+      return;
+    }
+
+    setSaving(true);
+    try{
+      let linkedPayment=null;
+      const paymentChanged =
+        charge.status==="paid" &&
+        (amount!==Number(charge.amount)||editForm.customer_id!==charge.customer_id);
+
+      if(paymentChanged){
+        const {data:payments,error:paymentsError}=await supabase
+          .from("payments")
+          .select("id,amount,customer_id")
+          .eq("charge_id",charge.id)
+          .eq("company_id",charge.company_id);
+
+        if(paymentsError) throw paymentsError;
+        if(!payments?.length){
+          throw new Error("Não foi encontrado o recebimento vinculado a esta cobrança.");
+        }
+        if(payments.length!==1){
+          throw new Error("Esta cobrança possui mais de um recebimento vinculado. O valor/cliente não pode ser alterado por segurança.");
+        }
+
+        linkedPayment=payments[0];
+
+        const {error:paymentUpdateError}=await supabase
+          .from("payments")
+          .update({amount,customer_id:editForm.customer_id})
+          .eq("id",linkedPayment.id)
+          .eq("company_id",charge.company_id);
+
+        if(paymentUpdateError) throw paymentUpdateError;
+      }
+
+      const {error}=await supabase
+        .from("charges")
+        .update({
+          customer_id:editForm.customer_id,
+          description:editForm.description.trim(),
+          amount,
+          due_date:editForm.due_date,
+          payment_method:editForm.payment_method,
+          recurrence:editForm.recurrence,
+          notes:editForm.notes.trim()
+        })
+        .eq("id",charge.id)
+        .eq("company_id",charge.company_id);
+
+      if(error){
+        if(linkedPayment){
+          await supabase.from("payments").update({
+            amount:linkedPayment.amount,
+            customer_id:linkedPayment.customer_id
+          }).eq("id",linkedPayment.id).eq("company_id",charge.company_id);
+        }
+        throw error;
+      }
+
+      setEditing(false);
+      onPaid();
+    }catch(error){
+      setEditError(error?.message||"Não foi possível salvar as alterações.");
+    }finally{
+      setSaving(false);
+    }
+  }
+
+  async function repeat(){
+    setSaving(true);
+    const {data:user}=await supabase.auth.getUser();
+    const {data:profile}=await supabase.from("profiles").select("plan").eq("id",user.user.id).single();
+    const plan=PLAN_OPTIONS.find(p=>p.key===(profile?.plan||"free"))||PLAN_OPTIONS[0];
+    let query=supabase.from("charges").select("id",{count:"exact",head:true}).eq("company_id",charge.company_id);
+    if(plan.maxCharges!==null){
+      const startOfMonth=new Date();
+      startOfMonth.setDate(1);
+      const firstDay=startOfMonth.toISOString().slice(0,10);
+      const nextMonth=new Date(startOfMonth.getFullYear(),startOfMonth.getMonth()+1,1);
+      const nextDay=nextMonth.toISOString().slice(0,10);
+      query=query.gte("created_at",firstDay).lt("created_at",nextDay);
+    }
+    const {count}=await query;
+    if(plan.maxCharges!==null&&(count||0)>=plan.maxCharges){
+      toast("O plano "+plan.title+" permite até "+plan.maxCharges+" cobranças por mês. Faça upgrade para adicionar mais.");
+      setSaving(false);
+      return;
+    }
+    const {error}=await supabase.from("charges").insert({
+      company_id:charge.company_id,
+      customer_id:charge.customer_id,
+      description:charge.description,
+      amount:Number(charge.amount),
+      due_date:repeatDate,
+      payment_method:charge.payment_method,
+      status:"pending",
+      recurrence:"none"
+    });
+    if(error){
+      toast(error.message);
+    }else{
+      setRepeating(false);
+      onPaid();
+    }
+    setSaving(false);
+  }
+
+  async function removeCharge(){
+    if(!(await confirmDialog("Excluir esta cobrança? Essa ação não pode ser desfeita.",{confirmText:"Excluir",danger:true})))return;
+    setDeleting(true);
+    const {error:paymentError}=await supabase.from("payments").delete().eq("charge_id",charge.id).eq("company_id",charge.company_id);
+    if(paymentError){
+      toast(paymentError.message);
+      setDeleting(false);
+      return;
+    }
+    const {error}=await supabase.from("charges").delete().eq("id",charge.id).eq("company_id",charge.company_id);
+    if(error) toast(error.message);
+    else onPaid();
+    setDeleting(false);
+  }
+
+  async function paid(){
+    setSaving(true);
+    const {error}=await supabase.from("charges").update({status:"paid"}).eq("id",charge.id).eq("company_id",charge.company_id);
+    if(!error){
+      await supabase.from("payments").insert({
+        company_id:charge.company_id,
+        customer_id:charge.customer_id,
+        charge_id:charge.id,
+        amount:charge.amount,
+        payment_method:charge.payment_method,
+        paid_at:new Date().toISOString()
+      });
+      if(charge.recurrence&&charge.recurrence!=="none"){
+        const nextDate=charge.recurrence==="weekly"
+          ? addDays(charge.due_date,7)
+          : charge.recurrence==="biweekly"
+            ? addDays(charge.due_date,14)
+            : charge.recurrence==="annual"
+              ? addMonths(charge.due_date,12)
+              : addMonths(charge.due_date,1);
+        await supabase.from("charges").insert({
+          company_id:charge.company_id,
+          customer_id:charge.customer_id,
+          description:charge.description,
+          amount:Number(charge.amount),
+          due_date:nextDate,
+          payment_method:charge.payment_method,
+          status:"pending",
+          recurrence:charge.recurrence
+        });
+      }
+      onPaid();
+    }else{
+      toast(error.message);
+    }
+    setSaving(false);
+  }
+
+  const selectedCustomer=customers.find(c=>c.id===editForm.customer_id);
+
+  return <div className="modal-backdrop">
+    <div className="modal">
+      <button className="modal-x" type="button" onClick={onClose}><X/></button>
+      {editing ? <form onSubmit={saveEdit}>
+        <div className="modal-head">
+          <div className="icon-box"><Receipt/></div>
+          <div><h2>Editar cobrança</h2><p>Atualize os dados desta cobrança.</p></div>
+        </div>
+        {editError&&<div className="error">{editError}</div>}
+        <label className="field">
+          <span>Cliente</span>
+          <select value={editForm.customer_id} onChange={e=>setEditForm({...editForm,customer_id:e.target.value})} required>
+            <option value="">Selecione</option>
+            {customers.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}
+          </select>
+        </label>
+        <Input label="Descrição" value={editForm.description} onChange={e=>setEditForm({...editForm,description:e.target.value})} required/>
+        <Input label="Valor" type="number" step="0.01" min="0.01" value={editForm.amount} onChange={e=>setEditForm({...editForm,amount:e.target.value})} required/>
+        <Input label="Vencimento" type="date" value={editForm.due_date} onChange={e=>setEditForm({...editForm,due_date:e.target.value})} required/>
+        <label className="field">
+          <span>Método</span>
+          <select value={editForm.payment_method} onChange={e=>setEditForm({...editForm,payment_method:e.target.value})}>
+            {["Pix","Dinheiro","Cartão","Transferência","Outro"].map(x=><option key={x}>{x}</option>)}
+          </select>
+        </label>
+        <label className="field">
+          <span>Recorrência</span>
+          <select value={editForm.recurrence} onChange={e=>setEditForm({...editForm,recurrence:e.target.value})}>
+            <option value="none">Não repetir</option>
+            <option value="weekly">Semanal</option>
+            <option value="biweekly">Quinzenal</option>
+            <option value="monthly">Mensal</option>
+            <option value="annual">Anual</option>
+          </select>
+        </label>
+        <label className="field">
+          <span>Observações</span>
+          <textarea value={editForm.notes} onChange={e=>setEditForm({...editForm,notes:e.target.value})}/>
+        </label>
+        {charge.status==="paid"&&selectedCustomer&&selectedCustomer.id!==charge.customer_id&&<div className="modal-note">Como esta cobrança já foi paga, o recebimento vinculado também será atualizado para o novo cliente.</div>}
+        <div className="modal-actions">
+          <Button type="button" variant="secondary" onClick={()=>{setEditing(false);setEditError("")}}>Cancelar</Button>
+          <Button type="submit" disabled={saving}>{saving?"Salvando...":"Salvar alterações"}</Button>
+        </div>
+      </form> : repeating ? <>
+        <div className="modal-head">
+          <div className="icon-box"><Receipt/></div>
+          <div><h2>Repetir cobrança</h2><p>Crie a próxima mensalidade para o mesmo cliente.</p></div>
+        </div>
+        <div className="repeat-summary">
+          <div><span>Cliente</span><b>{charge.customers?.name}</b></div>
+          <div><span>Descrição</span><b>{charge.description}</b></div>
+          <div><span>Valor</span><b>{money(charge.amount)}</b></div>
+        </div>
+        <Input label="Novo vencimento" type="date" value={repeatDate} onChange={e=>setRepeatDate(e.target.value)} required/>
+        <div className="modal-actions">
+          <Button type="button" variant="secondary" onClick={()=>setRepeating(false)}>Voltar</Button>
+          <Button type="button" onClick={repeat} disabled={saving}>{saving?"Criando...":"Criar próxima cobrança"}</Button>
+        </div>
+      </> : <>
+        <div className="modal-head">
+          <div className="icon-box"><Receipt/></div>
+          <div><h2>{charge.customers?.name}</h2><p>{charge.description}</p></div>
+        </div>
+        <div className="detail-grid">
+          <div><span>Valor</span><b>{money(charge.amount)}</b></div>
+          <div><span>Vencimento</span><b>{new Date(charge.due_date+"T12:00:00").toLocaleDateString("pt-BR")}</b></div>
+          <div><span>Método</span><b>{charge.payment_method}</b></div>
+        </div>
+        <div className="message-box">Oi! Tudo bem? Passando para lembrar da cobrança de {money(charge.amount)} com vencimento em {new Date(charge.due_date+"T12:00:00").toLocaleDateString("pt-BR")}. Quando puder, consegue verificar? Obrigado!</div>
+        <div className="modal-actions">
+          <Button type="button" variant="secondary" onClick={()=>{setEditing(true);setEditError("")}} disabled={deleting}><Receipt size={16}/> Editar</Button>
+          <Button type="button" variant="secondary" className="danger-action" onClick={removeCharge} disabled={deleting}>{deleting?"Excluindo...":"Excluir cobrança"}</Button>
+          {charge.status==="paid"
+            ? <Button type="button" onClick={openRepeat}><Receipt size={16}/> Repetir cobrança</Button>
+            : <>
+              <Button type="button" variant="secondary" onClick={()=>{
+                const phone=(charge.customers?.phone||"").replace(/\D/g,"");
+                const message="Oi! Tudo bem? Passando para lembrar da cobrança de "+money(charge.amount)+" com vencimento em "+new Date(charge.due_date+"T12:00:00").toLocaleDateString("pt-BR")+". Quando puder, consegue verificar? Obrigado!";
+                window.open(phone?"https://wa.me/"+phone+"?text="+encodeURIComponent(message):"https://wa.me/?text="+encodeURIComponent(message),"_blank");
+              }}>Abrir WhatsApp</Button>
+              <Button type="button" onClick={paid} disabled={saving}><Check size={16}/> Marcar como pago</Button>
+            </>
+          }
+        </div>
+        <p className="modal-note">{charge.status==="paid"?"A cobrança original continua como paga. A nova cobrança será criada para o mesmo cliente.":"O botão do WhatsApp abre uma conversa com a mensagem preenchida. Ele não simula um envio pela plataforma."}</p>
+      </>}
+    </div>
+  </div>;
 }
+
 function Customers() {
   const companyId=useCompany();
   const [rows,setRows]=useState([]);
@@ -686,10 +992,12 @@ function Customers() {
   useEffect(()=>{const q=new URLSearchParams(loc.search).get("q");if(q)setSearch(q)},[loc.search]);
   const [open,setOpen]=useState(false);
   const [menuCustomer,setMenuCustomer]=useState(null);
-  const [menuPosition,setMenuPosition]=useState(null);
   const [form,setForm]=useState({name:"",phone:"",email:"",notes:""});
   const [deleting,setDeleting]=useState(false);
-  const [editingId,setEditingId]=useState(null);
+  const [editingCustomer,setEditingCustomer]=useState(null);
+  const [editingForm,setEditingForm]=useState({name:"",phone:"",email:"",notes:""});
+  const [editingSaving,setEditingSaving]=useState(false);
+  const [editingError,setEditingError]=useState("");
   const [customerView,setCustomerView]=useState(null);
   const [history,setHistory]=useState({charges:[],payments:[],loading:false});
 
@@ -703,42 +1011,13 @@ function Customers() {
 
   function closeMenu(){
     setMenuCustomer(null);
-    setMenuPosition(null);
-  }
-
-  function getMenuPosition(button){
-    const rect=button.getBoundingClientRect();
-    const menuWidth=190;
-    const menuHeight=152;
-    const gap=6;
-    let left=rect.right-menuWidth;
-    let top=rect.bottom+gap;
-    if(left<10)left=10;
-    if(left+menuWidth>window.innerWidth-10)left=Math.max(10,window.innerWidth-menuWidth-10);
-    if(top+menuHeight>window.innerHeight-10)top=Math.max(10,rect.top-menuHeight-gap);
-    return {top,left};
   }
 
   function openMenu(c,e){
     e.preventDefault();
     e.stopPropagation();
-    setMenuPosition(getMenuPosition(e.currentTarget));
-    setMenuCustomer(c);
+    setMenuCustomer(prev=>prev?.id===c.id?null:c);
   }
-
-  useEffect(()=>{
-    if(!menuCustomer)return;
-    function reposition(){
-      const button=document.querySelector(`.customer-menu-trigger[data-customer-id="${menuCustomer.id}"]`);
-      if(button)setMenuPosition(getMenuPosition(button));
-    }
-    window.addEventListener("resize",reposition);
-    window.addEventListener("scroll",reposition,true);
-    return()=>{
-      window.removeEventListener("resize",reposition);
-      window.removeEventListener("scroll",reposition,true);
-    };
-  },[menuCustomer]);
 
   async function openCustomer(c){
     setCustomerView(c);
@@ -750,23 +1029,62 @@ function Customers() {
     setHistory({charges:charges||[],payments:payments||[],loading:false});
   }
 
-  function closeForm(){setOpen(false);setEditingId(null);setForm({name:"",phone:"",email:"",notes:""});}
-  function editCustomer(c){closeMenu();setForm({name:c.name||"",phone:c.phone||"",email:c.email||"",notes:c.notes||""});setEditingId(c.id);setOpen(true);}
+  function openCustomerEditor(c){
+    closeMenu();
+    setCustomerView(null);
+    setEditingError("");
+    setEditingCustomer(c);
+    setEditingForm({
+      name:c.name||"",
+      phone:c.phone||"",
+      email:c.email||"",
+      notes:c.notes||""
+    });
+  }
+
+  async function saveCustomerEdit(e){
+    e.preventDefault();
+    setEditingError("");
+    if(!editingForm.name.trim()){
+      setEditingError("Informe o nome do cliente.");
+      return;
+    }
+    setEditingSaving(true);
+    const {error}=await supabase
+      .from("customers")
+      .update({
+        name:editingForm.name.trim(),
+        phone:editingForm.phone.trim(),
+        email:editingForm.email.trim(),
+        notes:editingForm.notes.trim()
+      })
+      .eq("id",editingCustomer.id)
+      .eq("company_id",companyId);
+
+    if(error){
+      setEditingError(error.message);
+    }else{
+      const updated={
+        ...editingCustomer,
+        name:editingForm.name.trim(),
+        phone:editingForm.phone.trim(),
+        email:editingForm.email.trim(),
+        notes:editingForm.notes.trim()
+      };
+      setRows(prev=>prev.map(c=>c.id===updated.id?updated:c));
+      setEditingCustomer(null);
+    }
+    setEditingSaving(false);
+  }
 
   async function save(e){
     e.preventDefault();
-    if(editingId){
-      const {error}=await supabase.from("customers").update({name:form.name,phone:form.phone,email:form.email,notes:form.notes}).eq("id",editingId).eq("company_id",companyId);
-      if(error)toast(error.message);
-      else{closeForm();load();toast("Cliente atualizado.","success");}
-      return;
-    }
     const {data:user}=await supabase.auth.getUser();
     const {data:profile}=await supabase.from("profiles").select("plan").eq("id",user.user.id).single();
     const plan=PLAN_OPTIONS.find(p=>p.key===(profile?.plan||"free"))||PLAN_OPTIONS[0];
     const {count}=await supabase.from("customers").select("id",{count:"exact",head:true}).eq("company_id",companyId);
     if(plan.maxCustomers!==null&&(count||0)>=plan.maxCustomers){
-      toast(`O plano ${plan.title} permite até ${plan.maxCustomers} clientes. Faça upgrade para adicionar mais.`);
+      toast("O plano "+plan.title+" permite até "+plan.maxCustomers+" clientes. Faça upgrade para adicionar mais.");
       return;
     }
     const {error}=await supabase.from("customers").insert({...form,company_id:companyId});
@@ -779,7 +1097,7 @@ function Customers() {
   }
 
   async function removeCustomer(c){
-    if(!(await confirmDialog(`Excluir o cliente "${c.name}"? As cobranças e recebimentos vinculados também serão excluídos. Essa ação não pode ser desfeita.`,{confirmText:"Excluir",danger:true})))return;
+    if(!(await confirmDialog('Excluir o cliente "'+c.name+'"? As cobranças e recebimentos vinculados também serão excluídos. Essa ação não pode ser desfeita.',{confirmText:"Excluir",danger:true})))return;
     setDeleting(true);
     const {error:paymentsError}=await supabase.from("payments").delete().eq("customer_id",c.id).eq("company_id",companyId);
     if(paymentsError){toast(paymentsError.message);setDeleting(false);return;}
@@ -796,37 +1114,14 @@ function Customers() {
 
   function whatsapp(c){
     const phone=(c.phone||"").replace(/\D/g,"");
-    const message=`Oi! Tudo bem, ${c.name}? Passando para falar com você.`;
-    window.open(phone?`https://wa.me/${phone}?text=${encodeURIComponent(message)}`:`https://wa.me/?text=${encodeURIComponent(message)}`,"_blank");
+    const message="Oi! Tudo bem, "+c.name+"? Passando para falar com você.";
+    window.open(phone?"https://wa.me/"+phone+"?text="+encodeURIComponent(message):"https://wa.me/?text="+encodeURIComponent(message),"_blank");
     closeMenu();
   }
 
   function showData(c){closeMenu();openCustomer(c);}
 
   const filtered=rows.filter(x=>(x.name+" "+(x.phone||"")+" "+(x.email||"")).toLowerCase().includes(search.toLowerCase()));
-
-  const floatingMenu=menuCustomer&&menuPosition?createPortal(
-    <>
-      <button
-        type="button"
-        aria-label="Fechar menu de ações"
-        onClick={closeMenu}
-        style={{position:"fixed",inset:0,border:0,padding:0,margin:0,background:"transparent",zIndex:2147483646,cursor:"default"}}
-      />
-      <div
-        className="customer-menu customer-menu-floating"
-        style={{position:"fixed",width:190,zIndex:2147483647,pointerEvents:"auto","--menu-top":`${menuPosition.top}px`,"--menu-left":`${menuPosition.left}px`}}
-      >
-        <button type="button" onClick={()=>showData(menuCustomer)}>Ver dados</button>
-        <button type="button" onClick={()=>editCustomer(menuCustomer)}>Editar dados</button>
-        <button type="button" onClick={()=>whatsapp(menuCustomer)}>Abrir WhatsApp</button>
-        <button type="button" className="danger-menu-item" onClick={()=>removeCustomer(menuCustomer)} disabled={deleting}>
-          {deleting?"Excluindo...":"Excluir cliente"}
-        </button>
-      </div>
-    </>,
-    document.body
-  ):null;
 
   return <>
     <PageTitle title="Clientes" subtitle="Organize seus clientes e acompanhe o histórico." action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Novo cliente</Button>}/>
@@ -849,9 +1144,8 @@ function Customers() {
               <td className="customer-actions-cell">
                 <button
                   type="button"
-                  data-customer-id={c.id}
-                  className={`customer-menu-trigger ${menuCustomer?.id===c.id?"active":""}`}
-                  aria-label={`Ações de ${c.name}`}
+                  className={"customer-menu-trigger "+(menuCustomer?.id===c.id?"active":"")}
+                  aria-label={"Ações de "+c.name}
                   onClick={e=>openMenu(c,e)}
                 >
                   <MoreHorizontal size={19}/>
@@ -862,21 +1156,51 @@ function Customers() {
         </table>}
       </div>
     </div>
+
     {open&&<div className="modal-backdrop">
       <form className="modal" onSubmit={save}>
-        <button type="button" className="modal-x" onClick={closeForm}><X/></button>
-        <div className="modal-head"><div className="icon-box"><UserRound/></div><div><h2>{editingId?"Editar cliente":"Novo cliente"}</h2><p>{editingId?"Atualize os dados do cliente.":"Cadastre os dados básicos."}</p></div></div>
+        <button type="button" className="modal-x" onClick={()=>setOpen(false)}><X/></button>
+        <div className="modal-head"><div className="icon-box"><UserRound/></div><div><h2>Novo cliente</h2><p>Cadastre os dados básicos.</p></div></div>
         <Input label="Nome" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/>
         <Input label="Telefone" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/>
         <Input label="E-mail" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/>
         <label className="field"><span>Observações</span><textarea value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></label>
         <div className="modal-actions">
-          <Button type="button" variant="secondary" onClick={closeForm}>Cancelar</Button>
-          <Button type="submit">{editingId?"Salvar alterações":"Criar cliente"}</Button>
+          <Button type="button" variant="secondary" onClick={()=>setOpen(false)}>Cancelar</Button>
+          <Button type="submit">Criar cliente</Button>
         </div>
       </form>
     </div>}
-    {floatingMenu}
+
+    {editingCustomer&&<div className="modal-backdrop">
+      <form className="modal" onSubmit={saveCustomerEdit}>
+        <button type="button" className="modal-x" onClick={()=>setEditingCustomer(null)}><X/></button>
+        <div className="modal-head"><div className="icon-box"><UserRound/></div><div><h2>Editar cliente</h2><p>Atualize os dados do cliente.</p></div></div>
+        {editingError&&<div className="error">{editingError}</div>}
+        <Input label="Nome" value={editingForm.name} onChange={e=>setEditingForm({...editingForm,name:e.target.value})} required/>
+        <Input label="Telefone" value={editingForm.phone} onChange={e=>setEditingForm({...editingForm,phone:e.target.value})}/>
+        <Input label="E-mail" type="email" value={editingForm.email} onChange={e=>setEditingForm({...editingForm,email:e.target.value})}/>
+        <label className="field"><span>Observações</span><textarea value={editingForm.notes} onChange={e=>setEditingForm({...editingForm,notes:e.target.value})}/></label>
+        <div className="modal-actions">
+          <Button type="button" variant="secondary" onClick={()=>setEditingCustomer(null)}>Cancelar</Button>
+          <Button type="submit" disabled={editingSaving}>{editingSaving?"Salvando...":"Salvar alterações"}</Button>
+        </div>
+      </form>
+    </div>}
+
+    {menuCustomer&&<div className="modal-backdrop" onClick={closeMenu}>
+      <div className="modal action-sheet" onClick={e=>e.stopPropagation()}>
+        <button type="button" className="modal-x" onClick={closeMenu}><X/></button>
+        <div className="modal-head"><div className="icon-box"><UserRound/></div><div><h2>{menuCustomer.name}</h2><p>{menuCustomer.phone||menuCustomer.email||"Escolha uma ação"}</p></div></div>
+        <div className="action-sheet-list">
+          <button type="button" onClick={()=>{const x=menuCustomer;closeMenu();openCustomerEditor(x);}}>Editar dados</button>
+          <button type="button" onClick={()=>{const x=menuCustomer;closeMenu();showData(x);}}>Ver dados e histórico</button>
+          <button type="button" onClick={()=>{const x=menuCustomer;closeMenu();whatsapp(x);}}>Abrir WhatsApp</button>
+          <button type="button" className="danger-menu-item" onClick={()=>{const x=menuCustomer;closeMenu();removeCustomer(x);}} disabled={deleting}>{deleting?"Excluindo...":"Excluir cliente"}</button>
+        </div>
+      </div>
+    </div>}
+
     {customerView&&<div className="modal-backdrop">
       <div className="modal customer-history-modal">
         <button type="button" className="modal-x" onClick={()=>setCustomerView(null)}><X/></button>
@@ -904,10 +1228,15 @@ function Customers() {
             {history.charges.length===0&&history.payments.length===0&&<Empty text="Ainda não há movimentações para este cliente."/>}
           </div>
         </>}
+        <div className="modal-actions">
+          <Button type="button" variant="secondary" onClick={()=>openCustomerEditor(customerView)}>Editar cliente</Button>
+          <Button type="button" onClick={()=>setCustomerView(null)}>Fechar</Button>
+        </div>
       </div>
     </div>}
   </>;
 }
+
 function Charges() {
   const companyId=useCompany();
   const loc=useLocation();
@@ -997,7 +1326,7 @@ function Charges() {
       <div className="recurrence-hint">{form.recurrence==="none"?"Cobrança única.":"Ao marcar como paga, a próxima cobrança será criada automaticamente."}</div><div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)}>Cancelar</Button><Button type="submit">Criar cobrança</Button></div>
     </form></div>}
 
-    {selected&&<ChargeDetail charge={selected} onClose={()=>setSelected(null)} onPaid={()=>{setSelected(null);load();}}/>}
+    {selected&&<ChargeDetail charge={selected} customers={customers} onClose={()=>setSelected(null)} onPaid={()=>{setSelected(null);load();}}/>}
   </>;
 }
 function CalendarPage(){

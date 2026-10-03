@@ -34,3 +34,14 @@ html[data-theme="dark"] .cp-btn-danger{background:#dc2626;border-color:#dc2626}
 .legal-date{color:#6b6e7b;font-size:13px}
 .legal-back,.legal-links a{color:#5b5ce2;font-weight:600;text-decoration:none}
 @media(max-width:600px){.legal-card{padding:22px 18px}.legal-card h1{font-size:24px}}
+
+/* Ações do cliente (3 pontinhos) em janela, igual aos outros modais */
+.action-sheet{width:min(380px,100%)}
+.action-sheet-list{display:grid;gap:8px;margin-top:6px}
+.action-sheet-list button{width:100%;min-height:46px;padding:11px 14px;border:1px solid #e8e9f0;border-radius:11px;background:#fff;color:#17181c;font:600 14px Inter,system-ui,sans-serif;text-align:left;cursor:pointer}
+.action-sheet-list button:hover{background:#f5f5fb}
+.action-sheet-list button:disabled{opacity:.6;cursor:default}
+.action-sheet-list .danger-menu-item{color:#d33d4b;border-color:#f4d5d8}
+html[data-theme="dark"] .action-sheet-list button{background:#23252f;border-color:#2d2f3a;color:#f3f4f6}
+html[data-theme="dark"] .action-sheet-list button:hover{background:#2b2e3a}
+html[data-theme="dark"] .action-sheet-list .danger-menu-item{color:#ff7b86;border-color:#4a2a30}
