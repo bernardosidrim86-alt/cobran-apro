@@ -991,7 +991,6 @@ function Customers() {
   const loc=useLocation();
   useEffect(()=>{const q=new URLSearchParams(loc.search).get("q");if(q)setSearch(q)},[loc.search]);
   const [open,setOpen]=useState(false);
-  const [menuCustomer,setMenuCustomer]=useState(null);
   const [form,setForm]=useState({name:"",phone:"",email:"",notes:""});
   const [deleting,setDeleting]=useState(false);
   const [editingCustomer,setEditingCustomer]=useState(null);
@@ -1009,16 +1008,6 @@ function Customers() {
 
   useEffect(()=>{load()},[companyId]);
 
-  function closeMenu(){
-    setMenuCustomer(null);
-  }
-
-  function openMenu(c,e){
-    e.preventDefault();
-    e.stopPropagation();
-    setMenuCustomer(prev=>prev?.id===c.id?null:c);
-  }
-
   async function openCustomer(c){
     setCustomerView(c);
     setHistory({charges:[],payments:[],loading:true});
@@ -1030,7 +1019,7 @@ function Customers() {
   }
 
   function openCustomerEditor(c){
-    closeMenu();
+
     setCustomerView(null);
     setEditingError("");
     setEditingCustomer(c);
@@ -1106,7 +1095,7 @@ function Customers() {
     const {error}=await supabase.from("customers").delete().eq("id",c.id).eq("company_id",companyId);
     if(error)toast(error.message);
     else{
-      closeMenu();
+
       load();
     }
     setDeleting(false);
@@ -1116,7 +1105,7 @@ function Customers() {
     const phone=(c.phone||"").replace(/\D/g,"");
     const message="Oi! Tudo bem, "+c.name+"? Passando para falar com você.";
     window.open(phone?"https://wa.me/"+phone+"?text="+encodeURIComponent(message):"https://wa.me/?text="+encodeURIComponent(message),"_blank");
-    closeMenu();
+
   }
 
   function showData(c){closeMenu();openCustomer(c);}
@@ -1134,23 +1123,28 @@ function Customers() {
     <div className="panel table-panel">
       <div className="customers-table-wrap">
         {filtered.length===0?<Empty text="Você ainda não possui clientes."/>:<table>
-          <thead><tr><th>Cliente</th><th>Telefone</th><th>E-mail</th><th>Criado em</th><th className="customer-actions-head"></th></tr></thead>
+          <thead><tr><th>Cliente</th><th>Telefone</th><th>E-mail</th><th>Criado em</th><th className="client-actions-head"></th></tr></thead>
           <tbody>
             {filtered.map(c=><tr key={c.id} onClick={()=>openCustomer(c)} style={{cursor:"pointer"}}>
               <td><b>{c.name}</b></td>
               <td>{c.phone||"—"}</td>
               <td>{c.email||"—"}</td>
               <td>{new Date(c.created_at).toLocaleDateString("pt-BR")}</td>
-              <td className="customer-actions-cell">
-                <button
-                  type="button"
-                  className={"customer-menu-trigger "+(menuCustomer?.id===c.id?"active":"")}
-                  aria-label={"Ações de "+c.name}
-                  onClick={e=>openMenu(c,e)}
-                >
-                  <MoreHorizontal size={19}/>
-                </button>
-              </td>
+              <td className="client-actions-cell" onClick={e=>e.stopPropagation()}>
+                <details className="client-action-details">
+                  <summary className="client-action-button" aria-label={"Ações de "+c.name} title="Ações">
+                    <MoreHorizontal size={19}/>
+                  </summary>
+                  <div className="client-action-menu">
+                    <button type="button" onClick={()=>{document.querySelectorAll(".client-action-details[open]").forEach(d=>d.removeAttribute("open"));openCustomerEditor(c)}}>Editar</button>
+                    <button type="button" onClick={()=>{document.querySelectorAll(".client-action-details[open]").forEach(d=>d.removeAttribute("open"));openCustomer(c)}}>Ver dados</button>
+                    <button type="button" onClick={()=>{document.querySelectorAll(".client-action-details[open]").forEach(d=>d.removeAttribute("open"));whatsapp(c)}}>Abrir WhatsApp</button>
+                    <button type="button" className="client-action-danger" onClick={()=>removeCustomer(c)} disabled={deleting}>
+                      {deleting?"Excluindo...":"Excluir cliente"}
+                    </button>
+                  </div>
+                </details>
+              
             </tr>)}
           </tbody>
         </table>}
