@@ -10102,3 +10102,17 @@ html[data-theme="dark"] .customer-history-event{
     grid-template-columns:repeat(2,minmax(0,1fr));
   }
 }
+
+
+.link-button{
+  appearance:none;
+  border:0;
+  background:transparent;
+  color:var(--primary,#635bff);
+  font:inherit;
+  font-weight:600;
+  padding:4px 0;
+  cursor:pointer;
+  text-align:center;
+}
+.link-button:disabled{opacity:.6;cursor:not-allowed}
