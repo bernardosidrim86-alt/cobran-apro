@@ -10,8 +10,9 @@ export default async function handler(req,res){
     const accessToken=authHeader.startsWith("Bearer ")?authHeader.slice(7).trim():"";
     if(!accessToken) return res.status(401).json({error:"Você precisa estar logado para usar o Assistente IA."});
 
-    const supabaseUrl="https://vfywuuazvdkvttbwpjht.supabase.co";
-    const supabaseKey="sb_publishable_fHvAxyMhqBwriqUJgAUVNw_hI95QEt8";
+    const supabaseUrl=process.env.SUPABASE_URL;
+    const supabaseKey=process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    if(!supabaseUrl||!supabaseKey) return res.status(500).json({error:"Supabase não configurado."});
     const sbHeaders={apikey:supabaseKey,Authorization:"Bearer "+accessToken};
 
     const authResponse=await fetch(supabaseUrl+"/auth/v1/user",{headers:sbHeaders});
