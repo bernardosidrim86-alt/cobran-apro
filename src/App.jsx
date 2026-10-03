@@ -988,6 +988,7 @@ function Customers() {
   const companyId=useCompany();
   const [rows,setRows]=useState([]);
   const [search,setSearch]=useState("");
+  const [openActionMenu,setOpenActionMenu]=useState(null);
   const loc=useLocation();
   useEffect(()=>{const q=new URLSearchParams(loc.search).get("q");if(q)setSearch(q)},[loc.search]);
   const [open,setOpen]=useState(false);
@@ -1123,27 +1124,32 @@ function Customers() {
     <div className="panel table-panel">
       <div className="customers-table-wrap">
         {filtered.length===0?<Empty text="Você ainda não possui clientes."/>:<table>
-          <thead><tr><th>Cliente</th><th>Telefone</th><th>E-mail</th><th>Criado em</th><th className="client-actions-head"></th></tr></thead>
+          <thead><tr><th>Cliente</th><th>Telefone</th><th>E-mail</th><th>Criado em</th><th className="client-actions-head-v2"></th></tr></thead>
           <tbody>
             {filtered.map(c=><tr key={c.id} onClick={()=>openCustomer(c)} style={{cursor:"pointer"}}>
               <td><b>{c.name}</b></td>
               <td>{c.phone||"—"}</td>
               <td>{c.email||"—"}</td>
               <td>{new Date(c.created_at).toLocaleDateString("pt-BR")}</td>
-              <td className="client-actions-cell" onClick={e=>e.stopPropagation()}>
-                <details className="client-action-details">
-                  <summary className="client-action-button" aria-label={"Ações de "+c.name} title="Ações">
+              <td className="client-actions-cell-v2" onClick={e=>e.stopPropagation()}>
+                <div className="client-actions-wrap-v2">
+                  <button
+                    type="button"
+                    className={"client-actions-trigger-v2 "+(openActionMenu===c.id?"active":"")}
+                    aria-label={"Ações de "+c.name}
+                    onClick={e=>{e.stopPropagation();setOpenActionMenu(prev=>prev===c.id?null:c.id)}}
+                  >
                     <MoreHorizontal size={19}/>
-                  </summary>
-                  <div className="client-action-menu">
-                    <button type="button" onClick={()=>{document.querySelectorAll(".client-action-details[open]").forEach(d=>d.removeAttribute("open"));openCustomerEditor(c)}}>Editar</button>
-                    <button type="button" onClick={()=>{document.querySelectorAll(".client-action-details[open]").forEach(d=>d.removeAttribute("open"));openCustomer(c)}}>Ver dados</button>
-                    <button type="button" onClick={()=>{document.querySelectorAll(".client-action-details[open]").forEach(d=>d.removeAttribute("open"));whatsapp(c)}}>Abrir WhatsApp</button>
-                    <button type="button" className="client-action-danger" onClick={()=>removeCustomer(c)} disabled={deleting}>
+                  </button>
+                  {openActionMenu===c.id&&<div className="client-actions-menu-v2" onClick={e=>e.stopPropagation()}>
+                    <button type="button" onClick={()=>{setOpenActionMenu(null);openCustomerEditor(c)}}>Editar</button>
+                    <button type="button" onClick={()=>{setOpenActionMenu(null);openCustomer(c)}}>Ver dados</button>
+                    <button type="button" onClick={()=>{setOpenActionMenu(null);whatsapp(c)}}>Abrir WhatsApp</button>
+                    <button type="button" className="danger" onClick={()=>{setOpenActionMenu(null);removeCustomer(c)}} disabled={deleting}>
                       {deleting?"Excluindo...":"Excluir cliente"}
                     </button>
-                  </div>
-                </details>
+                  </div>}
+                </div>
               </td>
             </tr>)}
           </tbody>
