@@ -495,11 +495,73 @@ function Signup() {
 }
 
 function ForgotPassword() {
-  const [email,setEmail]=useState(""); const [done,setDone]=useState(false); const [error,setError]=useState(""); const [captchaToken,setCaptchaToken]=useState(""); const [captchaKey,setCaptchaKey]=useState(0);
-  async function submit(e){e.preventDefault();setError("");if(!supabase){setError("Configure o Supabase primeiro.");return;}if(!captchaToken){setError("Confirme a verificação de segurança para continuar.");return;}const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:(location.hostname==="localhost"||location.hostname==="127.0.0.1")?`${location.origin}/nova-senha`:"https://cobrancaproai.vercel.app/nova-senha",captchaToken});setCaptchaKey(key=>key+1);if(error)setError(error.message);else setDone(true);}
-  return <AuthLayout title="Recuperar senha" subtitle="Enviaremos um link para você criar uma nova senha.">{done?<div className="success-box"><Check size={20}/> Verifique seu e-mail para continuar.</div>:<form onSubmit={submit} className="form-stack"><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><TurnstileCaptcha key={captchaKey} onToken={setCaptchaToken}/>{error&&<div className="error">{error}</div>}<Button>Enviar link</Button></form>}<div className="auth-bottom"><Link to="/login">Voltar para login</Link></div></AuthLayout>
-}
+  const nav=useNavigate();
+  const [email,setEmail]=useState("");
+  const [token,setToken]=useState("");
+  const [sent,setSent]=useState(false);
+  const [busy,setBusy]=useState(false);
+  const [error,setError]=useState("");
+  const [captchaToken,setCaptchaToken]=useState("");
+  const [captchaKey,setCaptchaKey]=useState(0);
 
+  async function sendCode(e){
+    e.preventDefault();
+    setError("");
+    if(!supabase){setError("Configure o Supabase primeiro.");return;}
+    if(!captchaToken){setError("Confirme a verificação de segurança para continuar.");return;}
+
+    setBusy(true);
+    const {error}=await supabase.auth.resetPasswordForEmail(email.trim(),{
+      redirectTo:(location.hostname==="localhost"||location.hostname==="127.0.0.1")?`${location.origin}/nova-senha`:"https://cobrancaproai.vercel.app/nova-senha",
+      captchaToken
+    });
+    setCaptchaKey(key=>key+1);
+    setCaptchaToken("");
+    if(error)setError(error.message);
+    else setSent(true);
+    setBusy(false);
+  }
+
+  async function verifyCode(e){
+    e.preventDefault();
+    setError("");
+    const cleanToken=token.trim().replace(/\D/g,"");
+    if(!/^\d{6}$/.test(cleanToken)){
+      setError("Digite o código de 6 dígitos recebido no e-mail.");
+      return;
+    }
+
+    setBusy(true);
+    const {error}=await supabase.auth.verifyOtp({
+      email:email.trim(),
+      token:cleanToken,
+      type:"recovery"
+    });
+    if(error){
+      setError(error.message==="Token has expired or is invalid"?"Código inválido ou expirado. Solicite um novo código.":error.message);
+    }else{
+      nav("/nova-senha",{replace:true});
+    }
+    setBusy(false);
+  }
+
+  return <AuthLayout title="Recuperar senha" subtitle={sent?"Digite o código de 6 dígitos enviado para seu e-mail.":"Enviaremos um código para você criar uma nova senha."}>
+    {sent
+      ? <form onSubmit={verifyCode} className="form-stack">
+          <Input label="Código de recuperação" inputMode="numeric" autoComplete="one-time-code" maxLength="6" value={token} onChange={e=>setToken(e.target.value.replace(/\D/g,"").slice(0,6))} required/>
+          {error&&<div className="error">{error}</div>}
+          <Button disabled={busy}>{busy?"Verificando...":"Confirmar código"}</Button>
+          <button type="button" className="link-button" onClick={()=>{setSent(false);setToken("");setError("");setCaptchaKey(key=>key+1);}} disabled={busy}>Enviar outro código</button>
+        </form>
+      : <form onSubmit={sendCode} className="form-stack">
+          <Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/>
+          <TurnstileCaptcha key={captchaKey} onToken={setCaptchaToken}/>
+          {error&&<div className="error">{error}</div>}
+          <Button disabled={busy}>{busy?"Enviando...":"Enviar código"}</Button>
+        </form>}
+    <div className="auth-bottom"><Link to="/login">Voltar para login</Link></div>
+  </AuthLayout>
+}
 function ResetPassword() {
   const nav=useNavigate(); const [password,setPassword]=useState(""); const [done,setDone]=useState(false); const [error,setError]=useState("");
   async function submit(e){e.preventDefault();if(!supabase)return setError("Configure o Supabase.");const {error}=await supabase.auth.updateUser({password});if(error)setError(error.message);else{setDone(true);setTimeout(()=>nav("/app"),900);}}
