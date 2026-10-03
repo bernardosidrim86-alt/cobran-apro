@@ -10,6 +10,7 @@ import { supabase } from "./lib/supabase";
 import { toast, confirmDialog } from "./ui";
 import { Terms, Privacy } from "./Legal";
 import { PLAN_OPTIONS } from "./lib/plans";
+import TurnstileCaptcha from "./TurnstileCaptcha";
 
 const money = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(v || 0));
 const todayISO = () => new Date().toISOString().slice(0,10);
@@ -428,12 +429,14 @@ function AuthLayout({children,title,subtitle}) {
 }
 
 function Login() {
-  const nav=useNavigate(); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false);
+  const nav=useNavigate(); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false); const [captchaToken,setCaptchaToken]=useState(""); const [captchaKey,setCaptchaKey]=useState(0);
   const checkout=new URLSearchParams(window.location.search).get("checkout");
   async function submit(e){
     e.preventDefault();setError("");setBusy(true);
     if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;}
-    const {data,error}=await supabase.auth.signInWithPassword({email,password});
+    if(!captchaToken){setError("Confirme a verificação de segurança para continuar.");setBusy(false);return;}
+    const {data,error}=await supabase.auth.signInWithPassword({email,password,options:{captchaToken}});
+    setCaptchaKey(key=>key+1);
     if(error){setError(error.message==="Invalid login credentials"?"E-mail ou senha incorretos.":error.message);setBusy(false);return;}
     if(continuePendingCheckout(data?.user?.id)) return;
     if(checkout && data?.user?.id){
@@ -444,11 +447,11 @@ function Login() {
     }
     nav("/app");setBusy(false);
   }
-  return <AuthLayout title="Bem-vindo de volta" subtitle="Entre na sua conta para continuar."><form onSubmit={submit} className="form-stack"><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" value={password} onChange={e=>setPassword(e.target.value)} required/><div className="form-meta"><Link to="/recuperar">Esqueci minha senha</Link></div>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Entrando...":"Entrar"}</Button></form><div className="auth-bottom">Ainda não tem conta? <Link to={checkout?`/cadastro?checkout=${encodeURIComponent(checkout)}`:"/cadastro"}>Criar conta</Link></div></AuthLayout>
+  return <AuthLayout title="Bem-vindo de volta" subtitle="Entre na sua conta para continuar."><form onSubmit={submit} className="form-stack"><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" value={password} onChange={e=>setPassword(e.target.value)} required/><TurnstileCaptcha key={captchaKey} onToken={setCaptchaToken}/><div className="form-meta"><Link to="/recuperar">Esqueci minha senha</Link></div>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Entrando...":"Entrar"}</Button></form><div className="auth-bottom">Ainda não tem conta? <Link to={checkout?`/cadastro?checkout=${encodeURIComponent(checkout)}`:"/cadastro"}>Criar conta</Link></div></AuthLayout>
 }
 
 function Signup() {
-  const nav=useNavigate(); const [name,setName]=useState(""); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [company,setCompany]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false);
+  const nav=useNavigate(); const [name,setName]=useState(""); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [company,setCompany]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false); const [captchaToken,setCaptchaToken]=useState(""); const [captchaKey,setCaptchaKey]=useState(0);
   const checkout=new URLSearchParams(window.location.search).get("checkout");
   function continueToCheckout(userId){
     if(continuePendingCheckout(userId)) return true;
@@ -459,7 +462,9 @@ function Signup() {
     return true;
   }
   async function submit(e){e.preventDefault();setError("");setBusy(true); if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;}
-    const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,company_name:company}}});
+    if(!captchaToken){setError("Confirme a verificação de segurança para continuar.");setBusy(false);return;}
+    const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,company_name:company},captchaToken}});
+    setCaptchaKey(key=>key+1);
     if(error){setError(error.message);setBusy(false);return;}
     if(data.session){
       if(!continueToCheckout(data.user?.id)) nav("/onboarding");
@@ -486,13 +491,13 @@ function Signup() {
     else if(!continueToCheckout(loginData?.user?.id)) nav("/onboarding");
     setBusy(false);
   }
-  return <AuthLayout title="Crie sua conta" subtitle="Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" minLength="6" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button><p className="legal-note">Ao criar sua conta, você concorda com os <Link to="/termos" target="_blank">Termos de Uso</Link> e a <Link to="/privacidade" target="_blank">Política de Privacidade</Link>.</p></form><div className="auth-bottom">Já possui uma conta? <Link to="/login">Entrar</Link></div></AuthLayout>
+  return <AuthLayout title="Crie sua conta" subtitle="Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" minLength="6" value={password} onChange={e=>setPassword(e.target.value)} required/><TurnstileCaptcha key={captchaKey} onToken={setCaptchaToken}/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button><p className="legal-note">Ao criar sua conta, você concorda com os <Link to="/termos" target="_blank">Termos de Uso</Link> e a <Link to="/privacidade" target="_blank">Política de Privacidade</Link>.</p></form><div className="auth-bottom">Já possui uma conta? <Link to="/login">Entrar</Link></div></AuthLayout>
 }
 
 function ForgotPassword() {
-  const [email,setEmail]=useState(""); const [done,setDone]=useState(false); const [error,setError]=useState("");
-  async function submit(e){e.preventDefault();setError("");if(!supabase){setError("Configure o Supabase primeiro.");return;}const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:`${location.origin}/nova-senha`});if(error)setError(error.message);else setDone(true);}
-  return <AuthLayout title="Recuperar senha" subtitle="Enviaremos um link para você criar uma nova senha.">{done?<div className="success-box"><Check size={20}/> Verifique seu e-mail para continuar.</div>:<form onSubmit={submit} className="form-stack"><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button>Enviar link</Button></form>}<div className="auth-bottom"><Link to="/login">Voltar para login</Link></div></AuthLayout>
+  const [email,setEmail]=useState(""); const [done,setDone]=useState(false); const [error,setError]=useState(""); const [captchaToken,setCaptchaToken]=useState(""); const [captchaKey,setCaptchaKey]=useState(0);
+  async function submit(e){e.preventDefault();setError("");if(!supabase){setError("Configure o Supabase primeiro.");return;}if(!captchaToken){setError("Confirme a verificação de segurança para continuar.");return;}const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:`${location.origin}/nova-senha`,captchaToken});setCaptchaKey(key=>key+1);if(error)setError(error.message);else setDone(true);}
+  return <AuthLayout title="Recuperar senha" subtitle="Enviaremos um link para você criar uma nova senha.">{done?<div className="success-box"><Check size={20}/> Verifique seu e-mail para continuar.</div>:<form onSubmit={submit} className="form-stack"><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><TurnstileCaptcha key={captchaKey} onToken={setCaptchaToken}/>{error&&<div className="error">{error}</div>}<Button>Enviar link</Button></form>}<div className="auth-bottom"><Link to="/login">Voltar para login</Link></div></AuthLayout>
 }
 
 function ResetPassword() {
