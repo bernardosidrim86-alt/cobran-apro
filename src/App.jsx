@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { Routes, Route, Navigate, Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowRight, Bell, Check, ChevronRight, CircleDollarSign, CreditCard,
@@ -988,7 +989,8 @@ function Customers() {
   const companyId=useCompany();
   const [rows,setRows]=useState([]);
   const [search,setSearch]=useState("");
-  const [openActionMenu,setOpenActionMenu]=useState(null);
+  const [clientMenu,setClientMenu]=useState(null);
+  const [clientMenuPosition,setClientMenuPosition]=useState(null);
   const loc=useLocation();
   useEffect(()=>{const q=new URLSearchParams(loc.search).get("q");if(q)setSearch(q)},[loc.search]);
   const [open,setOpen]=useState(false);
@@ -1008,6 +1010,58 @@ function Customers() {
   }
 
   useEffect(()=>{load()},[companyId]);
+
+  function closeClientMenu(){
+    setClientMenu(null);
+    setClientMenuPosition(null);
+  }
+
+  function getClientMenuPosition(button){
+    const rect=button.getBoundingClientRect();
+    const width=190;
+    const height=178;
+    const gap=6;
+    let left=rect.right-width;
+    let top=rect.bottom+gap;
+    if(left<10) left=10;
+    if(left+width>window.innerWidth-10) left=Math.max(10,window.innerWidth-width-10);
+    if(top+height>window.innerHeight-10) top=Math.max(10,rect.top-height-gap);
+    return {top,left};
+  }
+
+  function toggleClientMenu(c,e){
+    e.preventDefault();
+    e.stopPropagation();
+    if(clientMenu?.id===c.id){
+      closeClientMenu();
+      return;
+    }
+    setClientMenu(c);
+    setClientMenuPosition(getClientMenuPosition(e.currentTarget));
+  }
+
+  useEffect(()=>{
+    if(!clientMenu) return;
+    function reposition(){
+      const button=document.querySelector('[data-client-menu-trigger="'+clientMenu.id+'"]');
+      if(button) setClientMenuPosition(getClientMenuPosition(button));
+    }
+    function handlePointerDown(e){
+      if(
+        e.target.closest?.('[data-client-menu-trigger]') ||
+        e.target.closest?.('[data-client-menu-v3]')
+      ) return;
+      closeClientMenu();
+    }
+    window.addEventListener("resize",reposition);
+    window.addEventListener("scroll",reposition,true);
+    document.addEventListener("pointerdown",handlePointerDown);
+    return()=>{
+      window.removeEventListener("resize",reposition);
+      window.removeEventListener("scroll",reposition,true);
+      document.removeEventListener("pointerdown",handlePointerDown);
+    };
+  },[clientMenu]);
 
   async function openCustomer(c){
     setCustomerView(c);
@@ -1131,25 +1185,16 @@ function Customers() {
               <td>{c.phone||"—"}</td>
               <td>{c.email||"—"}</td>
               <td>{new Date(c.created_at).toLocaleDateString("pt-BR")}</td>
-              <td className="client-actions-cell-v2" onClick={e=>e.stopPropagation()}>
-                <div className="client-actions-wrap-v2">
-                  <button
-                    type="button"
-                    className={"client-actions-trigger-v2 "+(openActionMenu===c.id?"active":"")}
-                    aria-label={"Ações de "+c.name}
-                    onClick={e=>{e.stopPropagation();setOpenActionMenu(prev=>prev===c.id?null:c.id)}}
-                  >
-                    <MoreHorizontal size={19}/>
-                  </button>
-                  {openActionMenu===c.id&&<div className="client-actions-menu-v2" onClick={e=>e.stopPropagation()}>
-                    <button type="button" onClick={()=>{setOpenActionMenu(null);openCustomerEditor(c)}}>Editar</button>
-                    <button type="button" onClick={()=>{setOpenActionMenu(null);openCustomer(c)}}>Ver dados</button>
-                    <button type="button" onClick={()=>{setOpenActionMenu(null);whatsapp(c)}}>Abrir WhatsApp</button>
-                    <button type="button" className="danger" onClick={()=>{setOpenActionMenu(null);removeCustomer(c)}} disabled={deleting}>
-                      {deleting?"Excluindo...":"Excluir cliente"}
-                    </button>
-                  </div>}
-                </div>
+              <td className="client-actions-cell-v3" onClick={e=>e.stopPropagation()}>
+                <button
+                  type="button"
+                  className={"client-actions-trigger-v3 "+(clientMenu?.id===c.id?"active":"")}
+                  data-client-menu-trigger={c.id}
+                  aria-label={"Ações de "+c.name}
+                  onClick={e=>toggleClientMenu(c,e)}
+                >
+                  <MoreHorizontal size={19}/>
+                </button>
               </td>
             </tr>)}
           </tbody>
@@ -1187,6 +1232,27 @@ function Customers() {
         </div>
       </form>
     </div>}
+
+    {clientMenu&&clientMenuPosition&&createPortal(
+      <div
+        data-client-menu-v3
+        className="client-actions-menu-v3"
+        style={{
+          position:"fixed",
+          top:clientMenuPosition.top+"px",
+          left:clientMenuPosition.left+"px",
+          width:"190px"
+        }}
+      >
+        <button type="button" onClick={()=>{closeClientMenu();openCustomerEditor(clientMenu)}}>Editar</button>
+        <button type="button" onClick={()=>{closeClientMenu();openCustomer(clientMenu)}}>Ver dados</button>
+        <button type="button" onClick={()=>{closeClientMenu();whatsapp(clientMenu)}}>Abrir WhatsApp</button>
+        <button type="button" className="danger" onClick={()=>{closeClientMenu();removeCustomer(clientMenu)}} disabled={deleting}>
+          {deleting?"Excluindo...":"Excluir cliente"}
+        </button>
+      </div>,
+      document.body
+    )}
 
     {customerView&&<div className="modal-backdrop">
       <div className="modal customer-history-modal">
