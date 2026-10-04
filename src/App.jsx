@@ -466,7 +466,7 @@ function Login() {
 
 function Signup() {
   const nav=useNavigate(); const [name,setName]=useState(""); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [company,setCompany]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false); const [captchaToken,setCaptchaToken]=useState(""); const [captchaKey,setCaptchaKey]=useState(0);
-  const checkout=new URLSearchParams(window.location.search).get("checkout");
+  const checkout=getSafeCheckout(new URLSearchParams(window.location.search).get("checkout"))?.toString()||null;
   function continueToCheckout(userId){
     if(continuePendingCheckout(userId)) return true;
     if(!checkout || !userId) return false;
