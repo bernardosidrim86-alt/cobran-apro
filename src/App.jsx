@@ -863,6 +863,15 @@ function CopilotPage({locked=false,currentPlan="free"}){
     }
   }
 
+  useEffect(()=>{
+    if(locked||loading||!companyId||insight||aiLoading)return;
+    let already=false;
+    try{already=sessionStorage.getItem("cobrancapro-copilot-analyzed")==="1";}catch{}
+    if(already)return;
+    try{sessionStorage.setItem("cobrancapro-copilot-analyzed","1");}catch{}
+    analyze();
+  },[locked,loading,companyId,insight,aiLoading]);
+
   if(locked){
     const planLabel=currentPlan==="essencial"?"Essencial":"Teste grátis";
     return <><PageTitle title="Copiloto de Cobrança" subtitle="Uma visão inteligente sobre o que cobrar primeiro."/><div className="panel ai-locked-panel copilot-locked-page"><div className="ai-locked-icon"><Lock size={24}/></div><span className="panel-kicker">RECURSO PREMIUM</span><h2>Copiloto de Cobrança</h2><p>Transforme os dados do seu financeiro em prioridades claras, análises automáticas e próximos passos.</p><small>Seu plano atual: <b>{planLabel}</b></small><a href="/#precos" className="btn btn-primary">Ver planos <ArrowRight size={16}/></a><div className="ai-locked-features"><span><Check size={14}/> Diagnóstico da carteira</span><span><Check size={14}/> Prioridades de cobrança</span><span><Check size={14}/> Recomendações baseadas em dados</span></div></div></>;
