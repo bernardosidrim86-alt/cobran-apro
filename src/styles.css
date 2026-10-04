@@ -10232,3 +10232,71 @@ html[data-theme="dark"] .app-layout .profile-summary .avatar.large{
   border-radius:50%!important;
 }
 
+
+/* COPILOTO DE COBRANÇA — recurso premium */
+.copilot-dashboard-card{padding:20px;border-radius:15px;border:1px solid #e4e4ec;background:#fff;box-shadow:0 2px 10px rgba(20,20,40,.025)}
+.copilot-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.copilot-card-head h2,.copilot-card-main h2{margin:0;font-size:15px;letter-spacing:-.025em;color:#202126}
+.copilot-card-head p,.copilot-card-main p{margin:6px 0 0;font-size:11px;line-height:1.55;color:#858691;max-width:640px}
+.copilot-card-head .link-btn{flex:0 0 auto;white-space:nowrap}
+.copilot-dashboard-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid #eeeef3}
+.copilot-dashboard-metrics>div{min-width:0;padding:2px 4px}
+.copilot-dashboard-metrics span,.copilot-dashboard-metrics small{display:block;font-size:9px;color:#8e8f98}
+.copilot-dashboard-metrics strong{display:block;margin:5px 0 2px;font-size:17px;line-height:1.1;letter-spacing:-.035em;color:#25262b}
+.copilot-dashboard-metrics strong.danger{color:#d34b4b}.copilot-dashboard-metrics strong.warning{color:#b47716}
+.copilot-card-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid #eeeef3}
+.copilot-card-foot>span{display:flex;align-items:center;gap:7px;min-width:0;font-size:9px;color:#8a8b94}
+.copilot-card-foot>span svg{color:#5b5ce2;flex:0 0 auto}.copilot-card-foot .btn{flex:0 0 auto}
+.copilot-dashboard-locked{background:#fcfcfd;border-style:dashed}
+.copilot-card-main{display:flex;align-items:flex-start;gap:13px}
+.copilot-card-icon{width:38px;height:38px;border-radius:11px;background:#f0f1ff;color:#5b5ce2;display:grid;place-items:center;flex:0 0 auto}
+.copilot-card-lock-copy{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px;padding-top:14px;border-top:1px solid #eeeef3}
+.copilot-card-lock-copy>span{font-size:9px;color:#8c8d96}
+.copilot-page{display:flex;flex-direction:column;gap:18px}.copilot-page .page-title{margin-bottom:2px}.copilot-metric-grid{gap:14px}
+.copilot-main-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(310px,.75fr);gap:15px}
+.copilot-bottom-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(310px,.85fr);gap:15px}
+.copilot-analysis-panel,.copilot-actions-panel,.copilot-overdue-panel,.copilot-upcoming-panel{min-height:0}
+.copilot-ai-badge{display:inline-flex;align-items:center;gap:5px;border:1px solid #e0e1f0;background:#f7f7fc;color:#5758c8;border-radius:999px;padding:6px 9px;font-size:8px;font-weight:800;letter-spacing:.06em;flex:0 0 auto}
+.copilot-analysis-empty{min-height:265px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:25px;border:1px dashed #e4e4eb;border-radius:12px;background:#fcfcfd}
+.copilot-analysis-icon{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:#f0f1ff;color:#5b5ce2;margin-bottom:3px}
+.copilot-analysis-empty b{font-size:12px;color:#2a2b30}.copilot-analysis-empty>span{max-width:380px;font-size:10px;line-height:1.65;color:#91929a;margin-bottom:7px}
+.copilot-insight{border:1px solid #e5e5ec;border-radius:12px;background:#fafafd;padding:17px}.copilot-insight>p{margin:0;font-size:12px;line-height:1.75;white-space:pre-wrap;color:#303139}
+.copilot-insight>div{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:15px;padding-top:12px;border-top:1px solid #ececf2}
+.copilot-insight>div>span{font-size:9px;color:#9899a2}
+.copilot-action-list{display:grid;gap:7px}.copilot-action-item{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #eeeef3;text-decoration:none;color:inherit}
+.copilot-action-item:last-child{border-bottom:0}.copilot-action-item>div{flex:1;min-width:0}.copilot-action-item b,.copilot-action-item small{display:block}
+.copilot-action-item b{font-size:10px;color:#2b2c31}.copilot-action-item small{margin-top:3px;font-size:9px;line-height:1.5;color:#90919a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.copilot-action-item>svg{color:#a0a1a8;flex:0 0 auto}
+.copilot-action-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 0 4px #f3f3f6}
+.copilot-action-dot.danger{background:#dc4b4b;box-shadow:0 0 0 4px #fff1f1}.copilot-action-dot.warning{background:#d49628;box-shadow:0 0 0 4px #fff8ea}.copilot-action-dot.success{background:#39a864;box-shadow:0 0 0 4px #effbf3}
+.copilot-action-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding-top:12px;border-top:1px solid #eeeef3}
+.copilot-action-footer span{font-size:9px;color:#8f9098}.copilot-action-footer strong{font-size:15px;letter-spacing:-.03em;color:#28292e}
+.copilot-overdue-list{border-top:1px solid #eeeef3}
+.copilot-overdue-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #eeeef3;text-decoration:none;color:inherit}
+.copilot-overdue-row>div:first-child{min-width:0}.copilot-overdue-row b,.copilot-overdue-row span{display:block}
+.copilot-overdue-row b{font-size:10px;color:#303139;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.copilot-overdue-row span{margin-top:2px;font-size:9px;color:#9798a0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.copilot-overdue-row>strong{min-width:82px;text-align:right;font-size:10px;color:#303139}.copilot-overdue-age{font-size:9px;font-weight:700;color:#cf4d4d;white-space:nowrap}
+.copilot-upcoming-summary{padding:4px 0 16px;border-bottom:1px solid #eeeef3}.copilot-upcoming-summary strong{display:block;font-size:25px;letter-spacing:-.04em;color:#27282d}.copilot-upcoming-summary span{display:block;margin-top:3px;font-size:9px;color:#8d8e97}
+.copilot-mini-list>div{display:grid;grid-template-columns:45px minmax(0,1fr) auto;gap:8px;align-items:center;padding:11px 0;border-bottom:1px solid #eeeef3}
+.copilot-mini-list>div>span{font-size:9px;color:#8c8d95}.copilot-mini-list>div>b{min-width:0;font-size:10px;color:#303139;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.copilot-mini-list>div>strong{font-size:10px;color:#303139}
+.copilot-no-upcoming{display:block;padding:18px 0 4px;font-size:9px;color:#93949d}.copilot-locked-page{min-height:600px!important}
+html[data-theme="dark"] .copilot-dashboard-card,html[data-theme="dark"] .copilot-analysis-panel,html[data-theme="dark"] .copilot-actions-panel,html[data-theme="dark"] .copilot-overdue-panel,html[data-theme="dark"] .copilot-upcoming-panel{background:#1b1c23!important;border-color:#30313b!important;color:#e8e9ed!important}
+html[data-theme="dark"] .copilot-dashboard-locked{background:#181920!important;border-color:#343540!important}
+html[data-theme="dark"] .copilot-card-head h2,html[data-theme="dark"] .copilot-card-main h2,html[data-theme="dark"] .copilot-dashboard-metrics strong,html[data-theme="dark"] .copilot-overdue-row b,html[data-theme="dark"] .copilot-overdue-row>strong,html[data-theme="dark"] .copilot-mini-list>div>b,html[data-theme="dark"] .copilot-mini-list>div>strong,html[data-theme="dark"] .copilot-upcoming-summary strong,html[data-theme="dark"] .copilot-action-footer strong,html[data-theme="dark"] .copilot-analysis-empty b{color:#f0f1f4!important}
+html[data-theme="dark"] .copilot-card-head p,html[data-theme="dark"] .copilot-card-main p,html[data-theme="dark"] .copilot-dashboard-metrics span,html[data-theme="dark"] .copilot-dashboard-metrics small,html[data-theme="dark"] .copilot-card-foot>span,html[data-theme="dark"] .copilot-card-lock-copy>span,html[data-theme="dark"] .copilot-overdue-row span,html[data-theme="dark"] .copilot-upcoming-summary span,html[data-theme="dark"] .copilot-mini-list>div>span,html[data-theme="dark"] .copilot-no-upcoming,html[data-theme="dark"] .copilot-action-footer span{color:#92939e!important}
+html[data-theme="dark"] .copilot-dashboard-metrics,html[data-theme="dark"] .copilot-card-foot,html[data-theme="dark"] .copilot-card-lock-copy,html[data-theme="dark"] .copilot-action-footer,html[data-theme="dark"] .copilot-overdue-list,html[data-theme="dark"] .copilot-mini-list>div,html[data-theme="dark"] .copilot-upcoming-summary,html[data-theme="dark"] .copilot-action-item{border-color:#2e2f39!important}
+html[data-theme="dark"] .copilot-analysis-empty,html[data-theme="dark"] .copilot-insight{background:#20212a!important;border-color:#343540!important}
+html[data-theme="dark"] .copilot-insight>p{color:#e0e1e6!important}html[data-theme="dark"] .copilot-insight>div{border-color:#343540!important}
+html[data-theme="dark"] .copilot-insight>div>span{color:#93949f!important}.copilot-ai-badge{font-weight:800}
+html[data-theme="dark"] .copilot-ai-badge{background:#24252d!important;border-color:#393a47!important;color:#bfc0ff!important}
+html[data-theme="dark"] .copilot-card-icon,html[data-theme="dark"] .copilot-analysis-icon{background:#2b2c4b!important;color:#bfc0ff!important}
+html[data-theme="dark"] .copilot-action-dot{box-shadow:0 0 0 4px #272830!important}
+html[data-theme="dark"] .copilot-action-dot.danger{background:#ef6969}html[data-theme="dark"] .copilot-action-dot.warning{background:#e0a33e}html[data-theme="dark"] .copilot-action-dot.success{background:#57bf7d}
+@media(max-width:900px){.copilot-main-grid,.copilot-bottom-grid{grid-template-columns:1fr}}
+@media(max-width:650px){
+  .copilot-card-head,.copilot-card-foot,.copilot-card-lock-copy{align-items:flex-start;flex-direction:column}
+  .copilot-card-head .link-btn{align-self:flex-start}.copilot-dashboard-metrics{grid-template-columns:1fr;gap:0}
+  .copilot-dashboard-metrics>div{padding:10px 0;border-bottom:1px solid #eeeef3}.copilot-dashboard-metrics>div:last-child{border-bottom:0}
+  .copilot-card-foot>span{line-height:1.45}.copilot-overdue-row{grid-template-columns:minmax(0,1fr) auto}
+  .copilot-overdue-age{grid-column:2;grid-row:1}.copilot-overdue-row>strong{grid-column:1 / -1;min-width:0;text-align:left}
+}
