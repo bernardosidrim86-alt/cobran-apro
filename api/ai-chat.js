@@ -49,6 +49,16 @@ export default async function handler(req,res){
     if(!profileResponse.ok) return res.status(403).json({error:"Não foi possível validar seu acesso."});
 
     const profile=profileRows?.[0];
+    const rateResponse=await fetch(supabaseUrl+"/rest/v1/rpc/consume_ai_rate_limit",{
+      method:"POST",
+      headers:sbHeaders,
+      body:"{}"
+    });
+    const rateAllowed=await rateResponse.json().catch(()=>false);
+    if(!rateResponse.ok||rateAllowed!==true){
+      return res.status(429).json({error:"Limite de uso da IA atingido. Tente novamente mais tarde."});
+    }
+
     const plan=profile?.plan||"free";
     const expiresAt=profile?.subscription_expires_at?new Date(profile.subscription_expires_at):null;
     const paidAccess=
