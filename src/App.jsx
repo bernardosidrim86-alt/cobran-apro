@@ -4,7 +4,7 @@ import { Routes, Route, Navigate, Link, useLocation, useNavigate } from "react-r
 import {
   ArrowRight, Bell, Check, ChevronRight, CircleDollarSign, CreditCard,
   CalendarDays, ChevronLeft, LayoutDashboard, LogOut, Menu, MessageCircle, Plus, Receipt, Settings,
-  Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal, Lock, Sun, Moon
+  Sparkles, Target, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal, Lock, Sun, Moon
 } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import { toast, confirmDialog } from "./ui";
@@ -675,9 +675,107 @@ function usePlanLimits() {
   };
 }
 
+
+function buildCollectionRadar(charges=[],payments=[]) {
+  const today = new Date(todayISO()+"T12:00:00");
+  const chargeById = new Map(charges.map(c=>[c.id,c]));
+  const customerHistory = new Map();
+
+  for(const payment of payments){
+    const charge = chargeById.get(payment.charge_id);
+    const customerId = payment.customer_id || charge?.customer_id;
+    if(!customerId) continue;
+
+    const due = charge?.due_date ? new Date(charge.due_date+"T12:00:00") : null;
+    const paid = payment.paid_at ? new Date(payment.paid_at) : null;
+    if(!due || !paid) continue;
+
+    const daysToPay = Math.round((paid-due)/86400000);
+    const item = customerHistory.get(customerId) || {count:0,totalDays:0,lateCount:0};
+    item.count += 1;
+    item.totalDays += daysToPay;
+    if(daysToPay>0) item.lateCount += 1;
+    customerHistory.set(customerId,item);
+  }
+
+  const pending = charges.filter(c=>c.status==="pending");
+  const nearTerm = pending.filter(c=>{
+    const due = new Date(c.due_date+"T12:00:00");
+    const diff = Math.round((due-today)/86400000);
+    return diff <= 7;
+  });
+  const pool = nearTerm.length ? nearTerm : pending.slice().sort((a,b)=>new Date(a.due_date)-new Date(b.due_date)).slice(0,8);
+  const maxAmount = Math.max(...pool.map(c=>Number(c.amount||0)),1);
+
+  return pool.map(c=>{
+    const due = new Date(c.due_date+"T12:00:00");
+    const diffDays = Math.round((due-today)/86400000);
+    const daysLate = Math.max(0,-diffDays);
+    const history = customerHistory.get(c.customer_id);
+    const avgDaysToPay = history?.count ? history.totalDays/history.count : null;
+
+    let score = 0;
+    if(daysLate>0) score += Math.min(48,26+daysLate*4);
+    else if(diffDays===0) score += 30;
+    else if(diffDays<=3) score += 21;
+    else score += 12;
+
+    score += 5 + Math.round(15*Math.pow(Math.min(Number(c.amount||0)/maxAmount,1),0.65));
+    if(history?.count>=2) score += 4;
+    if(avgDaysToPay!==null){
+      if(avgDaysToPay>=7) score += 11;
+      else if(avgDaysToPay>=3) score += 8;
+      else if(avgDaysToPay>0) score += 4;
+    }
+
+    const amountShare=maxAmount>0?Number(c.amount||0)/maxAmount:0;
+    let reason;
+    if(daysLate>=3) reason="Está atrasado há "+daysLate+" dias.";
+    else if(daysLate===1) reason="Está atrasado há 1 dia.";
+    else if(diffDays===0) reason="Vence hoje.";
+    else if(diffDays===1) reason="Vence amanhã.";
+    else if(diffDays>1) reason="Vence em "+diffDays+" dias.";
+    else reason="Precisa de atenção.";
+
+    if(avgDaysToPay!==null && avgDaysToPay>=3){
+      reason += " Esse cliente costuma pagar depois do vencimento.";
+    }else if(amountShare>=0.7 && pool.length>1){
+      reason += " É uma das maiores cobranças em aberto.";
+    }else if(history?.count>=2){
+      reason += " Já temos histórico suficiente para priorizar esta cobrança.";
+    }
+
+    const priority=score>=58?"high":score>=42?"medium":"low";
+    return {
+      ...c,
+      score,
+      priority,
+      diffDays,
+      daysLate,
+      reason,
+      avgDaysToPay
+    };
+  }).sort((a,b)=>b.score-a.score).slice(0,5);
+}
+
+function openRadarWhatsApp(charge){
+  const phone=(charge?.customers?.phone||"").replace(/\D/g,"");
+  if(!phone){
+    toast("Esse cliente não possui um telefone cadastrado.");
+    return;
+  }
+  const name=charge.customers?.name||"cliente";
+  const amount=money(charge.amount);
+  const due=new Date(charge.due_date+"T12:00:00").toLocaleDateString("pt-BR");
+  const message=charge.daysLate>0
+    ? "Oi, "+name+"! Tudo bem? Estou entrando em contato sobre a cobrança de "+amount+", com vencimento em "+due+" e que está em aberto."
+    : "Oi, "+name+"! Tudo bem? Passando para lembrar da cobrança de "+amount+", com vencimento em "+due+".";
+  window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(message),"_blank","noopener,noreferrer");
+}
+
 function Dashboard({session}) {
   const companyId=useCompany();
-  const [data,setData]=useState({customers:0,receive:0,today:0,overdue:0,paid:0,charges:[]});
+  const [data,setData]=useState({customers:0,receive:0,today:0,overdue:0,paid:0,charges:[],payments:[]});
 
   useEffect(()=>{
     if(!companyId)return;
@@ -695,24 +793,24 @@ function Dashboard({session}) {
         today:charges.filter(x=>x.status==="pending"&&x.due_date===todayISO()).reduce((a,x)=>a+Number(x.amount),0),
         overdue:charges.filter(x=>x.status==="pending"&&x.due_date<todayISO()).reduce((a,x)=>a+Number(x.amount),0),
         paid:(p.data||[]).reduce((a,x)=>a+Number(x.amount),0),
-        charges
+        charges,
+        payments:p.data||[]
       });
     }
     load();
     return()=>{active=false};
   },[companyId]);
 
-  const firstName=(session?.user?.user_metadata?.full_name||"").trim().split(/\\s+/)[0]||"";
+  const firstName=(session?.user?.user_metadata?.full_name||"").trim().split(/\s+/)[0]||"";
   const title=firstName ? "Olá, "+firstName : "Dashboard";
-  const attention=data.overdue+data.today;
-  const progress=data.receive>0 ? Math.min(100,Math.round((data.paid/(data.paid+data.receive))*100)) : 0;
+  const radar=useMemo(()=>buildCollectionRadar(data.charges,data.payments),[data.charges,data.payments]);
 
   return <div className="dashboard-page">
     <div className="dashboard-hero">
       <div>
         <span className="eyebrow">VISÃO GERAL</span>
         <h1>{title}</h1>
-        <p>Acompanhe o que entrou, o que falta receber e o que precisa de atenção.</p>
+        <p>Acompanhe o que entrou, o que falta receber e o que merece sua atenção primeiro.</p>
       </div>
       <div className="dashboard-hero-actions">
         <Link to="/app/cobrancas" className="btn btn-primary"><Plus size={16}/> Nova cobrança</Link>
@@ -726,10 +824,54 @@ function Dashboard({session}) {
       <Metric title="Total recebido" value={money(data.paid)} icon={Wallet} tone="success"/>
     </div>
 
+    <section className="panel collection-radar-panel">
+      <div className="collection-radar-head">
+        <div>
+          <span className="panel-kicker radar-kicker">RADAR DE RECEBIMENTO</span>
+          <h2>Quem eu devo cobrar primeiro?</h2>
+          <p>O Radar organiza as cobranças pela urgência, pelo valor e pelo histórico de pagamento de cada cliente.</p>
+        </div>
+        <div className="radar-head-badge"><Target size={15}/> Prioridades de hoje</div>
+      </div>
+
+      {radar.length===0 ? (
+        <div className="radar-empty">
+          <div className="radar-empty-icon"><Check size={18}/></div>
+          <div><b>Nenhuma cobrança precisa de priorização.</b><span>Quando houver cobranças em aberto, o Radar vai organizar o que merece sua atenção primeiro.</span></div>
+        </div>
+      ) : (
+        <div className="radar-list">
+          {radar.map((c,index)=>{
+            const label=c.priority==="high"?"Alta":c.priority==="medium"?"Média":"Baixa";
+            return <article className="radar-row" key={c.id}>
+              <div className={"radar-rank priority-"+c.priority}>{String(index+1).padStart(2,"0")}</div>
+              <div className="radar-main">
+                <div className="radar-person">
+                  <span className="person-avatar">{(c.customers?.name||"C").slice(0,1).toUpperCase()}</span>
+                  <div>
+                    <b>{c.customers?.name||"Cliente"}</b>
+                    <span>{c.description||"Cobrança"} · {c.daysLate>0 ? c.daysLate+" "+(c.daysLate===1?"dia":"dias")+" atrasado" : c.diffDays===0 ? "vence hoje" : c.diffDays===1 ? "vence amanhã" : "vence em "+c.diffDays+" dias"}</span>
+                  </div>
+                </div>
+                <p>{c.reason}</p>
+              </div>
+              <div className="radar-value">
+                <strong>{money(c.amount)}</strong>
+                <span className={"radar-priority priority-"+c.priority}>{label}</span>
+              </div>
+              <div className="radar-action">
+                <button type="button" className="radar-charge-btn" onClick={()=>openRadarWhatsApp(c)}><MessageCircle size={15}/> Cobrar agora</button>
+              </div>
+            </article>;
+          })}
+        </div>
+      )}
+    </section>
+
     <div className="dashboard-action-grid">
       <div className="panel">
-        <div className="panel-head"><div><span className="panel-kicker">ATENÇÃO</span><h2>Quem eu preciso cobrar hoje?</h2><p>Clientes com cobrança vencendo hoje ou em atraso.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
-        {data.charges.filter(c=>c.status==="pending"&&c.due_date<=todayISO()).length===0 ? <Empty text="Nenhuma cobrança precisa de atenção hoje."/> : <div className="charge-list">{data.charges.filter(c=>c.status==="pending"&&c.due_date<=todayISO()).slice(0,6).map(c=><div className="charge-row" key={c.id}><div className="charge-person"><span className="person-avatar">{(c.customers?.name||"C").slice(0,1).toUpperCase()}</span><div><b>{c.customers?.name||"Cliente"}</b><span>{c.description||"Cobrança"}</span></div></div><strong>{money(c.amount)}</strong><span className={`charge-status ${c.due_date<todayISO()?"overdue":"today"}`}><i></i>{c.due_date<todayISO()?"Atrasado":"Vence hoje"}</span></div>)}</div>}
+        <div className="panel-head"><div><span className="panel-kicker">ATENÇÃO</span><h2>Cobranças vencidas e de hoje</h2><p>Veja rapidamente o que já passou do prazo ou vence hoje.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
+        {data.charges.filter(c=>c.status==="pending"&&c.due_date<=todayISO()).length===0 ? <Empty text="Nenhuma cobrança precisa de atenção hoje."/> : <div className="charge-list">{data.charges.filter(c=>c.status==="pending"&&c.due_date<=todayISO()).slice(0,6).map(c=><div className="charge-row" key={c.id}><div className="charge-person"><span className="person-avatar">{(c.customers?.name||"C").slice(0,1).toUpperCase()}</span><div><b>{c.customers?.name||"Cliente"}</b><span>{c.description||"Cobrança"}</span></div></div><strong>{money(c.amount)}</strong><span className={"charge-status "+(c.due_date<todayISO()?"overdue":"today")}><i></i>{c.due_date<todayISO()?"Atrasado":"Vence hoje"}</span></div>)}</div>}
       </div>
       <div className="panel dashboard-forecast-panel">
         <div className="panel-head"><div><span className="panel-kicker">PRÓXIMOS 7 DIAS</span><h2>Previsão de recebimento</h2><p>O que está programado para entrar nos próximos dias.</p></div><Link to="/app/calendario" className="link-btn">Abrir calendário <ArrowRight size={15}/></Link></div>
@@ -740,6 +882,7 @@ function Dashboard({session}) {
     </div>
   </div>;
 }
+
 function Metric({title,value,icon:Icon,tone=""}){return <div className="metric"><div className={`metric-icon ${tone}`}><Icon size={19}/></div><span>{title}</span><strong>{value}</strong></div>;}
 function PageTitle({title,subtitle,action}){return <div className="page-title"><div><h1>{title}</h1><p>{subtitle}</p></div>{action}</div>;}
 function Empty({text}){return <div className="empty"><Receipt size={24}/><span>{text}</span></div>;}
