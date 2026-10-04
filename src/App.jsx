@@ -692,7 +692,11 @@ function buildCollectionRadar(charges=[],payments=[]) {
     if(!due || !paid) continue;
 
     const daysToPay = Math.round((paid-due)/86400000);
-    const item = customerHistory.get(customerId) || {count:0,totalDays:0,lateCount:0};
+    const item = customerHistory.get(customerId) || {
+      count:0,
+      lateCount:0,
+      totalDays:0
+    };
     item.count += 1;
     item.totalDays += daysToPay;
     if(daysToPay>0) item.lateCount += 1;
@@ -700,53 +704,87 @@ function buildCollectionRadar(charges=[],payments=[]) {
   }
 
   const pending = charges.filter(c=>c.status==="pending");
+  if(!pending.length) return [];
+
   const nearTerm = pending.filter(c=>{
     const due = new Date(c.due_date+"T12:00:00");
     const diff = Math.round((due-today)/86400000);
     return diff <= 7;
   });
-  const pool = nearTerm.length ? nearTerm : pending.slice().sort((a,b)=>new Date(a.due_date)-new Date(b.due_date)).slice(0,8);
-  const maxAmount = Math.max(...pool.map(c=>Number(c.amount||0)),1);
+  const source = nearTerm.length ? nearTerm : pending.slice().sort((a,b)=>new Date(a.due_date)-new Date(b.due_date)).slice(0,12);
 
-  return pool.map(c=>{
+  const amounts = source.map(c=>Number(c.amount||0)).filter(Number.isFinite).sort((a,b)=>a-b);
+  const medianAmount = amounts.length
+    ? amounts.length%2
+      ? amounts[Math.floor(amounts.length/2)]
+      : (amounts[amounts.length/2-1]+amounts[amounts.length/2])/2
+    : 0;
+
+  return source.map(c=>{
     const due = new Date(c.due_date+"T12:00:00");
     const diffDays = Math.round((due-today)/86400000);
     const daysLate = Math.max(0,-diffDays);
     const history = customerHistory.get(c.customer_id);
+    const lateRate = history?.count ? history.lateCount/history.count : 0;
     const avgDaysToPay = history?.count ? history.totalDays/history.count : null;
 
-    let score = 0;
-    if(daysLate>0) score += Math.min(48,26+daysLate*4);
-    else if(diffDays===0) score += 30;
-    else if(diffDays<=3) score += 21;
-    else score += 12;
+    let urgency = 0;
+    if(daysLate>0) urgency = Math.min(52,34 + daysLate*3);
+    else if(diffDays===0) urgency = 31;
+    else if(diffDays===1) urgency = 25;
+    else if(diffDays<=3) urgency = 20;
+    else if(diffDays<=7) urgency = 14;
+    else urgency = 7;
 
-    score += 5 + Math.round(15*Math.pow(Math.min(Number(c.amount||0)/maxAmount,1),0.65));
-    if(history?.count>=2) score += 4;
-    if(avgDaysToPay!==null){
-      if(avgDaysToPay>=7) score += 11;
-      else if(avgDaysToPay>=3) score += 8;
-      else if(avgDaysToPay>0) score += 4;
+    const amountRatio = medianAmount>0 ? Number(c.amount||0)/medianAmount : 0;
+    const amountWeight = Math.round(8 + 14*Math.min(1.75,Math.sqrt(Math.max(0,amountRatio)))/1.75);
+
+    let behaviorWeight = 0;
+    if(history?.count){
+      behaviorWeight = 5 + Math.round(lateRate*13);
+      if(avgDaysToPay!==null && avgDaysToPay>=5) behaviorWeight += 4;
     }
 
-    const amountShare=maxAmount>0?Number(c.amount||0)/maxAmount:0;
+    const score = urgency + amountWeight + behaviorWeight;
+    const priority = score>=66 ? "high" : score>=47 ? "medium" : "low";
+
+    const evidence = [];
+    if(daysLate>0) evidence.push(daysLate===1 ? "1 dia de atraso" : daysLate+" dias de atraso");
+    else if(diffDays===0) evidence.push("vence hoje");
+    else if(diffDays===1) evidence.push("vence amanhã");
+    else if(diffDays<=7) evidence.push("vence em "+diffDays+" dias");
+
+    if(history?.count>=2 && lateRate>=0.5){
+      evidence.push("histórico de atraso");
+    }else if(history?.count>=2 && lateRate===0){
+      evidence.push("histórico em dia");
+    }
+
+    if(medianAmount>0 && amountRatio>=1.5){
+      evidence.push("valor acima da média da carteira");
+    }
+
     let reason;
-    if(daysLate>=3) reason="Está atrasado há "+daysLate+" dias.";
-    else if(daysLate===1) reason="Está atrasado há 1 dia.";
-    else if(diffDays===0) reason="Vence hoje.";
-    else if(diffDays===1) reason="Vence amanhã.";
-    else if(diffDays>1) reason="Vence em "+diffDays+" dias.";
-    else reason="Precisa de atenção.";
-
-    if(avgDaysToPay!==null && avgDaysToPay>=3){
-      reason += " Esse cliente costuma pagar depois do vencimento.";
-    }else if(amountShare>=0.7 && pool.length>1){
-      reason += " É uma das maiores cobranças em aberto.";
-    }else if(history?.count>=2){
-      reason += " Já temos histórico suficiente para priorizar esta cobrança.";
+    if(daysLate>=3){
+      reason = "Está atrasado há "+daysLate+" dias.";
+    }else if(daysLate===1){
+      reason = "Está atrasado há 1 dia.";
+    }else if(diffDays===0){
+      reason = "Vence hoje e merece atenção imediata.";
+    }else if(diffDays===1){
+      reason = "Vence amanhã e já pode entrar na sua próxima rodada de cobrança.";
+    }else{
+      reason = "Está entre as cobranças mais próximas do vencimento.";
     }
 
-    const priority=score>=58?"high":score>=42?"medium":"low";
+    if(history?.count>=2 && lateRate>=0.5){
+      reason += " Esse cliente tem histórico de atraso.";
+    }else if(medianAmount>0 && amountRatio>=1.5){
+      reason += " O valor está acima do padrão das cobranças em aberto.";
+    }else if(history?.count>=3){
+      reason += " A prioridade considera o histórico de pagamentos.";
+    }
+
     return {
       ...c,
       score,
@@ -754,7 +792,9 @@ function buildCollectionRadar(charges=[],payments=[]) {
       diffDays,
       daysLate,
       reason,
-      avgDaysToPay
+      evidence,
+      historyCount:history?.count||0,
+      lateRate
     };
   }).sort((a,b)=>b.score-a.score).slice(0,5);
 }
@@ -830,42 +870,60 @@ function Dashboard({session}) {
         <div>
           <span className="panel-kicker radar-kicker">RADAR DE RECEBIMENTO</span>
           <h2>Quem eu devo cobrar primeiro?</h2>
-          <p>O Radar organiza as cobranças pela urgência, pelo valor e pelo histórico de pagamento de cada cliente.</p>
+          <p>A ordem muda conforme suas cobranças: prazo, valor e o histórico real de pagamento entram na conta.</p>
         </div>
-        <div className="radar-head-badge"><Target size={15}/> Prioridades de hoje</div>
+        <div className="radar-head-side">
+          <div className="radar-head-badge"><Target size={15}/> Prioridades de hoje</div>
+          {radar.length>0&&<Link to="/app/cobrancas" className="radar-see-all">Ver cobranças <ArrowRight size={13}/></Link>}
+        </div>
       </div>
 
       {radar.length===0 ? (
         <div className="radar-empty">
           <div className="radar-empty-icon"><Check size={18}/></div>
-          <div><b>Nenhuma cobrança precisa de priorização.</b><span>Quando houver cobranças em aberto, o Radar vai organizar o que merece sua atenção primeiro.</span></div>
+          <div><b>Nenhuma cobrança em aberto.</b><span>Quando houver valores a receber, o Radar vai organizar o que merece sua atenção primeiro.</span></div>
         </div>
       ) : (
-        <div className="radar-list">
-          {radar.map((c,index)=>{
-            const label=c.priority==="high"?"Alta":c.priority==="medium"?"Média":"Baixa";
-            return <article className="radar-row" key={c.id}>
-              <div className={"radar-rank priority-"+c.priority}>{String(index+1).padStart(2,"0")}</div>
-              <div className="radar-main">
-                <div className="radar-person">
-                  <span className="person-avatar">{(c.customers?.name||"C").slice(0,1).toUpperCase()}</span>
-                  <div>
-                    <b>{c.customers?.name||"Cliente"}</b>
-                    <span>{c.description||"Cobrança"} · {c.daysLate>0 ? c.daysLate+" "+(c.daysLate===1?"dia":"dias")+" atrasado" : c.diffDays===0 ? "vence hoje" : c.diffDays===1 ? "vence amanhã" : "vence em "+c.diffDays+" dias"}</span>
+        <>
+          <div className="radar-summary">
+            <div><strong>{radar.length}</strong><span>prioridades</span></div>
+            <i></i>
+            <div><strong>{money(radar.reduce((sum,c)=>sum+Number(c.amount||0),0))}</strong><span>em cobranças</span></div>
+            <i></i>
+            <div><strong>{radar.filter(c=>c.daysLate>0).length}</strong><span>atrasadas</span></div>
+          </div>
+          <div className="radar-list">
+            {radar.map((c,index)=>{
+              const label=c.priority==="high"?"Alta":c.priority==="medium"?"Média":"Baixa";
+              const hasPhone=Boolean((c.customers?.phone||"").replace(/\D/g,""));
+              return <article className={"radar-row priority-row-"+c.priority} key={c.id}>
+                <div className={"radar-rank priority-"+c.priority}>{String(index+1).padStart(2,"0")}</div>
+                <div className="radar-main">
+                  <div className="radar-person">
+                    <span className="person-avatar">{(c.customers?.name||"C").slice(0,1).toUpperCase()}</span>
+                    <div>
+                      <b>{c.customers?.name||"Cliente"}</b>
+                      <span>{c.description||"Cobrança"} · {c.daysLate>0 ? c.daysLate+" "+(c.daysLate===1?"dia":"dias")+" atrasado" : c.diffDays===0 ? "vence hoje" : c.diffDays===1 ? "vence amanhã" : "vence em "+c.diffDays+" dias"}</span>
+                    </div>
                   </div>
+                  <p>{c.reason}</p>
+                  {c.evidence.length>0&&<div className="radar-evidence">{c.evidence.map(item=><span key={item}>{item}</span>)}</div>}
                 </div>
-                <p>{c.reason}</p>
-              </div>
-              <div className="radar-value">
-                <strong>{money(c.amount)}</strong>
-                <span className={"radar-priority priority-"+c.priority}>{label}</span>
-              </div>
-              <div className="radar-action">
-                <button type="button" className="radar-charge-btn" onClick={()=>openRadarWhatsApp(c)}><MessageCircle size={15}/> Cobrar agora</button>
-              </div>
-            </article>;
-          })}
-        </div>
+                <div className="radar-value">
+                  <strong>{money(c.amount)}</strong>
+                  <span className={"radar-priority priority-"+c.priority}>{label}</span>
+                </div>
+                <div className="radar-action">
+                  <button type="button" className="radar-charge-btn" onClick={()=>openRadarWhatsApp(c)} disabled={!hasPhone} title={hasPhone?"Abrir cobrança no WhatsApp":"Cadastre um telefone neste cliente"}>
+                    <MessageCircle size={15}/>
+                    {hasPhone?"Cobrar agora":"Sem telefone"}
+                  </button>
+                </div>
+              </article>;
+            })}
+          </div>
+          <div className="radar-footnote"><Target size={12}/> A prioridade é calculada com os dados da sua própria carteira. Ela não substitui sua decisão de cobrança.</div>
+        </>
       )}
     </section>
 
