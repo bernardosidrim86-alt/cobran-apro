@@ -10231,3 +10231,65 @@ html[data-theme="dark"] .app-layout .profile-summary .avatar.large{
   display:block!important;
   border-radius:50%!important;
 }
+
+/* Radar de Recebimento */
+.collection-radar-panel{margin-top:0;overflow:hidden}
+.collection-radar-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:17px;border-bottom:1px solid #ececf1}
+.collection-radar-head h2{margin:5px 0 0;font-size:15px;letter-spacing:-.02em}
+.collection-radar-head p{margin:6px 0 0;max-width:720px;font-size:10px;line-height:1.55;color:#8a8a94}
+.radar-kicker{color:#5b5ce2!important}
+.radar-head-badge{display:flex;align-items:center;gap:7px;flex:0 0 auto;border:1px solid #e2e2ea;background:#fafaff;color:#5556b8;border-radius:8px;padding:7px 10px;font-size:9px;font-weight:700}
+.radar-list{display:grid}
+.radar-row{display:grid;grid-template-columns:36px minmax(0,1fr) auto auto;align-items:center;gap:14px;min-height:88px;padding:13px 0;border-bottom:1px solid #eeeeF3}
+.radar-row:last-child{border-bottom:0}
+.radar-rank{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:9px;font-weight:800;border:1px solid #e7e7ed;background:#fafafa;color:#777}
+.radar-rank.priority-high{color:#b33c3c;background:#fff5f5;border-color:#f2d5d5}
+.radar-rank.priority-medium{color:#a26a00;background:#fff9ec;border-color:#efdfb8}
+.radar-rank.priority-low{color:#5456ba;background:#f5f5ff;border-color:#ddddf4}
+.radar-main{min-width:0}
+.radar-person{display:flex;align-items:center;gap:9px;min-width:0}
+.radar-person .person-avatar{flex:0 0 auto}
+.radar-person b,.radar-person span,.radar-main p{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.radar-person b{font-size:11px}
+.radar-person span{margin-top:3px;font-size:9px;color:#999}
+.radar-main p{margin:8px 0 0 37px;font-size:9px;color:#6f6f7b}
+.radar-value{min-width:92px;text-align:right}
+.radar-value strong{display:block;font-size:12px;letter-spacing:-.02em}
+.radar-priority{display:inline-flex;align-items:center;justify-content:center;margin-top:5px;min-width:52px;padding:4px 7px;border-radius:999px;font-size:8px;font-weight:750}
+.radar-priority.priority-high{color:#b33c3c;background:#fff0f0}
+.radar-priority.priority-medium{color:#a26a00;background:#fff7e5}
+.radar-priority.priority-low{color:#5557bf;background:#f0f1ff}
+.radar-action{min-width:112px;display:flex;justify-content:flex-end}
+.radar-charge-btn{border:1px solid #dedeeb;background:#fff;color:#4f50bf;border-radius:8px;padding:8px 10px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:inherit;font-size:9px;font-weight:700;cursor:pointer;transition:.18s ease}
+.radar-charge-btn:hover{border-color:#c5c6e8;background:#f8f8ff;transform:translateY(-1px)}
+.radar-empty{display:flex;align-items:center;gap:11px;padding:18px 0 3px}
+.radar-empty-icon{width:34px;height:34px;flex:0 0 34px;border-radius:9px;display:grid;place-items:center;color:#16803c;background:#effaf2}
+.radar-empty b,.radar-empty span{display:block}
+.radar-empty b{font-size:10px}
+.radar-empty span{margin-top:3px;font-size:9px;color:#999}
+html[data-theme="dark"] .collection-radar-panel{background:#191a22!important;border-color:#30323d!important}
+html[data-theme="dark"] .collection-radar-head{border-color:#30323d!important}
+html[data-theme="dark"] .radar-head-badge{background:#20212a!important;border-color:#373944!important;color:#c5c6ff!important}
+html[data-theme="dark"] .radar-person b{color:#f1f2f5!important}
+html[data-theme="dark"] .radar-person span,html[data-theme="dark"] .radar-main p,html[data-theme="dark"] .radar-empty span{color:#999ca8!important}
+html[data-theme="dark"] .radar-row{border-color:#2b2c35!important}
+html[data-theme="dark"] .radar-rank{background:#20212a!important;border-color:#343641!important;color:#aeb0bd!important}
+html[data-theme="dark"] .radar-rank.priority-high{background:#2a1f22!important;border-color:#4a2d32!important;color:#ff9d9d!important}
+html[data-theme="dark"] .radar-rank.priority-medium{background:#29261f!important;border-color:#4b432d!important;color:#e4b45b!important}
+html[data-theme="dark"] .radar-rank.priority-low{background:#22232d!important;border-color:#35374a!important;color:#c3c5ff!important}
+html[data-theme="dark"] .radar-value strong{color:#f2f3f6!important}
+html[data-theme="dark"] .radar-charge-btn{background:#20212a!important;border-color:#373944!important;color:#c5c6ff!important}
+html[data-theme="dark"] .radar-charge-btn:hover{background:#292a34!important}
+@media(max-width:900px){
+  .radar-row{grid-template-columns:32px minmax(0,1fr) auto;gap:10px}
+  .radar-action{grid-column:2 / -1;justify-content:flex-start;margin-top:-2px}
+  .radar-value{min-width:80px}
+}
+@media(max-width:600px){
+  .collection-radar-head{flex-direction:column;gap:10px}
+  .radar-row{grid-template-columns:30px minmax(0,1fr);align-items:start;min-height:auto;padding:14px 0}
+  .radar-value{grid-column:2;min-width:0;display:flex;align-items:center;gap:8px;text-align:left;margin-left:37px}
+  .radar-priority{margin-top:0}
+  .radar-action{grid-column:2;margin-left:37px}
+  .radar-main p{white-space:normal;line-height:1.45}
+}
