@@ -10116,3 +10116,19 @@ html[data-theme="dark"] .customer-history-event{
   text-align:center;
 }
 .link-button:disabled{opacity:.6;cursor:not-allowed}
+
+/* Dark mode — faixa do teste grátis */
+html[data-theme="dark"] .app-layout .trial-banner{
+  background:#20212a!important;
+  border-color:#343640!important;
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .app-layout .trial-banner strong{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .app-layout .trial-banner a{
+  color:#b9baff!important;
+}
+html[data-theme="dark"] .app-layout .trial-banner a:hover{
+  color:#d1d2ff!important;
+}
