@@ -483,12 +483,22 @@ create table if not exists private.ai_rate_limits (
   day_count integer not null default 0
 );
 
-revoke all on table private.ai_rate_limits from public, anon, authenticated;
+alter table private.ai_rate_limits enable row level security;
+
+drop policy if exists "ai rate limit own" on private.ai_rate_limits;
+create policy "ai rate limit own"
+on private.ai_rate_limits
+for all to authenticated
+using (user_id = (select auth.uid()))
+with check (user_id = (select auth.uid()));
+
+revoke all on table private.ai_rate_limits from public, anon;
+grant select, insert, update on table private.ai_rate_limits to authenticated;
 
 create or replace function public.consume_ai_rate_limit()
 returns boolean
 language plpgsql
-security definer
+security invoker
 set search_path = ''
 as $function$
 declare
