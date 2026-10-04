@@ -10202,3 +10202,32 @@ html[data-theme="dark"] .app-layout .profile-summary .avatar.large{
   border-color:#393b47;
   background:#24252d;
 }
+
+
+/* Avatar do cabeçalho: círculo rígido, sem deformação */
+.app-header .avatar-button{
+  width:36px!important;
+  min-width:36px!important;
+  max-width:36px!important;
+  height:36px!important;
+  min-height:36px!important;
+  max-height:36px!important;
+  aspect-ratio:1 / 1;
+  flex:0 0 36px!important;
+  border-radius:50%!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+.app-header .avatar-button img{
+  width:36px!important;
+  min-width:36px!important;
+  max-width:36px!important;
+  height:36px!important;
+  min-height:36px!important;
+  max-height:36px!important;
+  aspect-ratio:1 / 1;
+  object-fit:cover!important;
+  object-position:center!important;
+  display:block!important;
+  border-radius:50%!important;
+}
