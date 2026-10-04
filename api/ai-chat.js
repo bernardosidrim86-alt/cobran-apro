@@ -67,7 +67,7 @@ export default async function handler(req,res){
       headers:sbHeaders,
       body:"{}"
     });
-    const rateAllowed=await rateResponse.json().catch(()=>false);
+    const rateAllowed=await rateResponse.json().catch(()=>null);
     if(!rateResponse.ok||rateAllowed!==true){
       return res.status(429).json({error:"Limite de uso da IA atingido. Tente novamente mais tarde."});
     }
