@@ -68,7 +68,17 @@ export default async function handler(req,res){
       body:"{}"
     });
     const rateAllowed=await rateResponse.json().catch(()=>null);
-    if(!rateResponse.ok||rateAllowed!==true){
+    if(!rateResponse.ok){
+      console.error("AI rate limiter RPC failed",rateResponse.status,JSON.stringify(rateAllowed).slice(0,500));
+      return res.status(503).json({error:"Não foi possível validar o limite de uso da IA agora. Tente novamente em instantes."});
+    }
+    const rateWasAllowed=
+      rateAllowed===true ||
+      rateAllowed==="true" ||
+      rateAllowed===1 ||
+      rateAllowed?.allowed===true ||
+      rateAllowed?.allowed==="true";
+    if(!rateWasAllowed){
       return res.status(429).json({error:"Limite de uso da IA atingido. Tente novamente mais tarde."});
     }
 
