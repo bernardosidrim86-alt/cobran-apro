@@ -10132,3 +10132,8 @@ html[data-theme="dark"] .app-layout .trial-banner a{
 html[data-theme="dark"] .app-layout .trial-banner a:hover{
   color:#d1d2ff!important;
 }
+
+/* Logo lateral — versão clara no modo escuro */
+.side-brand .side-brand-logo-dark{display:none}
+html[data-theme="dark"] .side-brand .side-brand-logo-light{display:none}
+html[data-theme="dark"] .side-brand .side-brand-logo-dark{display:block}
