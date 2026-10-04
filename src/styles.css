@@ -10132,3 +10132,18 @@ html[data-theme="dark"] .app-layout .trial-banner a{
 html[data-theme="dark"] .app-layout .trial-banner a:hover{
   color:#d1d2ff!important;
 }
+
+/* LANDING — preservar proporção da logo no mobile */
+@media(max-width:800px){
+  .cp-lp-header .cp-lp-brand{
+    flex:0 0 auto;
+  }
+  .cp-lp-header .cp-lp-brand img{
+    width:160px!important;
+    min-width:160px!important;
+    max-width:none!important;
+    height:auto!important;
+    flex:0 0 160px!important;
+    object-fit:contain;
+  }
+}
