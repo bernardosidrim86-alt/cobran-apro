@@ -472,3 +472,78 @@ alter table public.message_logs add constraint message_logs_customer_company_fke
 alter table public.message_logs drop constraint if exists message_logs_charge_id_fkey;
 alter table public.message_logs add constraint message_logs_charge_company_fkey
   foreign key (company_id, charge_id) references public.charges (company_id, id) on delete set null;
+
+
+-- Hardening: server-side rate limit for the AI endpoint.
+create table if not exists private.ai_rate_limits (
+  user_id uuid primary key,
+  window_started_at timestamptz not null default now(),
+  window_count integer not null default 0,
+  day_started_at date not null default current_date,
+  day_count integer not null default 0
+);
+
+revoke all on table private.ai_rate_limits from public, anon, authenticated;
+
+create or replace function public.consume_ai_rate_limit()
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $function$
+declare
+  v_uid uuid := (select auth.uid());
+  v_now timestamptz := now();
+  v_today date := current_date;
+  v_allowed boolean;
+begin
+  if v_uid is null then
+    return false;
+  end if;
+
+  insert into private.ai_rate_limits(user_id)
+  values (v_uid)
+  on conflict (user_id) do nothing;
+
+  select
+    case
+      when day_started_at < v_today then true
+      when day_count >= 300 then false
+      when window_started_at < v_now - interval '10 minutes' then true
+      when window_count >= 30 then false
+      else true
+    end
+  into v_allowed
+  from private.ai_rate_limits
+  where user_id = v_uid
+  for update;
+
+  if not v_allowed then
+    return false;
+  end if;
+
+  update private.ai_rate_limits
+     set window_started_at = case
+           when window_started_at < v_now - interval '10 minutes' then v_now
+           else window_started_at
+         end,
+         window_count = case
+           when window_started_at < v_now - interval '10 minutes' then 1
+           else window_count + 1
+         end,
+         day_started_at = case
+           when day_started_at < v_today then v_today
+           else day_started_at
+         end,
+         day_count = case
+           when day_started_at < v_today then 1
+           else day_count + 1
+         end
+   where user_id = v_uid;
+
+  return true;
+end;
+$function$;
+
+revoke all on function public.consume_ai_rate_limit() from public, anon;
+grant execute on function public.consume_ai_rate_limit() to authenticated;
