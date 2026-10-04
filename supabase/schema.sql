@@ -301,6 +301,19 @@ revoke all on table storage.objects from anon;
 grant select on table storage.objects to anon;
 grant select, insert, update, delete on table storage.objects to authenticated;
 
+drop policy if exists "company avatars select" on storage.objects;
+create policy "company avatars select"
+on storage.objects
+for select to authenticated
+using (
+  bucket_id = 'company-avatars'
+  and (storage.foldername(name))[1] = (
+    select (profiles.company_id)::text
+    from public.profiles
+    where profiles.id = auth.uid()
+  )
+);
+
 update storage.buckets
 set file_size_limit = 3145728,
     allowed_mime_types = array['image/jpeg','image/png','image/webp']
