@@ -52,6 +52,18 @@ function App() {
   </Routes>;
 }
 
+const ALLOWED_CHECKOUT_HOSTS=new Set(["checkout.perfectpay.com.br","go.perfectpay.com.br"]);
+function getSafeCheckout(value){
+  if(!value)return null;
+  try{
+    const url=new URL(value);
+    if(url.protocol!=="https:"||!ALLOWED_CHECKOUT_HOSTS.has(url.hostname))return null;
+    return url;
+  }catch{
+    return null;
+  }
+}
+
 function getPendingCheckout() {
   try { return localStorage.getItem("pendingPerfectPayCheckout"); } catch { return null; }
 }
@@ -360,7 +372,7 @@ function Price({plan, featured, session, annual=false}) {
     if (!url) return;
 
     const checkoutUrl = new URL(url);
-    if (["checkout.perfectpay.com.br","go.perfectpay.com.br"].includes(checkoutUrl.hostname) === false) {
+    if (!getSafeCheckout(checkoutUrl.toString())) {
       console.error("Checkout inválido.");
       return;
     }
@@ -430,7 +442,7 @@ function AuthLayout({children,title,subtitle}) {
 
 function Login() {
   const nav=useNavigate(); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false); const [captchaToken,setCaptchaToken]=useState(""); const [captchaKey,setCaptchaKey]=useState(0);
-  const checkout=new URLSearchParams(window.location.search).get("checkout");
+  const checkout=getSafeCheckout(new URLSearchParams(window.location.search).get("checkout"))?.toString()||null;
   async function submit(e){
     e.preventDefault();setError("");setBusy(true);
     if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;}
@@ -440,10 +452,12 @@ function Login() {
     if(error){setError(error.message==="Invalid login credentials"?"E-mail ou senha incorretos.":error.message);setBusy(false);return;}
     if(continuePendingCheckout(data?.user?.id)) return;
     if(checkout && data?.user?.id){
-      const checkoutUrl=new URL(checkout);
-      checkoutUrl.searchParams.set("utm_content",data.user.id);
-      window.location.href=checkoutUrl.toString();
-      return;
+      const checkoutUrl=getSafeCheckout(checkout);
+      if(checkoutUrl){
+        checkoutUrl.searchParams.set("utm_content",data.user.id);
+        window.location.href=checkoutUrl.toString();
+        return;
+      }
     }
     nav("/app");setBusy(false);
   }
@@ -456,7 +470,8 @@ function Signup() {
   function continueToCheckout(userId){
     if(continuePendingCheckout(userId)) return true;
     if(!checkout || !userId) return false;
-    const checkoutUrl=new URL(checkout);
+    const checkoutUrl=getSafeCheckout(checkout);
+    if(!checkoutUrl)return false;
     checkoutUrl.searchParams.set("utm_content",userId);
     window.location.href=checkoutUrl.toString();
     return true;
@@ -1040,7 +1055,7 @@ function ChargeDetail({charge,onClose,onPaid,customers=[]}){
               <Button type="button" variant="secondary" onClick={()=>{
                 const phone=(charge.customers?.phone||"").replace(/\D/g,"");
                 const message="Oi! Tudo bem? Passando para lembrar da cobrança de "+money(charge.amount)+" com vencimento em "+new Date(charge.due_date+"T12:00:00").toLocaleDateString("pt-BR")+". Quando puder, consegue verificar? Obrigado!";
-                window.open(phone?"https://wa.me/"+phone+"?text="+encodeURIComponent(message):"https://wa.me/?text="+encodeURIComponent(message),"_blank");
+                window.open(phone?"https://wa.me/"+phone+"?text="+encodeURIComponent(message):"https://wa.me/?text="+encodeURIComponent(message),"_blank","noopener,noreferrer");
               }}>Abrir WhatsApp</Button>
               <Button type="button" onClick={paid} disabled={saving}><Check size={16}/> Marcar como pago</Button>
             </>
