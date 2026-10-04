@@ -227,6 +227,7 @@ function Landing({session}) {
     ["Relatórios","Gráficos de cobrado e recebido para 7, 30 ou 90 dias."],
     ["WhatsApp por link","Mensagem pronta para cada cobrança. Você revisa e envia."],
     ["Assistente de cobrança","Mensagens de cobrança adaptadas a cada situação, para você revisar e usar."],
+    ["Copiloto de cobrança","Leitura inteligente da sua carteira, com prioridades claras sobre o que cobrar primeiro."],
     ["Celular e computador","Funciona direto no navegador, sem instalar nada."],
   ];
   const faq=[
