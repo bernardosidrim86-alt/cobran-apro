@@ -296,6 +296,16 @@ alter default privileges for role postgres in schema public revoke select, inser
 alter default privileges for role postgres in schema public revoke all on functions from public, anon, authenticated;
 alter default privileges for role postgres in schema public revoke all on sequences from public, anon, authenticated;
 
+-- Hardening: company avatar storage must never accept anonymous uploads.
+revoke all on table storage.objects from anon;
+grant select on table storage.objects to anon;
+grant select, insert, update, delete on table storage.objects to authenticated;
+
+update storage.buckets
+set file_size_limit = 3145728,
+    allowed_mime_types = array['image/jpeg','image/png','image/webp']
+where id = 'company-avatars';
+
 -- Hardening: enforce access and plan limits in the database, not only in the browser.
 create or replace function private.enforce_plan_insert_limit()
 returns trigger
