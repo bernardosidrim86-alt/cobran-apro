@@ -10303,3 +10303,151 @@ html[data-theme="dark"] .copilot-action-dot.danger{background:#ef6969}html[data-
   .copilot-card-foot>span{line-height:1.45}.copilot-overdue-row{grid-template-columns:minmax(0,1fr) auto}
   .copilot-overdue-age{grid-column:2;grid-row:1}.copilot-overdue-row>strong{grid-column:1 / -1;min-width:0;text-align:left}
 }
+
+
+/* Hierarquia visual do modo claro */
+html:not([data-theme="dark"]) body,
+html:not([data-theme="dark"]) #root,
+html:not([data-theme="dark"]) .app-layout,
+html:not([data-theme="dark"]) .app-main{
+  background:#f4f5f7;
+  color:#17181d;
+}
+html:not([data-theme="dark"]) .page{
+  background:#f4f5f7;
+  padding-top:32px;
+}
+html:not([data-theme="dark"]) .app-header{
+  background:rgba(255,255,255,.96);
+  border-bottom-color:#e2e4e8;
+}
+html:not([data-theme="dark"]) .sidebar{
+  background:#fbfbfc;
+  border-right-color:#e2e4e8;
+}
+html:not([data-theme="dark"]) .side-nav a:hover,
+html:not([data-theme="dark"]) .side-nav-parent:hover{
+  background:#f0f1f3;
+}
+html:not([data-theme="dark"]) .side-nav a.active,
+html:not([data-theme="dark"]) .side-nav-parent.active{
+  background:#e9eafc;
+}
+html:not([data-theme="dark"]) .panel,
+html:not([data-theme="dark"]) .metric,
+html:not([data-theme="dark"]) .table-panel,
+html:not([data-theme="dark"]) .settings-panel,
+html:not([data-theme="dark"]) .connection,
+html:not([data-theme="dark"]) .plan-box,
+html:not([data-theme="dark"]) .report-card,
+html:not([data-theme="dark"]) .calendar-panel,
+html:not([data-theme="dark"]) .calendar-summary-card,
+html:not([data-theme="dark"]) .calendar-day-panel,
+html:not([data-theme="dark"]) .ai-chat-panel,
+html:not([data-theme="dark"]) .ai-locked-panel,
+html:not([data-theme="dark"]) .automation-card{
+  background:#fff;
+  border-color:#e1e4e8;
+  box-shadow:0 1px 2px rgba(16,24,40,.025);
+}
+html:not([data-theme="dark"]) .metric{
+  box-shadow:0 1px 2px rgba(16,24,40,.02);
+}
+html:not([data-theme="dark"]) .dashboard-main-grid,
+html:not([data-theme="dark"]) .dashboard-bottom-grid,
+html:not([data-theme="dark"]) .report-layout,
+html:not([data-theme="dark"]) .report-secondary{
+  gap:18px;
+}
+html:not([data-theme="dark"]) .dashboard-hero{
+  padding-bottom:4px;
+}
+html:not([data-theme="dark"]) .dashboard-hero p,
+html:not([data-theme="dark"]) .page-title p,
+html:not([data-theme="dark"]) .panel-head p{
+  color:#747982;
+}
+html:not([data-theme="dark"]) .cash-summary,
+html:not([data-theme="dark"]) .dashboard-client-count,
+html:not([data-theme="dark"]) .dashboard-mini-stat{
+  background:#f8f9fa;
+  border-color:#e6e8eb;
+}
+html:not([data-theme="dark"]) .attention-panel{
+  background:#fff;
+}
+html:not([data-theme="dark"]) .attention-list,
+html:not([data-theme="dark"]) .charge-list{
+  border-top-color:#e5e7eb;
+}
+html:not([data-theme="dark"]) .attention-item,
+html:not([data-theme="dark"]) .charge-row,
+html:not([data-theme="dark"]) td{
+  border-bottom-color:#eceef1;
+}
+html:not([data-theme="dark"]) .quick-actions-premium a:hover{
+  background:#f7f8fa;
+  border-color:#e4e6ea;
+}
+html:not([data-theme="dark"]) .toolbar,
+html:not([data-theme="dark"]) .report-toolbar{
+  background:transparent;
+}
+html:not([data-theme="dark"]) .searchbox,
+html:not([data-theme="dark"]) .header-search{
+  background:#fff;
+  border-color:#dfe2e6;
+  box-shadow:0 1px 2px rgba(16,24,40,.02);
+}
+html:not([data-theme="dark"]) .field input,
+html:not([data-theme="dark"]) .field textarea,
+html:not([data-theme="dark"]) .field select,
+html:not([data-theme="dark"]) .report-dates input{
+  background:#fbfcfd;
+  border-color:#dfe2e6;
+}
+html:not([data-theme="dark"]) .filters{
+  padding:4px;
+  background:#eef0f3;
+  border:1px solid #e0e3e7;
+  border-radius:10px;
+}
+html:not([data-theme="dark"]) .filters button{
+  background:transparent;
+  border-color:transparent;
+}
+html:not([data-theme="dark"]) .filters button.selected{
+  background:#fff;
+  border-color:#dfe2e6;
+  box-shadow:0 1px 2px rgba(16,24,40,.04);
+}
+html:not([data-theme="dark"]) .settings-nav{
+  padding:5px;
+  background:#eef0f3;
+  border:1px solid #e0e3e7;
+  border-radius:12px;
+  height:max-content;
+}
+html:not([data-theme="dark"]) .settings-nav button.active{
+  background:#fff;
+  color:#4f50d4;
+  box-shadow:0 1px 2px rgba(16,24,40,.04);
+}
+html:not([data-theme="dark"]) .trial-banner{
+  background:#eef0ff;
+  border-color:#dfe1fb;
+}
+html:not([data-theme="dark"]) .empty-icon{
+  background:#f2f3f5;
+}
+html:not([data-theme="dark"]) .modal-backdrop{
+  background:rgba(17,24,39,.38);
+}
+html:not([data-theme="dark"]) .modal,
+html:not([data-theme="dark"]) .header-dropdown{
+  box-shadow:0 18px 50px rgba(16,24,40,.14);
+}
+html:not([data-theme="dark"]) .status-ring:after,
+html:not([data-theme="dark"]) .donut:after{
+  background:#fff;
+}

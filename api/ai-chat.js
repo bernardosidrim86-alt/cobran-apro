@@ -64,7 +64,7 @@ export default async function handler(req,res){
 
     const rateResponse=await fetch(supabaseUrl+"/rest/v1/rpc/consume_ai_rate_limit",{
       method:"POST",
-      headers:{...sbHeaders,"Content-Type":"application/json"},
+      headers:sbHeaders,
       body:"{}"
     });
     const rateAllowed=await rateResponse.json().catch(()=>null);
