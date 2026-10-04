@@ -176,8 +176,10 @@ as $$
   where id = (select auth.uid())
 $$;
 
-revoke all on function private.my_company_id() from public, anon;
+revoke all on schema private from public, anon;
 grant usage on schema private to authenticated;
+revoke all on function private.my_company_id() from public, anon;
+grant execute on function private.my_company_id() to authenticated;
 grant execute on function private.my_company_id() to authenticated;
 
 drop policy if exists "company own" on public.companies;
@@ -286,12 +288,13 @@ grant select on table public.profiles to authenticated;
 grant update (full_name) on table public.profiles to authenticated;
 revoke all on table public.subscriptions from anon, authenticated;
 grant select on table public.subscriptions to authenticated;
-revoke all on table public.companies, public.customers, public.charges, public.payments, public.ai_settings, public.company_settings, public.message_logs, public.whatsapp_automation_settings, public.whatsapp_connections from anon;
+revoke all on table public.companies, public.customers, public.charges, public.payments, public.ai_settings, public.company_settings, public.message_logs, public.whatsapp_automation_settings, public.whatsapp_connections from anon, authenticated;
+grant select, insert, update, delete on table public.companies, public.customers, public.charges, public.payments, public.ai_settings, public.company_settings, public.message_logs, public.whatsapp_automation_settings, public.whatsapp_connections to authenticated;
 revoke execute on function public.create_my_company(text, text, text) from public, anon;
 grant execute on function public.create_my_company(text, text, text) to authenticated;
 alter default privileges for role postgres in schema public revoke select, insert, update, delete on tables from anon;
-alter default privileges for role postgres in schema public revoke execute on functions from public, anon;
-alter default privileges for role postgres in schema public revoke usage, select on sequences from anon;
+alter default privileges for role postgres in schema public revoke all on functions from public, anon, authenticated;
+alter default privileges for role postgres in schema public revoke all on sequences from public, anon, authenticated;
 
 -- Hardening: enforce access and plan limits in the database, not only in the browser.
 create or replace function private.enforce_plan_insert_limit()
