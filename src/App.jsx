@@ -225,6 +225,7 @@ function Landing({session}) {
     ["Cobranças","Status automático, filtros por situação e recorrência."],
     ["Recebimentos","Histórico de tudo o que já foi pago, com cliente, valor e forma."],
     ["Relatórios","Gráficos de cobrado e recebido para 7, 30 ou 90 dias."],
+    ["Radar de recebimento","Organiza as cobranças pela urgência, valor e histórico de pagamento, para mostrar quem merece sua atenção primeiro."],
     ["WhatsApp por link","Mensagem pronta para cada cobrança. Você revisa e envia."],
     ["Assistente de cobrança","Mensagens de cobrança adaptadas a cada situação, para você revisar e usar."],
     ["Celular e computador","Funciona direto no navegador, sem instalar nada."],
