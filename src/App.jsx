@@ -4,7 +4,7 @@ import { Routes, Route, Navigate, Link, useLocation, useNavigate } from "react-r
 import {
   ArrowRight, Bell, Check, ChevronRight, CircleDollarSign, CreditCard,
   CalendarDays, ChevronLeft, LayoutDashboard, LogOut, Menu, MessageCircle, Plus, Receipt, Settings,
-  Sparkles, Target, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal, Lock, Sun, Moon
+  Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal, Lock, Sun, Moon
 } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import { toast, confirmDialog } from "./ui";
@@ -639,7 +639,7 @@ function AppShell({session}) {
   function handlePointerUp(e){if(e.pointerType==="mouse")return;const sx=pointerStartX.current,sy=pointerStartY.current;pointerStartX.current=null;pointerStartY.current=null;if(sx===null||sy===null)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.abs(dx)>=45&&Math.abs(dx)>Math.abs(dy)*1.05){setMobile(false);setNotificationsOpen(false);setProfileOpen(false);}}
 
   const hasAIAccess=currentPlan==="profissional"||currentPlan==="business";
-  const links=[["/app",LayoutDashboard,"Dashboard"],["/app/clientes",Users,"Clientes"],["/app/cobrancas",Receipt,"Cobranças"],["/app/recebimentos",Wallet,"Recebimentos"],["/app/calendario",CalendarDays,"Calendário"],["/app/relatorios",TrendingUp,"Relatórios"],["/app/ia",Sparkles,"Assistente IA"],["/app/configuracoes",Settings,"Configurações"]];
+  const links=[["/app",LayoutDashboard,"Dashboard"],["/app/clientes",Users,"Clientes"],["/app/cobrancas",Receipt,"Cobranças"],["/app/recebimentos",Wallet,"Recebimentos"],["/app/calendario",CalendarDays,"Calendário"],["/app/relatorios",TrendingUp,"Relatórios"],["/app/ia",Sparkles,"Assistente IA"],["/app/copiloto",CircleDollarSign,"Copiloto"],["/app/configuracoes",Settings,"Configurações"]];
   return <div className="app-layout" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onPointerDown={handlePointerDown} onPointerUp={handlePointerUp}>{mobile&&<button className="sidebar-backdrop" aria-label="Fechar menu" onClick={()=>setMobile(false)}></button>}<aside className={`sidebar ${mobile?"open":""}`}><div className="mobile-sidebar-head"><Link to="/" className="brand side-brand"><img className="brand-logo" src="/logo.png" alt="CobrançaPro" /></Link>{mobile&&<button className="mobile-sidebar-close" onClick={()=>setMobile(false)} aria-label="Fechar menu"><X size={20}/></button>}</div><div className="side-nav">
     {links.slice(0,2).map(([path,Icon,label])=><Link onClick={e=>{e.stopPropagation();setMobile(false);nav(path)}} className={loc.pathname===path?"active":""} to={path} key={path}><Icon size={18}/>{label}</Link>)}
     <div className="side-nav-group">
@@ -652,8 +652,9 @@ function AppShell({session}) {
         <Link onClick={()=>setMobile(false)} className={loc.search.includes("filter=paid")?"active":""} to="/app/cobrancas?filter=paid"><span>Recebidas</span></Link>
       </div>}
     </div>
-    {links.slice(3).map(([path,Icon,label])=>{const locked=path==="/app/ia"&&!hasAIAccess;return <Link onClick={()=>{setMobile(false);if(locked){setTrialBlocked(false);}}} className={loc.pathname===path?"active":""} to={path} key={path}><Icon size={18}/>{label}{locked&&<Lock size={13} className="nav-lock"/>}</Link>;})}
-  </div><div className="side-bottom"><button className="user-mini user-mini-button" onClick={openProfile}><div className="avatar">{initials}</div><div><b>{fullName}</b><span>{email}</span></div></button><button onClick={logout} className="logout"><LogOut size={17}/> Sair</button></div></aside><div className="app-main"><header className="app-header"><button className="mobile-menu" onClick={()=>setMobile(x=>!x)}><Menu/></button><div className="header-search global-search"><Search size={17}/><input placeholder="Buscar clientes ou cobranças..." value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)} /><span className="global-search-count">{globalSearch.trim().length>=2?(globalResults.customers.length+globalResults.charges.length):""}</span>{globalSearch.trim().length>=2&&<div className="global-search-results">{globalResults.customers.length===0&&globalResults.charges.length===0?<div className="global-search-empty">Nenhum resultado encontrado.</div>:<>{globalResults.customers.length>0&&<><div className="global-search-section">Clientes</div>{globalResults.customers.map(c=><Link key={c.id} to={"/app/clientes?q="+encodeURIComponent(c.name)} onClick={()=>setGlobalSearch("")}><Users size={15}/><div><b>{c.name}</b><span>{c.phone||c.email||"Cliente"}</span></div></Link>)}</>}{globalResults.charges.length>0&&<><div className="global-search-section">Cobranças</div>{globalResults.charges.map(c=><Link key={c.id} to={"/app/cobrancas?q="+encodeURIComponent(c.description||c.customers?.name||"")} onClick={()=>setGlobalSearch("")}><Receipt size={15}/><div><b>{c.customers?.name||"Cliente"} · {money(c.amount)}</b><span>{c.description||"Cobrança"} · {new Date(c.due_date+"T12:00:00").toLocaleDateString("pt-BR")}</span></div></Link>)}</>}</>}</div>}</div><div className="header-right"><div className="theme-switch" role="group" aria-label="Tema do sistema"><button type="button" className={`theme-choice ${theme==="light"?"active":""}`} onClick={()=>setTheme("light")} aria-label="Modo claro" aria-pressed={theme==="light"} title="Modo claro"><Sun size={17}/></button><button type="button" className={`theme-choice ${theme==="dark"?"active":""}`} onClick={()=>setTheme("dark")} aria-label="Modo escuro" aria-pressed={theme==="dark"} title="Modo escuro"><Moon size={17}/></button></div><div className="header-menu"><button className={`header-icon-button ${notificationsOpen?"active":""}`} onClick={openNotifications} aria-label="Notificações"><Bell size={18}/>{notificationCount>0&&<span className="notification-dot">{notificationCount>9?"9+":notificationCount}</span>}</button>{notificationsOpen&&<div className="header-dropdown notifications-dropdown"><div className="dropdown-head"><div><b>Notificações</b><span>{notificationCount ? notificationCount+" cobrança(s) precisam de atenção." : "Tudo em dia por aqui."}</span></div></div>{notificationCount?<Link to="/app/cobrancas" onClick={()=>setNotificationsOpen(false)} className="notification-item"><div className="dropdown-icon danger"><Receipt size={16}/></div><div><b>Cobranças vencidas ou vencendo hoje</b><span>Veja as cobranças que precisam de atenção.</span></div><ChevronRight size={15}/></Link>:<div className="dropdown-empty"><Check size={18}/><span>Nenhuma notificação nova.</span></div>}</div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session}/>}/><Route path="clientes" element={<Customers/>}/><Route path="cobrancas" element={<Charges/>}/><Route path="recebimentos" element={<Payments/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/><Route path="configuracoes/*" element={<SettingsPage canUseAI={hasAIAccess}/>}/><Route path="*" element={<Navigate to="/app" replace/>}/></Routes></div></div></div>
+    {links.slice(3).map(([path,Icon,label])=>{const locked=(path==="/app/ia"||path==="/app/copiloto")&&!hasAIAccess;return <Link onClick={()=>{setMobile(false);if(locked){setTrialBlocked(false);}}} className={loc.pathname===path?"active":""} to={path} key={path}><Icon size={18}/>{label}{locked&&<Lock size={13} className="nav-lock"/>}</Link>;})}
+  </div><div className="side-bottom"><button className="user-mini user-mini-button" onClick={openProfile}><div className="avatar">{initials}</div><div><b>{fullName}</b><span>{email}</span></div></button><button onClick={logout} className="logout"><LogOut size={17}/> Sair</button></div></aside><div className="app-main"><header className="app-header"><button className="mobile-menu" onClick={()=>setMobile(x=>!x)}><Menu/></button><div className="header-search global-search"><Search size={17}/><input placeholder="Buscar clientes ou cobranças..." value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)} /><span className="global-search-count">{globalSearch.trim().length>=2?(globalResults.customers.length+globalResults.charges.length):""}</span>{globalSearch.trim().length>=2&&<div className="global-search-results">{globalResults.customers.length===0&&globalResults.charges.length===0?<div className="global-search-empty">Nenhum resultado encontrado.</div>:<>{globalResults.customers.length>0&&<><div className="global-search-section">Clientes</div>{globalResults.customers.map(c=><Link key={c.id} to={"/app/clientes?q="+encodeURIComponent(c.name)} onClick={()=>setGlobalSearch("")}><Users size={15}/><div><b>{c.name}</b><span>{c.phone||c.email||"Cliente"}</span></div></Link>)}</>}{globalResults.charges.length>0&&<><div className="global-search-section">Cobranças</div>{globalResults.charges.map(c=><Link key={c.id} to={"/app/cobrancas?q="+encodeURIComponent(c.description||c.customers?.name||"")} onClick={()=>setGlobalSearch("")}><Receipt size={15}/><div><b>{c.customers?.name||"Cliente"} · {money(c.amount)}</b><span>{c.description||"Cobrança"} · {new Date(c.due_date+"T12:00:00").toLocaleDateString("pt-BR")}</span></div></Link>)}</>}</>}</div>}</div><div className="header-right"><div className="theme-switch" role="group" aria-label="Tema do sistema"><button type="button" className={`theme-choice ${theme==="light"?"active":""}`} onClick={()=>setTheme("light")} aria-label="Modo claro" aria-pressed={theme==="light"} title="Modo claro"><Sun size={17}/></button><button type="button" className={`theme-choice ${theme==="dark"?"active":""}`} onClick={()=>setTheme("dark")} aria-label="Modo escuro" aria-pressed={theme==="dark"} title="Modo escuro"><Moon size={17}/></button></div><div className="header-menu"><button className={`header-icon-button ${notificationsOpen?"active":""}`} onClick={openNotifications} aria-label="Notificações"><Bell size={18}/>{notificationCount>0&&<span className="notification-dot">{notificationCount>9?"9+":notificationCount}</span>}</button>{notificationsOpen&&<div className="header-dropdown notifications-dropdown"><div className="dropdown-head"><div><b>Notificações</b><span>{notificationCount ? notificationCount+" cobrança(s) precisam de atenção." : "Tudo em dia por aqui."}</span></div></div>{notificationCount?<Link to="/app/cobrancas" onClick={()=>setNotificationsOpen(false)} className="notification-item"><div className="dropdown-icon danger"><Receipt size={16}/></div><div><b>Cobranças vencidas ou vencendo hoje</b><span>Veja as cobranças que precisam de atenção.</span></div><ChevronRight size={15}/></Link>:<div className="dropdown-empty"><Check size={18}/><span>Nenhuma notificação nova.</span></div>}</div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session} currentPlan={currentPlan}/>}/><Route path="clientes" element={<Customers/>}/><Route path="cobrancas" element={<Charges/>}/><Route path="recebimentos" element={<Payments/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/>
+<Route path="copiloto" element={<CopilotPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/><Route path="configuracoes/*" element={<SettingsPage canUseAI={hasAIAccess}/>}/><Route path="*" element={<Navigate to="/app" replace/>}/></Routes></div></div></div>
 }
 
 function useCompany() {
@@ -676,7 +677,7 @@ function usePlanLimits() {
 }
 
 
-function Dashboard({session}) {
+function Dashboard({session,currentPlan="free"}) {
   const companyId=useCompany();
   const [data,setData]=useState({customers:0,receive:0,today:0,overdue:0,paid:0,charges:[],payments:[]});
 
@@ -726,6 +727,8 @@ function Dashboard({session}) {
       <Metric title="Total recebido" value={money(data.paid)} icon={Wallet} tone="success"/>
     </div>
 
+    <CopilotDashboardCard currentPlan={currentPlan} data={data}/>
+
     <div className="dashboard-action-grid">
       <div className="panel">
         <div className="panel-head"><div><span className="panel-kicker">ATENÇÃO</span><h2>Cobranças vencidas e de hoje</h2><p>Veja rapidamente o que já passou do prazo ou vence hoje.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
@@ -740,6 +743,172 @@ function Dashboard({session}) {
     </div>
   </div>;
 }
+
+
+function CopilotDashboardCard({currentPlan="free",data}){
+  const premium=currentPlan==="profissional"||currentPlan==="business";
+  const overdue=(data?.charges||[]).filter(x=>x.status==="pending"&&x.due_date<todayISO());
+  const today=(data?.charges||[]).filter(x=>x.status==="pending"&&x.due_date===todayISO());
+  const next7=(data?.charges||[]).filter(x=>{
+    if(x.status!=="pending")return false;
+    const start=new Date(todayISO()+"T00:00:00");
+    const end=new Date(start);
+    end.setDate(end.getDate()+7);
+    const d=new Date((x.due_date||"")+"T12:00:00");
+    return d>=start&&d<end;
+  }).reduce((sum,x)=>sum+Number(x.amount||0),0);
+
+  if(!premium){
+    return <div className="panel copilot-dashboard-card copilot-dashboard-locked">
+      <div className="copilot-card-main">
+        <div className="copilot-card-icon"><Lock size={18}/></div>
+        <div>
+          <span className="panel-kicker">RECURSO PREMIUM</span>
+          <h2>Copiloto de Cobrança</h2>
+          <p>Uma leitura automática da sua carteira, com prioridades claras para cobrar e receber melhor.</p>
+        </div>
+      </div>
+      <div className="copilot-card-lock-copy"><span>Disponível no plano Profissional.</span><a href="/#precos" className="btn btn-secondary btn-sm">Ver planos <ArrowRight size={14}/></a></div>
+    </div>;
+  }
+
+  return <div className="panel copilot-dashboard-card">
+    <div className="copilot-card-head">
+      <div>
+        <span className="panel-kicker">RECURSO PREMIUM</span>
+        <h2>Copiloto de Cobrança</h2>
+        <p>Veja onde está o dinheiro parado e o que merece atenção primeiro.</p>
+      </div>
+      <Link to="/app/copiloto" className="link-btn">Abrir Copiloto <ArrowRight size={15}/></Link>
+    </div>
+    <div className="copilot-dashboard-metrics">
+      <div><span>Atrasado</span><strong className={overdue.length?"danger":""}>{money(overdue.reduce((a,x)=>a+Number(x.amount||0),0))}</strong><small>{overdue.length} {overdue.length===1?"cobrança":"cobranças"}</small></div>
+      <div><span>Vence hoje</span><strong className={today.length?"warning":""}>{money(today.reduce((a,x)=>a+Number(x.amount||0),0))}</strong><small>{today.length} {today.length===1?"cobrança":"cobranças"}</small></div>
+      <div><span>Próximos 7 dias</span><strong>{money(next7)}</strong><small>valor programado</small></div>
+    </div>
+    <div className="copilot-card-foot"><span><Sparkles size={14}/> Análise baseada nos dados atuais da empresa</span><Link to="/app/copiloto" className="btn btn-secondary btn-sm">Analisar agora</Link></div>
+  </div>;
+}
+
+function CopilotPage({locked=false,currentPlan="free"}){
+  const companyId=useCompany();
+  const [data,setData]=useState({charges:[],payments:[],customers:[]});
+  const [loading,setLoading]=useState(true);
+  const [aiLoading,setAiLoading]=useState(false);
+  const [insight,setInsight]=useState("");
+  const [error,setError]=useState("");
+  const [updatedAt,setUpdatedAt]=useState(null);
+
+  useEffect(()=>{
+    if(locked||!companyId){setLoading(false);return;}
+    let active=true;
+    async function load(){
+      setLoading(true);
+      const [charges,payments,customers]=await Promise.all([
+        supabase.from("charges").select("id,customer_id,description,amount,due_date,status,customers(name,phone)").eq("company_id",companyId).order("due_date"),
+        supabase.from("payments").select("id,customer_id,amount,paid_at,payment_method,customers(name)").eq("company_id",companyId).order("paid_at",{ascending:false}),
+        supabase.from("customers").select("id,name").eq("company_id",companyId).order("name")
+      ]);
+      if(active){
+        setData({charges:charges.data||[],payments:payments.data||[],customers:customers.data||[]});
+        setLoading(false);
+      }
+    }
+    load();
+    return()=>{active=false};
+  },[companyId,locked]);
+
+  const overdue=(data.charges||[]).filter(x=>x.status==="pending"&&x.due_date<todayISO()).sort((a,b)=>String(a.due_date||"").localeCompare(String(b.due_date||"")));
+  const today=(data.charges||[]).filter(x=>x.status==="pending"&&x.due_date===todayISO());
+  const next7=(data.charges||[]).filter(x=>{
+    if(x.status!=="pending")return false;
+    const start=new Date(todayISO()+"T00:00:00");
+    const end=new Date(start);
+    end.setDate(end.getDate()+7);
+    const d=new Date((x.due_date||"")+"T12:00:00");
+    return d>=start&&d<end;
+  });
+  const next7Total=next7.reduce((a,x)=>a+Number(x.amount||0),0);
+  const overdueTotal=overdue.reduce((a,x)=>a+Number(x.amount||0),0);
+  const todayTotal=today.reduce((a,x)=>a+Number(x.amount||0),0);
+  const received30=(data.payments||[]).filter(x=>new Date(x.paid_at)>=new Date(Date.now()-30*86400000)).reduce((a,x)=>a+Number(x.amount||0),0);
+  const pendingTotal=(data.charges||[]).filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.amount||0),0);
+  const actionItems=[];
+  if(overdue.length) actionItems.push({title:"Atacar os atrasos primeiro",detail:overdue.slice(0,2).map(x=>(x.customers?.name||"Cliente")+" · "+money(x.amount)).join("  |  "),to:"/app/cobrancas?filter=overdue",tone:"danger"});
+  if(today.length) actionItems.push({title:"Cobrar os vencimentos de hoje",detail:today.length+" cobrança(s) somando "+money(todayTotal),to:"/app/cobrancas?filter=pending",tone:"warning"});
+  if(!overdue.length&&!today.length) actionItems.push({title:"Carteira em dia",detail:"Não há cobranças vencidas ou vencendo hoje.",to:"/app/cobrancas?filter=pending",tone:"success"});
+
+  async function analyze(){
+    if(aiLoading)return;
+    setError("");
+    setAiLoading(true);
+    try{
+      const {data:sessionData}=await supabase.auth.getSession();
+      const accessToken=sessionData?.session?.access_token;
+      if(!accessToken)throw new Error("Sua sessão expirou. Faça login novamente.");
+      const response=await fetch("/api/ai-chat",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+accessToken},
+        body:JSON.stringify({mode:"copilot"})
+      });
+      const json=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(json.error||"Não foi possível gerar a análise agora.");
+      setInsight(json.answer||"A IA não retornou uma análise.");
+      setUpdatedAt(new Date());
+    }catch(err){
+      setError(err?.message||"Não foi possível analisar os dados agora.");
+    }finally{
+      setAiLoading(false);
+    }
+  }
+
+  if(locked){
+    const planLabel=currentPlan==="essencial"?"Essencial":"Teste grátis";
+    return <><PageTitle title="Copiloto de Cobrança" subtitle="Uma visão inteligente sobre o que cobrar primeiro."/><div className="panel ai-locked-panel copilot-locked-page"><div className="ai-locked-icon"><Lock size={24}/></div><span className="panel-kicker">RECURSO PREMIUM</span><h2>Copiloto de Cobrança</h2><p>Transforme os dados do seu financeiro em prioridades claras, análises automáticas e próximos passos.</p><small>Seu plano atual: <b>{planLabel}</b></small><a href="/#precos" className="btn btn-primary">Ver planos <ArrowRight size={16}/></a><div className="ai-locked-features"><span><Check size={14}/> Diagnóstico da carteira</span><span><Check size={14}/> Prioridades de cobrança</span><span><Check size={14}/> Recomendações baseadas em dados</span></div></div></>;
+  }
+
+  return <div className="copilot-page">
+    <PageTitle title="Copiloto de Cobrança" subtitle="Uma leitura inteligente da sua carteira para você decidir o que fazer primeiro." action={<Button onClick={analyze} disabled={loading||aiLoading}><Sparkles size={16}/>{aiLoading?"Analisando...":"Analisar agora"}</Button>}/>
+    <div className="metric-grid copilot-metric-grid">
+      <Metric title="Atrasado" value={money(overdueTotal)} icon={Receipt} tone="danger"/>
+      <Metric title="Vence hoje" value={money(todayTotal)} icon={Receipt} tone="warning"/>
+      <Metric title="Próximos 7 dias" value={money(next7Total)} icon={CircleDollarSign}/>
+      <Metric title="Recebido em 30 dias" value={money(received30)} icon={Wallet} tone="success"/>
+    </div>
+
+    <div className="copilot-main-grid">
+      <section className="panel copilot-analysis-panel">
+        <div className="panel-head">
+          <div><span className="panel-kicker">ANÁLISE DO MOMENTO</span><h2>O que merece atenção agora</h2><p>A IA cruza suas cobranças e recebimentos para encontrar o principal ponto de atenção.</p></div>
+          <div className="copilot-ai-badge"><Sparkles size={14}/> IA</div>
+        </div>
+        {error&&<div className="error">{error}</div>}
+        {insight?<div className="copilot-insight"><p>{insight}</p><div><span>{updatedAt?"Atualizado às "+updatedAt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):"Análise atual"}</span><Button type="button" variant="secondary" onClick={analyze} disabled={aiLoading}>{aiLoading?"Analisando...":"Atualizar análise"}</Button></div></div>:<div className="copilot-analysis-empty"><div className="copilot-analysis-icon"><Sparkles size={20}/></div><b>Seu diagnóstico ainda não foi gerado.</b><span>Use o botão acima para analisar a carteira atual. A análise é feita com os dados reais da sua empresa.</span><Button type="button" onClick={analyze} disabled={loading||aiLoading}>{aiLoading?"Analisando...":"Gerar diagnóstico"}</Button></div>}
+      </section>
+
+      <aside className="panel copilot-actions-panel">
+        <div className="panel-head"><div><span className="panel-kicker">PRÓXIMOS PASSOS</span><h2>O que fazer primeiro</h2><p>Prioridades calculadas a partir da sua carteira.</p></div></div>
+        <div className="copilot-action-list">
+          {actionItems.map((item,i)=><Link to={item.to} className="copilot-action-item" key={i}><span className={"copilot-action-dot "+item.tone}/><div><b>{item.title}</b><small>{item.detail}</small></div><ChevronRight size={15}/></Link>)}
+        </div>
+        <div className="copilot-action-footer"><span>Em aberto</span><strong>{money(pendingTotal)}</strong></div>
+      </aside>
+    </div>
+
+    <div className="copilot-bottom-grid">
+      <section className="panel copilot-overdue-panel">
+        <div className="panel-head"><div><span className="panel-kicker">ATRASEDOS</span><h2>Quem merece uma cobrança primeiro</h2><p>Ordenado pelos vencimentos mais antigos.</p></div><Link to="/app/cobrancas?filter=overdue" className="link-btn">Ver atrasadas <ArrowRight size={15}/></Link></div>
+        {overdue.length===0?<Empty text="Nenhuma cobrança atrasada. Sua carteira está em dia."/>:<div className="copilot-overdue-list">{overdue.slice(0,6).map(x=>{const days=Math.max(1,Math.floor((new Date()-new Date(x.due_date+"T12:00:00"))/86400000));return <Link to="/app/cobrancas?filter=overdue" className="copilot-overdue-row" key={x.id}><div><b>{x.customers?.name||"Cliente"}</b><span>{x.description||"Cobrança"}</span></div><div className="copilot-overdue-age">{days} {days===1?"dia":"dias"}</div><strong>{money(x.amount)}</strong></Link>})}</div>}
+      </section>
+      <section className="panel copilot-upcoming-panel">
+        <div className="panel-head"><div><span className="panel-kicker">FLUXO IMEDIATO</span><h2>Próximos 7 dias</h2><p>Valores pendentes programados para entrar.</p></div><Link to="/app/calendario" className="link-btn">Abrir calendário <ArrowRight size={15}/></Link></div>
+        <div className="copilot-upcoming-summary"><strong>{money(next7Total)}</strong><span>previsto para os próximos 7 dias</span></div>
+        <div className="copilot-mini-list">{next7.slice(0,5).map(x=><div key={x.id}><span>{new Date(x.due_date+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}</span><b>{x.customers?.name||"Cliente"}</b><strong>{money(x.amount)}</strong></div>)}{next7.length===0&&<span className="copilot-no-upcoming">Nenhuma cobrança pendente para os próximos 7 dias.</span>}</div>
+      </section>
+    </div>
+  </div>;
+}
+
 
 function Metric({title,value,icon:Icon,tone=""}){return <div className="metric"><div className={`metric-icon ${tone}`}><Icon size={19}/></div><span>{title}</span><strong>{value}</strong></div>;}
 function PageTitle({title,subtitle,action}){return <div className="page-title"><div><h1>{title}</h1><p>{subtitle}</p></div>{action}</div>;}
