@@ -6,6 +6,31 @@ export default async function handler(req,res){
 
   try{
     const {messages=[],mode="chat",tone="Amigável",context=""}=req.body||{};
+
+    if(mode!=="chat"&&mode!=="message"){
+      return res.status(400).json({error:"Modo de IA inválido."});
+    }
+
+    if(!Array.isArray(messages)){
+      return res.status(400).json({error:"Formato de mensagens inválido."});
+    }
+
+    if(messages.length>8){
+      return res.status(400).json({error:"Conversa muito longa. Envie no máximo 8 mensagens por vez."});
+    }
+
+    const messagePayload=messages.map(message=>({
+      role:message?.role==="assistant"?"assistant":"user",
+      content:String(message?.text||message?.content||"").trim()
+    }));
+
+    if(messagePayload.some(message=>message.content.length>1600)){
+      return res.status(400).json({error:"Uma das mensagens excede o limite permitido."});
+    }
+
+    if(String(context).length>1200||String(tone).length>80){
+      return res.status(400).json({error:"Contexto da mensagem excede o limite permitido."});
+    }
     const authHeader=req.headers.authorization||"";
     const accessToken=authHeader.startsWith("Bearer ")?authHeader.slice(7).trim():"";
     if(!accessToken) return res.status(401).json({error:"Você precisa estar logado para usar o Assistente IA."});
@@ -19,11 +44,23 @@ export default async function handler(req,res){
     const authUser=await authResponse.json().catch(()=>null);
     if(!authResponse.ok||!authUser?.id) return res.status(401).json({error:"Sessão inválida. Faça login novamente."});
 
-    const profileResponse=await fetch(supabaseUrl+"/rest/v1/profiles?id=eq."+encodeURIComponent(authUser.id)+"&select=plan&limit=1",{headers:sbHeaders});
+    const profileResponse=await fetch(supabaseUrl+"/rest/v1/profiles?id=eq."+encodeURIComponent(authUser.id)+"&select=plan,subscription_status,subscription_expires_at&limit=1",{headers:sbHeaders});
     const profileRows=await profileResponse.json().catch(()=>[]);
-    if(!profileResponse.ok) return res.status(403).json({error:"Não foi possível validar seu plano."});
-    const plan=profileRows?.[0]?.plan||"free";
-    if(plan!=="profissional"&&plan!=="business") return res.status(403).json({error:"O Assistente IA está disponível a partir do plano Profissional."});
+    if(!profileResponse.ok) return res.status(403).json({error:"Não foi possível validar seu acesso."});
+
+    const profile=profileRows?.[0];
+    const plan=profile?.plan||"free";
+    const expiresAt=profile?.subscription_expires_at?new Date(profile.subscription_expires_at):null;
+    const paidAccess=
+      (plan==="profissional"||plan==="business") &&
+      profile?.subscription_status==="active" &&
+      expiresAt &&
+      !Number.isNaN(expiresAt.getTime()) &&
+      expiresAt>new Date();
+
+    if(!paidAccess){
+      return res.status(403).json({error:"O Assistente IA está disponível apenas com uma assinatura ativa do plano Profissional ou Business."});
+    }
 
     const question=Array.isArray(messages)?String(messages[messages.length-1]?.text||messages[messages.length-1]?.content||"").toLowerCase():"";
 
@@ -117,8 +154,8 @@ export default async function handler(req,res){
     ].join("\n");
 
     const input=mode==="message"
-      ? "Crie uma mensagem de cobrança baseada neste contexto: "+context+". Use o tom "+tone+". Não invente informações. Retorne apenas a mensagem pronta para enviar."
-      : (Array.isArray(messages)?messages.slice(-8):[]);
+      ? "Crie uma mensagem de cobrança baseada neste contexto: "+String(context).trim()+". Use o tom "+String(tone).trim()+". Não invente informações. Retorne apenas a mensagem pronta para enviar."
+      : messagePayload;
 
     const requestBody={
       model:mode==="message"?"openai/gpt-oss-20b":"openai/gpt-oss-120b",
