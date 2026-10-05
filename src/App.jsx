@@ -660,7 +660,24 @@ function AppShell({session}) {
 
 function useCompany() {
   const [companyId,setCompanyId]=useState(null);
-  useEffect(()=>{supabase?.auth.getUser().then(async({data})=>{if(!data.user)return;const {data:p}=await supabase.from("profiles").select("company_id").eq("id",data.user.id).single();setCompanyId(p?.company_id||null);});},[]);
+  useEffect(()=>{
+    let active=true;
+    const timeout=setTimeout(()=>{if(active)setCompanyId("");},8000);
+    async function load(){
+      try{
+        const {data}=await supabase?.auth.getUser();
+        if(!active)return;
+        if(!data?.user){setCompanyId("");return;}
+        const {data:p,error}=await supabase.from("profiles").select("company_id").eq("id",data.user.id).maybeSingle();
+        if(!active)return;
+        setCompanyId(error?"":(p?.company_id||""));
+      }catch{
+        if(active)setCompanyId("");
+      }
+    }
+    load();
+    return()=>{active=false;clearTimeout(timeout)};
+  },[]);
   return companyId;
 }
 
@@ -1811,21 +1828,33 @@ function Reports(){
   },[range,from,to]);
 
   useEffect(()=>{
-    if(!companyId)return;
     let active=true;
+    if(!companyId){
+      setLoading(false);
+      setCharges([]);
+      setPayments([]);
+      return()=>{active=false};
+    }
     async function load(){
       setLoading(true);
       setError("");
-      const [chargeRes,paymentRes]=await Promise.all([
-        supabase.from("charges").select("id,amount,due_date,status,created_at,customers(name)").eq("company_id",companyId).order("due_date",{ascending:true}),
-        supabase.from("payments").select("id,amount,paid_at,customer_id,customers(name)").eq("company_id",companyId).order("paid_at",{ascending:true})
-      ]);
-      if(!active)return;
-      const firstError=chargeRes.error||paymentRes.error;
-      setCharges(chargeRes.data||[]);
-      setPayments(paymentRes.data||[]);
-      setError(firstError?.message||"");
-      setLoading(false);
+      try{
+        const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error("A consulta demorou demais. Verifique sua conexão e tente novamente.")),12000));
+        const query=Promise.all([
+          supabase.from("charges").select("id,amount,due_date,status,created_at,customers(name)").eq("company_id",companyId).order("due_date",{ascending:true}),
+          supabase.from("payments").select("id,amount,paid_at,customer_id,customers(name)").eq("company_id",companyId).order("paid_at",{ascending:true})
+        ]);
+        const [chargeRes,paymentRes]=await Promise.race([query,timeout]);
+        if(!active)return;
+        const firstError=chargeRes.error||paymentRes.error;
+        setCharges(chargeRes.data||[]);
+        setPayments(paymentRes.data||[]);
+        setError(firstError?.message||"");
+      }catch(err){
+        if(active)setError(err?.message||"Não foi possível carregar os dados do relatório.");
+      }finally{
+        if(active)setLoading(false);
+      }
     }
     load();
     return()=>{active=false};
