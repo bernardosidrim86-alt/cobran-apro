@@ -4,7 +4,7 @@ import { Routes, Route, Navigate, Link, useLocation, useNavigate } from "react-r
 import {
   ArrowRight, Bell, Check, ChevronRight, CircleDollarSign, CreditCard,
   CalendarDays, ChevronLeft, LayoutDashboard, LogOut, Menu, MessageCircle, Plus, Receipt, Settings,
-  Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal, Lock, Sun, Moon
+  Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, MoreHorizontal, Lock, Sun, Moon, RefreshCw
 } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import { toast, confirmDialog } from "./ui";
@@ -1784,30 +1784,253 @@ function Payments(){const companyId=useCompany();const [rows,setRows]=useState([
 function Reports(){
   const companyId=useCompany();
   const [range,setRange]=useState("30"),[from,setFrom]=useState(""),[to,setTo]=useState("");
-  const [charges,setCharges]=useState([]),[payments,setPayments]=useState([]),[loading,setLoading]=useState(true);
-  const dates=useMemo(()=>{const end=new Date();end.setHours(23,59,59,999);if(range==="custom"&&from){const start=new Date(from+"T00:00:00");const finish=to?new Date(to+"T23:59:59"):end;return{start,end:finish}}const start=new Date(end);start.setDate(start.getDate()-(range==="7"?6:range==="90"?89:29));start.setHours(0,0,0,0);return{start,end}},[range,from,to]);
-  useEffect(()=>{if(!companyId)return;setLoading(true);Promise.all([supabase.from("charges").select("id,amount,due_date,status,created_at,customers(name)").eq("company_id",companyId),supabase.from("payments").select("id,amount,paid_at,customer_id,customers(name)").eq("company_id",companyId)]).then(([a,p])=>{setCharges(a.data||[]);setPayments(p.data||[]);setLoading(false);if(a.error)console.error(a.error);if(p.error)console.error(p.error)})},[companyId]);
-  const inPeriod=v=>{if(!v)return false;const d=new Date(v);return d>=dates.start&&d<=dates.end};
-  const pc=charges.filter(x=>x.status!=="cancelled"&&inPeriod(x.due_date+"T12:00:00")),pp=payments.filter(x=>inPeriod(x.paid_at));
-  const received=pp.reduce((a,x)=>a+Number(x.amount||0),0),billed=pc.reduce((a,x)=>a+Number(x.amount||0),0),open=pc.filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.amount||0),0),overdue=pc.filter(x=>x.status==="pending"&&x.due_date<todayISO()).reduce((a,x)=>a+Number(x.amount||0),0);
-  const paid=pc.filter(x=>x.status==="paid").length,late=pc.filter(x=>x.status==="pending"&&x.due_date<todayISO()).length,pending=pc.filter(x=>x.status==="pending"&&x.due_date>=todayISO()).length,rate=pc.length?Math.round(paid/pc.length*100):0,ticket=pp.length?received/pp.length:0;
-  const buckets=useMemo(()=>{const total=Math.max(1,Math.ceil((dates.end-dates.start)/86400000)+1),step=Math.ceil(total/7);return Array.from({length:7},(_,i)=>{const start=new Date(dates.start);start.setDate(start.getDate()+i*step);const end=new Date(start);end.setDate(end.getDate()+step-1);if(end>dates.end)end.setTime(dates.end.getTime());const b=pc.filter(x=>{const d=new Date(x.due_date+"T12:00:00");return d>=start&&d<=end}).reduce((a,x)=>a+Number(x.amount||0),0),r=pp.filter(x=>{const d=new Date(x.paid_at);return d>=start&&d<=end}).reduce((a,x)=>a+Number(x.amount||0),0);const label=range==="7"?start.toLocaleDateString("pt-BR",{weekday:"short"}).replace(".",""):total>45?start.toLocaleDateString("pt-BR",{month:"short"}).replace(".",""):start.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});return{i,label,b,r}})},[dates,range,pc,pp]);
-  const max=Math.max(1,...buckets.flatMap(x=>[x.b,x.r])),map={};pp.forEach(x=>{const n=x.customers?.name||"Cliente";map[n]=(map[n]||0)+Number(x.amount||0)});const ranking=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const totalStatus=paid+pending+late,paidPct=totalStatus?paid/totalStatus*100:0,pendingPct=totalStatus?(paid+pending)/totalStatus*100:0,periodLabel=range==="7"?"7 dias":range==="90"?"90 dias":range==="custom"?"período selecionado":"30 dias";
-  return <div className="reports-page"><PageTitle title="Relatórios" subtitle="Acompanhe o desempenho financeiro da sua empresa."/>
-    <div className="report-toolbar"><div className="report-periods">{[["7","7 dias"],["30","30 dias"],["90","90 dias"],["custom","Personalizado"]].map(([v,l])=><button type="button" className={range===v?"active":""} onClick={()=>setRange(v)} key={v}>{l}</button>)}</div>{range==="custom"&&<div className="report-dates"><input type="date" value={from} onChange={e=>setFrom(e.target.value)}/><span>até</span><input type="date" value={to} onChange={e=>setTo(e.target.value)}/></div>}</div>
-    {loading?<div className="report-skeleton"><div/><div/><div/><div/></div>:<>
-      <div className="report-kpis"><Metric title="Recebido" value={money(received)} icon={Wallet} tone="success"/><Metric title="Em aberto" value={money(open)} icon={CircleDollarSign}/><Metric title="Atrasado" value={money(overdue)} icon={Receipt} tone="danger"/><Metric title="Taxa de recebimento" value={rate+"%"} icon={TrendingUp}/></div>
-      <div className="report-layout">
-        <section className="panel report-card report-main"><div className="report-heading"><div><h2>Desempenho financeiro</h2><p>Cobrado x recebido · {periodLabel}</p></div><div className="report-legend"><span><i className="c1"/>Cobrado</span><span><i className="c2"/>Recebido</span></div></div>
-          <div className="report-chart-area"><div className="report-y-labels"><span>{money(max)}</span><span>{money(max/2)}</span><span>R$ 0</span></div><div className="report-bars">{buckets.map(x=><div className="report-bar-col" key={x.i}><div className="report-bar-wrap"><i title={"Cobrado: "+money(x.b)} style={{height:(x.b?Math.max(4,x.b/max*100):0)+"%"}}/><i title={"Recebido: "+money(x.r)} style={{height:(x.r?Math.max(4,x.r/max*100):0)+"%"}}/></div><small>{x.label}</small></div>)}</div></div>
-          <div className="report-footer"><span>Total cobrado <b>{money(billed)}</b></span><span>Total recebido <b>{money(received)}</b></span></div>
-        </section>
-        <section className="panel report-card"><div className="report-heading"><div><h2>Status das cobranças</h2><p>Distribuição no período</p></div></div><div className="donut" style={{background:`conic-gradient(#5B5CE2 0 ${paidPct}%,#F59E0B ${paidPct}% ${pendingPct}%,#EF4444 ${pendingPct}% 100%)`}}><div><strong>{pc.length}</strong><span>cobranças</span></div></div><div className="report-status"><div><span><i className="c-paid"/>Pagas</span><b>{paid}</b></div><div><span><i className="c-pending"/>Pendentes</span><b>{pending}</b></div><div><span><i className="c-late"/>Atrasadas</span><b>{late}</b></div></div></section>
+  const [charges,setCharges]=useState([]),[payments,setPayments]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState("");
+
+  const parseLocalDate=(value,endOfDay=false)=>{
+    if(!value)return null;
+    const [y,m,d]=String(value).split("-").map(Number);
+    if(!y||!m||!d)return null;
+    const date=new Date(y,m-1,d);
+    if(endOfDay)date.setHours(23,59,59,999);
+    else date.setHours(0,0,0,0);
+    return date;
+  };
+
+  const dates=useMemo(()=>{
+    const todayEnd=new Date();
+    todayEnd.setHours(23,59,59,999);
+    if(range==="custom"){
+      const start=parseLocalDate(from);
+      const end=parseLocalDate(to||from,true);
+      return {start,end};
+    }
+    const start=new Date(todayEnd);
+    start.setDate(start.getDate()-(range==="7"?6:range==="90"?89:29));
+    start.setHours(0,0,0,0);
+    return {start,end:todayEnd};
+  },[range,from,to]);
+
+  useEffect(()=>{
+    if(!companyId)return;
+    let active=true;
+    async function load(){
+      setLoading(true);
+      setError("");
+      const [chargeRes,paymentRes]=await Promise.all([
+        supabase.from("charges").select("id,amount,due_date,status,created_at,customers(name)").eq("company_id",companyId).order("due_date",{ascending:true}),
+        supabase.from("payments").select("id,amount,paid_at,customer_id,customers(name)").eq("company_id",companyId).order("paid_at",{ascending:true})
+      ]);
+      if(!active)return;
+      const firstError=chargeRes.error||paymentRes.error;
+      setCharges(chargeRes.data||[]);
+      setPayments(paymentRes.data||[]);
+      setError(firstError?.message||"");
+      setLoading(false);
+    }
+    load();
+    return()=>{active=false};
+  },[companyId]);
+
+  async function refresh(){
+    if(!companyId)return;
+    setLoading(true);
+    setError("");
+    const [chargeRes,paymentRes]=await Promise.all([
+      supabase.from("charges").select("id,amount,due_date,status,created_at,customers(name)").eq("company_id",companyId).order("due_date",{ascending:true}),
+      supabase.from("payments").select("id,amount,paid_at,customer_id,customers(name)").eq("company_id",companyId).order("paid_at",{ascending:true})
+    ]);
+    setCharges(chargeRes.data||[]);
+    setPayments(paymentRes.data||[]);
+    const firstError=chargeRes.error||paymentRes.error;
+    setError(firstError?.message||"");
+    setLoading(false);
+  }
+
+  const customInvalid=range==="custom"&&(!dates.start||!dates.end||dates.end<dates.start);
+
+  const inChargePeriod=value=>{
+    if(customInvalid||!dates.start||!dates.end||!value)return false;
+    const d=parseLocalDate(value);
+    return d&&d>=dates.start&&d<=dates.end;
+  };
+
+  const inPaymentPeriod=value=>{
+    if(customInvalid||!dates.start||!dates.end||!value)return false;
+    const d=new Date(value);
+    return !Number.isNaN(d.getTime())&&d>=dates.start&&d<=dates.end;
+  };
+
+  const periodCharges=useMemo(
+    ()=>charges.filter(x=>x.status!=="cancelled"&&inChargePeriod(x.due_date)),
+    [charges,dates,customInvalid]
+  );
+  const periodPayments=useMemo(
+    ()=>payments.filter(x=>inPaymentPeriod(x.paid_at)),
+    [payments,dates,customInvalid]
+  );
+
+  const billed=periodCharges.reduce((sum,x)=>sum+Number(x.amount||0),0);
+  const received=periodPayments.reduce((sum,x)=>sum+Number(x.amount||0),0);
+  const open=periodCharges.filter(x=>x.status==="pending").reduce((sum,x)=>sum+Number(x.amount||0),0);
+  const overdue=periodCharges.filter(x=>x.status==="pending"&&x.due_date<todayISO()).reduce((sum,x)=>sum+Number(x.amount||0),0);
+
+  const paidCount=periodCharges.filter(x=>x.status==="paid").length;
+  const lateCount=periodCharges.filter(x=>x.status==="pending"&&x.due_date<todayISO()).length;
+  const pendingCount=periodCharges.filter(x=>x.status==="pending"&&x.due_date>=todayISO()).length;
+  const statusTotal=paidCount+lateCount+pendingCount;
+  const rate=statusTotal?Math.round(paidCount/statusTotal*100):0;
+  const ticket=periodPayments.length?received/periodPayments.length:0;
+  const paidPct=statusTotal?paidCount/statusTotal*100:0;
+  const pendingPct=statusTotal?pendingCount/statusTotal*100:0;
+  const latePct=statusTotal?lateCount/statusTotal*100:0;
+
+  const niceMax=value=>{
+    if(value<=0)return 100;
+    const magnitude=Math.pow(10,Math.floor(Math.log10(value)));
+    const normalized=value/magnitude;
+    const step=normalized<=1?1:normalized<=2?2:normalized<=5?5:10;
+    return step*magnitude;
+  };
+
+  const buckets=useMemo(()=>{
+    if(customInvalid||!dates.start||!dates.end)return [];
+    const totalDays=Math.max(1,Math.floor((dates.end.getTime()-dates.start.getTime())/86400000)+1);
+    const count=Math.min(7,totalDays);
+    return Array.from({length:count},(_,index)=>{
+      const startOffset=Math.floor(index*totalDays/count);
+      const endOffset=Math.max(startOffset,Math.floor((index+1)*totalDays/count)-1);
+      const start=new Date(dates.start);
+      start.setDate(start.getDate()+startOffset);
+      const end=new Date(dates.start);
+      end.setDate(end.getDate()+endOffset);
+      if(end>dates.end)end.setTime(dates.end.getTime());
+      const b=periodCharges.filter(x=>{
+        const d=parseLocalDate(x.due_date);
+        return d&&d>=start&&d<=end;
+      }).reduce((sum,x)=>sum+Number(x.amount||0),0);
+      const r=periodPayments.filter(x=>{
+        const d=new Date(x.paid_at);
+        return !Number.isNaN(d.getTime())&&d>=start&&d<=new Date(end.getFullYear(),end.getMonth(),end.getDate(),23,59,59,999);
+      }).reduce((sum,x)=>sum+Number(x.amount||0),0);
+      const label=totalDays<=14
+        ? start.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})
+        : totalDays<=45
+          ? start.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})
+          : start.toLocaleDateString("pt-BR",{month:"short"}).replace(".","");
+      return {index,start,end,label,b:r?b:0,r};
+    });
+  },[dates,periodCharges,periodPayments,customInvalid]);
+
+  const chartMax=niceMax(Math.max(0,...buckets.flatMap(x=>[x.b,x.r])));
+  const periodLabel=range==="7"?"7 dias":range==="90"?"90 dias":range==="custom"?"período selecionado":"30 dias";
+
+  const customerMap={};
+  periodPayments.forEach(x=>{
+    const name=x.customers?.name||"Cliente";
+    customerMap[name]=(customerMap[name]||0)+Number(x.amount||0);
+  });
+  const ranking=Object.entries(customerMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  return <div className="cp-reports-page">
+    <PageTitle title="Relatórios" subtitle="Acompanhe o desempenho financeiro da sua empresa."/>
+    <div className="cp-report-toolbar">
+      <div className="cp-report-periods" role="group" aria-label="Período do relatório">
+        {[["7","7 dias"],["30","30 dias"],["90","90 dias"],["custom","Personalizado"]].map(([value,label])=>
+          <button key={value} type="button" className={range===value?"active":""} onClick={()=>setRange(value)}>{label}</button>
+        )}
       </div>
-      <div className="report-layout report-secondary"><section className="panel report-card"><div className="report-heading"><div><h2>Recebimentos por cliente</h2><p>Quem mais gerou receita no período</p></div></div>{ranking.length?<div className="report-ranking">{ranking.map(([name,value],i)=><div className="report-rank" key={name}><span>{i+1}</span><div><b>{name}</b><em><i style={{width:Math.max(6,value/ranking[0][1]*100)+"%"}}/></em></div><strong>{money(value)}</strong></div>)}</div>:<Empty text="Nenhum recebimento no período."/>}</section>
-        <section className="panel report-card"><div className="report-heading"><div><h2>Resumo financeiro</h2><p>Principais indicadores</p></div></div><div className="report-summary-list"><div><span>Cobranças emitidas</span><b>{pc.length}</b></div><div><span>Cobranças pagas</span><b>{paid}</b></div><div><span>Valor cobrado</span><b>{money(billed)}</b></div><div><span>Valor recebido</span><b>{money(received)}</b></div><div><span>Valor em aberto</span><b>{money(open)}</b></div><div><span>Ticket médio</span><b>{money(ticket)}</b></div></div></section></div>
-    </>}</div>;
+      <div className="cp-report-toolbar-right">
+        {range==="custom"&&<div className="cp-report-dates">
+          <label>De<input type="date" value={from} max={to||undefined} onChange={e=>setFrom(e.target.value)}/></label>
+          <span>até</span>
+          <label>Até<input type="date" value={to} min={from||undefined} max={todayISO()} onChange={e=>setTo(e.target.value)}/></label>
+        </div>}
+        <button type="button" className="cp-report-refresh" onClick={refresh} disabled={loading} aria-label="Atualizar relatório" title="Atualizar relatório"><RefreshCw size={15} className={loading?"is-spinning":""}/><span>Atualizar</span></button>
+      </div>
+    </div>
+
+    {customInvalid&&<div className="cp-report-notice">Selecione um período válido para visualizar o relatório.</div>}
+    {error&&<div className="cp-report-error"><div><strong>Não foi possível carregar todos os dados.</strong><span>{error}</span></div><button type="button" onClick={refresh}>Tentar novamente</button></div>}
+
+    {loading?<div className="cp-report-loading"><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-panel"/><div className="cp-report-loading-panel"/></div>:!customInvalid&&<>
+      <div className="cp-report-kpis">
+        <div className="cp-report-kpi cp-report-kpi-success"><span>Recebido no período</span><strong>{money(received)}</strong><small>{periodPayments.length} recebimento{periodPayments.length===1?"":"s"}</small></div>
+        <div className="cp-report-kpi"><span>Em aberto</span><strong>{money(open)}</strong><small>{pendingCount+lateCount} cobrança{pendingCount+lateCount===1?"":"s"} pendente{pendingCount+lateCount===1?"":"s"}</small></div>
+        <div className="cp-report-kpi cp-report-kpi-danger"><span>Atrasado</span><strong>{money(overdue)}</strong><small>{lateCount} cobrança{lateCount===1?"":"s"} em atraso</small></div>
+        <div className="cp-report-kpi"><span>Taxa de recebimento</span><strong>{rate}%</strong><small>{paidCount} de {statusTotal} cobranças pagas</small></div>
+      </div>
+
+      <div className="cp-report-grid cp-report-top-grid">
+        <section className="cp-report-panel cp-report-chart-panel">
+          <div className="cp-report-panel-head">
+            <div><span className="cp-report-eyebrow">DESEMPENHO</span><h2>Cobrado x recebido</h2><p>{periodLabel}</p></div>
+            <div className="cp-report-legend"><span><i className="billed"/>Cobrado</span><span><i className="received"/>Recebido</span></div>
+          </div>
+          {buckets.length===0||!periodCharges.length&&!periodPayments.length
+            ? <div className="cp-report-empty-chart"><TrendingUp size={19}/><strong>Sem movimentações no período</strong><span>Crie cobranças ou registre recebimentos para gerar o gráfico.</span></div>
+            : <div className="cp-report-chart">
+                <div className="cp-report-axis"><span>{money(chartMax)}</span><span>{money(chartMax/2)}</span><span>R$ 0</span></div>
+                <div className="cp-report-bars">
+                  <div className="cp-report-grid-lines" aria-hidden="true"><i/><i/><i/></div>
+                  {buckets.map(bucket=>
+                    <div className="cp-report-bar-col" key={bucket.index} title={bucket.label}>
+                      <div className="cp-report-bar-wrap">
+                        <i className="billed" style={{height:(bucket.b?Math.max(4,bucket.b/chartMax*100):0)+"%"}} aria-label={"Cobrado "+money(bucket.b)}/>
+                        <i className="received" style={{height:(bucket.r?Math.max(4,bucket.r/chartMax*100):0)+"%"}} aria-label={"Recebido "+money(bucket.r)}/>
+                      </div>
+                      <span>{bucket.label}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+          }
+          <div className="cp-report-chart-foot"><div><span>Valor cobrado</span><strong>{money(billed)}</strong></div><div><span>Valor recebido</span><strong>{money(received)}</strong></div></div>
+        </section>
+
+        <section className="cp-report-panel cp-report-status-panel">
+          <div className="cp-report-panel-head"><div><span className="cp-report-eyebrow">STATUS</span><h2>Situação das cobranças</h2><p>{statusTotal} no período</p></div></div>
+          <div className="cp-report-status-score"><strong>{rate}%</strong><span>taxa paga</span></div>
+          <div className="cp-report-status-track" aria-hidden="true">
+            <span className="paid" style={{width:paidPct+"%"}}/>
+            <span className="pending" style={{width:pendingPct+"%"}}/>
+            <span className="late" style={{width:latePct+"%"}}/>
+          </div>
+          <div className="cp-report-status-list">
+            <div><span><i className="paid"/>Pagas</span><strong>{paidCount}</strong></div>
+            <div><span><i className="pending"/>A receber</span><strong>{pendingCount}</strong></div>
+            <div><span><i className="late"/>Atrasadas</span><strong>{lateCount}</strong></div>
+          </div>
+          <div className="cp-report-status-foot"><span>Taxa calculada por quantidade de cobranças.</span></div>
+        </section>
+      </div>
+
+      <div className="cp-report-grid cp-report-bottom-grid">
+        <section className="cp-report-panel">
+          <div className="cp-report-panel-head"><div><span className="cp-report-eyebrow">RECEITA</span><h2>Recebimentos por cliente</h2><p>Clientes que mais geraram receita</p></div></div>
+          {ranking.length
+            ? <div className="cp-report-ranking">{ranking.map(([name,value],index)=><div className="cp-report-rank" key={name}>
+                <span className="position">{index+1}</span>
+                <div className="main"><b>{name}</b><em><i style={{width:Math.max(7,value/(ranking[0]?.[1]||1)*100)+"%"}}/></em></div>
+                <strong>{money(value)}</strong>
+              </div>)}</div>
+            : <div className="cp-report-empty">Nenhum recebimento registrado no período.</div>
+          }
+        </section>
+
+        <section className="cp-report-panel">
+          <div className="cp-report-panel-head"><div><span className="cp-report-eyebrow">RESUMO</span><h2>Indicadores do período</h2><p>Visão geral das movimentações</p></div></div>
+          <div className="cp-report-summary">
+            <div><span>Cobranças emitidas</span><strong>{periodCharges.length}</strong></div>
+            <div><span>Cobranças pagas</span><strong>{paidCount}</strong></div>
+            <div><span>Valor cobrado</span><strong>{money(billed)}</strong></div>
+            <div><span>Valor recebido</span><strong>{money(received)}</strong></div>
+            <div><span>Valor em aberto</span><strong>{money(open)}</strong></div>
+            <div><span>Ticket médio recebido</span><strong>{money(ticket)}</strong></div>
+          </div>
+        </section>
+      </div>
+    </>}
+  </div>;
 }
 function AIPage({locked=false,currentPlan="free"}){
   const companyId=useCompany();
