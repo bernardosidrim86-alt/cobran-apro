@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 140" role="img" aria-labelledby="title">
+  <title>CobrançaPro</title>
+  <g transform="translate(8 12)">
+    <circle cx="58" cy="58" r="44" fill="none" stroke="#6f93ff" stroke-width="14" stroke-linecap="round" stroke-dasharray="195 82" transform="rotate(-42 58 58)"/>
+    <path d="M80 20l24 6-18 18" fill="none" stroke="#87a4ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="58" cy="58" r="8" fill="#7c9bff"/>
+  </g>
+  <text x="130" y="84" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="58" font-weight="700" letter-spacing="-2" fill="#fff">Cobrança<tspan fill="#8fa8ff">Pro</tspan></text>
+</svg>
