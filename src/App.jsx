@@ -996,6 +996,7 @@ function Dashboard({session,currentPlan="free"}) {
   const title=firstName ? "Olá, "+firstName : "Dashboard";
 
   return <div className="dashboard-page">
+    <PlanUsage companyId={companyId} planKey={currentPlan}/>
     <div className="dashboard-hero">
       <div>
         <span className="eyebrow">VISÃO GERAL</span>
@@ -1013,8 +1014,6 @@ function Dashboard({session,currentPlan="free"}) {
       <Metric title="Atrasado" value={money(data.overdue)} icon={Receipt} tone="danger"/>
       <Metric title="Total recebido" value={money(data.paid)} icon={Wallet} tone="success"/>
     </div>
-
-    <PlanUsage companyId={companyId} planKey={currentPlan}/>
 
     <CopilotDashboardCard currentPlan={currentPlan} data={data}/>
 
