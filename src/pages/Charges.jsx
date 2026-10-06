@@ -195,7 +195,7 @@ function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
           <Button type="button" onClick={copyPix}><Copy size={15}/>{copied?"Código copiado":"Copiar código"}</Button>
           <Button type="button" variant="secondary" onClick={sendPixWhatsApp}><MessageCircle size={15}/> Enviar pelo WhatsApp</Button>
         </div>
-      </div></div>:<div className="charge-pix-empty"><div className="charge-pix-empty-icon"><QrCode size={18}/></div><div className="charge-pix-empty-copy"><b>Pix ainda não configurado</b><span>Adicione a chave Pix da empresa para gerar automaticamente o código Copia e Cola nesta cobrança.</span></div><Button type="button" variant="secondary" onClick={()=>window.location.href="/app/configuracoes?tab=pix"}><Settings size={15}/> Configurar Pix</Button></div>}
+      </div>:<div className="charge-pix-empty"><div className="charge-pix-empty-icon"><QrCode size={18}/></div><div className="charge-pix-empty-copy"><b>Pix ainda não configurado</b><span>Adicione a chave Pix da empresa para gerar automaticamente o código Copia e Cola nesta cobrança.</span></div><Button type="button" variant="secondary" onClick={()=>window.location.href="/app/configuracoes?tab=pix"}><Settings size={15}/> Configurar Pix</Button></div>}
       <div className="modal-actions">
         <Button type="button" variant="secondary" onClick={()=>{setEditing(true);setEditError("")}} disabled={deleting}><Receipt size={16}/> Editar</Button>
         <Button type="button" variant="secondary" className="danger-action" onClick={removeCharge} disabled={deleting}>{deleting?"Excluindo...":"Excluir cobrança"}</Button>
