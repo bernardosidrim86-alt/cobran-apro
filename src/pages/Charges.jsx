@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { MessageCircle, Plus, Receipt, X, Check, Download, ArrowDownUp, Copy, QrCode, Settings } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { PLAN_OPTIONS } from "../lib/plans";
@@ -189,7 +188,7 @@ function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
 }
 
 export function Charges({companyId}){
-  const loc=useLocation();
+  const loc=useLocationSafe();
   const [rows,setRows]=useState([]);
   const [customers,setCustomers]=useState([]);
   const [pixSettings,setPixSettings]=useState({});
@@ -314,3 +313,13 @@ export function Charges({companyId}){
   </div>;
 }
 
+function useLocationSafe(){
+  const [location,setLocation]=useState(()=>({pathname:window.location.pathname,search:window.location.search}));
+  useEffect(()=>{
+    const onPop=()=>setLocation({pathname:window.location.pathname,search:window.location.search});
+    window.addEventListener("popstate",onPop);
+    const id=window.setInterval(()=>{const next={pathname:window.location.pathname,search:window.location.search};setLocation(prev=>prev.pathname===next.pathname&&prev.search===next.search?prev:next)},250);
+    return()=>{window.removeEventListener("popstate",onPop);window.clearInterval(id)};
+  },[]);
+  return location;
+}
