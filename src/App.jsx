@@ -1207,6 +1207,134 @@ function CopilotPage({locked=false,currentPlan="free"}){
 
 
 function Metric({title,value,icon:Icon,tone=""}){return <div className="metric"><div className={`metric-icon ${tone}`}><Icon size={19}/></div><span>{title}</span><strong>{value}</strong></div>;}
+function CalendarPage(){
+  const companyId=useCompany();
+  const [month,setMonth]=useState(()=>new Date(new Date().getFullYear(),new Date().getMonth(),1));
+  const [charges,setCharges]=useState([]);
+  const [payments,setPayments]=useState([]);
+  const [selectedDate,setSelectedDate]=useState(todayISO());
+
+  useEffect(()=>{
+    if(!companyId)return;
+    const start=new Date(month.getFullYear(),month.getMonth(),1);
+    const next=new Date(month.getFullYear(),month.getMonth()+1,1);
+    Promise.all([
+      supabase.from("charges").select("id,customer_id,description,amount,due_date,status,payment_method,customers(name,phone)").eq("company_id",companyId).gte("due_date",start.toISOString().slice(0,10)).lt("due_date",next.toISOString().slice(0,10)).order("due_date"),
+      supabase.from("payments").select("id,customer_id,amount,paid_at,payment_method,customers(name)").eq("company_id",companyId).gte("paid_at",start.toISOString()).lt("paid_at",next.toISOString()).order("paid_at")
+    ]).then(([c,p])=>{setCharges(c.data||[]);setPayments(p.data||[])});
+  },[companyId,month]);
+
+  const year=month.getFullYear(), monthIndex=month.getMonth();
+  const firstDay=new Date(year,monthIndex,1);
+  const offset=(firstDay.getDay()+6)%7;
+  const daysInMonth=new Date(year,monthIndex+1,0).getDate();
+  const cells=[];
+  for(let i=0;i<42;i++){
+    const day=i-offset+1;
+    cells.push(day<1||day>daysInMonth?null:year+"-"+String(monthIndex+1).padStart(2,"0")+"-"+String(day).padStart(2,"0"));
+  }
+
+  const monthCharges=charges.filter(x=>x.status!=="cancelled");
+  const expected=monthCharges.reduce((a,x)=>a+Number(x.amount||0),0);
+  const received=payments.reduce((a,x)=>a+Number(x.amount||0),0);
+  const open=monthCharges.filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.amount||0),0);
+  const overdue=monthCharges.filter(x=>x.status==="pending"&&x.due_date<todayISO()).reduce((a,x)=>a+Number(x.amount||0),0);
+  const monthLabel=month.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+  const selectedCharges=charges.filter(x=>x.due_date===selectedDate);
+  const selectedPayments=payments.filter(x=>x.paid_at.slice(0,10)===selectedDate);
+  const selectedExpected=selectedCharges.reduce((a,x)=>a+Number(x.amount||0),0);
+  const selectedReceived=selectedPayments.reduce((a,x)=>a+Number(x.amount||0),0);
+  const isCurrentMonth=month.getFullYear()===new Date().getFullYear()&&month.getMonth()===new Date().getMonth();
+
+  function shiftMonth(delta){
+    const nextMonth=new Date(year,monthIndex+delta,1);
+    setMonth(nextMonth);
+    setSelectedDate(nextMonth.getFullYear()+"-"+String(nextMonth.getMonth()+1).padStart(2,"0")+"-01");
+  }
+  function goToday(){
+    const now=new Date();
+    setMonth(new Date(now.getFullYear(),now.getMonth(),1));
+    setSelectedDate(todayISO());
+  }
+
+  return <div className="calendar-page">
+    <PageTitle title="Calendário financeiro" subtitle="Visualize suas cobranças e recebimentos ao longo do mês."/>
+    <div className="calendar-summary-grid">
+      <div className="calendar-summary-card"><span>Previsto no mês</span><strong>{money(expected)}</strong><small>{monthCharges.length} cobranças</small></div>
+      <div className="calendar-summary-card"><span>Recebido no mês</span><strong>{money(received)}</strong><small>{payments.length} recebimentos</small></div>
+      <div className="calendar-summary-card"><span>Em aberto</span><strong>{money(open)}</strong><small>Valores pendentes</small></div>
+      <div className="calendar-summary-card danger"><span>Em atraso</span><strong>{money(overdue)}</strong><small>Precisa de atenção</small></div>
+    </div>
+
+    <div className="calendar-layout">
+      <div className="panel calendar-panel">
+        <div className="calendar-head">
+          <div className="calendar-month-nav">
+            <button type="button" className="calendar-nav-btn" onClick={()=>shiftMonth(-1)} aria-label="Mês anterior"><ChevronLeft size={18}/></button>
+            <button type="button" className="calendar-today-btn" onClick={goToday}>Hoje</button>
+            <button type="button" className="calendar-nav-btn" onClick={()=>shiftMonth(1)} aria-label="Próximo mês"><ChevronRight size={18}/></button>
+          </div>
+          <h2>{monthLabel.charAt(0).toUpperCase()+monthLabel.slice(1)}</h2>
+          <span className={isCurrentMonth?"calendar-current-label":"calendar-current-label muted"}>{isCurrentMonth?"Mês atual":" "}</span>
+        </div>
+
+        <div className="calendar-weekdays">{["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(x=><span key={x}>{x}</span>)}</div>
+        <div className="calendar-grid">
+          {cells.map((iso,i)=>{
+            if(!iso)return <div className="calendar-cell empty-day" key={i}/>;
+            const chargeList=charges.filter(x=>x.due_date===iso);
+            const paymentList=payments.filter(x=>x.paid_at.slice(0,10)===iso);
+            const total=chargeList.filter(x=>x.status!=="cancelled").reduce((a,x)=>a+Number(x.amount||0),0);
+            const totalPaid=paymentList.reduce((a,x)=>a+Number(x.amount||0),0);
+            const late=chargeList.some(x=>x.status==="pending"&&x.due_date<todayISO());
+            const today=iso===todayISO();
+            return <button type="button" key={iso} className={"calendar-cell "+(selectedDate===iso?"selected ":"")+(today?"today":"")} onClick={()=>setSelectedDate(iso)}>
+              <span className="calendar-day-number">{Number(iso.slice(-2))}</span>
+              {today&&<span className="calendar-day-today">Hoje</span>}
+              <div className="calendar-day-values">
+                {total>0&&<span className={late?"late":"charge"}>{money(total)}</span>}
+                {totalPaid>0&&<span className="received">+ {money(totalPaid)}</span>}
+              </div>
+            </button>;
+          })}
+        </div>
+
+        <div className="calendar-legend">
+          <span><i className="charge"/> A cobrar</span>
+          <span><i className="received"/> Recebido</span>
+          <span><i className="late"/> Em atraso</span>
+        </div>
+      </div>
+
+      <aside className="panel calendar-day-panel">
+        <div className="calendar-day-header">
+          <div>
+            <span className="panel-kicker">DETALHES DO DIA</span>
+            <h2>{new Date(selectedDate+"T12:00:00").toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"})}</h2>
+          </div>
+        </div>
+        <div className="calendar-day-summary">
+          <div><span>A cobrar</span><b>{money(selectedExpected)}</b></div>
+          <div><span>Recebido</span><b>{money(selectedReceived)}</b></div>
+        </div>
+        <div className="calendar-events">
+          {selectedCharges.map(x=><Link to={"/app/cobrancas?q="+encodeURIComponent(x.description||x.customers?.name||"")} className="calendar-event" key={x.id}>
+            <span className={x.status==="paid"?"event-dot paid":x.due_date<todayISO()?"event-dot late":"event-dot charge"}/>
+            <div><b>{x.customers?.name||"Cliente"}</b><small>{x.description||"Cobrança"} · {x.status==="paid"?"Pago":x.due_date<todayISO()?"Atrasado":"A receber"}</small></div>
+            <strong>{money(x.amount)}</strong>
+          </Link>)}
+          {selectedPayments.map(x=><div className="calendar-event" key={x.id}>
+            <span className="event-dot paid"/>
+            <div><b>{x.customers?.name||"Cliente"}</b><small>Recebimento · {x.payment_method||"Pagamento"}</small></div>
+            <strong>+ {money(x.amount)}</strong>
+          </div>)}
+          {selectedCharges.length===0&&selectedPayments.length===0&&<div className="calendar-empty-day"><CalendarDays size={22}/><b>Nada agendado para este dia</b><span>As próximas cobranças aparecerão aqui.</span></div>}
+        </div>
+      </aside>
+    </div>
+  </div>;
+}
+
 function Payments(){const companyId=useCompany();const [rows,setRows]=useState([]);useEffect(()=>{if(companyId)supabase.from("payments").select("*,customers(name),charges(description)").eq("company_id",companyId).order("paid_at",{ascending:false}).then(({data})=>setRows(data||[]));},[companyId]);const total=rows.reduce((a,x)=>a+Number(x.amount),0);return <div className="payments-page"><PageTitle title="Recebimentos" subtitle="Tudo que sua empresa já recebeu."/><div className="metric-grid three payments-metrics"><Metric title="Total recebido" value={money(total)} icon={Wallet} tone="success"/><Metric title="Recebido hoje" value={money(rows.filter(x=>x.paid_at.slice(0,10)===todayISO()).reduce((a,x)=>a+Number(x.amount),0))} icon={Check} tone="success"/><Metric title="Lançamentos" value={rows.length} icon={Receipt}/></div><div className="panel table-panel payments-table-panel"><div className="payments-table-head"><div><span>HISTÓRICO</span><b>Recebimentos registrados</b></div><small>{rows.length} {rows.length===1?"lançamento":"lançamentos"}</small></div>{rows.length===0?<Empty text="Nenhum recebimento registrado ainda."/>:<div className="payments-responsive-list">{rows.map(x=><div className="payments-responsive-row" key={x.id}><div className="payments-responsive-main"><b>{x.customers?.name||"Cliente"}</b><strong>{money(x.amount)}</strong></div><div className="payments-responsive-meta"><span>{new Date(x.paid_at).toLocaleDateString("pt-BR")}</span><span>{x.payment_method||"—"}</span></div></div>)}</div>}</div></div>
 }
 function Reports(){
