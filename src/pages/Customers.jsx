@@ -180,12 +180,43 @@ export function Customers({companyId}){
       </form>
     </div>,document.body)}
 
-    {clientMenu&&clientMenuPosition&&createPortal(<div data-client-menu-modern className="modern-client-menu" style={{position:"fixed",top:clientMenuPosition.top+"px",left:clientMenuPosition.left+"px"}}>
-      <button type="button" onClick={()=>{closeClientMenu();openCustomerEditor(clientMenu)}}>Editar</button>
-      <button type="button" onClick={()=>{closeClientMenu();openCustomer(clientMenu)}}>Ver dados</button>
-      <button type="button" onClick={()=>{closeClientMenu();whatsapp(clientMenu)}}>Abrir WhatsApp</button>
-      <button type="button" className="danger" onClick={()=>{closeClientMenu();removeCustomer(clientMenu)}} disabled={deleting}>{deleting?"Excluindo...":"Excluir cliente"}</button>
-    </div>,document.body)}
+    {clientMenu&&clientMenuPosition&&createPortal(
+      <div
+        data-client-menu-modern
+        role="menu"
+        aria-label={"Ações de "+clientMenu.name}
+        onMouseDown={e=>e.stopPropagation()}
+        onClick={e=>e.stopPropagation()}
+        style={{
+          position:"fixed",
+          top:clientMenuPosition.top+"px",
+          left:clientMenuPosition.left+"px",
+          zIndex:2000,
+          width:"190px",
+          padding:"5px",
+          display:"grid",
+          gap:"2px",
+          background:"#fff",
+          border:"1px solid #e3e4eb",
+          borderRadius:"11px",
+          boxShadow:"0 16px 40px rgba(20,22,45,.18)"
+        }}
+      >
+        <button type="button" role="menuitem" onClick={()=>{closeClientMenu();openCustomerEditor(clientMenu)}} style={{width:"100%",height:"36px",display:"flex",alignItems:"center",padding:"0 10px",border:0,borderRadius:"7px",background:"transparent",color:"#303139",fontSize:"11px",fontWeight:600,textAlign:"left"}}>
+          Editar
+        </button>
+        <button type="button" role="menuitem" onClick={()=>{closeClientMenu();openCustomer(clientMenu)}} style={{width:"100%",height:"36px",display:"flex",alignItems:"center",padding:"0 10px",border:0,borderRadius:"7px",background:"transparent",color:"#303139",fontSize:"11px",fontWeight:600,textAlign:"left"}}>
+          Ver dados
+        </button>
+        <button type="button" role="menuitem" onClick={()=>{closeClientMenu();whatsapp(clientMenu)}} style={{width:"100%",height:"36px",display:"flex",alignItems:"center",padding:"0 10px",border:0,borderRadius:"7px",background:"transparent",color:"#303139",fontSize:"11px",fontWeight:600,textAlign:"left"}}>
+          Abrir WhatsApp
+        </button>
+        <button type="button" role="menuitem" onClick={()=>{closeClientMenu();removeCustomer(clientMenu)}} disabled={deleting} style={{width:"100%",height:"36px",display:"flex",alignItems:"center",padding:"0 10px",border:0,borderRadius:"7px",background:"transparent",color:"#c83d3d",fontSize:"11px",fontWeight:600,textAlign:"left",opacity:deleting?.6:1,cursor:deleting?"wait":"pointer"}}>
+          {deleting?"Excluindo...":"Excluir cliente"}
+        </button>
+      </div>,
+      document.body
+    )}
 
     {customerView&&createPortal(<div className="client-modal-root" role="dialog" aria-modal="true">
       <div className="client-modal-card client-modal-history modern-modal">
