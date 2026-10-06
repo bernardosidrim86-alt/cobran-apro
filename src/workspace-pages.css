@@ -216,3 +216,134 @@
 .charge-pix-actions .btn:first-child{
   box-shadow:0 2px 5px rgba(40,42,120,.08);
 }
+
+/* Pix section: stronger financial hierarchy */
+.charge-pix-box{
+  margin-top:18px;
+  padding:18px;
+  border:1px solid #dedfe6;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 6px 22px rgba(20,22,45,.05);
+}
+.charge-pix-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  padding-bottom:16px;
+  border-bottom:1px solid #ececf1;
+}
+.charge-pix-title{
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+  min-width:0;
+}
+.charge-pix-icon{
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  display:grid;
+  place-items:center;
+  border:1px solid #dddff0;
+  border-radius:11px;
+  color:#5556d6;
+  background:#f7f7ff;
+}
+.charge-pix-kicker{
+  display:block;
+  margin:0 0 3px;
+  color:#5556d6;
+  font-size:11px;
+  font-weight:800;
+  line-height:1;
+  letter-spacing:.08em;
+}
+.charge-pix-head h3{
+  margin:0 0 5px;
+  color:#202128;
+  font-size:17px;
+  font-weight:750;
+  line-height:1.2;
+}
+.charge-pix-head p{
+  margin:0;
+  max-width:390px;
+  color:#777985;
+  font-size:10.5px;
+  line-height:1.55;
+}
+.charge-pix-value{
+  flex:0 0 auto;
+  min-width:118px;
+  padding:9px 11px;
+  border:1px solid #e7e7ec;
+  border-radius:11px;
+  background:#fafafd;
+  text-align:right;
+}
+.charge-pix-value span{
+  display:block;
+  color:#898b94;
+  font-size:8px;
+  font-weight:650;
+  margin-bottom:3px;
+}
+.charge-pix-value strong{
+  display:block;
+  color:#22232a;
+  font-size:15px;
+  line-height:1.1;
+}
+.charge-pix-code{
+  margin-top:15px;
+}
+.charge-pix-code label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:0 0 7px;
+  color:#4f515b;
+  font-size:9.5px;
+  font-weight:750;
+}
+.charge-pix-box textarea{
+  height:96px;
+  margin-top:0;
+  padding:12px 13px;
+  border:1px solid #dfe0e7;
+  border-radius:11px;
+  background:#f7f7f9;
+  color:#4d4f58;
+  font-size:9px;
+  line-height:1.5;
+}
+.charge-pix-actions{
+  display:flex;
+  justify-content:flex-start;
+  gap:8px;
+  margin-top:11px;
+}
+.charge-pix-actions .btn{
+  min-height:36px;
+}
+.charge-pix-actions .btn:first-child{
+  box-shadow:0 2px 7px rgba(40,42,120,.09);
+}
+@media(max-width:600px){
+  .charge-pix-head{
+    flex-direction:column;
+    gap:12px;
+  }
+  .charge-pix-value{
+    width:100%;
+    text-align:left;
+  }
+  .charge-pix-actions{
+    flex-direction:column;
+  }
+  .charge-pix-actions .btn{
+    width:100%;
+  }
+}
