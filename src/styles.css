@@ -11572,3 +11572,8 @@ html[data-theme="dark"] .settings-connection-badge{background:#292a31!important;
 html[data-theme="dark"] .settings-connection-badge.is-active{background:#20372a!important;color:#78d39b!important}
 html[data-theme="dark"] .settings-pix-card{background:#171820!important;border-color:#2c2e39!important}
 html[data-theme="dark"] .settings-pix-note{background:#1b1c24!important;border-color:#2b2d37!important;color:#9294a0!important}
+
+/* Ajuste fino: cabeçalho de Pix um pouco mais abaixo */
+.settings-section-heading{
+  padding-top:8px!important;
+}
