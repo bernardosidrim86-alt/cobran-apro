@@ -14,6 +14,102 @@ import TurnstileCaptcha from "./TurnstileCaptcha";
 
 const money = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(v || 0));
 const todayISO = () => new Date().toISOString().slice(0,10);
+
+function formatNotificationMoney(value){
+  return new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number(value||0));
+}
+
+function notificationTime(value){
+  if(!value) return "";
+  const date=new Date(value);
+  if(Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
+}
+
+function buildNotifications(charges=[],payments=[]){
+  const today=todayISO();
+  const tomorrow=new Date();
+  tomorrow.setDate(tomorrow.getDate()+1);
+  const tomorrowISO=tomorrow.toISOString().slice(0,10);
+  const items=[];
+
+  charges
+    .filter(x=>x.status==="pending"&&x.due_date&&x.due_date<today)
+    .sort((a,b)=>String(a.due_date).localeCompare(String(b.due_date)))
+    .slice(0,8)
+    .forEach(x=>{
+      const due=new Date(x.due_date+"T12:00:00");
+      const days=Math.max(1,Math.floor((Date.now()-due.getTime())/86400000));
+      const customer=x.customers?.name||"Cliente";
+      items.push({
+        id:"overdue:"+x.id,
+        type:"overdue",
+        priority:1,
+        icon:"danger",
+        title:`Cobrança atrasada · ${customer}`,
+        description:`${formatNotificationMoney(x.amount)} · ${days} ${days===1?"dia":"dias"} de atraso`,
+        href:"/app/cobrancas?filter=overdue",
+        date:x.due_date
+      });
+    });
+
+  charges
+    .filter(x=>x.status==="pending"&&x.due_date===today)
+    .sort((a,b)=>Number(b.amount||0)-Number(a.amount||0))
+    .slice(0,8)
+    .forEach(x=>{
+      const customer=x.customers?.name||"Cliente";
+      items.push({
+        id:"today:"+x.id,
+        type:"today",
+        priority:2,
+        icon:"warning",
+        title:`Cobrança vence hoje · ${customer}`,
+        description:formatNotificationMoney(x.amount),
+        href:"/app/cobrancas",
+        date:x.due_date
+      });
+    });
+
+  charges
+    .filter(x=>x.status==="pending"&&x.due_date===tomorrowISO)
+    .sort((a,b)=>Number(b.amount||0)-Number(a.amount||0))
+    .slice(0,6)
+    .forEach(x=>{
+      const customer=x.customers?.name||"Cliente";
+      items.push({
+        id:"tomorrow:"+x.id,
+        type:"tomorrow",
+        priority:3,
+        icon:"calendar",
+        title:`Cobrança vence amanhã · ${customer}`,
+        description:formatNotificationMoney(x.amount),
+        href:"/app/cobrancas",
+        date:x.due_date
+      });
+    });
+
+  const since=Date.now()-86400000;
+  payments
+    .filter(x=>x.paid_at&&new Date(x.paid_at).getTime()>=since)
+    .sort((a,b)=>new Date(b.paid_at)-new Date(a.paid_at))
+    .slice(0,8)
+    .forEach(x=>{
+      const customer=x.customers?.name||"Cliente";
+      items.push({
+        id:"payment:"+x.id,
+        type:"payment",
+        priority:4,
+        icon:"payment",
+        title:`Recebimento registrado · ${customer}`,
+        description:formatNotificationMoney(x.amount)+` · ${notificationTime(x.paid_at)}`,
+        href:"/app/recebimentos",
+        date:x.paid_at
+      });
+    });
+
+  return items.sort((a,b)=>(a.priority-b.priority)||String(b.date).localeCompare(String(a.date)));
+}
 const TRIAL_DAYS = 7;
 const trialEnd = (createdAt) => new Date(new Date(createdAt).getTime() + TRIAL_DAYS * 86400000);
 const trialDaysLeft = (createdAt) => Math.max(0, Math.ceil((trialEnd(createdAt) - new Date()) / 86400000));
@@ -651,7 +747,7 @@ await supabase.from("company_settings").upsert({company_id:companyId,default_pay
 }
 
 function AppShell({session}) {
-  const nav=useNavigate(); const loc=useLocation(); const [mobile,setMobile]=useState(false); const [notificationsOpen,setNotificationsOpen]=useState(false); const [profileOpen,setProfileOpen]=useState(false); const [notificationCount,setNotificationCount]=useState(0); const [trialBlocked,setTrialBlocked]=useState(false); const [trialLoading,setTrialLoading]=useState(true); const [trialDays,setTrialDays]=useState(TRIAL_DAYS); const [currentPlan,setCurrentPlan]=useState("free"); const [expiredPaidSubscription,setExpiredPaidSubscription]=useState(false); const touchStartX=React.useRef(null); const touchStartY=React.useRef(null); const pointerStartX=React.useRef(null); const pointerStartY=React.useRef(null);
+  const nav=useNavigate(); const loc=useLocation(); const [mobile,setMobile]=useState(false); const [notificationsOpen,setNotificationsOpen]=useState(false); const [profileOpen,setProfileOpen]=useState(false); const [notifications,setNotifications]=useState([]); const [readNotificationIds,setReadNotificationIds]=useState([]); const [trialBlocked,setTrialBlocked]=useState(false); const [trialLoading,setTrialLoading]=useState(true); const [trialDays,setTrialDays]=useState(TRIAL_DAYS); const [currentPlan,setCurrentPlan]=useState("free"); const [expiredPaidSubscription,setExpiredPaidSubscription]=useState(false); const touchStartX=React.useRef(null); const touchStartY=React.useRef(null); const pointerStartX=React.useRef(null); const pointerStartY=React.useRef(null);
   const [theme,setTheme]=useState(()=>{
     try { return localStorage.getItem("cobrancapro-theme")==="dark" ? "dark" : "light"; }
     catch { return "light"; }
@@ -670,7 +766,98 @@ function AppShell({session}) {
   const [globalResults,setGlobalResults]=useState({customers:[],charges:[]});
   const [chargesOpen,setChargesOpen]=useState(loc.pathname.startsWith("/app/cobrancas"));
   useEffect(()=>{if(loc.pathname.startsWith("/app/cobrancas"))setChargesOpen(true);},[loc.pathname]);
-   useEffect(()=>{let active=true;let timer=null;async function loadAccount(){const {data:profile,error}=await supabase.from("profiles").select("company_id,plan,billing_cycle,subscription_expires_at,subscription_status").eq("id",session.user.id).single();if(!active)return;if(error){console.error("Falha ao carregar plano:",error);setTrialLoading(false);return;}const planKey=profile?.plan||"free";const expires=profile?.subscription_expires_at?new Date(profile.subscription_expires_at):trialEnd(session.user.created_at);const now=new Date();const paidPlan=planKey!=="free";const paidAccess=paidPlan&&profile?.subscription_status==="active"&&expires>now;const expiredPaidSubscription=paidPlan&&(!profile?.subscription_status||profile.subscription_status!=="active"||expires<=now);setCompanyId(profile?.company_id||null);setCurrentPlan(paidAccess?planKey:"free");const days=Math.max(0,Math.ceil((expires-now)/86400000));setTrialDays(days);setTrialBlocked(!paidAccess&&expires<=now);setExpiredPaidSubscription(expiredPaidSubscription);setTrialLoading(false);if(!profile?.company_id)return;const {data:company}=await supabase.from("companies").select("avatar_url").eq("id",profile.company_id).maybeSingle();if(active)setCompanyAvatar(company?.avatar_url||"");const {data}=await supabase.from("charges").select("id,due_date,status").eq("company_id",profile.company_id).eq("status","pending");if(active)setNotificationCount((data||[]).filter(x=>x.due_date<=todayISO()).length);}const refresh=()=>loadAccount();loadAccount();window.addEventListener("focus",refresh);timer=window.setInterval(loadAccount,15000);return()=>{active=false;window.removeEventListener("focus",refresh);if(timer)window.clearInterval(timer);};},[session.user.id,session.user.created_at]);
+   useEffect(()=>{
+    let active=true;
+    let timer=null;
+
+    async function loadAccount(){
+      const {data:profile,error}=await supabase.from("profiles")
+        .select("company_id,plan,billing_cycle,subscription_expires_at,subscription_status")
+        .eq("id",session.user.id)
+        .single();
+      if(!active)return;
+      if(error){
+        console.error("Falha ao carregar plano:",error);
+        setTrialLoading(false);
+        return;
+      }
+
+      const planKey=profile?.plan||"free";
+      const expires=profile?.subscription_expires_at?new Date(profile.subscription_expires_at):trialEnd(session.user.created_at);
+      const now=new Date();
+      const paidPlan=planKey!=="free";
+      const paidAccess=paidPlan&&profile?.subscription_status==="active"&&expires>now;
+      const expiredPaidSubscription=paidPlan&&(!profile?.subscription_status||profile.subscription_status!=="active"||expires<=now);
+
+      setCompanyId(profile?.company_id||null);
+      setCurrentPlan(paidAccess?planKey:"free");
+
+      const days=Math.max(0,Math.ceil((expires-now)/86400000));
+      setTrialDays(days);
+      setTrialBlocked(!paidAccess&&expires<=now);
+      setExpiredPaidSubscription(expiredPaidSubscription);
+      setTrialLoading(false);
+
+      if(!profile?.company_id){
+        setNotifications([]);
+        return;
+      }
+
+      const [{data:company},{data:charges},{data:payments}]=await Promise.all([
+        supabase.from("companies").select("avatar_url").eq("id",profile.company_id).maybeSingle(),
+        supabase.from("charges").select("id,due_date,status,amount,customers(name)").eq("company_id",profile.company_id).eq("status","pending").order("due_date",{ascending:true}).limit(60),
+        supabase.from("payments").select("id,amount,paid_at,customers(name)").eq("company_id",profile.company_id).order("paid_at",{ascending:false}).limit(30)
+      ]);
+
+      if(active){
+        setCompanyAvatar(company?.avatar_url||"");
+        setNotifications(buildNotifications(charges||[],payments||[]));
+      }
+    }
+
+    loadAccount();
+    window.addEventListener("focus",loadAccount);
+    timer=window.setInterval(loadAccount,15000);
+
+    return()=>{
+      active=false;
+      window.removeEventListener("focus",loadAccount);
+      if(timer)window.clearInterval(timer);
+    };
+  },[session.user.id,session.user.created_at]);  useEffect(()=>{
+    if(!companyId)return;
+    try{
+      const raw=localStorage.getItem(`cobrancapro-notifications-read:${companyId}`);
+      const ids=raw?JSON.parse(raw):[];
+      setReadNotificationIds(Array.isArray(ids)?ids:[]);
+    }catch{
+      setReadNotificationIds([]);
+    }
+  },[companyId]);
+
+  const unreadNotifications=notifications.filter(item=>!readNotificationIds.includes(item.id));
+  const notificationCount=unreadNotifications.length;
+
+  function markNotificationRead(id){
+    setReadNotificationIds(current=>{
+      const next=Array.from(new Set([...current,id])).slice(-150);
+      if(companyId){
+        try{localStorage.setItem(`cobrancapro-notifications-read:${companyId}`,JSON.stringify(next));}catch{}
+      }
+      return next;
+    });
+  }
+
+  function markAllNotificationsRead(){
+    setReadNotificationIds(current=>{
+      const next=Array.from(new Set([...current,...notifications.map(item=>item.id)])).slice(-150);
+      if(companyId){
+        try{localStorage.setItem(`cobrancapro-notifications-read:${companyId}`,JSON.stringify(next));}catch{}
+      }
+      return next;
+    });
+  }
+
   useEffect(()=>{if(trialDays>0&&!trialBlocked)document.title=`CobrançaPro · ${trialDays} dias grátis`;},[trialDays,trialBlocked]);
   useEffect(()=>{
     const term=globalSearch.trim();
@@ -710,7 +897,20 @@ function AppShell({session}) {
       </div>}
     </div>
     {links.slice(3).map(([path,Icon,label])=>{const locked=(path==="/app/ia"||path==="/app/copiloto")&&!hasAIAccess;return <Link onClick={()=>{setMobile(false);if(locked){setTrialBlocked(false);}}} className={loc.pathname===path?"active":""} to={path} key={path}><Icon size={18}/>{label}{locked&&<Lock size={13} className="nav-lock"/>}</Link>;})}
-  </div><div className="side-bottom"><button className="user-mini user-mini-button" onClick={openProfile}><div className="avatar">{initials}</div><div><b>{fullName}</b><span>{email}</span></div></button><button onClick={logout} className="logout"><LogOut size={17}/> Sair</button></div></aside><div className="app-main"><header className="app-header"><button className="mobile-menu" onClick={()=>setMobile(x=>!x)}><Menu/></button><div className="header-search global-search"><Search size={17}/><input placeholder="Buscar clientes ou cobranças..." value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)} /><span className="global-search-count">{globalSearch.trim().length>=2?(globalResults.customers.length+globalResults.charges.length):""}</span>{globalSearch.trim().length>=2&&<div className="global-search-results">{globalResults.customers.length===0&&globalResults.charges.length===0?<div className="global-search-empty">Nenhum resultado encontrado.</div>:<>{globalResults.customers.length>0&&<><div className="global-search-section">Clientes</div>{globalResults.customers.map(c=><Link key={c.id} to={"/app/clientes?q="+encodeURIComponent(c.name)} onClick={()=>setGlobalSearch("")}><Users size={15}/><div><b>{c.name}</b><span>{c.phone||c.email||"Cliente"}</span></div></Link>)}</>}{globalResults.charges.length>0&&<><div className="global-search-section">Cobranças</div>{globalResults.charges.map(c=><Link key={c.id} to={"/app/cobrancas?q="+encodeURIComponent(c.description||c.customers?.name||"")} onClick={()=>setGlobalSearch("")}><Receipt size={15}/><div><b>{c.customers?.name||"Cliente"} · {money(c.amount)}</b><span>{c.description||"Cobrança"} · {new Date(c.due_date+"T12:00:00").toLocaleDateString("pt-BR")}</span></div></Link>)}</>}</>}</div>}</div><div className="header-right"><div className="theme-switch" role="group" aria-label="Tema do sistema"><button type="button" className={`theme-choice ${theme==="light"?"active":""}`} onClick={()=>setTheme("light")} aria-label="Modo claro" aria-pressed={theme==="light"} title="Modo claro"><Sun size={17}/></button><button type="button" className={`theme-choice ${theme==="dark"?"active":""}`} onClick={()=>setTheme("dark")} aria-label="Modo escuro" aria-pressed={theme==="dark"} title="Modo escuro"><Moon size={17}/></button></div><div className="header-menu"><button className={`header-icon-button ${notificationsOpen?"active":""}`} onClick={openNotifications} aria-label="Notificações"><Bell size={18}/>{notificationCount>0&&<span className="notification-dot">{notificationCount>9?"9+":notificationCount}</span>}</button>{notificationsOpen&&<div className="header-dropdown notifications-dropdown"><div className="dropdown-head"><div><b>Notificações</b><span>{notificationCount ? notificationCount+" cobrança(s) precisam de atenção." : "Tudo em dia por aqui."}</span></div></div>{notificationCount?<Link to="/app/cobrancas" onClick={()=>setNotificationsOpen(false)} className="notification-item"><div className="dropdown-icon danger"><Receipt size={16}/></div><div><b>Cobranças vencidas ou vencendo hoje</b><span>Veja as cobranças que precisam de atenção.</span></div><ChevronRight size={15}/></Link>:<div className="dropdown-empty"><Check size={18}/><span>Nenhuma notificação nova.</span></div>}</div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session} currentPlan={currentPlan}/>}/><Route path="clientes" element={<Customers/>}/><Route path="cobrancas" element={<Charges/>}/><Route path="recebimentos" element={<Payments/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/>
+  </div><div className="side-bottom"><button className="user-mini user-mini-button" onClick={openProfile}><div className="avatar">{initials}</div><div><b>{fullName}</b><span>{email}</span></div></button><button onClick={logout} className="logout"><LogOut size={17}/> Sair</button></div></aside><div className="app-main"><header className="app-header"><button className="mobile-menu" onClick={()=>setMobile(x=>!x)}><Menu/></button><div className="header-search global-search"><Search size={17}/><input placeholder="Buscar clientes ou cobranças..." value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)} /><span className="global-search-count">{globalSearch.trim().length>=2?(globalResults.customers.length+globalResults.charges.length):""}</span>{globalSearch.trim().length>=2&&<div className="global-search-results">{globalResults.customers.length===0&&globalResults.charges.length===0?<div className="global-search-empty">Nenhum resultado encontrado.</div>:<>{globalResults.customers.length>0&&<><div className="global-search-section">Clientes</div>{globalResults.customers.map(c=><Link key={c.id} to={"/app/clientes?q="+encodeURIComponent(c.name)} onClick={()=>setGlobalSearch("")}><Users size={15}/><div><b>{c.name}</b><span>{c.phone||c.email||"Cliente"}</span></div></Link>)}</>}{globalResults.charges.length>0&&<><div className="global-search-section">Cobranças</div>{globalResults.charges.map(c=><Link key={c.id} to={"/app/cobrancas?q="+encodeURIComponent(c.description||c.customers?.name||"")} onClick={()=>setGlobalSearch("")}><Receipt size={15}/><div><b>{c.customers?.name||"Cliente"} · {money(c.amount)}</b><span>{c.description||"Cobrança"} · {new Date(c.due_date+"T12:00:00").toLocaleDateString("pt-BR")}</span></div></Link>)}</>}</>}</div>}</div><div className="header-right"><div className="theme-switch" role="group" aria-label="Tema do sistema"><button type="button" className={`theme-choice ${theme==="light"?"active":""}`} onClick={()=>setTheme("light")} aria-label="Modo claro" aria-pressed={theme==="light"} title="Modo claro"><Sun size={17}/></button><button type="button" className={`theme-choice ${theme==="dark"?"active":""}`} onClick={()=>setTheme("dark")} aria-label="Modo escuro" aria-pressed={theme==="dark"} title="Modo escuro"><Moon size={17}/></button></div><div className="header-menu"><button className={`header-icon-button ${notificationsOpen?"active":""}`} onClick={openNotifications} aria-label="Notificações"><Bell size={18}/>{notificationCount>0&&<span className="notification-dot">{notificationCount>9?"9+":notificationCount}</span>}</button>{notificationsOpen&&<div className="header-dropdown notifications-dropdown">
+    <div className="dropdown-head notification-head">
+      <div><b>Notificações</b><span>{notificationCount?notificationCount+" novas":notifications.length?"Tudo visto por aqui.":"Nenhuma novidade no momento."}</span></div>
+      {unreadNotifications.length>0&&<button type="button" onClick={markAllNotificationsRead}>Marcar todas como lidas</button>}
+    </div>
+    <div className="notifications-list">
+      {notifications.length===0?<div className="dropdown-empty"><Check size={18}/><span>Tudo em dia por aqui.</span></div>:notifications.slice(0,12).map(item=><Link key={item.id} to={item.href} onClick={()=>{markNotificationRead(item.id);setNotificationsOpen(false)}} className={`notification-item ${readNotificationIds.includes(item.id)?"read":"unread"}`}>
+        <div className={`dropdown-icon ${item.icon}`}>{item.icon==="payment"?<Wallet size={16}/>:item.icon==="calendar"?<CalendarDays size={16}/>:item.icon==="warning"?<CalendarDays size={16}/>:<Receipt size={16}/>}</div>
+        <div><b>{item.title}</b><span>{item.description}</span></div>
+        {!readNotificationIds.includes(item.id)&&<span className="notification-unread-dot" aria-label="Não lida"></span>}
+      </Link>)}
+    </div>
+    {notifications.length>12&&<Link to="/app/cobrancas" onClick={()=>setNotificationsOpen(false)} className="notifications-footer">Ver todas as cobranças <ChevronRight size={14}/></Link>}
+  </div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session} currentPlan={currentPlan}/>}/><Route path="clientes" element={<Customers/>}/><Route path="cobrancas" element={<Charges/>}/><Route path="recebimentos" element={<Payments/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/>
 <Route path="copiloto" element={<CopilotPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/><Route path="configuracoes/*" element={<SettingsPage canUseAI={hasAIAccess}/>}/><Route path="*" element={<Navigate to="/app" replace/>}/></Routes></div></div></div>
 }
 
