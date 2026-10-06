@@ -152,7 +152,7 @@ export function Customers({companyId}){
         <tbody>{filtered.map(c=><tr key={c.id} onClick={()=>openCustomer(c)}>
           <td><div className="modern-person"><span className="modern-avatar">{(c.name||"C").slice(0,1).toUpperCase()}</span><div><b>{c.name}</b><small>{c.notes||"Cliente cadastrado"}</small></div></div></td>
           <td>{c.phone||"—"}</td><td>{c.email||"—"}</td><td>{new Date(c.created_at).toLocaleDateString("pt-BR")}</td>
-          <td className="modern-actions-cell" onClick={e=>e.stopPropagation()}><button type="button" className={"modern-actions-trigger "+(clientMenu?.id===c.id?"active":"")} data-client-menu-trigger={c.id} aria-label={"Ações de "+c.name} onClick={e=>toggleClientMenu(c,e)}><MoreHorizontal size={19}/></button></td>
+          <td className="modern-actions-cell" onClick={e=>e.stopPropagation()}><button type="button" className="modern-actions-trigger" data-client-menu-trigger={c.id} aria-label={"Ações de "+c.name} onClick={e=>toggleClientMenu(c,e)} style={{border:"0",background:"transparent",boxShadow:"none",outline:"none",padding:0}}><MoreHorizontal size={19}/></button></td>
         </tr>)}</tbody>
       </table></div>}
     </div>
