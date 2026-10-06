@@ -1842,6 +1842,7 @@ function Charges() {
   const [selected,setSelected]=useState(null);
   const [filter,setFilter]=useState("all");
   const [form,setForm]=useState({customer_id:"",description:"",amount:"",due_date:todayISO(),payment_method:"Pix",recurrence:"none",notes:""});
+  const [saving,setSaving]=useState(false);
 
   async function load(){
     if(!companyId)return;
@@ -1862,29 +1863,98 @@ function Charges() {
 
   async function save(e){
     e.preventDefault();
-    const {data:user}=await supabase.auth.getUser();
-    const {data:profile}=await supabase.from("profiles").select("plan").eq("id",user.user.id).single();
-    const plan=PLAN_OPTIONS.find(p=>p.key===(profile?.plan||"free"))||PLAN_OPTIONS[0];
-    let query=supabase.from("charges").select("id",{count:"exact",head:true}).eq("company_id",companyId);
-    if(plan.maxCharges!==null){
-      const start=new Date();
-      start.setDate(1);
-      const firstDay=start.toISOString().slice(0,10);
-      const next=new Date(start.getFullYear(),start.getMonth()+1,1);
-      const nextDay=next.toISOString().slice(0,10);
-      query=query.gte("created_at",firstDay).lt("created_at",nextDay);
-    }
-    const {count}=await query;
-    if(plan.maxCharges!==null&&(count||0)>=plan.maxCharges){
-      toast(`O plano ${plan.title} permite até ${plan.maxCharges} cobranças por mês. Faça upgrade para adicionar mais.`);
+    if(saving)return;
+
+    if(!companyId){
+      toast("Não foi possível identificar sua empresa. Recarregue a página e tente novamente.");
       return;
     }
-    const {error}=await supabase.from("charges").insert({...form,company_id:companyId,amount:Number(form.amount)});
-    if(error) toast(error.message);
-    else{
+
+    const timeout=(promise,ms,label)=>Promise.race([
+      promise,
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error(label)),ms))
+    ]);
+
+    setSaving(true);
+    try{
+      const {data:user,error:userError}=await timeout(
+        supabase.auth.getUser(),
+        8000,
+        "Sua sessão demorou para responder. Recarregue a página e tente novamente."
+      );
+      if(userError||!user?.user?.id){
+        throw new Error(userError?.message||"Sua sessão expirou. Faça login novamente.");
+      }
+
+      const {data:profile,error:profileError}=await timeout(
+        supabase.from("profiles").select("plan").eq("id",user.user.id).maybeSingle(),
+        8000,
+        "Não foi possível validar seu plano agora. Tente novamente."
+      );
+      if(profileError){
+        throw new Error(profileError.message||"Não foi possível validar seu plano agora.");
+      }
+
+      const plan=PLAN_OPTIONS.find(p=>p.key===(profile?.plan||"free"))||PLAN_OPTIONS[0];
+
+      let query=supabase.from("charges").select("id",{count:"exact",head:true}).eq("company_id",companyId);
+      if(plan.maxCharges!==null){
+        const startOfMonth=new Date();
+        startOfMonth.setDate(1);
+        const firstDay=startOfMonth.toISOString().slice(0,10);
+        const nextMonth=new Date(startOfMonth.getFullYear(),startOfMonth.getMonth()+1,1);
+        const nextDay=nextMonth.toISOString().slice(0,10);
+        query=query.gte("created_at",firstDay).lt("created_at",nextDay);
+      }
+
+      const {count,countError}=await timeout(
+        query,
+        10000,
+        "A verificação do limite demorou demais. Tente novamente."
+      ).then(result=>({count:result.count,countError:result.error}));
+
+      if(countError){
+        throw new Error(countError.message||"Não foi possível verificar o limite de cobranças.");
+      }
+
+      if(plan.maxCharges!==null&&(count||0)>=plan.maxCharges){
+        toast(`O plano ${plan.title} permite até ${plan.maxCharges} cobranças por mês. Faça upgrade para adicionar mais.`);
+        return;
+      }
+
+      const payload={
+        ...form,
+        company_id:companyId,
+        amount:Number(form.amount)
+      };
+
+      const insertResult=await timeout(
+        supabase.from("charges").insert(payload),
+        10000,
+        "A criação da cobrança demorou demais. Verifique sua conexão e tente novamente."
+      );
+
+      if(insertResult.error){
+        throw new Error(insertResult.error.message||"Não foi possível criar a cobrança.");
+      }
+
       setOpen(false);
-      setForm({customer_id:"",description:"",amount:"",due_date:todayISO(),payment_method:"Pix",recurrence:"none",notes:""});
-      load();
+      setForm({
+        customer_id:"",
+        description:"",
+        amount:"",
+        due_date:todayISO(),
+        payment_method:"Pix",
+        recurrence:"none",
+        notes:""
+      });
+      await load();
+      toast("Cobrança criada com sucesso.","success");
+    }catch(error){
+      console.error("Erro ao criar cobrança:",error);
+      toast(error?.message||"Não foi possível criar a cobrança.");
+    }finally{
+      setSaving(false);
     }
   }
 
@@ -1919,7 +1989,7 @@ function Charges() {
       <Input label="Vencimento" type="date" value={form.due_date} onChange={e=>setForm({...form,due_date:e.target.value})} required/>
       <label className="field"><span>Método</span><select value={form.payment_method} onChange={e=>setForm({...form,payment_method:e.target.value})}>{["Pix","Dinheiro","Cartão","Transferência","Outro"].map(x=><option key={x}>{x}</option>)}</select></label>
       <label className="field"><span>Recorrência</span><select value={form.recurrence} onChange={e=>setForm({...form,recurrence:e.target.value})}><option value="none">Não repetir</option><option value="weekly">Semanal</option><option value="biweekly">Quinzenal</option><option value="monthly">Mensal</option><option value="annual">Anual</option></select></label>
-      <div className="recurrence-hint">{form.recurrence==="none"?"Cobrança única.":"Ao marcar como paga, a próxima cobrança será criada automaticamente."}</div><div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)}>Cancelar</Button><Button type="submit">Criar cobrança</Button></div>
+      <div className="recurrence-hint">{form.recurrence==="none"?"Cobrança única.":"Ao marcar como paga, a próxima cobrança será criada automaticamente."}</div><div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)} disabled={saving}>Cancelar</Button><Button type="submit" disabled={saving}>{saving?"Criando...":"Criar cobrança"}</Button></div>
     </form></div>}
 
     {selected&&<ChargeDetail charge={selected} customers={customers} onClose={()=>setSelected(null)} onPaid={()=>{setSelected(null);load();}}/>}
