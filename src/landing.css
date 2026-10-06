@@ -513,3 +513,41 @@
   color:#14151f!important;
   transform:translateY(-1px);
 }
+
+
+/* Landing — logo mobile sem compressão */
+@media (max-width:640px){
+  .lp-header-in{
+    min-width:0;
+  }
+
+  .lp-brand{
+    width:152px;
+    height:38px;
+    flex:0 0 152px;
+    display:flex;
+    align-items:center;
+  }
+
+  .lp-brand img{
+    width:152px!important;
+    min-width:152px!important;
+    max-width:152px!important;
+    height:auto!important;
+    max-height:none!important;
+    flex:0 0 152px!important;
+    display:block;
+    transform:none;
+    object-fit:contain;
+    object-position:left center;
+  }
+
+  .lp-brand::after{
+    width:152px;
+    height:100%;
+    inset:0 auto auto 0;
+    background-size:152px auto;
+    background-position:left center;
+    background-repeat:no-repeat;
+  }
+}
