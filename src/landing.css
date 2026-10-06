@@ -551,3 +551,45 @@
     background-repeat:no-repeat;
   }
 }
+
+
+/* Landing mobile — cabeçalho equilibrado */
+@media (max-width:640px){
+  .lp-header-in{
+    gap:10px;
+    width:100%;
+  }
+
+  .lp-brand{
+    width:146px;
+    height:40px;
+    flex:0 0 146px;
+    transform:translateY(3px);
+  }
+
+  .lp-brand img{
+    width:146px!important;
+    min-width:146px!important;
+    max-width:146px!important;
+    flex:0 0 146px!important;
+    transform:translateY(2px)!important;
+  }
+
+  .lp-brand::after{
+    width:146px;
+    background-size:146px auto;
+  }
+
+  .lp-header-cta{
+    margin-left:auto;
+    gap:0;
+    flex:0 0 auto;
+  }
+
+  .lp-header-cta .lp-btn{
+    min-width:124px;
+    padding-left:12px!important;
+    padding-right:12px!important;
+    font-size:12px;
+  }
+}
