@@ -179,9 +179,7 @@ function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
       {pixPayload?<div className="charge-pix-box">
         <div className="charge-pix-head">
           <div className="charge-pix-title">
-            <div className="charge-pix-icon"><QrCode size={19}/></div>
             <div>
-              <span className="charge-pix-kicker">PIX</span>
               <h3>Pagamento via Pix</h3>
               <p>Use o código abaixo para concluir o pagamento desta cobrança.</p>
             </div>
