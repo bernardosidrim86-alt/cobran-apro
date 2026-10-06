@@ -16,3 +16,10 @@ html:not([data-theme="dark"]) .app-layout .dashboard-page .panel,
 html:not([data-theme="dark"]) .app-layout .dashboard-page .metric{border-color:#eceef3!important;box-shadow:none!important}
 html:not([data-theme="dark"]) .app-layout .dashboard-page .dashboard-action-grid{gap:20px}
 html:not([data-theme="dark"]) .app-layout .page{background:#f7f7fa}
+
+/* Logo do menu lateral no tema escuro: "Cobrança" em branco */
+html[data-theme="dark"] .side-brand .brand-logo{
+  object-fit:none!important;
+  object-position:-9999px 0!important;
+  background:url("/logo-escuro.png?v=1") left center/contain no-repeat!important;
+}
