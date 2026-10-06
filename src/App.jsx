@@ -13,7 +13,7 @@ import { PLAN_OPTIONS } from "./lib/plans";
 import TurnstileCaptcha from "./TurnstileCaptcha";
 
 const money = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(v || 0));
-const todayISO = () => new Date().toISOString().slice(0,10);
+const todayISO = () => { const d=new Date(); return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10); };
 
 function formatNotificationMoney(value){
   return new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number(value||0));
@@ -1985,7 +1985,7 @@ function Charges() {
       </table>}
     </div>
 
-    {open&&<div className="modal-backdrop"><form className="modal" onSubmit={save}>
+    {open&&<div className="modal-backdrop"><form className="modal" onSubmit={save} noValidate>
       <button type="button" className="modal-x" onClick={()=>setOpen(false)}><X/></button>
       <div className="modal-head"><div className="icon-box"><Receipt/></div><div><h2>Nova cobrança</h2><p>Crie um valor a receber.</p></div></div>
       <label className="field"><span>Cliente</span><select value={form.customer_id} onChange={e=>setForm({...form,customer_id:e.target.value})} required><option value="">Selecione</option>{customers.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}</select></label>
