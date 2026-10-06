@@ -117,6 +117,24 @@ const TRIAL_DAYS = 7;
 const trialEnd = (createdAt) => new Date(new Date(createdAt).getTime() + TRIAL_DAYS * 86400000);
 const trialDaysLeft = (createdAt) => Math.max(0, Math.ceil((trialEnd(createdAt) - new Date()) / 86400000));
 
+class AppErrorBoundary extends React.Component{
+  constructor(props){super(props);this.state={error:null};}
+  static getDerivedStateFromError(error){return {error};}
+  componentDidCatch(error,info){console.error("CobrançaPro runtime error:",error,info);}
+  render(){
+    if(this.state.error){
+      return <div style={{minHeight:"100vh",display:"grid",placeItems:"center",padding:"24px",background:"#f7f7fa",fontFamily:"Inter,system-ui,sans-serif"}}>
+        <div style={{width:"min(520px,100%)",background:"#fff",border:"1px solid #e5e6eb",borderRadius:"16px",padding:"24px",boxShadow:"0 20px 50px rgba(20,22,45,.08)"}}>
+          <b style={{fontSize:"16px"}}>Não foi possível abrir o painel</b>
+          <p style={{fontSize:"12px",color:"#777",lineHeight:"1.6",margin:"10px 0 16px"}}>O CobrançaPro encontrou um erro ao carregar esta tela. Recarregue a página para tentar novamente.</p>
+          <button type="button" className="btn btn-primary" onClick={()=>window.location.reload()}>Recarregar painel</button>
+        </div>
+      </div>;
+    }
+    return this.props.children;
+  }
+}
+
 function App() {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -129,7 +147,7 @@ function App() {
   }, []);
 
   if (loading) return <div className="screen-center">Carregando...</div>;
-  return <Routes>
+  return <AppErrorBoundary><Routes>
     <Route path="/" element={<Landing session={session} />} />
     <Route path="/login" element={session ? <SessionRedirect session={session}/> : <Login />} />
     <Route path="/cadastro" element={session ? <SessionRedirect session={session}/> : <Signup />} />
@@ -140,7 +158,7 @@ function App() {
     <Route path="/onboarding" element={session ? <Onboarding session={session}/> : <Navigate to="/login" replace/>} />
     <Route path="/app/*" element={session ? <AppShell session={session}/> : <Navigate to="/login" replace/>} />
     <Route path="*" element={<Navigate to="/" replace/>} />
-  </Routes>;
+  </Routes></AppErrorBoundary>;
 }
 
 const ALLOWED_CHECKOUT_HOSTS=new Set(["checkout.perfectpay.com.br","go.perfectpay.com.br"]);
