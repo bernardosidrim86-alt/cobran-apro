@@ -11479,3 +11479,13 @@ html[data-theme="dark"] .charge-pix-empty-icon{
 }
 html[data-theme="dark"] .charge-pix-empty-copy b{color:#f0f0f2!important}
 html[data-theme="dark"] .charge-pix-empty-copy span{color:#9193a0!important}
+
+/* Pix: tipografia legível e hierarquia profissional */
+.charge-pix-empty-copy b{font-size:14px!important;line-height:1.35!important}
+.charge-pix-empty-copy span{font-size:11px!important;line-height:1.55!important}
+.charge-pix-empty .btn{height:38px!important;padding:0 13px!important;font-size:12px!important}
+@media(max-width:620px){
+  .charge-pix-empty-copy b{font-size:13px!important}
+  .charge-pix-empty-copy span{font-size:10.5px!important}
+  .charge-pix-empty .btn{font-size:11px!important}
+}
