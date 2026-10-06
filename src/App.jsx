@@ -158,8 +158,48 @@ function PhoneFrame({src, alt, className=""}) {
   return <div className={`lp-phone ${className}`}><img src={src} alt={alt} width="620" height="1341" loading="lazy" decoding="async" /></div>;
 }
 
+function ImageLightbox({image, onClose}) {
+  useEffect(()=>{
+    if(!image) return;
+    const previousOverflow=document.body.style.overflow;
+    document.body.style.overflow="hidden";
+    const onKeyDown=(event)=>{
+      if(event.key==="Escape") onClose();
+    };
+    window.addEventListener("keydown",onKeyDown);
+    return ()=>{
+      document.body.style.overflow=previousOverflow;
+      window.removeEventListener("keydown",onKeyDown);
+    };
+  },[image,onClose]);
+
+  if(!image) return null;
+
+  return createPortal(
+    <div
+      className="lp-lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Visualização ampliada: ${image.alt}`}
+      onMouseDown={(event)=>{
+        if(event.target===event.currentTarget) onClose();
+      }}
+    >
+      <button type="button" className="lp-lightbox-close" onClick={onClose} aria-label="Fechar imagem ampliada">
+        <X size={22}/>
+      </button>
+      <div className="lp-lightbox-content">
+        <img src={image.src} alt={image.alt} />
+        <span>Clique fora ou pressione Esc para fechar</span>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
 function Landing({session}) {
   const [annualBilling,setAnnualBilling]=useState(false);
+  const [lightbox,setLightbox]=useState(null);
   useEffect(()=>{
     if(window.location.hash!=="#precos") return;
     const scrollToPlans=()=>document.getElementById("precos")?.scrollIntoView({behavior:"auto",block:"start"});
@@ -289,7 +329,22 @@ function Landing({session}) {
             {steps.map(st=><article className="lp-step" key={st.n}>
               <div className="lp-step-text"><span className="lp-step-n">{st.n}</span><h3>{st.title}</h3><p>{st.text}</p></div>
               <div className="lp-step-media">
-                {st.crop ? <div className="lp-crop"><img src={st.crop} alt={st.alt} width="1200" height="568" loading="lazy" decoding="async" /></div> : <BrowserFrame src={st.img} alt={st.alt} width="1400" height="900" />}
+                <div
+                  className="lp-image-zoom"
+                  role="button"
+                  tabIndex={0}
+                  onClick={()=>setLightbox({src:st.crop||st.img,alt:st.alt})}
+                  onKeyDown={(event)=>{
+                    if(event.key==="Enter"||event.key===" "){
+                      event.preventDefault();
+                      setLightbox({src:st.crop||st.img,alt:st.alt});
+                    }
+                  }}
+                  aria-label={`Ampliar: ${st.alt}`}
+                >
+                  {st.crop ? <div className="lp-crop"><img src={st.crop} alt={st.alt} width="1200" height="568" loading="lazy" decoding="async" /></div> : <BrowserFrame src={st.img} alt={st.alt} width="1400" height="900" />}
+                  <span className="lp-image-zoom-hint">Clique para ampliar</span>
+                </div>
               </div>
             </article>)}
           </div>
@@ -348,6 +403,7 @@ function Landing({session}) {
         <nav aria-label="Rodapé"><a href="#precos">Planos</a><Link to="/login">Entrar</Link><Link to="/cadastro">Criar conta</Link><Link to="/termos">Termos de uso</Link><Link to="/privacidade">Privacidade</Link></nav>
       </div>
     </footer>
+  <ImageLightbox image={lightbox} onClose={()=>setLightbox(null)} />
   </div>;
 }
 
