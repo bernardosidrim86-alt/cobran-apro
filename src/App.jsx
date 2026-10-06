@@ -910,7 +910,7 @@ function AppShell({session}) {
       </Link>)}
     </div>
     {notifications.length>12&&<Link to="/app/cobrancas" onClick={()=>setNotificationsOpen(false)} className="notifications-footer">Ver todas as cobranças <ChevronRight size={14}/></Link>}
-  </div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session} currentPlan={currentPlan}/>}/><Route path="clientes" element={<Customers/>}/><Route path="cobrancas" element={<Charges/>}/><Route path="recebimentos" element={<Payments/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/>
+  </div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session} currentPlan={currentPlan}/>}/><Route path="clientes" element={<Customers/>}/><Route path="cobrancas" element={<Charges companyId={companyId}/>} /><Route path="recebimentos" element={<Payments/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/>
 <Route path="copiloto" element={<CopilotPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/><Route path="configuracoes/*" element={<SettingsPage canUseAI={hasAIAccess}/>}/><Route path="*" element={<Navigate to="/app" replace/>}/></Routes></div></div></div>
 }
 
@@ -1833,8 +1833,9 @@ function Customers() {
     )}
   </>;
 }
-function Charges() {
-  const companyId=useCompany();
+function Charges({companyId: companyIdProp}) {
+  const [resolvedCompanyId,setResolvedCompanyId]=useState(null);
+  const companyId=companyIdProp||resolvedCompanyId;
   const loc=useLocation();
   const [rows,setRows]=useState([]);
   const [customers,setCustomers]=useState([]);
@@ -1853,6 +1854,45 @@ function Charges() {
     setRows(c||[]);
     setCustomers(cu||[]);
   }
+
+  useEffect(()=>{
+    let active=true;
+    async function resolveCompany(){
+      if(companyIdProp){
+        setResolvedCompanyId(null);
+        return;
+      }
+      try{
+        const {data:user,error:userError}=await supabase.auth.getUser();
+        if(userError||!user?.user?.id||!active)return;
+        const {data:profile,error:profileError}=await supabase
+          .from("profiles")
+          .select("company_id")
+          .eq("id",user.user.id)
+          .maybeSingle();
+        if(!active)return;
+        if(!profileError&&profile?.company_id){
+          setResolvedCompanyId(profile.company_id);
+          return;
+        }
+        const {data:newCompanyId,error:createError}=await supabase.rpc("create_my_company",{
+          p_name:user.user.user_metadata?.company_name||"Minha empresa",
+          p_segment:null,
+          p_phone:null
+        });
+        if(!active)return;
+        if(createError){
+          console.error("Falha ao recuperar empresa:",createError);
+          return;
+        }
+        setResolvedCompanyId(newCompanyId||null);
+      }catch(error){
+        console.error("Falha ao resolver empresa:",error);
+      }
+    }
+    resolveCompany();
+    return()=>{active=false};
+  },[companyIdProp]);
 
   useEffect(()=>{load()},[companyId]);
   useEffect(()=>{
