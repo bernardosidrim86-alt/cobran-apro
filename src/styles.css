@@ -11577,3 +11577,6 @@ html[data-theme="dark"] .settings-pix-note{background:#1b1c24!important;border-c
 .settings-section-heading{
   padding-top:8px!important;
 }
+
+/* Ajuste fino: descer mais o cabeçalho de Pix */
+.settings-section-heading{padding-top:20px!important;}
