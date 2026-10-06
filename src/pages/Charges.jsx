@@ -186,7 +186,7 @@ function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
           </div>
         </div>
         <div className="charge-pix-code">
-          <div className="charge-pix-code-head"><span>Código Pix</span><small>Copiar e colar</small></div>
+          <div className="charge-pix-code-head"><span>Código Pix</span></div>
           <textarea id="charge-pix-payload" readOnly value={pixPayload} aria-label="Código Pix Copia e Cola"/>
         </div>
         <div className="charge-pix-actions">
