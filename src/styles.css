@@ -11414,3 +11414,68 @@ html[data-theme="dark"] .modern-table td{border-bottom-color:#252631!important;c
 html[data-theme="dark"] .modern-table tbody tr:hover{background:#1d1e27!important}
 html[data-theme="dark"] .modern-person b{color:#f0f0f3!important}
 html[data-theme="dark"] .modern-person small{color:#858794!important}
+
+/* Pix: estado não configurado */
+.charge-pix-empty{
+  display:grid!important;
+  grid-template-columns:40px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:12px!important;
+  margin-top:16px!important;
+  padding:14px 15px!important;
+  border:1px solid #e6e7ec!important;
+  border-radius:13px!important;
+  background:#fafbfc!important;
+}
+.charge-pix-empty-icon{
+  width:40px!important;
+  height:40px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:10px!important;
+  background:#f0f1ff!important;
+  color:#5b5ce2!important;
+}
+.charge-pix-empty-copy{min-width:0!important}
+.charge-pix-empty-copy b{
+  display:block!important;
+  margin:0!important;
+  color:#22242a!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  line-height:1.35!important;
+}
+.charge-pix-empty-copy span{
+  display:block!important;
+  margin-top:4px!important;
+  max-width:520px!important;
+  color:#80838e!important;
+  font-size:9px!important;
+  line-height:1.5!important;
+}
+.charge-pix-empty .btn{
+  height:34px!important;
+  padding:0 11px!important;
+  white-space:nowrap!important;
+  font-size:10px!important;
+}
+@media(max-width:620px){
+  .charge-pix-empty{
+    grid-template-columns:38px minmax(0,1fr)!important;
+  }
+  .charge-pix-empty .btn{
+    grid-column:1 / -1!important;
+    justify-self:start!important;
+    margin-left:50px!important;
+  }
+}
+html[data-theme="dark"] .charge-pix-empty{
+  background:#171820!important;
+  border-color:#2c2e39!important;
+}
+html[data-theme="dark"] .charge-pix-empty-icon{
+  background:#28294b!important;
+  color:#a7a8ff!important;
+}
+html[data-theme="dark"] .charge-pix-empty-copy b{color:#f0f0f2!important}
+html[data-theme="dark"] .charge-pix-empty-copy span{color:#9193a0!important}
