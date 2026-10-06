@@ -1014,8 +1014,6 @@ function Dashboard({session,currentPlan="free",companyId}) {
       <Metric title="Total recebido" value={money(data.paid)} icon={Wallet} tone="success"/>
     </div>
 
-    <CopilotDashboardCard currentPlan={currentPlan} data={data}/>
-
     <div className="dashboard-action-grid">
       <div className="panel">
         <div className="panel-head"><div><span className="panel-kicker">ATENÇÃO</span><h2>Cobranças vencidas e de hoje</h2><p>Veja rapidamente o que já passou do prazo ou vence hoje.</p></div><Link to="/app/cobrancas" className="link-btn">Ver todas <ArrowRight size={15}/></Link></div>
