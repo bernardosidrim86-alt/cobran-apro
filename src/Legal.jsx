@@ -1,7 +1,12 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useEffect } from "react";
 
 function LegalLayout({title,children}){
+  useEffect(()=>{
+    window.scrollTo({top:0,left:0,behavior:"auto"});
+  },[title]);
+
   return <div className="legal-page">
     <header className="legal-header">
       <div className="legal-header-inner">
