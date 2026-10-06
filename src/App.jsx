@@ -1870,72 +1870,77 @@ function Charges() {
       return;
     }
 
-    const timeout=(promise,ms,label)=>Promise.race([
-      promise,
-      new Promise((_,reject)=>setTimeout(()=>reject(new Error(label)),ms))
-    ]);
+    const customerId=String(form.customer_id||"").trim();
+    const description=String(form.description||"").trim();
+    const amount=Number(form.amount);
+    const dueDate=String(form.due_date||"").trim();
+
+    if(!customerId){toast("Selecione um cliente.");return;}
+    if(!description){toast("Informe a descrição da cobrança.");return;}
+    if(!Number.isFinite(amount)||amount<=0){toast("Informe um valor válido para a cobrança.");return;}
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(dueDate)){toast("Informe uma data de vencimento válida.");return;}
 
     setSaving(true);
     try{
-      const {data:user,error:userError}=await timeout(
+      const {data:user,error:userError}=await Promise.race([
         supabase.auth.getUser(),
-        8000,
-        "Sua sessão demorou para responder. Recarregue a página e tente novamente."
-      );
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error("Sua sessão demorou para responder.")),7000))
+      ]);
       if(userError||!user?.user?.id){
         throw new Error(userError?.message||"Sua sessão expirou. Faça login novamente.");
       }
 
-      const {data:profile,error:profileError}=await timeout(
+      const {data:profile,error:profileError}=await Promise.race([
         supabase.from("profiles").select("plan").eq("id",user.user.id).maybeSingle(),
-        8000,
-        "Não foi possível validar seu plano agora. Tente novamente."
-      );
-      if(profileError){
-        throw new Error(profileError.message||"Não foi possível validar seu plano agora.");
-      }
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error("Não foi possível validar sua conta agora.")),7000))
+      ]);
+      if(profileError)throw new Error(profileError.message||"Não foi possível validar sua conta agora.");
 
       const plan=PLAN_OPTIONS.find(p=>p.key===(profile?.plan||"free"))||PLAN_OPTIONS[0];
 
-      let query=supabase.from("charges").select("id",{count:"exact",head:true}).eq("company_id",companyId);
       if(plan.maxCharges!==null){
         const startOfMonth=new Date();
         startOfMonth.setDate(1);
         const firstDay=startOfMonth.toISOString().slice(0,10);
         const nextMonth=new Date(startOfMonth.getFullYear(),startOfMonth.getMonth()+1,1);
         const nextDay=nextMonth.toISOString().slice(0,10);
-        query=query.gte("created_at",firstDay).lt("created_at",nextDay);
-      }
 
-      const {count,countError}=await timeout(
-        query,
-        10000,
-        "A verificação do limite demorou demais. Tente novamente."
-      ).then(result=>({count:result.count,countError:result.error}));
+        const {count,error:countError}=await Promise.race([
+          supabase.from("charges").select("id",{count:"exact",head:true})
+            .eq("company_id",companyId)
+            .gte("created_at",firstDay)
+            .lt("created_at",nextDay),
+          new Promise((_,reject)=>setTimeout(()=>reject(new Error("A verificação do limite demorou demais.")),7000))
+        ]);
 
-      if(countError){
-        throw new Error(countError.message||"Não foi possível verificar o limite de cobranças.");
-      }
-
-      if(plan.maxCharges!==null&&(count||0)>=plan.maxCharges){
-        toast(`O plano ${plan.title} permite até ${plan.maxCharges} cobranças por mês. Faça upgrade para adicionar mais.`);
-        return;
+        if(countError)throw new Error(countError.message||"Não foi possível verificar o limite de cobranças.");
+        if((count||0)>=plan.maxCharges){
+          toast("Seu plano atingiu o limite de "+plan.maxCharges+" cobranças neste mês.");
+          return;
+        }
       }
 
       const payload={
-        ...form,
         company_id:companyId,
-        amount:Number(form.amount)
+        customer_id:customerId,
+        description,
+        amount,
+        due_date:dueDate,
+        payment_method:form.payment_method||"Pix",
+        recurrence:form.recurrence||"none",
+        notes:String(form.notes||"").trim()||null
       };
 
-      const insertResult=await timeout(
-        supabase.from("charges").insert(payload),
-        10000,
-        "A criação da cobrança demorou demais. Verifique sua conexão e tente novamente."
-      );
+      const {data:created,error:insertError}=await Promise.race([
+        supabase.from("charges").insert(payload).select("id").single(),
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error("A criação da cobrança demorou demais. Tente novamente.")),10000))
+      ]);
 
-      if(insertResult.error){
-        throw new Error(insertResult.error.message||"Não foi possível criar a cobrança.");
+      if(insertError){
+        throw new Error(insertError.message||"Não foi possível criar a cobrança.");
+      }
+      if(!created?.id){
+        throw new Error("A cobrança não foi confirmada pelo banco.");
       }
 
       setOpen(false);
