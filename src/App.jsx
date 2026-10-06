@@ -343,7 +343,7 @@ function Landing({session}) {
                   aria-label={`Ampliar: ${st.alt}`}
                 >
                   {st.crop ? <div className="lp-crop"><img src={st.crop} alt={st.alt} width="1200" height="568" loading="lazy" decoding="async" /></div> : <BrowserFrame src={st.img} alt={st.alt} width="1400" height="900" />}
-                  <span className="lp-image-zoom-hint">Clique para ampliar</span>
+                  <span className="lp-image-zoom-hint" aria-hidden="true"><Search size={16}/></span>
                 </div>
               </div>
             </article>)}
