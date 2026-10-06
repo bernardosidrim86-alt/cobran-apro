@@ -1,12 +1,48 @@
 import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 function LegalLayout({title,children}){
-  return <div className="legal-page"><div className="legal-card">
-    <Link to="/" className="legal-back">← Voltar ao início</Link>
-    <h1>{title}</h1>
-    <p className="legal-date">Última atualização: 02/10/2026</p>
-    {children}
-  </div></div>;
+  return <div className="legal-page">
+    <header className="legal-header">
+      <div className="legal-header-inner">
+        <Link to="/" className="legal-brand" aria-label="Voltar para a página inicial">
+          <img src="/logo.png" alt="CobrançaPro" />
+        </Link>
+        <Link to="/" className="legal-back"><ArrowLeft size={16}/> Voltar ao início</Link>
+      </div>
+    </header>
+
+    <main className="legal-main">
+      <div className="legal-wrap">
+        <div className="legal-meta">
+          <span>DOCUMENTAÇÃO</span>
+          <span>Última atualização · 02/10/2026</span>
+        </div>
+
+        <div className="legal-title">
+          <h1>{title}</h1>
+          <p>Informações importantes sobre o uso e o tratamento de dados no CobrançaPro.</p>
+        </div>
+
+        <article className="legal-card">
+          <div className="legal-content">{children}</div>
+        </article>
+
+        <div className="legal-bottom">
+          <Link to="/termos">Termos de Uso</Link>
+          <span aria-hidden="true">·</span>
+          <Link to="/privacidade">Política de Privacidade</Link>
+        </div>
+      </div>
+    </main>
+
+    <footer className="legal-footer">
+      <div className="legal-footer-inner">
+        <span>© 2026 CobrançaPro</span>
+        <Link to="/">Página inicial</Link>
+      </div>
+    </footer>
+  </div>;
 }
 
 export function Terms(){
