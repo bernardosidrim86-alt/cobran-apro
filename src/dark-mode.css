@@ -17,9 +17,28 @@ html:not([data-theme="dark"]) .app-layout .dashboard-page .metric{border-color:#
 html:not([data-theme="dark"]) .app-layout .dashboard-page .dashboard-action-grid{gap:20px}
 html:not([data-theme="dark"]) .app-layout .page{background:#f7f7fa}
 
-/* Logo do menu lateral no tema escuro: "Cobrança" em branco */
+/* Logo do menu lateral no tema escuro */
+.side-brand{
+  position:relative;
+}
+
 html[data-theme="dark"] .side-brand .brand-logo{
-  object-fit:none!important;
-  object-position:-9999px 0!important;
-  background:url("/logo-escuro.png?v=1") left center/contain no-repeat!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:none!important;
+  filter:none!important;
+}
+
+/* Recolore somente "Cobrança", preservando o ícone e o "Pro". */
+html[data-theme="dark"] .side-brand::after{
+  content:"";
+  position:absolute;
+  top:12px;
+  left:10px;
+  width:205px;
+  height:68px;
+  background:url("/logo.png") center/contain no-repeat;
+  filter:brightness(0) invert(1);
+  clip-path:polygon(27% 0,72% 0,72% 100%,27% 100%);
+  pointer-events:none;
 }
