@@ -111,6 +111,66 @@ export default async function handler(req, res) {
       );
       if (reserveError) return respond(res, 400, { error: safeError(reserveError) });
 
+      const { data: existingProfile, error: existingProfileError } = await supabaseAdmin
+        .from("profiles")
+        .select("id,company_id")
+        .eq("email", email)
+        .maybeSingle();
+
+      if (existingProfileError) {
+        await supabaseAdmin.from("company_members").delete().eq("id", inviteId);
+        throw existingProfileError;
+      }
+
+      if (existingProfile) {
+        if (existingProfile.company_id && existingProfile.company_id !== profile.company_id) {
+          await supabaseAdmin.from("company_members").delete().eq("id", inviteId);
+          return respond(res, 409, {
+            error: "Este e-mail já pertence a outra empresa. O CobrançaPro ainda não permite trocar ou compartilhar empresas de uma conta existente.",
+          });
+        }
+
+        const { data: existingAuthData, error: existingAuthError } =
+          await supabaseAdmin.auth.admin.getUserById(existingProfile.id);
+        if (existingAuthError || !existingAuthData?.user) {
+          await supabaseAdmin.from("company_members").delete().eq("id", inviteId);
+          throw existingAuthError || new Error("existing_user_not_found");
+        }
+
+        const memberStatus = existingAuthData.user.confirmed_at ? "active" : "invited";
+        const { error: memberError } = await supabaseAdmin
+          .from("company_members")
+          .update({ user_id: existingProfile.id, status: memberStatus })
+          .eq("id", inviteId)
+          .is("user_id", null);
+        if (memberError) {
+          await supabaseAdmin.from("company_members").delete().eq("id", inviteId);
+          throw memberError;
+        }
+
+        const { error: existingProfileUpdateError } = await supabaseAdmin
+          .from("profiles")
+          .update({
+            company_id: profile.company_id,
+            plan: profile.plan,
+            billing_cycle: profile.billing_cycle,
+            subscription_status: profile.subscription_status,
+            subscription_expires_at: profile.subscription_expires_at,
+          })
+          .eq("id", existingProfile.id);
+        if (existingProfileUpdateError) {
+          await supabaseAdmin.from("company_members").delete().eq("id", inviteId);
+          throw existingProfileUpdateError;
+        }
+
+        return respond(res, 200, {
+          ok: true,
+          message: memberStatus === "active"
+            ? "A conta existente foi adicionada. A pessoa já pode entrar."
+            : "A conta existente foi vinculada. A pessoa precisa confirmar o e-mail antes de entrar.",
+        });
+      }
+
       let invitedUserId = null;
       try {
         const { data: inviteData, error: inviteError } =
