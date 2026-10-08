@@ -194,7 +194,7 @@ export function TeamManagement({ companyId, plan }) {
                   </Button>
                 </form>
                 <p className="team-help">
-                  A pessoa receberá um convite por e-mail e usará o próprio login. O acesso é compartilhado com a empresa.
+                  Novas contas recebem um convite por e-mail. Uma conta existente sem outra empresa pode ser vinculada; contas que já pertencem a outra empresa não podem ser transferidas.
                 </p>
               </>
             ) : (
