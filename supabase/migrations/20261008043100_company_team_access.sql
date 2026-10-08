@@ -165,6 +165,40 @@ with check (
   and (select private.is_company_owner(company_id))
 );
 
+drop policy if exists "company avatars delete" on storage.objects;
+drop policy if exists "company avatars insert" on storage.objects;
+drop policy if exists "company avatars update" on storage.objects;
+create policy company_avatars_delete_owner on storage.objects
+for delete to authenticated
+using (
+  bucket_id = 'company-avatars'
+  and (storage.foldername(name))[1] = (select private.my_company_id())::text
+  and (select private.has_active_app_access())
+  and (select private.is_company_owner((select private.my_company_id())))
+);
+create policy company_avatars_insert_owner on storage.objects
+for insert to authenticated
+with check (
+  bucket_id = 'company-avatars'
+  and (storage.foldername(name))[1] = (select private.my_company_id())::text
+  and (select private.has_active_app_access())
+  and (select private.is_company_owner((select private.my_company_id())))
+);
+create policy company_avatars_update_owner on storage.objects
+for update to authenticated
+using (
+  bucket_id = 'company-avatars'
+  and (storage.foldername(name))[1] = (select private.my_company_id())::text
+  and (select private.has_active_app_access())
+  and (select private.is_company_owner((select private.my_company_id())))
+)
+with check (
+  bucket_id = 'company-avatars'
+  and (storage.foldername(name))[1] = (select private.my_company_id())::text
+  and (select private.has_active_app_access())
+  and (select private.is_company_owner((select private.my_company_id())))
+);
+
 drop policy if exists "whatsapp connections company" on public.whatsapp_connections;
 create policy whatsapp_connections_read_members on public.whatsapp_connections
 for select to authenticated
