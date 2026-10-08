@@ -211,7 +211,7 @@ export default async function handler(req, res) {
     const revoked = [5, 6, 7, 9, 13].includes(status) || subscriptionRevoked;
     const saleCode = String(payload?.code || "").trim();
 
-    if (!saleCode) {
+    if (!saleCode || saleCode.length > 255) {
       return res.status(400).json({ ok: false, error: "missing_sale_code" });
     }
 
@@ -274,7 +274,19 @@ export default async function handler(req, res) {
       subscriptionStatus.slice(0, 120),
       subscriptionStatusEvent.slice(0, 120),
       String(payload?.subscription?.next_charge_date || "").slice(0, 80),
+      String(payload?.date_created || "").slice(0, 80),
+      String(payload?.date_approved || "").slice(0, 80),
+      String(payload?.sale_status_detail || "").slice(0, 120),
     ]);
+    const eventTimestampValue = approved
+      ? payload?.date_approved || payload?.date_created
+      : payload?.status_updated_at || payload?.date_status_updated ||
+        payload?.updated_at || payload?.subscription?.status_updated_at ||
+        payload?.subscription?.updated_at;
+    const parsedEventTimestamp = eventTimestampValue ? new Date(eventTimestampValue) : null;
+    const providerEventAt = parsedEventTimestamp && !Number.isNaN(parsedEventTimestamp.getTime())
+      ? parsedEventTimestamp.toISOString()
+      : null;
     const numericAmount = Number(payload?.sale_amount);
     const saleAmount = Number.isFinite(numericAmount) ? numericAmount : null;
 
@@ -305,6 +317,7 @@ export default async function handler(req, res) {
         p_amount: saleAmount,
         p_expires_at: expiresAt,
         p_action: action,
+        p_provider_event_at: providerEventAt,
       });
       if (error) throw error;
       return data;
@@ -314,6 +327,9 @@ export default async function handler(req, res) {
       if (outcome === "applied") return null;
       if (outcome === "out_of_order") {
         return res.status(200).json({ ok: true, ignored: true, reason: "out_of_order_event" });
+      }
+      if (outcome === "stale_sale") {
+        return res.status(200).json({ ok: true, ignored: true, reason: "event_for_non_current_sale" });
       }
       return res.status(200).json({ ok: true, ignored: true, reason: "duplicate_event" });
     }
@@ -411,36 +427,11 @@ export default async function handler(req, res) {
       });
     }
 
-    const planRank = {
-      free: 0,
-      essencial: 1,
-      profissional: 2,
-      business: 3,
-    };
-
     const currentPlanKey = String(currentProfile?.plan || "free");
     const currentExpiresAt = currentProfile?.subscription_expires_at
       ? new Date(currentProfile.subscription_expires_at)
       : null;
     const currentIsActive = hasPaidSubscriptionAccess(currentProfile);
-
-    if (
-      currentIsActive &&
-      (planRank[plan.key] ?? 0) < (planRank[currentPlanKey] ?? 0)
-    ) {
-      const recorded = await recordEvent({
-        action: "ignored",
-        eventPlan: plan.key,
-        eventBillingCycle: plan.cycle,
-      });
-      const outcomeResponse = eventOutcomeResponse(recorded);
-      if (outcomeResponse) return outcomeResponse;
-      return res.status(200).json({
-        ok: true,
-        ignored: true,
-        reason: "older_lower_plan",
-      });
-    }
 
     const now = new Date();
     const nextChargeDate = payload?.subscription?.next_charge_date
@@ -449,28 +440,6 @@ export default async function handler(req, res) {
 
     const hasValidNextChargeDate =
       nextChargeDate && !Number.isNaN(nextChargeDate.getTime()) && nextChargeDate > now;
-
-    if (
-      status === 10 &&
-      currentIsActive &&
-      !(
-        hasValidNextChargeDate &&
-        (!currentExpiresAt || nextChargeDate > currentExpiresAt)
-      )
-    ) {
-      const recorded = await recordEvent({
-        action: "ignored",
-        eventPlan: plan.key,
-        eventBillingCycle: plan.cycle,
-      });
-      const outcomeResponse = eventOutcomeResponse(recorded);
-      if (outcomeResponse) return outcomeResponse;
-      return res.status(200).json({
-        ok: true,
-        ignored: true,
-        reason: "completed_already_active",
-      });
-    }
 
     const baseDate =
       hasValidNextChargeDate
