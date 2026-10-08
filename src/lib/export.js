@@ -1,6 +1,8 @@
 function escapeCsv(value){
-  const text=String(value ?? "");
-  return /[;"\n\r]/.test(text) ? '"' + text.replace(/"/g,'""') + '"' : text;
+  let text=String(value ?? "");
+  // Spreadsheet applications may evaluate cells beginning with formula markers.
+  if(/^[\\u0000-\\u0020]*[=+\\-@]/.test(text))text="'"+text;
+  return /[;"\\n\\r\\t]/.test(text) ? '"' + text.replace(/"/g,'""') + '"' : text;
 }
 
 export function downloadCsv(filename, columns, rows){
