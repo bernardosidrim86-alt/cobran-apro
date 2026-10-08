@@ -310,7 +310,8 @@ security definer
 set search_path = ''
 as $function$
 begin
-  if new.confirmed_at is not null and old.confirmed_at is distinct from new.confirmed_at then
+  if new.confirmed_at is not null
+     and (tg_op = 'INSERT' or old.confirmed_at is distinct from new.confirmed_at) then
     update public.company_members
        set status = 'active',
            updated_at = now()
@@ -327,6 +328,37 @@ after update of confirmed_at on auth.users
 for each row
 when (old.confirmed_at is distinct from new.confirmed_at and new.confirmed_at is not null)
 execute function private.activate_company_invite_on_confirmation();
+
+create trigger auth_user_confirmation_activates_company_invite_on_insert
+after insert on auth.users
+for each row
+when (new.confirmed_at is not null)
+execute function private.activate_company_invite_on_confirmation();
+
+create or replace function private.activate_confirmed_company_member_on_link()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $function$
+begin
+  if new.user_id is not null and new.status = 'invited' and exists (
+    select 1 from auth.users u
+    where u.id = new.user_id and u.confirmed_at is not null
+  ) then
+    update public.company_members
+       set status = 'active',
+           updated_at = now()
+     where id = new.id and status = 'invited';
+  end if;
+  return new;
+end;
+$function$;
+revoke all on function private.activate_confirmed_company_member_on_link() from public, anon, authenticated;
+
+create trigger company_member_link_activates_confirmed_user
+after insert or update of user_id on public.company_members
+for each row execute function private.activate_confirmed_company_member_on_link();
 
 create or replace function private.audit_company_row()
 returns trigger
