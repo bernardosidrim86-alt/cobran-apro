@@ -173,7 +173,7 @@ end;
 $function$;
 
 revoke all on function public.apply_perfectpay_webhook_event(
-  text, text, text, text, integer, text, text, uuid, text, text, text, text, text, text, numeric, timestamptz, text
+  text, text, text, integer, text, text, uuid, text, text, text, text, text, text, numeric, timestamptz, text
 ) from public, anon, authenticated;
 grant execute on function public.apply_perfectpay_webhook_event(
   text, text, text, integer, text, text, uuid, text, text, text, text, text, text, numeric, timestamptz, text
