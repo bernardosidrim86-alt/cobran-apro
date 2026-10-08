@@ -6,7 +6,7 @@ const secret=JSON.parse(Deno.env.get("SUPABASE_SECRET_KEYS")||"{}").default;
 const db=createClient(url,secret);
 const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type, x-automation-secret"};
 
-const phone=(v:string|null)=>{const d=(v||"").replace(/\\D/g,"");return !d?null:d.startsWith("55")?d:(d.length===10||d.length===11?"55"+d:d)};
+const phone=(v:string|null)=>{const d=(v||"").replace(/\D/g,"");return !d?null:d.startsWith("55")?(d.length===12||d.length===13?d:null):(d.length===10||d.length===11?"55"+d:null)};
 const money=(n:number)=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(n);
 const dateBR=(s:string)=>{const [y,m,d]=s.split("-");return `${d}/${m}/${y}`};
 
