@@ -21,6 +21,10 @@ create unique index company_members_company_email_uidx
   where email is not null;
 create index company_members_user_status_idx
   on public.company_members(user_id, status);
+create index company_members_company_status_idx
+  on public.company_members(company_id, status);
+create index company_members_company_role_status_user_idx
+  on public.company_members(company_id, role, status, user_id);
 
 insert into public.company_members (company_id, user_id, email, role, status)
 select p.company_id, p.id, nullif(lower(btrim(p.email)), ''), 'owner', 'active'
