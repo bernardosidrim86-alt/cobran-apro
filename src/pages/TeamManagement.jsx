@@ -26,7 +26,7 @@ function activityLabel(event) {
   return (verbs[event.event_type] || "Alterou") + " " + (nouns[event.entity_type] || "um registro");
 }
 
-export function TeamManagement({ companyId }) {
+export function TeamManagement({ companyId, plan }) {
   const [members, setMembers] = useState([]);
   const [activity, setActivity] = useState([]);
   const [email, setEmail] = useState("");
@@ -85,6 +85,8 @@ export function TeamManagement({ companyId }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  const canInvite = plan === "business";
 
   const usedSeats = useMemo(
     () => members.filter((member) => ["active", "invited"].includes(member.status)).length,
@@ -166,7 +168,7 @@ export function TeamManagement({ companyId }) {
             <div className="team-card-heading">
               <div>
                 <h2>Pessoas da empresa</h2>
-                <p>O limite é de {BUSINESS_SEAT_LIMIT} pessoas no total: proprietário + 4 membros. Assentos adicionais não estão disponíveis.</p>
+                <p>{canInvite ? `O limite é de ${BUSINESS_SEAT_LIMIT} pessoas no total: proprietário + 4 membros. Assentos adicionais não estão disponíveis.` : "Convites e acesso da equipe exigem o plano Business. Remova os membros aqui ou faça upgrade para reativar o acesso."}</p>
               </div>
               <span className="team-seat-count">{usedSeats} / {BUSINESS_SEAT_LIMIT} assentos</span>
             </div>
@@ -175,23 +177,31 @@ export function TeamManagement({ companyId }) {
               <span style={{ width: Math.min(100, (usedSeats / BUSINESS_SEAT_LIMIT) * 100) + "%" }} />
             </div>
 
-            <form className="team-invite-form" onSubmit={invite}>
-              <Input
-                label="E-mail da pessoa"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="nome@empresa.com"
-                required
-              />
-              <Button type="submit" disabled={sending || usedSeats >= BUSINESS_SEAT_LIMIT}>
-                {sending ? "Enviando convite..." : "Convidar pessoa"}
-              </Button>
-            </form>
-            <p className="team-help">
-              A pessoa receberá um convite por e-mail e usará o próprio login. O acesso é compartilhado com a empresa.
-            </p>
+            {canInvite ? (
+              <>
+                <form className="team-invite-form" onSubmit={invite}>
+                  <Input
+                    label="E-mail da pessoa"
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="nome@empresa.com"
+                    required
+                  />
+                  <Button type="submit" disabled={sending || usedSeats >= BUSINESS_SEAT_LIMIT}>
+                    {sending ? "Enviando convite..." : "Convidar pessoa"}
+                  </Button>
+                </form>
+                <p className="team-help">
+                  A pessoa receberá um convite por e-mail e usará o próprio login. O acesso é compartilhado com a empresa.
+                </p>
+              </>
+            ) : (
+              <div className="team-notice">
+                Convites só podem ser enviados no Business. Os acessos dos membros ficam pausados enquanto o plano da empresa não for Business.
+              </div>
+            )}
           </section>
 
           <section className="team-card">
@@ -213,7 +223,7 @@ export function TeamManagement({ companyId }) {
                         <td>{member.role === "owner" ? "Proprietário" : "Membro"}</td>
                         <td>
                           <span className={"team-status " + (member.status === "active" ? "is-active" : "")}>
-                            {member.status === "active" ? "Ativo" : "Convite pendente"}
+                            {member.role === "member" && !canInvite ? "Acesso pausado" : member.status === "active" ? "Ativo" : "Convite pendente"}
                           </span>
                         </td>
                         <td className="team-actions">
