@@ -1,6 +1,7 @@
 create table if not exists public.subscription_webhook_events (
   event_key text primary key,
   provider_sale_code text not null,
+  provider_plan_code text,
   sale_status integer not null,
   subscription_status text,
   subscription_status_event text,
@@ -37,6 +38,7 @@ create index if not exists profiles_company_id_idx
 create or replace function public.apply_perfectpay_webhook_event(
   p_event_key text,
   p_provider_sale_code text,
+  p_provider_plan_code text,
   p_sale_status integer,
   p_subscription_status text,
   p_subscription_status_event text,
@@ -71,6 +73,7 @@ begin
   insert into public.subscription_webhook_events (
     event_key,
     provider_sale_code,
+    provider_plan_code,
     sale_status,
     subscription_status,
     subscription_status_event,
@@ -83,6 +86,7 @@ begin
   ) values (
     p_event_key,
     p_provider_sale_code,
+    left(p_provider_plan_code, 120),
     p_sale_status,
     left(p_subscription_status, 120),
     left(p_subscription_status_event, 120),
@@ -133,7 +137,7 @@ begin
         p_user_id,
         v_company_id,
         'perfectpay',
-        null,
+        left(p_provider_plan_code, 120),
         p_provider_sale_code,
         p_event_plan,
         p_event_billing_cycle,
@@ -169,7 +173,7 @@ end;
 $function$;
 
 revoke all on function public.apply_perfectpay_webhook_event(
-  text, text, integer, text, text, uuid, text, text, text, text, text, text, numeric, timestamptz, text
+  text, text, text, integer, text, text, uuid, text, text, text, text, text, text, numeric, timestamptz, text
 ) from public, anon, authenticated;
 grant execute on function public.apply_perfectpay_webhook_event(
   text, text, integer, text, text, uuid, text, text, text, text, text, text, numeric, timestamptz, text
