@@ -166,7 +166,7 @@ export function TeamManagement({ companyId }) {
             <div className="team-card-heading">
               <div>
                 <h2>Pessoas da empresa</h2>
-                <p>O Business inclui até {BUSINESS_SEAT_LIMIT} pessoas, contando o proprietário.</p>
+                <p>O limite é de {BUSINESS_SEAT_LIMIT} pessoas no total: proprietário + 4 membros. Assentos adicionais não estão disponíveis.</p>
               </div>
               <span className="team-seat-count">{usedSeats} / {BUSINESS_SEAT_LIMIT} assentos</span>
             </div>
