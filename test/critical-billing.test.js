@@ -29,7 +29,7 @@ async function setup() {
     create table public.profiles (
       id uuid primary key, company_id uuid, plan text, billing_cycle text,
       subscription_status text, subscription_expires_at timestamptz,
-      subscription_provider_sale_code text
+      created_at timestamptz default now(), updated_at timestamptz default now()
     );
     create table public.company_members (
       company_id uuid, user_id uuid, role text, status text
@@ -39,7 +39,6 @@ async function setup() {
       provider text, provider_plan_code text, provider_sale_code text unique,
       plan text, billing_cycle text, status text, amount numeric, currency text,
       expires_at timestamptz, last_event_status text, last_event_at timestamptz,
-      last_provider_event_at timestamptz,
       created_at timestamptz default now(),
       updated_at timestamptz default now()
     );
@@ -49,7 +48,7 @@ async function setup() {
       subscription_status_event text, user_id uuid, company_id uuid, plan text,
       billing_cycle text, action text not null, amount numeric,
       currency text default 'BRL', expires_at timestamptz,
-      provider_event_at timestamptz, created_at timestamptz default now()
+      created_at timestamptz default now()
     );
     create table public.charges (
       id uuid primary key, company_id uuid, customer_id uuid, amount numeric,
@@ -81,6 +80,13 @@ async function setup() {
      values ($1,$2,'perfectpay','PP-PRO','legacy-current-sale','profissional','monthly','active',99,'BRL',$3,'2',now())`,
     ["90000000-0000-4000-8000-000000000001", "90000000-0000-4000-8000-000000000002", legacyExpiry],
   );
+  const legacyExpiryWithoutHistory = new Date(Date.now() + 20 * 86_400_000).toISOString();
+  await db.query("insert into auth.users(id) values ($1)", ["90000000-0000-4000-8000-000000000003"]);
+  await db.query(
+    "insert into profiles(id,company_id,plan,billing_cycle,subscription_status,subscription_expires_at) values ($1,$2,'essencial','monthly','active',$3)",
+    ["90000000-0000-4000-8000-000000000003", "90000000-0000-4000-8000-000000000004", legacyExpiryWithoutHistory],
+  );
+  await db.query("insert into company_members values ($1,$2,'owner','active')", ["90000000-0000-4000-8000-000000000004", "90000000-0000-4000-8000-000000000003"]);
   try {
     await db.exec(orderingMigration);
   } catch (error) {
@@ -96,10 +102,21 @@ const companyId = "30000000-0000-4000-8000-000000000002";
 
 test("migration backfills the exact live sale and locks the profile row", async () => {
   assert.equal((await db.query("select subscription_provider_sale_code from profiles where id=$1", ["90000000-0000-4000-8000-000000000001"])).rows[0].subscription_provider_sale_code, "legacy-current-sale");
+  const legacyProfile = (await db.query(
+    "select plan,subscription_status,subscription_expires_at,subscription_provider_sale_code,subscription_legacy_sale_unknown_since from profiles where id=$1",
+    ["90000000-0000-4000-8000-000000000003"],
+  )).rows[0];
+  assert.equal(legacyProfile.subscription_provider_sale_code, null);
+  assert.ok(legacyProfile.subscription_legacy_sale_unknown_since);
+  assert.equal(legacyProfile.plan, "essencial");
+  assert.equal(legacyProfile.subscription_status, "active");
+  assert.ok(new Date(legacyProfile.subscription_expires_at) > new Date());
+  assert.equal((await db.query("select count(*)::int as count from subscriptions where user_id=$1", ["90000000-0000-4000-8000-000000000003"])).rows[0].count, 0);
   const migration = await read("supabase/migrations/20261008055739_perfectpay_current_sale_ordering.sql");
   const applyFunction = extractFunction(migration, "public.apply_perfectpay_webhook_event");
   assert.match(applyFunction, /from public\.profiles p[\s\S]*?for update/i);
   assert.match(applyFunction, /on conflict \(event_key\) do nothing/i);
+  assert.match(applyFunction, /p_provider_event_at <= v_legacy_sale_unknown_since/i);
 });
 
 async function addPaidOwner() {
@@ -111,6 +128,16 @@ async function addPaidOwner() {
   await db.query("insert into auth.users(id) values ($1)", [userId]);
   await db.query("insert into company_members values ($1,$2,'owner','active')", [companyId, userId]);
   await db.exec(`set request.jwt.claim.sub = '${userId}'`);
+}
+
+async function addLegacyPaidOwner({ plan = "essencial", expiresAt = paidExpiry(20) } = {}) {
+  await db.exec("truncate table public.subscription_webhook_events, public.subscriptions, public.company_members, public.profiles, auth.users");
+  await db.query("insert into profiles(id,company_id,plan,billing_cycle,subscription_status,subscription_expires_at) values ($1,$2,$3,'monthly','active',$4)", [userId, companyId, plan, expiresAt]);
+  await db.query("insert into auth.users(id) values ($1)", [userId]);
+  await db.query("insert into company_members values ($1,$2,'owner','active')", [companyId, userId]);
+  await db.query("update profiles set subscription_legacy_sale_unknown_since=now() where id=$1", [userId]);
+  await db.exec(`set request.jwt.claim.sub = '${userId}'`);
+  return (await db.query("select subscription_legacy_sale_unknown_since from profiles where id=$1", [userId])).rows[0].subscription_legacy_sale_unknown_since;
 }
 
 async function applySale({
@@ -163,6 +190,127 @@ test("paid access continues after cancellation until expiry, then expires", asyn
   assert.equal((await db.query("select private.has_active_app_access() as allowed")).rows[0].allowed, false);
   await db.query("update profiles set plan = 'free', subscription_status = 'refunded', subscription_expires_at = $1 where id = $2", [future, userId]);
   assert.equal((await db.query("select private.has_active_app_access() as allowed")).rows[0].allowed, false);
+});
+
+test("legacy paid profile without history keeps access and permits a post-cutoff renewal", async () => {
+  const cutoff = await addLegacyPaidOwner();
+  assert.equal((await db.query("select count(*)::int as count from subscriptions where user_id=$1", [userId])).rows[0].count, 0);
+  assert.equal((await db.query("select subscription_provider_sale_code from profiles where id=$1", [userId])).rows[0].subscription_provider_sale_code, null);
+  assert.equal((await db.query("select private.has_active_app_access() as allowed")).rows[0].allowed, true);
+
+  const existingExpiry = (await db.query("select subscription_expires_at from profiles where id=$1", [userId])).rows[0].subscription_expires_at;
+  const newSaleExpiry = paidExpiry(50);
+  assert.ok(new Date(newSaleExpiry) > new Date(existingExpiry));
+  assert.equal(await applySale({
+    key: "legacy-renewal-without-provider-date",
+    sale: "legacy-renewal-sale",
+    plan: "essencial",
+    expiry: newSaleExpiry,
+  }), "legacy_indeterminate");
+  assert.equal((await db.query("select private.has_active_app_access() as allowed")).rows[0].allowed, true);
+
+  const outcome = await applySale({
+    key: "legacy-renewal-after-cutoff",
+    sale: "legacy-renewal-sale",
+    plan: "essencial",
+    eventAt: new Date(new Date(cutoff).getTime() + 1_000).toISOString(),
+    expiry: newSaleExpiry,
+  });
+  assert.equal(outcome, "applied");
+  assert.deepEqual((await db.query("select subscription_provider_sale_code,subscription_legacy_sale_unknown_since,subscription_status from profiles where id=$1", [userId])).rows[0], {
+    subscription_provider_sale_code: "legacy-renewal-sale",
+    subscription_legacy_sale_unknown_since: null,
+    subscription_status: "active",
+  });
+  assert.equal((await db.query("select private.has_active_app_access() as allowed")).rows[0].allowed, true);
+  assert.equal((await db.query("select count(*)::int as count from subscriptions where user_id=$1", [userId])).rows[0].count, 1);
+});
+
+test("cancellation for an unknown sale cannot cut an indeterminate legacy entitlement", async () => {
+  const cutoff = await addLegacyPaidOwner();
+  const original = (await db.query("select plan,subscription_status,subscription_expires_at from profiles where id=$1", [userId])).rows[0];
+  const outcome = await applySale({
+    key: "legacy-unknown-cancel",
+    sale: "unknown-legacy-sale",
+    action: "revoked",
+    eventAt: new Date(new Date(cutoff).getTime() + 1_000).toISOString(),
+  });
+  assert.equal(outcome, "legacy_indeterminate");
+  assert.deepEqual((await db.query("select plan,subscription_status,subscription_expires_at,subscription_provider_sale_code from profiles where id=$1", [userId])).rows[0], {
+    ...original,
+    subscription_provider_sale_code: null,
+  });
+  assert.equal((await db.query("select private.has_active_app_access() as allowed")).rows[0].allowed, true);
+  assert.equal((await db.query("select action from subscription_webhook_events where event_key='legacy-unknown-cancel'")).rows[0].action, "ignored");
+  assert.equal(await applySale({
+    key: "legacy-unknown-cancel-late-approval",
+    sale: "unknown-legacy-sale",
+    plan: "essencial",
+    eventAt: new Date(new Date(cutoff).getTime() + 2_000).toISOString(),
+  }), "out_of_order");
+  assert.equal((await db.query("select subscription_provider_sale_code from profiles where id=$1", [userId])).rows[0].subscription_provider_sale_code, null);
+  assert.equal((await db.query("select private.has_active_app_access() as allowed")).rows[0].allowed, true);
+});
+
+test("legacy renewal can establish sale A, then delayed sale A cannot replace newer sale B", async () => {
+  const cutoff = await addLegacyPaidOwner();
+  const saleAApprovedAt = new Date(new Date(cutoff).getTime() + 1_000).toISOString();
+  assert.equal(await applySale({
+    key: "legacy-sale-a-approved",
+    sale: "legacy-sale-A",
+    plan: "essencial",
+    eventAt: saleAApprovedAt,
+    expiry: paidExpiry(45),
+  }), "applied");
+
+  const saleBApprovedAt = new Date(new Date(saleAApprovedAt).getTime() + 1_000).toISOString();
+  assert.equal(await applySale({
+    key: "legacy-sale-b-approved",
+    sale: "legacy-sale-B",
+    plan: "profissional",
+    eventAt: saleBApprovedAt,
+    expiry: paidExpiry(60),
+  }), "applied");
+
+  assert.equal(await applySale({
+    key: "legacy-sale-a-delayed-cancel",
+    sale: "legacy-sale-A",
+    action: "revoked",
+    plan: "essencial",
+    eventAt: saleAApprovedAt,
+  }), "stale_sale");
+  assert.deepEqual((await db.query("select plan,subscription_status,subscription_provider_sale_code from profiles where id=$1", [userId])).rows[0], {
+    plan: "profissional",
+    subscription_status: "active",
+    subscription_provider_sale_code: "legacy-sale-B",
+  });
+  assert.equal((await db.query("select private.has_active_app_access() as allowed")).rows[0].allowed, true);
+});
+
+test("expired legacy entitlement blocks access but accepts a later new purchase", async () => {
+  const cutoff = await addLegacyPaidOwner({ expiresAt: new Date(Date.now() - 60_000).toISOString() });
+  assert.equal((await db.query("select private.has_active_app_access() as allowed")).rows[0].allowed, false);
+  const staleOutcome = await applySale({
+    key: "expired-legacy-old-approval",
+    sale: "expired-legacy-old-sale",
+    plan: "essencial",
+    eventAt: new Date(new Date(cutoff).getTime() - 1_000).toISOString(),
+    expiry: paidExpiry(30),
+  });
+  assert.equal(staleOutcome, "legacy_indeterminate");
+  assert.equal((await db.query("select subscription_provider_sale_code from profiles where id=$1", [userId])).rows[0].subscription_provider_sale_code, null);
+  assert.equal((await db.query("select private.has_active_app_access() as allowed")).rows[0].allowed, false);
+
+  const newPurchaseOutcome = await applySale({
+    key: "expired-legacy-new-purchase",
+    sale: "expired-legacy-new-sale",
+    plan: "profissional",
+    eventAt: new Date(new Date(cutoff).getTime() + 1_000).toISOString(),
+    expiry: paidExpiry(40),
+  });
+  assert.equal(newPurchaseOutcome, "applied");
+  assert.equal((await db.query("select subscription_provider_sale_code from profiles where id=$1", [userId])).rows[0].subscription_provider_sale_code, "expired-legacy-new-sale");
+  assert.equal((await db.query("select private.has_active_app_access() as allowed")).rows[0].allowed, true);
 });
 
 test("PerfectPay duplicate event is idempotent and stale activation after revocation is ignored", async () => {

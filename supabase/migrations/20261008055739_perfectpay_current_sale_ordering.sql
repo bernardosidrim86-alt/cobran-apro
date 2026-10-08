@@ -3,6 +3,14 @@
 alter table public.profiles
   add column if not exists subscription_provider_sale_code text;
 
+-- An exact match can identify some existing sales, but older paid accounts may
+-- have no subscription history. Keep their entitlement and use the profile's
+-- last persisted update as a conservative event-time watermark. A later
+-- PerfectPay approval can establish the first known sale without inventing an
+-- ID; older or undated events remain ambiguous and cannot change access.
+alter table public.profiles
+  add column if not exists subscription_legacy_sale_unknown_since timestamptz;
+
 alter table public.subscriptions
   add column if not exists last_provider_event_at timestamptz;
 
@@ -31,6 +39,12 @@ update public.profiles p
    set subscription_provider_sale_code = matching.provider_sale_code
   from matching_profiles matching
  where p.id = matching.id;
+
+update public.profiles
+   set subscription_legacy_sale_unknown_since = coalesce(updated_at, created_at)
+ where subscription_provider_sale_code is null
+   and subscription_legacy_sale_unknown_since is null
+   and plan in ('essencial', 'profissional', 'business');
 
 drop function public.apply_perfectpay_webhook_event(
   text, text, text, integer, text, text, uuid, text, text, text, text,
@@ -68,6 +82,8 @@ declare
   v_current_cycle text;
   v_current_status text;
   v_current_expires_at timestamptz;
+  v_legacy_sale_unknown_since timestamptz;
+  v_legacy_indeterminate boolean := false;
   v_current_event_at timestamptz;
   v_incoming_status text;
   v_incoming_user_id uuid;
@@ -90,9 +106,11 @@ begin
   -- This lock serializes every PerfectPay event for this account. All state
   -- reads/writes below, including deduplication and history, share this txn.
   select p.company_id, p.subscription_provider_sale_code, p.plan,
-         p.billing_cycle, p.subscription_status, p.subscription_expires_at
+         p.billing_cycle, p.subscription_status, p.subscription_expires_at,
+         p.subscription_legacy_sale_unknown_since
     into v_company_id, v_current_sale_code, v_current_plan,
-         v_current_cycle, v_current_status, v_current_expires_at
+         v_current_cycle, v_current_status, v_current_expires_at,
+         v_legacy_sale_unknown_since
     from public.profiles p
    where p.id = p_user_id
    for update;
@@ -114,12 +132,16 @@ begin
     having count(*) = 1;
     if v_current_sale_code is not null then
       update public.profiles
-         set subscription_provider_sale_code = v_current_sale_code
+         set subscription_provider_sale_code = v_current_sale_code,
+             subscription_legacy_sale_unknown_since = null
        where id = p_user_id;
+      v_legacy_sale_unknown_since := null;
     end if;
   end if;
 
-  v_is_current := v_current_sale_code = p_provider_sale_code;
+  v_legacy_indeterminate :=
+    v_current_sale_code is null and v_legacy_sale_unknown_since is not null;
+  v_is_current := coalesce(v_current_sale_code = p_provider_sale_code, false);
   select s.status, s.user_id, coalesce(s.last_provider_event_at, s.created_at)
     into v_incoming_status, v_incoming_user_id, v_current_event_at
     from public.subscriptions s
@@ -130,7 +152,19 @@ begin
     v_effective_action := 'ignored';
     v_result := 'out_of_order';
   elsif p_action = 'activated' then
-    if v_incoming_status in ('cancelled', 'refunded', 'expired') then
+    if v_legacy_indeterminate then
+      -- The cutoff rejects delayed approvals from before this migration. A
+      -- post-cutoff PerfectPay approval is a new paid transaction (purchase or
+      -- renewal) and may establish the pointer without guessing a sale code.
+      if v_incoming_status in ('cancelled', 'refunded', 'expired') then
+        v_effective_action := 'ignored';
+        v_result := 'out_of_order';
+      elsif p_provider_event_at is null
+         or p_provider_event_at <= v_legacy_sale_unknown_since then
+        v_effective_action := 'ignored';
+        v_result := 'legacy_indeterminate';
+      end if;
+    elsif v_incoming_status in ('cancelled', 'refunded', 'expired') then
       v_effective_action := 'ignored';
       v_result := 'out_of_order';
     elsif v_is_current then
@@ -166,7 +200,8 @@ begin
   elsif p_action in ('revoked', 'cancelled') then
     if not v_is_current then
       v_effective_action := 'ignored';
-      v_result := 'stale_sale';
+      v_result := case when v_legacy_indeterminate
+        then 'legacy_indeterminate' else 'stale_sale' end;
     elsif p_provider_event_at is not null
        and v_current_event_at is not null
        and p_provider_event_at < v_current_event_at
@@ -258,6 +293,10 @@ begin
            subscription_provider_sale_code = case
              when v_effective_action = 'activated' then p_provider_sale_code
              else subscription_provider_sale_code
+           end,
+           subscription_legacy_sale_unknown_since = case
+             when v_effective_action = 'activated' then null
+             else subscription_legacy_sale_unknown_since
            end
      where id = p_user_id;
   end if;

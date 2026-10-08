@@ -331,6 +331,9 @@ export default async function handler(req, res) {
       if (outcome === "stale_sale") {
         return res.status(200).json({ ok: true, ignored: true, reason: "event_for_non_current_sale" });
       }
+      if (outcome === "legacy_indeterminate") {
+        return res.status(200).json({ ok: true, ignored: true, reason: "legacy_sale_identity_unknown" });
+      }
       return res.status(200).json({ ok: true, ignored: true, reason: "duplicate_event" });
     }
 
