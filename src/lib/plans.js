@@ -73,7 +73,7 @@ export const PLAN_OPTIONS = [
       "Tudo do Profissional",
       "Assistente IA completo",
       "Copiloto de Cobrança avançado",
-      "Mais usuários",
+      "Até 5 usuários na mesma empresa (proprietário + 4 membros)",
       "Maior capacidade de uso",
       "Atendimento prioritário",
     ],
