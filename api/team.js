@@ -13,7 +13,7 @@ function respond(res, status, body) {
 function safeError(error, fallback = "Não foi possível concluir a solicitação.") {
   const message = String(error?.message || "").toLowerCase();
   if (message.includes("seat_limit_reached")) {
-    return "O plano Business inclui até 5 pessoas no total, contando o proprietário.";
+    return "O plano Business inclui até " + BUSINESS_SEAT_LIMIT + " pessoas no total, contando o proprietário.";
   }
   if (message.includes("member_already_exists")) {
     return "Este e-mail já tem convite ou acesso a esta empresa.";
@@ -177,7 +177,7 @@ export default async function handler(req, res) {
 
     return respond(res, 400, { error: "Ação de equipe inválida." });
   } catch (error) {
-    console.error("Team management request failed", error);
+    console.error("Team management request failed", error?.code || error?.name || "unknown");
     return respond(res, 500, { error: "Não foi possível concluir a solicitação." });
   }
 }
