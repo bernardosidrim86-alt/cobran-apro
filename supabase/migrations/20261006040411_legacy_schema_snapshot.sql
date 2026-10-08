@@ -27,7 +27,7 @@ create table if not exists public.profiles (
 create table if not exists public.subscriptions (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
-  company_id uuid references public.companies(id) on delete set null,
+  company_id uuid references public.companies(id) on delete cascade,
   provider text not null default 'perfectpay',
   provider_plan_code text,
   provider_sale_code text unique,
@@ -47,6 +47,8 @@ create table if not exists public.subscriptions (
 
 create index if not exists subscriptions_user_id_idx on public.subscriptions(user_id);
 create index if not exists subscriptions_company_id_idx on public.subscriptions(company_id);
+create index if not exists subscriptions_customer_email_idx on public.subscriptions(customer_email);
+create index if not exists subscriptions_plan_code_idx on public.subscriptions(provider_plan_code);
 
 alter table public.subscriptions enable row level security;
 
@@ -111,6 +113,10 @@ create table if not exists public.company_settings (
   updated_at timestamptz not null default now()
 );
 
+alter table public.company_settings add column if not exists pix_key text;
+alter table public.company_settings add column if not exists pix_name text;
+alter table public.company_settings add column if not exists pix_city text;
+
 create table if not exists public.message_logs (
   id uuid primary key default gen_random_uuid(),
   company_id uuid not null references public.companies(id) on delete cascade,
@@ -148,10 +154,10 @@ set search_path = ''
 as $
   select case
     when p.id is null then false
-    when p.plan = 'free' and p.subscription_status in ('inactive', 'pending') then
+    when p.plan = 'free' then
       coalesce(u.created_at, now()) + interval '7 days' > now()
     else
-      p.subscription_status in ('active', 'cancelled')
+      p.subscription_status = 'active'
       and p.subscription_expires_at is not null
       and p.subscription_expires_at > now()
   end
@@ -223,7 +229,12 @@ as $$
 begin
   insert into public.profiles (id, full_name, email)
   values (new.id, coalesce(new.raw_user_meta_data->>'full_name', ''), new.email)
-  on conflict (id) do nothing;
+  on conflict (id) do update
+    set email = excluded.email,
+        full_name = case
+          when coalesce(public.profiles.full_name, '') = '' then excluded.full_name
+          else public.profiles.full_name
+        end;
   return new;
 end;
 $$;
@@ -278,6 +289,62 @@ create policy "whatsapp connections company" on public.whatsapp_connections for 
 alter table public.message_logs add column if not exists automation_key text;
 alter table public.message_logs add column if not exists error text;
 create unique index if not exists message_logs_automation_once_idx on public.message_logs(charge_id, automation_key) where charge_id is not null and automation_key is not null;
+create index if not exists whatsapp_automation_settings_company_id_idx on public.whatsapp_automation_settings(company_id);
+create index if not exists whatsapp_connections_company_id_idx on public.whatsapp_connections(company_id);
+
+-- Timestamp maintenance already present on profiles and subscriptions remotely.
+create or replace function public.update_updated_at_column()
+returns trigger
+language plpgsql
+set search_path = public
+as $function$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$function$;
+
+revoke all on function public.update_updated_at_column() from public, anon, authenticated;
+grant execute on function public.update_updated_at_column() to service_role;
+
+drop trigger if exists profiles_updated_at on public.profiles;
+create trigger profiles_updated_at before update on public.profiles
+for each row execute function public.update_updated_at_column();
+
+drop trigger if exists subscriptions_updated_at on public.subscriptions;
+create trigger subscriptions_updated_at before update on public.subscriptions
+for each row execute function public.update_updated_at_column();
+
+-- Vault-backed credentials are callable only by server-side service_role.
+create or replace function public.get_automation_secret()
+returns text
+language sql
+security definer
+set search_path = public
+as $function$
+  select decrypted_secret
+  from vault.decrypted_secrets
+  where name = 'cobrancapro_automation_secret'
+  limit 1
+$function$;
+
+revoke all on function public.get_automation_secret() from public, anon, authenticated;
+grant execute on function public.get_automation_secret() to service_role;
+
+create or replace function public.get_whatsapp_access_token(p_company_id uuid)
+returns text
+language sql
+security definer
+set search_path = public
+as $function$
+  select decrypted_secret
+  from vault.decrypted_secrets
+  where name = 'whatsapp_access_token_' || p_company_id::text
+  limit 1
+$function$;
+
+revoke all on function public.get_whatsapp_access_token(uuid) from public, anon, authenticated;
+grant execute on function public.get_whatsapp_access_token(uuid) to service_role;
 
 revoke all on function public.handle_new_user() from public, anon, authenticated;
 
@@ -352,8 +419,16 @@ using (
 
 update storage.buckets
 set file_size_limit = 3145728,
+    public = true,
     allowed_mime_types = array['image/jpeg','image/png','image/webp']
 where id = 'company-avatars';
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('company-avatars', 'company-avatars', true, 3145728, array['image/jpeg','image/png','image/webp'])
+on conflict (id) do update
+  set public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
 
 -- Hardening: enforce access and plan limits in the database, not only in the browser.
 create or replace function private.enforce_plan_insert_limit()
