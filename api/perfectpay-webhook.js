@@ -290,6 +290,7 @@ export default async function handler(req, res) {
       const { data, error } = await supabaseAdmin.rpc("apply_perfectpay_webhook_event", {
         p_event_key: eventKey,
         p_provider_sale_code: saleCode,
+        p_provider_plan_code: String(payload?.plan?.code || "").trim().slice(0, 120) || null,
         p_sale_status: status,
         p_subscription_status: subscriptionStatus || null,
         p_subscription_status_event: subscriptionStatusEvent || null,
