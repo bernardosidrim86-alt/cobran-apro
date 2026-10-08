@@ -343,9 +343,18 @@ language plpgsql
 security definer
 set search_path = ''
 as $function$
+declare
+  v_confirmation_changed boolean := false;
 begin
-  if new.confirmed_at is not null
-     and (tg_op = 'INSERT' or old.confirmed_at is distinct from new.confirmed_at) then
+  if new.confirmed_at is not null then
+    if tg_op = 'INSERT' then
+      v_confirmation_changed := true;
+    else
+      v_confirmation_changed := old.confirmed_at is distinct from new.confirmed_at;
+    end if;
+  end if;
+
+  if v_confirmation_changed then
     update public.company_members
        set status = 'active',
            updated_at = now()
