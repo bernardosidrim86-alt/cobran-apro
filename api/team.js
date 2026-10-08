@@ -113,7 +113,7 @@ export default async function handler(req, res) {
 
       const { data: existingProfile, error: existingProfileError } = await supabaseAdmin
         .from("profiles")
-        .select("id,company_id")
+        .select("id,company_id,plan,subscription_status,subscription_expires_at")
         .eq("email", email)
         .maybeSingle();
 
@@ -123,6 +123,22 @@ export default async function handler(req, res) {
       }
 
       if (existingProfile) {
+        const ownSubscriptionExpiresAt = existingProfile.subscription_expires_at
+          ? new Date(existingProfile.subscription_expires_at).getTime()
+          : 0;
+        if (
+          !existingProfile.company_id &&
+          existingProfile.plan !== "free" &&
+          existingProfile.subscription_status === "active" &&
+          Number.isFinite(ownSubscriptionExpiresAt) &&
+          ownSubscriptionExpiresAt > Date.now()
+        ) {
+          await supabaseAdmin.from("company_members").delete().eq("id", inviteId);
+          return respond(res, 409, {
+            error: "Esta conta tem uma assinatura própria ativa. Para proteger o plano atual, use um e-mail sem assinatura ativa para entrar como membro.",
+          });
+        }
+
         if (existingProfile.company_id && existingProfile.company_id !== profile.company_id) {
           await supabaseAdmin.from("company_members").delete().eq("id", inviteId);
           return respond(res, 409, {
