@@ -26,8 +26,10 @@ create or replace function public.apply_perfectpay_webhook_event(
   p_subscription_status text,
   p_subscription_status_event text,
   p_user_id uuid,
-  p_plan text,
-  p_billing_cycle text,
+  p_event_plan text,
+  p_event_billing_cycle text,
+  p_profile_plan text,
+  p_profile_billing_cycle text,
   p_profile_status text,
   p_subscription_record_status text,
   p_amount numeric,
@@ -47,6 +49,10 @@ begin
     raise exception 'invalid_subscription_action';
   end if;
 
+  if p_event_key is null or length(p_event_key) > 1000 then
+    raise exception 'invalid_event_key';
+  end if;
+
   insert into public.subscription_webhook_events (
     event_key,
     provider_sale_code,
@@ -63,11 +69,11 @@ begin
     p_event_key,
     p_provider_sale_code,
     p_sale_status,
-    p_subscription_status,
-    p_subscription_status_event,
+    left(p_subscription_status, 120),
+    left(p_subscription_status_event, 120),
     p_user_id,
-    p_plan,
-    p_billing_cycle,
+    p_event_plan,
+    p_event_billing_cycle,
     p_action,
     p_amount,
     p_expires_at
@@ -81,8 +87,8 @@ begin
 
   if p_action in ('activated', 'revoked', 'cancelled') then
     update public.profiles
-       set plan = p_plan,
-           billing_cycle = p_billing_cycle,
+       set plan = p_profile_plan,
+           billing_cycle = p_profile_billing_cycle,
            subscription_status = p_profile_status,
            subscription_expires_at = p_expires_at
      where id = p_user_id
@@ -92,43 +98,55 @@ begin
       raise exception 'profile_not_found';
     end if;
 
-    insert into public.subscriptions (
-      user_id,
-      company_id,
-      provider,
-      provider_sale_code,
-      plan,
-      billing_cycle,
-      status,
-      amount,
-      currency,
-      expires_at,
-      last_event_status,
-      last_event_at
-    ) values (
-      p_user_id,
-      v_company_id,
-      'perfectpay',
-      p_provider_sale_code,
-      p_plan,
-      p_billing_cycle,
-      p_subscription_record_status,
-      p_amount,
-      'BRL',
-      p_expires_at,
-      p_sale_status::text,
-      now()
-    )
-    on conflict (provider_sale_code) do update
-       set company_id = excluded.company_id,
-           plan = excluded.plan,
-           billing_cycle = excluded.billing_cycle,
-           status = excluded.status,
-           amount = excluded.amount,
-           expires_at = excluded.expires_at,
-           last_event_status = excluded.last_event_status,
-           last_event_at = excluded.last_event_at,
-           updated_at = now();
+    if p_event_plan in ('essencial', 'profissional', 'business')
+       and p_event_billing_cycle in ('monthly', 'annual') then
+      insert into public.subscriptions (
+        user_id,
+        company_id,
+        provider,
+        provider_plan_code,
+        provider_sale_code,
+        plan,
+        billing_cycle,
+        status,
+        amount,
+        currency,
+        expires_at,
+        last_event_status,
+        last_event_at
+      ) values (
+        p_user_id,
+        v_company_id,
+        'perfectpay',
+        null,
+        p_provider_sale_code,
+        p_event_plan,
+        p_event_billing_cycle,
+        p_subscription_record_status,
+        p_amount,
+        'BRL',
+        p_expires_at,
+        p_sale_status::text,
+        now()
+      )
+      on conflict (provider_sale_code) do update
+         set company_id = excluded.company_id,
+             plan = excluded.plan,
+             billing_cycle = excluded.billing_cycle,
+             status = excluded.status,
+             amount = excluded.amount,
+             expires_at = excluded.expires_at,
+             last_event_status = excluded.last_event_status,
+             last_event_at = now(),
+             updated_at = now();
+    else
+      update public.subscriptions
+         set status = p_subscription_record_status,
+             last_event_status = p_sale_status::text,
+             last_event_at = now(),
+             updated_at = now()
+       where provider_sale_code = p_provider_sale_code;
+    end if;
   end if;
 
   return true;
@@ -136,10 +154,10 @@ end;
 $function$;
 
 revoke all on function public.apply_perfectpay_webhook_event(
-  text, text, integer, text, text, uuid, text, text, text, text, numeric, timestamptz, text
+  text, text, integer, text, text, uuid, text, text, text, text, text, text, numeric, timestamptz, text
 ) from public, anon, authenticated;
 grant execute on function public.apply_perfectpay_webhook_event(
-  text, text, integer, text, text, uuid, text, text, text, text, numeric, timestamptz, text
+  text, text, integer, text, text, uuid, text, text, text, text, text, text, numeric, timestamptz, text
 ) to service_role;
 
 create or replace function public.record_charge_payment(p_charge_id uuid)
