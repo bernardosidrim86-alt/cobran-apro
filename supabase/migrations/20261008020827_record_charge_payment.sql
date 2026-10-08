@@ -19,6 +19,21 @@ alter table public.subscription_webhook_events enable row level security;
 revoke all on table public.subscription_webhook_events from public, anon, authenticated;
 grant all on table public.subscription_webhook_events to service_role;
 
+create index if not exists charges_company_customer_idx
+  on public.charges (company_id, customer_id);
+create index if not exists message_logs_company_charge_idx
+  on public.message_logs (company_id, charge_id);
+create index if not exists message_logs_company_customer_idx
+  on public.message_logs (company_id, customer_id);
+create index if not exists message_logs_company_id_idx
+  on public.message_logs (company_id);
+create index if not exists payments_company_charge_idx
+  on public.payments (company_id, charge_id);
+create index if not exists payments_company_customer_idx
+  on public.payments (company_id, customer_id);
+create index if not exists profiles_company_id_idx
+  on public.profiles (company_id);
+
 create or replace function public.apply_perfectpay_webhook_event(
   p_event_key text,
   p_provider_sale_code text,
