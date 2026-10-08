@@ -1,3 +1,5 @@
+import { hasPaidSubscriptionAccess } from "../src/lib/subscription-access.js";
+
 export default async function handler(req,res){
   if(req.method!=="POST") return res.status(405).json({error:"Método não permitido."});
 
@@ -36,7 +38,7 @@ export default async function handler(req,res){
     if(!accessToken) return res.status(401).json({error:"Você precisa estar logado para usar o Assistente IA."});
 
     const supabaseUrl=process.env.SUPABASE_URL;
-    const supabaseKey=process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    const supabaseKey=process.env.SUPABASE_PUBLISHABLE_KEY||process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
     if(!supabaseUrl||!supabaseKey) return res.status(500).json({error:"Supabase não configurado."});
     const sbHeaders={apikey:supabaseKey,Authorization:"Bearer "+accessToken};
 
@@ -50,13 +52,7 @@ export default async function handler(req,res){
 
     const profile=profileRows?.[0];
     const plan=profile?.plan||"free";
-    const expiresAt=profile?.subscription_expires_at?new Date(profile.subscription_expires_at):null;
-    const paidAccess=
-      (plan==="profissional"||plan==="business") &&
-      profile?.subscription_status==="active" &&
-      expiresAt &&
-      !Number.isNaN(expiresAt.getTime()) &&
-      expiresAt>new Date();
+    const paidAccess=(plan==="profissional"||plan==="business")&&hasPaidSubscriptionAccess(profile);
 
     if(!paidAccess){
       return res.status(403).json({error:"O Assistente IA está disponível apenas com uma assinatura ativa do plano Profissional ou Business."});
@@ -84,23 +80,31 @@ export default async function handler(req,res){
 
     const question=Array.isArray(messages)?String(messages[messages.length-1]?.text||messages[messages.length-1]?.content||"").toLowerCase():"";
 
-    const fetchTable=async (table,select,order,limit=1000)=>{
+    const fetchTable=async (table,select,order)=>{
       const url=new URL(supabaseUrl+"/rest/v1/"+table);
       url.searchParams.set("select",select);
       if(order) url.searchParams.set("order",order);
-      url.searchParams.set("limit",String(limit));
-      const response=await fetch(url,{headers:sbHeaders});
-      const rows=await response.json().catch(()=>[]);
-      if(!response.ok) throw new Error("Não foi possível carregar os dados financeiros.");
-      return Array.isArray(rows)?rows:[];
+      const rows=[];
+      const pageSize=1000;
+      for(let offset=0;;){
+        url.searchParams.set("limit",String(pageSize));
+        url.searchParams.set("offset",String(offset));
+        const response=await fetch(url,{headers:sbHeaders});
+        const page=await response.json().catch(()=>[]);
+        if(!response.ok) throw new Error("Não foi possível carregar os dados financeiros.");
+        if(!Array.isArray(page)) throw new Error("Formato de dados financeiros inválido.");
+        rows.push(...page);
+        if(page.length<pageSize) return rows;
+        offset+=page.length;
+      }
     };
 
     // Os dados vêm do Supabase usando o JWT do usuário. Assim o RLS aplica
     // automaticamente o isolamento da empresa e o navegador não controla o contexto enviado à IA.
     const [customers,charges,payments]=await Promise.all([
-      fetchTable("customers","id,name","name.asc"),
-      fetchTable("charges","id,customer_id,description,amount,due_date,status,customers(name)","due_date.asc"),
-      fetchTable("payments","id,customer_id,amount,paid_at,payment_method,customers(name)","paid_at.desc")
+      fetchTable("customers","id,name","name.asc,id.asc"),
+      fetchTable("charges","id,customer_id,description,amount,due_date,status,customers(name)","due_date.asc,id.asc"),
+      fetchTable("payments","id,customer_id,amount,paid_at,payment_method,customers(name)","paid_at.desc,id.asc")
     ]);
 
     const today=new Date().toISOString().slice(0,10);

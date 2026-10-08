@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { hasPaidSubscriptionAccess } from "../src/lib/subscription-access.js";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -87,15 +88,7 @@ export default async function handler(req, res) {
         return respond(res, 400, { error: "Use outro e-mail para convidar uma pessoa da equipe." });
       }
 
-      const expiresAt = profile.subscription_expires_at
-        ? new Date(profile.subscription_expires_at).getTime()
-        : 0;
-      if (
-        profile.plan !== "business" ||
-        profile.subscription_status !== "active" ||
-        !Number.isFinite(expiresAt) ||
-        expiresAt <= Date.now()
-      ) {
+      if (profile.plan !== "business" || !hasPaidSubscriptionAccess(profile)) {
         return respond(res, 403, {
           error: "Convites estão disponíveis apenas para empresas com plano Business ativo.",
         });
@@ -123,15 +116,10 @@ export default async function handler(req, res) {
       }
 
       if (existingProfile) {
-        const ownSubscriptionExpiresAt = existingProfile.subscription_expires_at
-          ? new Date(existingProfile.subscription_expires_at).getTime()
-          : 0;
         if (
           !existingProfile.company_id &&
           existingProfile.plan !== "free" &&
-          existingProfile.subscription_status === "active" &&
-          Number.isFinite(ownSubscriptionExpiresAt) &&
-          ownSubscriptionExpiresAt > Date.now()
+          hasPaidSubscriptionAccess(existingProfile)
         ) {
           await supabaseAdmin.from("company_members").delete().eq("id", inviteId);
           return respond(res, 409, {

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-const SITE_KEY = "0x4AAAAAAFNGVdvTQftiuEoI";
+const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 let scriptPromise = null;
 
 function loadTurnstile() {

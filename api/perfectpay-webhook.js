@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { hasPaidSubscriptionAccess } from "../src/lib/subscription-access.js";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -306,10 +307,14 @@ export default async function handler(req, res) {
         p_action: action,
       });
       if (error) throw error;
-      return data === true;
+      return data;
     }
 
-    function duplicateEventResponse() {
+    function eventOutcomeResponse(outcome) {
+      if (outcome === "applied") return null;
+      if (outcome === "out_of_order") {
+        return res.status(200).json({ ok: true, ignored: true, reason: "out_of_order_event" });
+      }
       return res.status(200).json({ ok: true, ignored: true, reason: "duplicate_event" });
     }
 
@@ -330,7 +335,8 @@ export default async function handler(req, res) {
           eventPlan: incomingPlan.key,
           eventBillingCycle: incomingPlan.cycle,
         });
-        if (!recorded) return duplicateEventResponse();
+        const outcomeResponse = eventOutcomeResponse(recorded);
+        if (outcomeResponse) return outcomeResponse;
         return res.status(200).json({
           ok: true,
           ignored: true,
@@ -367,7 +373,8 @@ export default async function handler(req, res) {
         recordStatus,
         expiresAt,
       });
-      if (!recorded) return duplicateEventResponse();
+      const outcomeResponse = eventOutcomeResponse(recorded);
+      if (outcomeResponse) return outcomeResponse;
 
       const updatedProfile = {
         id: user.id,
@@ -415,10 +422,7 @@ export default async function handler(req, res) {
     const currentExpiresAt = currentProfile?.subscription_expires_at
       ? new Date(currentProfile.subscription_expires_at)
       : null;
-    const currentIsActive =
-      currentProfile?.subscription_status === "active" &&
-      currentExpiresAt &&
-      currentExpiresAt > new Date();
+    const currentIsActive = hasPaidSubscriptionAccess(currentProfile);
 
     if (
       currentIsActive &&
@@ -429,7 +433,8 @@ export default async function handler(req, res) {
         eventPlan: plan.key,
         eventBillingCycle: plan.cycle,
       });
-      if (!recorded) return duplicateEventResponse();
+      const outcomeResponse = eventOutcomeResponse(recorded);
+      if (outcomeResponse) return outcomeResponse;
       return res.status(200).json({
         ok: true,
         ignored: true,
@@ -458,7 +463,8 @@ export default async function handler(req, res) {
         eventPlan: plan.key,
         eventBillingCycle: plan.cycle,
       });
-      if (!recorded) return duplicateEventResponse();
+      const outcomeResponse = eventOutcomeResponse(recorded);
+      if (outcomeResponse) return outcomeResponse;
       return res.status(200).json({
         ok: true,
         ignored: true,
@@ -490,7 +496,8 @@ export default async function handler(req, res) {
       recordStatus: "active",
       expiresAt,
     });
-    if (!recorded) return duplicateEventResponse();
+    const outcomeResponse = eventOutcomeResponse(recorded);
+    if (outcomeResponse) return outcomeResponse;
 
     const updatedProfile = {
       id: user.id,

@@ -53,7 +53,7 @@ create or replace function public.apply_perfectpay_webhook_event(
   p_expires_at timestamptz,
   p_action text
 )
-returns boolean
+returns text
 language plpgsql
 security invoker
 set search_path = ''
@@ -61,6 +61,7 @@ as $function$
 declare
   v_company_id uuid;
   v_rows integer;
+  v_out_of_order boolean := false;
 begin
   if p_action not in ('activated', 'revoked', 'cancelled', 'ignored') then
     raise exception 'invalid_subscription_action';
@@ -68,6 +69,15 @@ begin
 
   if p_event_key is null or length(p_event_key) > 1000 then
     raise exception 'invalid_event_key';
+  end if;
+
+  if p_action = 'activated' then
+    select exists (
+      select 1
+      from public.subscriptions
+      where provider_sale_code = p_provider_sale_code
+        and status in ('cancelled', 'refunded', 'expired')
+    ) into v_out_of_order;
   end if;
 
   insert into public.subscription_webhook_events (
@@ -93,7 +103,7 @@ begin
     p_user_id,
     p_event_plan,
     p_event_billing_cycle,
-    p_action,
+    case when v_out_of_order then 'ignored' else p_action end,
     p_amount,
     p_expires_at
   )
@@ -101,7 +111,11 @@ begin
 
   get diagnostics v_rows = row_count;
   if v_rows = 0 then
-    return false;
+    return 'duplicate';
+  end if;
+
+  if v_out_of_order then
+    return 'out_of_order';
   end if;
 
   if p_action in ('activated', 'revoked', 'cancelled') then
@@ -168,7 +182,7 @@ begin
     end if;
   end if;
 
-  return true;
+  return 'applied';
 end;
 $function$;
 

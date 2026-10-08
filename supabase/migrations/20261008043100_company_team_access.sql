@@ -172,6 +172,14 @@ with check (
 drop policy if exists "company avatars delete" on storage.objects;
 drop policy if exists "company avatars insert" on storage.objects;
 drop policy if exists "company avatars update" on storage.objects;
+drop policy if exists "company avatars select" on storage.objects;
+create policy company_avatars_read_members on storage.objects
+for select to authenticated
+using (
+  bucket_id = 'company-avatars'
+  and (storage.foldername(name))[1] = (select private.my_company_id())::text
+  and (select private.has_active_app_access())
+);
 create policy company_avatars_delete_owner on storage.objects
 for delete to authenticated
 using (
@@ -234,8 +242,9 @@ as $function$
     when p.id is null or cm.user_id is null then false
     when cm.role = 'owner' then
       case
-        when p.plan = 'free' then coalesce(u.created_at, now()) + interval '7 days' > now()
-        else p.subscription_status = 'active'
+        when p.plan = 'free' then p.subscription_status in ('inactive', 'pending')
+          and coalesce(u.created_at, now()) + interval '7 days' > now()
+        else p.subscription_status in ('active', 'cancelled')
           and p.subscription_expires_at is not null
           and p.subscription_expires_at > now()
       end
@@ -247,7 +256,7 @@ as $function$
         and owner_member.role = 'owner'
         and owner_member.status = 'active'
         and owner_profile.plan = 'business'
-        and owner_profile.subscription_status = 'active'
+        and owner_profile.subscription_status in ('active', 'cancelled')
         and owner_profile.subscription_expires_at > now()
     )
     else false
@@ -304,7 +313,7 @@ begin
   end if;
 
   if new.plan = 'business'
-     and new.subscription_status = 'active'
+     and new.subscription_status in ('active', 'cancelled')
      and new.subscription_expires_at > now() then
     update public.profiles member_profile
        set plan = 'business',
@@ -505,7 +514,7 @@ begin
     where p.id = p_invited_by
       and p.company_id = p_company_id
       and p.plan = 'business'
-      and p.subscription_status = 'active'
+      and p.subscription_status in ('active', 'cancelled')
       and p.subscription_expires_at > now()
   ) then
     raise exception 'business_plan_required';
