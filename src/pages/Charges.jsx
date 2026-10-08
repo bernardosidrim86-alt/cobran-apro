@@ -117,13 +117,18 @@ function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
   async function paid(){
     setSaving(true);
     try{
-      const {error}=await supabase.from("charges").update({status:"paid"}).eq("id",charge.id).eq("company_id",charge.company_id);
+      const {error}=await supabase.rpc("record_charge_payment",{p_charge_id:charge.id});
       if(error)throw error;
-      const {error:paymentError}=await supabase.from("payments").insert({company_id:charge.company_id,customer_id:charge.customer_id,charge_id:charge.id,amount:charge.amount,payment_method:charge.payment_method,paid_at:new Date().toISOString()});
-      if(paymentError)throw paymentError;
+
       if(charge.recurrence&&charge.recurrence!=="none"){
         const nextDate=charge.recurrence==="weekly"?addDays(charge.due_date,7):charge.recurrence==="biweekly"?addDays(charge.due_date,14):charge.recurrence==="annual"?addMonths(charge.due_date,12):addMonths(charge.due_date,1);
-        await supabase.from("charges").insert({company_id:charge.company_id,customer_id:charge.customer_id,description:charge.description,amount:Number(charge.amount),due_date:nextDate,payment_method:charge.payment_method,status:"pending",recurrence:charge.recurrence});
+        const {error:recurrenceError}=await supabase.from("charges").insert({company_id:charge.company_id,customer_id:charge.customer_id,description:charge.description,amount:Number(charge.amount),due_date:nextDate,payment_method:charge.payment_method,status:"pending",recurrence:charge.recurrence});
+        if(recurrenceError){
+          console.error("Next recurring charge was not created",recurrenceError);
+          onPaid();
+          toast("Recebimento registrado, mas a próxima cobrança não foi criada. Você pode criá-la manualmente.");
+          return;
+        }
       }
       onPaid();toast("Recebimento registrado.","success");
     }catch(error){toast(error?.message||"Não foi possível registrar o pagamento.");}

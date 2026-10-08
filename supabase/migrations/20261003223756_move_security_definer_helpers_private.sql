@@ -1,0 +1,2 @@
+-- This change is included in 20261006040411_legacy_schema_snapshot.sql.
+-- Kept to match the historical migration version recorded by the remote project.

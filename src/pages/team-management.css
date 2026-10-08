@@ -1,0 +1,29 @@
+.team-management{display:grid;gap:16px}
+.team-card{background:var(--surface,#fff);color:var(--text,#171923);border:1px solid var(--border,#e6e8ef);border-radius:16px;padding:20px;box-shadow:0 4px 14px rgba(15,23,42,.035)}
+.team-card h2{font-size:16px;margin:0 0 6px}
+.team-card p{margin:4px 0 0}
+.team-card-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.team-seat-count{font-size:13px;font-weight:700;color:#5b5ce2;white-space:nowrap}
+.team-seat-track{height:7px;overflow:hidden;border-radius:99px;background:#ececf5;margin:18px 0}
+.team-seat-track span{display:block;height:100%;border-radius:inherit;background:#6865ef;transition:width .2s ease}
+.team-invite-form{display:grid;grid-template-columns:minmax(220px,1fr) auto;align-items:end;gap:12px}
+.team-help,.team-muted{font-size:12px;line-height:1.55;color:var(--muted,#737789)}
+.team-table-wrap{overflow-x:auto;margin-top:14px}
+.team-table{width:100%;border-collapse:collapse;text-align:left;font-size:13px}
+.team-table th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted,#737789);font-weight:700}
+.team-table th,.team-table td{padding:12px 10px;border-bottom:1px solid var(--border,#eceef3)}
+.team-table td:first-child{font-weight:600;overflow-wrap:anywhere}
+.team-table tr:last-child td{border-bottom:0}
+.team-status{display:inline-flex;align-items:center;border-radius:999px;padding:4px 9px;background:#fff3db;color:#8b5e05;font-size:11px;font-weight:700;white-space:nowrap}
+.team-status.is-active{background:#e7f8ee;color:#137343}
+.team-actions{text-align:right;white-space:nowrap}
+.team-actions .btn{padding:7px 11px;font-size:12px}
+.team-notice{border:1px solid var(--border,#e6e8ef);border-radius:12px;background:var(--surface,#fff);padding:14px 16px;color:var(--muted,#737789);font-size:13px;line-height:1.5}
+.team-activity-list{list-style:none;margin:14px 0 0;padding:0}
+.team-activity-list li{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:12px 0;border-bottom:1px solid var(--border,#eceef3)}
+.team-activity-list li:last-child{border-bottom:0}
+.team-activity-list li div{display:grid;gap:4px}
+.team-activity-list strong{font-size:13px;font-weight:650}
+.team-activity-list span,.team-activity-list time{font-size:11px;color:var(--muted,#737789)}
+.team-activity-list time{white-space:nowrap}
+@media(max-width:640px){.team-card{padding:16px}.team-card-heading{display:grid}.team-invite-form{grid-template-columns:1fr}.team-invite-form .btn{width:100%}.team-table{min-width:560px}.team-activity-list li{display:grid;gap:6px}}
