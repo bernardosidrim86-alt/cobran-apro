@@ -968,7 +968,7 @@ function usePlanLimits() {
 }
 
 
-function Dashboard({session,currentPlan="free",companyId}) {
+function Dashboard({session,currentPlan="free",companyId,subscriptionExpiresAt}) {
   const [data,setData]=useState({customers:0,receive:0,today:0,overdue:0,paid:0,charges:[],payments:[]});
 
   useEffect(()=>{
@@ -999,7 +999,7 @@ function Dashboard({session,currentPlan="free",companyId}) {
   const title=firstName ? "Olá, "+firstName : "Dashboard";
 
   return <div className="dashboard-page">
-    <PlanUsage companyId={companyId} planKey={currentPlan}/>
+    <PlanUsage companyId={companyId} planKey={currentPlan} expiresAt={subscriptionExpiresAt}/>
     <div className="dashboard-hero">
       <div>
         <span className="eyebrow">VISÃO GERAL</span>
