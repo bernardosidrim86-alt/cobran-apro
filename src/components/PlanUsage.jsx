@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, CalendarClock } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { PLAN_OPTIONS } from "../lib/plans";
 
@@ -38,10 +38,10 @@ export function PlanUsage({companyId,planKey="free",expiresAt=null}){
   if(!companyId) return null;
   const expiry=expiresAt?new Date(expiresAt):null;
   const remainingDays=expiry&&!Number.isNaN(expiry.getTime())?Math.max(0,Math.ceil((expiry.getTime()-Date.now())/86400000)):null;
-  const expiryLabel=remainingDays===null?"":remainingDays===0?"Vence hoje":`${remainingDays} ${remainingDays===1?"dia":"dias"} restantes`;
+  const expiryLabel=remainingDays===null?"":remainingDays===0?"Vence hoje":`Vence em ${remainingDays} ${remainingDays===1?"dia":"dias"}`;
   return <section className="plan-usage-card">
     <div className="plan-usage-head">
-      <div><span className="panel-kicker">USO DO PLANO</span><div className="plan-usage-title-line"><h2>{plan.title}</h2>{expiryLabel&&<span className="plan-usage-expiry-inline">{expiryLabel}</span>}</div></div>
+      <div><span className="panel-kicker">USO DO PLANO</span><div className="plan-usage-title-line"><h2>{plan.title}</h2>{expiryLabel&&<span className="plan-usage-expiry-inline"><CalendarClock size={12} aria-hidden="true"/>{expiryLabel}</span>}</div></div>
       <TrendingUp size={18}/>
     </div>
     <Metric label="Clientes" count={counts.customers} max={plan.maxCustomers}/>
