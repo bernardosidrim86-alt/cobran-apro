@@ -11580,3 +11580,11 @@ html[data-theme="dark"] .settings-pix-note{background:#1b1c24!important;border-c
 
 /* Ajuste fino: descer mais o cabeçalho de Pix */
 .settings-section-heading{padding-top:20px!important;}
+
+
+.plan-usage-expiry{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border,#e7e8ed);font-size:12px}
+.plan-usage-expiry>span{color:var(--muted,#737783)}
+.plan-usage-expiry>strong{font-weight:650;color:var(--text,#20232b)}
+.plan-usage-expiry>small{width:100%;font-size:11px;color:var(--muted,#737783)}
+html[data-theme="dark"] .plan-usage-expiry{border-top-color:#30333d}
+html[data-theme="dark"] .plan-usage-expiry>strong{color:#f3f4f6}
