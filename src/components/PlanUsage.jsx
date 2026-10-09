@@ -38,15 +38,13 @@ export function PlanUsage({companyId,planKey="free",expiresAt=null}){
   if(!companyId) return null;
   const expiry=expiresAt?new Date(expiresAt):null;
   const remainingDays=expiry&&!Number.isNaN(expiry.getTime())?Math.max(0,Math.ceil((expiry.getTime()-Date.now())/86400000)):null;
-  const expiryLabel=remainingDays===null?"":remainingDays===0?"Termina hoje":`${remainingDays} ${remainingDays===1?"dia":"dias"} restantes`;
-  const expiryDate=expiry&&!Number.isNaN(expiry.getTime())?expiry.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"}):"";
+  const expiryLabel=remainingDays===null?"":remainingDays===0?"Vence hoje":`${remainingDays} ${remainingDays===1?"dia":"dias"} restantes`;
   return <section className="plan-usage-card">
     <div className="plan-usage-head">
-      <div><span className="panel-kicker">USO DO PLANO</span><h2>{plan.title}</h2></div>
+      <div><span className="panel-kicker">USO DO PLANO</span><div className="plan-usage-title-line"><h2>{plan.title}</h2>{expiryLabel&&<span className="plan-usage-expiry-inline">{expiryLabel}</span>}</div></div>
       <TrendingUp size={18}/>
     </div>
     <Metric label="Clientes" count={counts.customers} max={plan.maxCustomers}/>
     <Metric label="Cobranças no mês" count={counts.charges} max={plan.maxCharges}/>
-    {expiryLabel&&<div className="plan-usage-expiry"><span>Tempo restante</span><strong>{expiryLabel}</strong><small>Vencimento: {expiryDate}</small></div>}
   </section>;
 }
