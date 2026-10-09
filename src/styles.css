@@ -11584,5 +11584,7 @@ html[data-theme="dark"] .settings-pix-note{background:#1b1c24!important;border-c
 
 
 .plan-usage-title-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.plan-usage-expiry-inline{color:#777b87;font-size:11px;font-weight:500;line-height:1.25;white-space:nowrap}
-html[data-theme="dark"] .plan-usage-expiry-inline{color:#9ea1ae}
+.plan-usage-expiry-inline{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border:1px solid #e5e7eb;border-radius:6px;background:#f8f9fb;color:#6b7280;font-size:11px;font-weight:500;line-height:1.2;white-space:nowrap}
+.plan-usage-expiry-inline svg{flex-shrink:0;color:#858b98}
+html[data-theme="dark"] .plan-usage-expiry-inline{background:#20212a;border-color:#343641;color:#b0b3bf}
+html[data-theme="dark"] .plan-usage-expiry-inline svg{color:#9ea1ae}
