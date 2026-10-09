@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { Search, Plus, X, UserRound, MoreHorizontal, Download } from "lucide-react";
 import { supabase } from "../lib/supabase";
-import { PLAN_OPTIONS } from "../lib/plans";
 import { money } from "../lib/formatters";
 import { downloadCsv } from "../lib/export";
 import { Button, Input, Empty, PageTitle } from "../components/AppPrimitives";
@@ -17,6 +16,7 @@ export function Customers({companyId}){
   const [open,setOpen]=useState(false);
   const [form,setForm]=useState({name:"",phone:"",email:"",notes:""});
   const [deleting,setDeleting]=useState(false);
+  const [saving,setSaving]=useState(false);
   const [editingCustomer,setEditingCustomer]=useState(null);
   const [editingForm,setEditingForm]=useState({name:"",phone:"",email:"",notes:""});
   const [editingSaving,setEditingSaving]=useState(false);
@@ -92,16 +92,61 @@ export function Customers({companyId}){
   }
   async function save(e){
     e.preventDefault();
-    if(!companyId){toast("Sua empresa ainda está carregando. Tente novamente em instantes.");return;}
-    const {data:user}=await supabase.auth.getUser();
-    if(!user?.user?.id){toast("Sua sessão expirou. Entre novamente.");return;}
-    const {data:profile}=await supabase.from("profiles").select("plan").eq("id",user.user.id).single();
-    const plan=PLAN_OPTIONS.find(p=>p.key===(profile?.plan||"free"))||PLAN_OPTIONS[0];
-    const {count}=await supabase.from("customers").select("id",{count:"exact",head:true}).eq("company_id",companyId);
-    if(plan.maxCustomers!==null&&(count||0)>=plan.maxCustomers){toast("O plano "+plan.title+" permite até "+plan.maxCustomers+" clientes. Faça upgrade para adicionar mais.");return;}
-    const {error}=await supabase.from("customers").insert({...form,company_id:companyId});
-    if(error)toast(error.message);
-    else{setForm({name:"",phone:"",email:"",notes:""});setOpen(false);load();toast("Cliente criado.","success");}
+    if(saving)return;
+    if(!companyId){
+      toast("Sua empresa ainda está carregando. Tente novamente em instantes.");
+      return;
+    }
+    const name=form.name.trim();
+    if(!name){
+      toast("Informe o nome do cliente.");
+      return;
+    }
+
+    setSaving(true);
+    try{
+      const {data:userData,error:userError}=await supabase.auth.getUser();
+      if(userError)throw userError;
+      if(!userData?.user?.id){
+        toast("Sua sessão expirou. Entre novamente.");
+        return;
+      }
+
+      // O banco aplica o limite do plano no trigger, evitando divergência
+      // entre a contagem do navegador e o limite real da empresa.
+      const {error}=await supabase.from("customers").insert({
+        name,
+        phone:form.phone.trim()||null,
+        email:form.email.trim()||null,
+        notes:form.notes.trim()||null,
+        company_id:companyId
+      });
+
+      if(error){
+        const message=String(error.message||"");
+        if(message.includes("plan_customer_limit")){
+          toast("Você atingiu o limite de clientes do seu plano. Consulte os planos para continuar.");
+        }else if(message.includes("subscription_inactive")){
+          toast("Seu acesso está inativo. Confira o status da sua assinatura.");
+        }else if(message.includes("company_access_denied")){
+          toast("Não foi possível validar a empresa. Atualize a página e tente novamente.");
+        }else{
+          console.error("CobrançaPro: erro ao criar cliente:",error);
+          toast("Não foi possível criar o cliente. "+(message||"Tente novamente."));
+        }
+        return;
+      }
+
+      setForm({name:"",phone:"",email:"",notes:""});
+      setOpen(false);
+      await load();
+      toast("Cliente criado.","success");
+    }catch(error){
+      console.error("CobrançaPro: falha ao criar cliente:",error);
+      toast("Falha ao criar cliente. Verifique sua conexão e tente novamente.");
+    }finally{
+      setSaving(false);
+    }
   }
   async function removeCustomer(c){
     if(!(await confirmDialog('Excluir o cliente "'+c.name+'"? As cobranças e recebimentos vinculados também serão excluídos. Essa ação não pode ser desfeita.',{confirmText:"Excluir",danger:true})))return;
@@ -164,7 +209,7 @@ export function Customers({companyId}){
       <Input label="Telefone" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/>
       <Input label="E-mail" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/>
       <label className="field"><span>Observações</span><textarea value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></label>
-      <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)}>Cancelar</Button><Button type="submit">Criar cliente</Button></div>
+      <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)}>Cancelar</Button><Button type="submit" disabled={saving}>{saving?"Criando...":"Criar cliente"}</Button></div>
     </form></div>}
 
     {editingCustomer&&createPortal(<div className="client-modal-root" role="dialog" aria-modal="true">
