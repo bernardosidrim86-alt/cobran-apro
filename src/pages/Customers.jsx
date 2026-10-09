@@ -23,14 +23,55 @@ export function Customers({companyId}){
   const [editingError,setEditingError]=useState("");
   const [customerView,setCustomerView]=useState(null);
   const [history,setHistory]=useState({charges:[],payments:[],loading:false});
+  const [resolvedCompanyId,setResolvedCompanyId]=useState("");
+  const [companyLookupComplete,setCompanyLookupComplete]=useState(false);
+  const activeCompanyId=companyId||resolvedCompanyId;
+
+  // O shell carrega o perfil de forma assíncrona. Resolva a empresa aqui também
+  // para evitar que um clique rápido no cadastro use companyId ainda nulo.
+  useEffect(()=>{
+    let active=true;
+    let attempts=0;
+    let timer=null;
+    if(companyId){
+      setResolvedCompanyId(companyId);
+      setCompanyLookupComplete(true);
+      return ()=>{active=false;};
+    }
+    setCompanyLookupComplete(false);
+    async function resolveCompany(){
+      try{
+        const {data:userData,error:userError}=await supabase.auth.getUser();
+        if(userError)throw userError;
+        if(!userData?.user?.id)throw new Error("Sessão não encontrada.");
+        const {data:profile,error}=await supabase.from("profiles").select("company_id").eq("id",userData.user.id).maybeSingle();
+        if(error)throw error;
+        if(!active)return;
+        if(profile?.company_id){
+          setResolvedCompanyId(profile.company_id);
+          setCompanyLookupComplete(true);
+          return;
+        }
+        throw new Error("O perfil não possui empresa vinculada.");
+      }catch(error){
+        if(!active)return;
+        attempts+=1;
+        if(attempts<4){timer=setTimeout(resolveCompany,1200);return;}
+        console.error("CobrançaPro: não foi possível resolver a empresa:",error);
+        setCompanyLookupComplete(true);
+      }
+    }
+    resolveCompany();
+    return ()=>{active=false;if(timer)clearTimeout(timer);};
+  },[companyId]);
 
   async function load(){
     if(!companyId)return;
-    const {data,error}=await supabase.from("customers").select("*").eq("company_id",companyId).order("created_at",{ascending:false});
+    const {data,error}=await supabase.from("customers").select("*").eq("company_id",activeCompanyId).order("created_at",{ascending:false});
     if(error){console.error(error);toast("Não foi possível carregar os clientes.");return;}
     setRows(data||[]);
   }
-  useEffect(()=>{load()},[companyId]);
+  useEffect(()=>{load()},[activeCompanyId]);
 
   function closeClientMenu(){setClientMenu(null);setClientMenuPosition(null);}
   function getClientMenuPosition(button){
@@ -66,8 +107,8 @@ export function Customers({companyId}){
   async function openCustomer(c){
     setCustomerView(c);setHistory({charges:[],payments:[],loading:true});
     const [{data:charges,error:chargeError},{data:payments,error:paymentError}]=await Promise.all([
-      supabase.from("charges").select("id,description,amount,due_date,status,payment_method").eq("company_id",companyId).eq("customer_id",c.id).order("due_date",{ascending:false}),
-      supabase.from("payments").select("id,amount,paid_at,payment_method,charge_id").eq("company_id",companyId).eq("customer_id",c.id).order("paid_at",{ascending:false})
+      supabase.from("charges").select("id,description,amount,due_date,status,payment_method").eq("company_id",activeCompanyId).eq("customer_id",c.id).order("due_date",{ascending:false}),
+      supabase.from("payments").select("id,amount,paid_at,payment_method,charge_id").eq("company_id",activeCompanyId).eq("customer_id",c.id).order("paid_at",{ascending:false})
     ]);
     if(chargeError||paymentError)toast("Não foi possível carregar o histórico completo.");
     setHistory({charges:charges||[],payments:payments||[],loading:false});
@@ -82,7 +123,7 @@ export function Customers({companyId}){
     setEditingSaving(true);
     const {error}=await supabase.from("customers").update({
       name:editingForm.name.trim(),phone:editingForm.phone.trim(),email:editingForm.email.trim(),notes:editingForm.notes.trim()
-    }).eq("id",editingCustomer.id).eq("company_id",companyId);
+    }).eq("id",editingCustomer.id).eq("company_id",activeCompanyId);
     if(error)setEditingError(error.message);
     else{
       const updated={...editingCustomer,...editingForm,name:editingForm.name.trim(),phone:editingForm.phone.trim(),email:editingForm.email.trim(),notes:editingForm.notes.trim()};
@@ -119,7 +160,7 @@ export function Customers({companyId}){
         phone:form.phone.trim()||null,
         email:form.email.trim()||null,
         notes:form.notes.trim()||null,
-        company_id:companyId
+        company_id:activeCompanyId
       });
 
       if(error){
@@ -151,11 +192,11 @@ export function Customers({companyId}){
   async function removeCustomer(c){
     if(!(await confirmDialog('Excluir o cliente "'+c.name+'"? As cobranças e recebimentos vinculados também serão excluídos. Essa ação não pode ser desfeita.',{confirmText:"Excluir",danger:true})))return;
     setDeleting(true);
-    const {error:paymentsError}=await supabase.from("payments").delete().eq("customer_id",c.id).eq("company_id",companyId);
+    const {error:paymentsError}=await supabase.from("payments").delete().eq("customer_id",c.id).eq("company_id",activeCompanyId);
     if(paymentsError){toast(paymentsError.message);setDeleting(false);return;}
-    const {error:chargesError}=await supabase.from("charges").delete().eq("customer_id",c.id).eq("company_id",companyId);
+    const {error:chargesError}=await supabase.from("charges").delete().eq("customer_id",c.id).eq("company_id",activeCompanyId);
     if(chargesError){toast(chargesError.message);setDeleting(false);return;}
-    const {error}=await supabase.from("customers").delete().eq("id",c.id).eq("company_id",companyId);
+    const {error}=await supabase.from("customers").delete().eq("id",c.id).eq("company_id",activeCompanyId);
     if(error)toast(error.message);else{load();toast("Cliente excluído.","success");}
     setDeleting(false);
   }
@@ -205,11 +246,12 @@ export function Customers({companyId}){
     {open&&<div className="modal-backdrop"><form className="modal modern-modal" onSubmit={save}>
       <button type="button" className="modal-x" onClick={()=>setOpen(false)}><X/></button>
       <div className="modal-head"><div className="icon-box"><UserRound/></div><div><h2>Novo cliente</h2><p>Cadastre os dados básicos.</p></div></div>
+      {!activeCompanyId&&companyLookupComplete&&<p className="error">Não conseguimos localizar sua empresa. Atualize a página e entre novamente.</p>}
       <Input label="Nome" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/>
       <Input label="Telefone" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/>
       <Input label="E-mail" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/>
       <label className="field"><span>Observações</span><textarea value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></label>
-      <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)}>Cancelar</Button><Button type="submit" disabled={saving}>{saving?"Criando...":"Criar cliente"}</Button></div>
+      <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)}>Cancelar</Button><Button type="submit" disabled={saving||!activeCompanyId}>{saving?"Criando...":"Criar cliente"}</Button></div>
     </form></div>}
 
     {editingCustomer&&createPortal(<div className="client-modal-root" role="dialog" aria-modal="true">
