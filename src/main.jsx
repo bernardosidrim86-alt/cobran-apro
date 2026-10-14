@@ -10,6 +10,7 @@ import "./dashboard-polish.css";
 import "./dark-mode.css";
 import "./polish-v2.css";
 import "./workspace-pages.css";
+import "./motion.css";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>

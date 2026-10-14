@@ -1,0 +1,220 @@
+/* CobrançaPro — motion system
+   Discreet, consistent motion for app navigation and controls.
+   Keep motion decorative: business actions never depend on animation completion. */
+:root {
+  --cp-motion-fast: 140ms;
+  --cp-motion-base: 180ms;
+  --cp-motion-enter: 220ms;
+  --cp-motion-ease: cubic-bezier(.2, .72, .22, 1);
+  --cp-motion-exit: cubic-bezier(.4, 0, 1, 1);
+}
+
+@keyframes cpMotionRouteIn {
+  from { opacity: 0; transform: translate3d(0, 7px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes cpMotionMenuIn {
+  from { opacity: 0; transform: translate3d(0, -4px, 0) scale(.99); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes cpMotionFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes cpMotionDialogIn {
+  from { opacity: 0; transform: translate3d(0, 7px, 0) scale(.99); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes cpMotionDialogOut {
+  from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  to { opacity: 0; transform: translate3d(0, 4px, 0) scale(.99); }
+}
+@keyframes cpMotionToastIn {
+  from { opacity: 0; transform: translate3d(0, 7px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes cpMotionToastOut {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to { opacity: 0; transform: translate3d(0, 4px, 0); }
+}
+
+/* The shell stays in place while only the active view transitions. */
+.route-transition {
+  animation: cpMotionRouteIn var(--cp-motion-enter) var(--cp-motion-ease) both;
+  transform-origin: top center;
+}
+
+/* Consistent tactile feedback without exaggerated bouncing. */
+.btn:not(:disabled),
+.cp-btn:not(:disabled),
+.header-icon-button,
+.avatar-button,
+.user-mini-button,
+.side-nav a,
+.side-nav-parent,
+.cp-report-periods button,
+.choice,
+[data-client-menu-trigger] {
+  transition:
+    transform var(--cp-motion-fast) var(--cp-motion-ease),
+    box-shadow var(--cp-motion-base) var(--cp-motion-ease),
+    background-color var(--cp-motion-base) ease,
+    border-color var(--cp-motion-base) ease,
+    color var(--cp-motion-base) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:not(:disabled):hover,
+.cp-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+.btn:not(:disabled):active,
+.cp-btn:not(:disabled):active,
+.header-icon-button:active,
+.avatar-button:active,
+.user-mini-button:active,
+.side-nav a:active,
+.side-nav-parent:active,
+.cp-report-periods button:active,
+.choice:active {
+  transform: translateY(0) scale(.99);
+}
+.btn:disabled,
+.cp-btn:disabled {
+  cursor: not-allowed;
+}
+
+/* Inputs get a smoother focus state without moving while typing. */
+.field input,
+.field textarea,
+.field select,
+.searchbox,
+.header-search,
+.cp-report-dates input,
+.modern-select select {
+  transition:
+    border-color var(--cp-motion-base) ease,
+    box-shadow var(--cp-motion-base) ease,
+    background-color var(--cp-motion-base) ease;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid rgba(91, 92, 226, .45);
+  outline-offset: 2px;
+}
+
+/* Menus and portals mount in consistently, including the client actions portal. */
+.header-dropdown,
+.profile-dropdown,
+[data-client-menu-modern] {
+  animation: cpMotionMenuIn var(--cp-motion-base) var(--cp-motion-ease) both;
+  transform-origin: top right;
+}
+.header-dropdown a,
+.header-dropdown button,
+[data-client-menu-modern] button {
+  transition:
+    background-color var(--cp-motion-base) ease,
+    color var(--cp-motion-base) ease,
+    transform var(--cp-motion-fast) var(--cp-motion-ease);
+}
+
+/* Existing modal structures keep their styling; only timing and movement are unified. */
+.modal-backdrop,
+.modal-overlay,
+.cp-modal-backdrop {
+  animation: cpMotionFadeIn var(--cp-motion-base) ease both;
+}
+.modal,
+.cp-modal,
+.modal-content {
+  animation: cpMotionDialogIn var(--cp-motion-enter) var(--cp-motion-ease) both;
+}
+.modal-backdrop.is-closing,
+.modal-overlay.is-closing,
+.cp-modal-backdrop.is-closing {
+  animation: cpMotionFadeIn 120ms var(--cp-motion-exit) reverse both;
+}
+.modal.is-closing,
+.cp-modal.is-closing,
+.modal-content.is-closing {
+  animation: cpMotionDialogOut 140ms var(--cp-motion-exit) both;
+}
+
+/* Toasts and the native confirmation dialog also animate out. */
+.cp-toast {
+  animation: cpMotionToastIn var(--cp-motion-base) var(--cp-motion-ease) both;
+  will-change: opacity, transform;
+}
+.cp-toast.out {
+  animation: cpMotionToastOut 180ms var(--cp-motion-exit) both;
+  pointer-events: none;
+}
+.cp-confirm-backdrop {
+  animation: cpMotionFadeIn var(--cp-motion-base) ease both;
+}
+.cp-confirm {
+  animation: cpMotionDialogIn var(--cp-motion-enter) var(--cp-motion-ease) both;
+}
+.cp-confirm-backdrop.is-closing {
+  animation: cpMotionFadeIn 160ms var(--cp-motion-exit) reverse both;
+  pointer-events: none;
+}
+.cp-confirm.is-closing {
+  animation: cpMotionDialogOut 160ms var(--cp-motion-exit) both;
+}
+
+/* Mobile navigation keeps its slide gesture and gains a consistent easing. */
+.sidebar {
+  transition:
+    transform 220ms var(--cp-motion-ease),
+    box-shadow 220ms var(--cp-motion-ease);
+}
+.sidebar-backdrop {
+  animation: cpMotionFadeIn var(--cp-motion-base) ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-transition,
+  .header-dropdown,
+  .profile-dropdown,
+  [data-client-menu-modern],
+  .modal-backdrop,
+  .modal-overlay,
+  .cp-modal-backdrop,
+  .modal,
+  .cp-modal,
+  .modal-content,
+  .cp-toast,
+  .cp-confirm-backdrop,
+  .cp-confirm,
+  .sidebar-backdrop {
+    animation: none !important;
+  }
+  .btn:not(:disabled),
+  .cp-btn:not(:disabled),
+  .header-icon-button,
+  .avatar-button,
+  .user-mini-button,
+  .side-nav a,
+  .side-nav-parent,
+  .cp-report-periods button,
+  .choice,
+  [data-client-menu-trigger],
+  .field input,
+  .field textarea,
+  .field select,
+  .searchbox,
+  .header-search,
+  .cp-report-dates input,
+  .modern-select select,
+  .sidebar {
+    transition-duration: .01ms !important;
+  }
+  .cp-confirm-backdrop.is-closing,
+  .cp-confirm.is-closing {
+    animation: none !important;
+  }
+}
