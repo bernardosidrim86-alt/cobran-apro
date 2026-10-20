@@ -66,7 +66,7 @@ export function Customers({companyId}){
   },[companyId]);
 
   async function load(){
-    if(!companyId)return;
+    if(!activeCompanyId)return;
     const {data,error}=await supabase.from("customers").select("*").eq("company_id",activeCompanyId).order("created_at",{ascending:false});
     if(error){console.error(error);toast("Não foi possível carregar os clientes.");return;}
     setRows(data||[]);
@@ -134,7 +134,7 @@ export function Customers({companyId}){
   async function save(e){
     e.preventDefault();
     if(saving)return;
-    if(!companyId){
+    if(!activeCompanyId){
       toast("Sua empresa ainda está carregando. Tente novamente em instantes.");
       return;
     }
