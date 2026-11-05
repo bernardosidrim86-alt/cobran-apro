@@ -1154,7 +1154,113 @@ function CalendarPage(){
   </div>;
 }
 
-function Payments(){const companyId=useCompany();const [rows,setRows]=useState([]);useEffect(()=>{if(companyId)supabase.from("payments").select("*,customers(name),charges(description)").eq("company_id",companyId).order("paid_at",{ascending:false}).then(({data})=>setRows(data||[]));},[companyId]);const total=rows.reduce((a,x)=>a+Number(x.amount),0);return <div className="payments-page"><PageTitle title="Recebimentos" subtitle="Tudo que sua empresa já recebeu."/><div className="metric-grid three payments-metrics"><Metric title="Total recebido" value={money(total)} icon={Wallet} tone="success"/><Metric title="Recebido hoje" value={money(rows.filter(x=>x.paid_at.slice(0,10)===todayISO()).reduce((a,x)=>a+Number(x.amount),0))} icon={Check} tone="success"/><Metric title="Lançamentos" value={rows.length} icon={Receipt}/></div><div className="panel table-panel payments-table-panel"><div className="payments-table-head"><div><span>HISTÓRICO</span><b>Recebimentos registrados</b></div><small>{rows.length} {rows.length===1?"lançamento":"lançamentos"}</small></div>{rows.length===0?<Empty text="Nenhum recebimento registrado ainda."/>:<div className="payments-responsive-list">{rows.map(x=><div className="payments-responsive-row" key={x.id}><div className="payments-responsive-main"><b>{x.customers?.name||"Cliente"}</b><strong>{money(x.amount)}</strong></div><div className="payments-responsive-meta"><span>{new Date(x.paid_at).toLocaleDateString("pt-BR")}</span><span>{x.payment_method||"—"}</span></div></div>)}</div>}</div></div>
+function Payments(){
+  const companyId=useCompany();
+  const [rows,setRows]=useState([]);
+  const [loading,setLoading]=useState(true);
+  const [query,setQuery]=useState("");
+
+  useEffect(()=>{
+    let active=true;
+    if(!companyId){setLoading(false);return ()=>{active=false};}
+    setLoading(true);
+    supabase
+      .from("payments")
+      .select("*,customers(name),charges(description)")
+      .eq("company_id",companyId)
+      .order("paid_at",{ascending:false})
+      .then(({data,error})=>{
+        if(!active)return;
+        if(error){console.error(error);toast("Não foi possível carregar os recebimentos.");}
+        setRows(data||[]);
+        setLoading(false);
+      });
+    return ()=>{active=false};
+  },[companyId]);
+
+  const todayTotal=rows.reduce((sum,x)=>sum+(x.paid_at?.slice(0,10)===todayISO()?Number(x.amount||0):0),0);
+  const total=rows.reduce((sum,x)=>sum+Number(x.amount||0),0);
+  const visibleRows=useMemo(()=>{
+    const term=query.trim().toLowerCase();
+    if(!term)return rows;
+    return rows.filter(x=>([
+      x.customers?.name,
+      x.charges?.description,
+      x.payment_method
+    ].filter(Boolean).join(" ").toLowerCase()).includes(term));
+  },[rows,query]);
+
+  const formatPaidDate=value=>{
+    if(!value)return "—";
+    const date=new Date(value);
+    return Number.isNaN(date.getTime())?"—":date.toLocaleDateString("pt-BR",{day:"2-digit",month:"short",year:"numeric"});
+  };
+
+  return <div className="payments-page">
+    <PageTitle title="Recebimentos" subtitle="Tudo que sua empresa já recebeu."/>
+    <div className="payments-overview-label"><span>VISÃO GERAL</span><i/> <small>Valores confirmados</small></div>
+    <div className="metric-grid three payments-metrics">
+      <Metric title="Total recebido" value={money(total)} icon={Wallet} tone="success"/>
+      <Metric title="Recebido hoje" value={money(todayTotal)} icon={Check} tone="success"/>
+      <Metric title="Lançamentos" value={rows.length.toLocaleString("pt-BR")} icon={Receipt}/>
+    </div>
+
+    <section className="panel payments-history-panel">
+      <div className="payments-history-head">
+        <div className="payments-history-title">
+          <span className="payments-history-kicker">HISTÓRICO FINANCEIRO</span>
+          <h2>Recebimentos registrados</h2>
+          <p>Confira cada entrada confirmada na sua empresa.</p>
+        </div>
+        <div className="payments-history-count">
+          <strong>{rows.length.toLocaleString("pt-BR")}</strong>
+          <span>{rows.length===1?"lançamento":"lançamentos"}</span>
+        </div>
+      </div>
+
+      <div className="payments-history-toolbar">
+        <label className="payments-history-search">
+          <Search size={16}/>
+          <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Buscar por cliente, cobrança ou método..." aria-label="Buscar recebimentos"/>
+          {query&&<button type="button" onClick={()=>setQuery("")} aria-label="Limpar busca"><X size={14}/></button>}
+        </label>
+        <span className="payments-history-caption">{loading?"Atualizando histórico":query?visibleRows.length+" resultados": "Mais recentes primeiro"}</span>
+      </div>
+
+      <div className="payments-history-columns" aria-hidden="true">
+        <span>CLIENTE / COBRANÇA</span>
+        <span>DATA</span>
+        <span>FORMA DE PAGAMENTO</span>
+        <span>VALOR RECEBIDO</span>
+      </div>
+
+      {loading?<div className="payments-history-loading">
+        {[1,2,3].map(n=><div className="payments-history-skeleton" key={n}><i/><span/><b/></div>)}
+      </div>:visibleRows.length===0?
+        <div className="payments-history-empty">
+          <div className="payments-empty-icon"><Wallet size={22}/></div>
+          <b>{query?"Nenhum recebimento encontrado":"Nenhum recebimento registrado ainda"}</b>
+          <span>{query?"Tente buscar por outro cliente, cobrança ou forma de pagamento.":"Quando uma cobrança for marcada como paga, o recebimento aparecerá aqui."}</span>
+          {query&&<button type="button" onClick={()=>setQuery("")}>Limpar busca</button>}
+        </div>:
+        <div className="payments-history-list">
+          {visibleRows.map(x=>{
+            const customer=x.customers?.name||"Cliente";
+            const method=x.payment_method||"Não informado";
+            return <div className="payments-history-row" key={x.id}>
+              <div className="payments-history-customer">
+                <span className="payments-history-avatar">{customer.trim().charAt(0).toUpperCase()||"C"}</span>
+                <div><b>{customer}</b><small>{x.charges?.description||"Cobrança recebida"}</small></div>
+              </div>
+              <div className="payments-history-date"><span className="payments-mobile-label">Data</span><b>{formatPaidDate(x.paid_at)}</b></div>
+              <div className="payments-history-method"><span className="payments-mobile-label">Pagamento</span><span className="payments-method-pill"><i/>{method}</span></div>
+              <div className="payments-history-amount"><span className="payments-mobile-label">Valor recebido</span><strong>+ {money(x.amount)}</strong></div>
+            </div>;
+          })}
+        </div>
+      }
+    </section>
+  </div>;
 }
 function Reports(){
   const companyId=useCompany();
