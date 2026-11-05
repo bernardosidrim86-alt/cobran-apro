@@ -411,6 +411,11 @@ function Landing({session}) {
               <a href="#como" className="lp-btn lp-btn-ghost lp-btn-lg">Ver como funciona</a>
             </div>
             <p className="lp-micro">7 dias grátis · Sem cartão de crédito</p>
+            <div className="lp-trust-points" aria-label="Vantagens do CobrançaPro">
+              <span><Check size={15}/> Organização em tempo real</span>
+              <span><Check size={15}/> Cobranças pelo WhatsApp</span>
+              <span><Check size={15}/> Acesso pelo navegador</span>
+            </div>
           </div>
           <div className="lp-hero-shot">
             <BrowserFrame src="/landing/dash.webp" alt="Painel do CobrançaPro mostrando valores a receber, atrasados e recebidos" width="1600" height="1000" priority />
