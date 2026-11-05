@@ -301,6 +301,11 @@ export function Charges({companyId}){
   return <div className="modern-page modern-charges-page">
     <PageTitle title={sectionTitle} subtitle={sectionSubtitle} action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Nova cobrança</Button>}/>
     <div className="modern-toolbar">
+      <div className="modern-filter-tabs" role="group" aria-label="Filtrar cobranças">
+        <button type="button" className={filter==="pending"?"active":""} onClick={()=>setFilter("pending")} aria-pressed={filter==="pending"}>A receber</button>
+        <button type="button" className={filter==="overdue"?"active":""} onClick={()=>setFilter("overdue")} aria-pressed={filter==="overdue"}>Atrasadas</button>
+        <button type="button" className={filter==="paid"?"active":""} onClick={()=>setFilter("paid")} aria-pressed={filter==="paid"}>Recebidas</button>
+      </div>
       <div className="modern-toolbar-actions"><label className="modern-select"><span><ArrowDownUp size={14}/> Ordenar</span><select value={sort} onChange={e=>setSort(e.target.value)}><option value="due-asc">Vencimento mais próximo</option><option value="due-desc">Vencimento mais distante</option><option value="amount-desc">Maior valor</option><option value="amount-asc">Menor valor</option><option value="customer">Cliente A–Z</option></select></label><Button variant="secondary" onClick={exportCharges} disabled={!filtered.length}><Download size={16}/> Exportar</Button></div>
     </div>
     <div className="modern-list-meta"><span>{filtered.length} {filtered.length===1?"cobrança":"cobranças"}</span><span>Ordenação: {sort==="customer"?"Cliente A–Z":sort==="amount-desc"?"Maior valor":sort==="amount-asc"?"Menor valor":sort==="due-desc"?"Vencimento distante":"Vencimento próximo"}</span></div>
