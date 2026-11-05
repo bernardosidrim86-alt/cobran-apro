@@ -1,8 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import { hasPaidSubscriptionAccess } from "../src/lib/subscription-access.js";
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.COBRANCAPRO_SUPABASE_URL;
+const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.COBRANCAPRO_SUPABASE_SECRET_KEY || process.env.COBRANCAPRO_SUPABASE_SERVICE_ROLE_KEY;
 const APP_URL = process.env.APP_URL || "https://www.cobrancaproai.site";
 const BUSINESS_SEAT_LIMIT = 5;
 
