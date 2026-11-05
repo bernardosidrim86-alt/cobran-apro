@@ -1656,27 +1656,15 @@ function AIPage({locked=false,currentPlan="free"}){
 
   return <>
     <PageTitle title="Assistente IA" subtitle="Pergunte sobre seu negócio e prepare mensagens de cobrança."/>
-    {locked ? <div className="panel ai-locked-panel">
-      <div className="ai-locked-layout">
-        <section className="ai-locked-copy">
-          <div className="ai-locked-label"><span><Sparkles size={14}/> RECURSO PREMIUM</span><b><Lock size={12}/> PLANO PROFISSIONAL</b></div>
-          <div className="ai-locked-icon"><Sparkles size={25}/></div>
-          <h2>Seu financeiro mais inteligente.</h2>
-          <p>Transforme os dados da sua empresa em respostas claras e cobranças mais estratégicas com a ajuda da inteligência artificial.</p>
-          <div className="ai-locked-current-plan"><div className="ai-locked-current-icon"><CreditCard size={17}/></div><div><span>Seu plano atual</span><b>{planLabel}</b></div><span className="ai-locked-plan-status">Recurso bloqueado</span></div>
-          <a href="/#precos" className="btn btn-primary">Conhecer plano Profissional <ArrowRight size={16}/></a>
-        </section>
-        <section className="ai-locked-demo">
-          <div className="ai-locked-demo-head"><div><span>EXEMPLO DE USO</span><b>Assistente CobrançaPro</b></div><span className="ai-locked-demo-status"><i/> IA</span></div>
-          <div className="ai-locked-demo-body">
-            <div className="ai-locked-demo-question"><span>VOCÊ</span>Quem eu preciso cobrar hoje?</div>
-            <div className="ai-locked-demo-answer"><div className="ai-locked-demo-orb"><Sparkles size={16}/></div><div><b>Priorize suas cobranças</b><p>Consulte pendências, identifique clientes em atraso e entenda seus recebimentos sem precisar procurar informação em várias telas.</p></div></div>
-            <div className="ai-locked-demo-tags"><span><CircleDollarSign size={13}/> Cobranças em aberto</span><span><TrendingUp size={13}/> Recebimentos</span><span><MessageCircle size={13}/> Mensagens prontas</span></div>
-          </div>
-          <div className="ai-locked-demo-footer"><Lock size={12}/> Prévia ilustrativa · disponível no Profissional</div>
-        </section>
+    {locked ? <div className="panel ai-locked-simple">
+      <div className="ai-locked-simple-icon"><Lock size={19}/></div>
+      <div className="ai-locked-simple-copy">
+        <span className="ai-locked-simple-eyebrow">PLANO PROFISSIONAL</span>
+        <h2>Assistente IA</h2>
+        <p>Tenha respostas sobre suas cobranças e recebimentos em segundos.</p>
+        <span className="ai-locked-simple-plan">Seu plano: {planLabel}</span>
       </div>
-      <div className="ai-locked-features"><span><Check size={14}/> Análise das suas cobranças</span><span><Check size={14}/> Respostas sobre recebimentos</span><span><Check size={14}/> Mensagens de cobrança com IA</span></div>
+      <a href="/#precos" className="btn btn-primary">Conhecer planos <ArrowRight size={15}/></a>
     </div> : <div className="ai-layout">
       <div className="panel ai-chat-panel">
         <div className="panel-head">
