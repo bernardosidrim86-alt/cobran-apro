@@ -1078,11 +1078,24 @@ function CalendarPage(){
 
   return <div className="calendar-page">
     <PageTitle title="Calendário financeiro" subtitle="Visualize suas cobranças e recebimentos ao longo do mês."/>
+    <div className="calendar-overview-label"><span>VISÃO GERAL</span><i/><small>Resumo do período</small></div>
     <div className="calendar-summary-grid">
-      <div className="calendar-summary-card"><span>Previsto no mês</span><strong>{money(expected)}</strong><small>{monthCharges.length} cobranças</small></div>
-      <div className="calendar-summary-card"><span>Recebido no mês</span><strong>{money(received)}</strong><small>{payments.length} recebimentos</small></div>
-      <div className="calendar-summary-card"><span>Em aberto</span><strong>{money(open)}</strong><small>Valores pendentes</small></div>
-      <div className="calendar-summary-card danger"><span>Em atraso</span><strong>{money(overdue)}</strong><small>Precisa de atenção</small></div>
+      <div className="calendar-summary-card">
+        <div className="calendar-summary-icon violet"><CalendarDays size={19}/></div>
+        <div className="calendar-summary-copy"><span>Previsto no mês</span><strong>{money(expected)}</strong><small>{monthCharges.length} cobranças</small></div>
+      </div>
+      <div className="calendar-summary-card">
+        <div className="calendar-summary-icon success"><Check size={19}/></div>
+        <div className="calendar-summary-copy"><span>Recebido no mês</span><strong>{money(received)}</strong><small>{payments.length} recebimentos</small></div>
+      </div>
+      <div className="calendar-summary-card">
+        <div className="calendar-summary-icon open"><Wallet size={19}/></div>
+        <div className="calendar-summary-copy"><span>Em aberto</span><strong>{money(open)}</strong><small>Valores pendentes</small></div>
+      </div>
+      <div className="calendar-summary-card danger">
+        <div className="calendar-summary-icon danger"><Receipt size={19}/></div>
+        <div className="calendar-summary-copy"><span>Em atraso</span><strong>{money(overdue)}</strong><small>Precisa de atenção</small></div>
+      </div>
     </div>
 
     <div className="calendar-layout">
