@@ -12876,3 +12876,135 @@ html[data-theme="dark"] .app-layout .sidebar .logout:hover{
     transform:none!important;
   }
 }
+
+
+/* Ajuste fino do menu lateral: logo no tamanho original e navegação compacta */
+.app-layout .sidebar{
+  width:235px!important;
+  padding:22px 13px 16px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#fbfbfe 100%)!important;
+  border-right:1px solid #e6e7ef!important;
+  border-radius:0 16px 16px 0!important;
+  box-shadow:8px 0 26px rgba(29,31,66,.035)!important;
+}
+.app-layout .mobile-sidebar-head{
+  min-height:76px!important;
+  margin:0 0 17px!important;
+  padding:0 5px 17px!important;
+  border-bottom:1px solid #e9eaf1!important;
+}
+.app-layout .side-brand{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  min-height:58px!important;
+  padding:0 4px!important;
+}
+.app-layout .side-brand .brand-logo{
+  display:block!important;
+  width:205px!important;
+  max-width:100%!important;
+  height:68px!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  object-position:left center!important;
+  transform:translateY(8px)!important;
+}
+.app-layout .side-nav{
+  display:grid!important;
+  gap:4px!important;
+  padding:0 1px!important;
+}
+.app-layout .side-nav>a,
+.app-layout .side-nav-parent{
+  min-height:38px!important;
+  height:38px!important;
+  padding:0 11px!important;
+  gap:10px!important;
+  border-radius:9px!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  letter-spacing:0!important;
+  box-shadow:none!important;
+}
+.app-layout .side-nav>a svg,
+.app-layout .side-nav-parent svg:first-child{
+  width:17px!important;
+  height:17px!important;
+  flex-basis:17px!important;
+}
+.app-layout .side-nav>a:hover,
+.app-layout .side-nav-parent:hover{
+  transform:none!important;
+  background:#f2f3f9!important;
+  border-color:#ececf4!important;
+}
+.app-layout .side-nav>a.active,
+.app-layout .side-nav-parent.active{
+  background:#eeefff!important;
+  border-color:#e2e3ff!important;
+  box-shadow:inset 3px 0 0 #6264dc!important;
+  color:#4e50c3!important;
+}
+.app-layout .side-nav-sub{
+  margin:2px 0 5px 25px!important;
+  padding:3px 0 3px 10px!important;
+}
+.app-layout .side-nav-sub a{
+  min-height:30px!important;
+  padding:0 9px!important;
+  font-size:10px!important;
+  border-radius:7px!important;
+}
+.app-layout .side-bottom{
+  padding-top:12px!important;
+  border-top:1px solid #e9eaf1!important;
+}
+.app-layout .user-mini-button{
+  min-height:49px!important;
+  padding:6px!important;
+  border-radius:10px!important;
+  background:#f7f7fb!important;
+  border-color:#ececf3!important;
+}
+.app-layout .sidebar .avatar{
+  width:31px!important;
+  height:31px!important;
+  flex-basis:31px!important;
+  border-radius:9px!important;
+}
+.app-layout .sidebar .user-mini b{font-size:10px!important}
+.app-layout .sidebar .user-mini span{font-size:8.5px!important}
+.app-layout .sidebar .logout{
+  min-height:34px!important;
+  font-size:10px!important;
+}
+html[data-theme="dark"] .app-layout .sidebar{
+  background:linear-gradient(180deg,#191a23 0%,#171820 100%)!important;
+  border-right:1px solid #30323e!important;
+  box-shadow:8px 0 26px rgba(0,0,0,.2)!important;
+}
+html[data-theme="dark"] .app-layout .mobile-sidebar-head,
+html[data-theme="dark"] .app-layout .side-bottom{
+  border-color:#30323e!important;
+}
+html[data-theme="dark"] .app-layout .side-nav>a:hover,
+html[data-theme="dark"] .app-layout .side-nav-parent:hover{
+  background:#242530!important;
+  border-color:#30323e!important;
+}
+html[data-theme="dark"] .app-layout .side-nav>a.active,
+html[data-theme="dark"] .app-layout .side-nav-parent.active{
+  background:#292a49!important;
+  border-color:#3b3d68!important;
+  box-shadow:inset 3px 0 0 #898bff!important;
+}
+html[data-theme="dark"] .app-layout .user-mini-button{
+  background:#1e1f29!important;
+  border-color:#30323e!important;
+}
+@media(max-width:900px){
+  .app-layout .sidebar{width:270px!important}
+  .app-layout .side-brand .brand-logo{width:205px!important}
+}
