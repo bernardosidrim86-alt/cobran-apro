@@ -14797,3 +14797,212 @@ html[data-theme="dark"] .cp-reports-page .cp-report-rank>.main em{background:#2b
   .cp-reports-page .cp-report-panel,
   .cp-reports-page .cp-report-refresh{transition:none!important}
 }
+
+
+/* Modal Nova cobrança — layout isolado e responsivo */
+.charge-modal-backdrop{
+  z-index:2000!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:20px!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+}
+.modern-charge-modal{
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  align-content:start!important;
+  gap:14px!important;
+  width:min(570px,calc(100vw - 32px))!important;
+  max-width:570px!important;
+  max-height:calc(100vh - 40px)!important;
+  max-height:calc(100dvh - 40px)!important;
+  margin:auto!important;
+  padding:25px!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+.modern-charge-modal .modal-head{
+  min-width:0!important;
+  margin:0 34px 2px 0!important;
+  gap:12px!important;
+}
+.modern-charge-modal .modal-head h2{
+  margin:0!important;
+  font-size:20px!important;
+  line-height:1.25!important;
+  font-weight:750!important;
+}
+.modern-charge-modal .modal-head p{
+  margin:4px 0 0!important;
+  font-size:12px!important;
+  line-height:1.45!important;
+}
+.modern-charge-modal .icon-box{
+  width:42px!important;
+  height:42px!important;
+  flex:0 0 42px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:12px!important;
+}
+.charge-form-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:13px 14px!important;
+  min-width:0!important;
+}
+.charge-form-grid>.field{
+  min-width:0!important;
+  width:100%!important;
+  margin:0!important;
+}
+.charge-form-grid>.field:nth-child(-n+2){grid-column:1/-1!important}
+.charge-form-grid .field>span{
+  display:block!important;
+  margin:0 0 6px!important;
+  font-size:11px!important;
+  line-height:1.35!important;
+  font-weight:650!important;
+}
+.charge-form-grid .field input,
+.charge-form-grid .field select{
+  display:block!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:43px!important;
+  height:43px!important;
+  padding:0 12px!important;
+  border-radius:9px!important;
+  font-size:12px!important;
+  line-height:normal!important;
+}
+.charge-form-grid .field input[type="date"]{padding-right:9px!important}
+.modern-charge-modal .recurrence-hint{
+  margin:-5px 0 0!important;
+  font-size:10px!important;
+  line-height:1.45!important;
+}
+.modern-charge-modal .charge-pix-config-hint{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:11px 12px!important;
+  border:1px solid #e8e5d8!important;
+  border-radius:10px!important;
+  background:#fffaf0!important;
+  color:#79705c!important;
+  font-size:10px!important;
+  line-height:1.5!important;
+}
+.modern-charge-modal .charge-pix-config-hint>svg{
+  flex:0 0 17px!important;
+  color:#a17b2e!important;
+}
+.modern-charge-modal .charge-pix-config-hint>span{flex:1!important;min-width:0!important}
+.modern-charge-modal .charge-pix-config-hint>button{
+  flex:0 0 auto!important;
+  padding:5px 8px!important;
+  border:1px solid #e7d8b5!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#806020!important;
+  font-size:10px!important;
+  font-weight:700!important;
+  cursor:pointer!important;
+}
+.modern-charge-modal .modal-actions{
+  display:flex!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:9px!important;
+  margin:2px 0 0!important;
+  padding-top:4px!important;
+}
+.modern-charge-modal .modal-actions .btn{
+  min-height:42px!important;
+  padding:0 16px!important;
+  border-radius:9px!important;
+  font-size:11px!important;
+}
+html[data-theme="dark"] .charge-modal-backdrop{background:rgba(0,0,0,.64)!important}
+html[data-theme="dark"] .modern-charge-modal{
+  background:#191a22!important;
+  border-color:#343644!important;
+  color:#e5e6eb!important;
+  box-shadow:0 30px 90px rgba(0,0,0,.5)!important;
+}
+html[data-theme="dark"] .modern-charge-modal .modal-head h2{color:#f3f4f6!important}
+html[data-theme="dark"] .modern-charge-modal .modal-head p{color:#9b9da8!important}
+html[data-theme="dark"] .modern-charge-modal .icon-box{
+  background:#2a2b4c!important;
+  color:#c7c8ff!important;
+}
+html[data-theme="dark"] .modern-charge-modal .field>span{color:#bfc1cb!important}
+html[data-theme="dark"] .modern-charge-modal .field input,
+html[data-theme="dark"] .modern-charge-modal .field select{
+  background:#20212a!important;
+  border-color:#353742!important;
+  color:#f3f4f6!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .modern-charge-modal .field select option{
+  background:#20212a!important;
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .modern-charge-modal .field input:focus,
+html[data-theme="dark"] .modern-charge-modal .field select:focus{
+  border-color:#7779ed!important;
+  box-shadow:0 0 0 3px rgba(119,121,237,.14)!important;
+}
+html[data-theme="dark"] .modern-charge-modal .modal-x{
+  background:#292a32!important;
+  color:#dfe1e7!important;
+}
+html[data-theme="dark"] .modern-charge-modal .btn-secondary{
+  background:#20212a!important;
+  border-color:#383a46!important;
+  color:#e5e6eb!important;
+}
+html[data-theme="dark"] .modern-charge-modal .charge-pix-config-hint{
+  background:#28251d!important;
+  border-color:#50452b!important;
+  color:#d2c29b!important;
+}
+html[data-theme="dark"] .modern-charge-modal .charge-pix-config-hint>svg{color:#e0bc69!important}
+html[data-theme="dark"] .modern-charge-modal .charge-pix-config-hint>button{
+  background:#332c20!important;
+  border-color:#665638!important;
+  color:#f0d390!important;
+}
+@media(max-width:560px){
+  .charge-modal-backdrop{
+    align-items:start!important;
+    padding:10px!important;
+  }
+  .modern-charge-modal{
+    width:calc(100vw - 20px)!important;
+    max-height:calc(100vh - 20px)!important;
+    max-height:calc(100dvh - 20px)!important;
+    padding:19px!important;
+    gap:13px!important;
+  }
+  .charge-form-grid{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}
+  .charge-form-grid>.field:nth-child(-n+2){grid-column:auto!important}
+  .modern-charge-modal .modal-actions{
+    display:grid!important;
+    grid-template-columns:1fr 1.3fr!important;
+    gap:8px!important;
+  }
+  .modern-charge-modal .modal-actions .btn{width:100%!important;padding:0 10px!important}
+  .modern-charge-modal .charge-pix-config-hint{align-items:flex-start!important;flex-wrap:wrap!important}
+  .modern-charge-modal .charge-pix-config-hint>span{flex:1 1 calc(100% - 30px)!important}
+  .modern-charge-modal .charge-pix-config-hint>button{margin-left:27px!important}
+}
