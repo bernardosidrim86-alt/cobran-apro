@@ -14388,45 +14388,105 @@ html[data-theme="dark"] .payments-history-search{
 }
 
 
-/* Neon performance pass: keep the premium trace, remove continuous repainting */
-.dashboard-page .dashboard-metrics>.metric::before,
-.dashboard-page .dashboard-action-grid>.panel::before,
-.modern-customers-page .modern-table-panel::before,
-.payments-page .payments-metrics .metric::before,
-.payments-page .payments-history-panel::before{
-  animation:none!important;
-  background-size:100% 100%!important;
-  filter:none!important;
-  opacity:.78!important;
-  transform:none!important;
-}
+/* Neon motion: linhas contínuas com animação por transform, sem blur pulsante */
 .dashboard-page .dashboard-metrics>.metric::before,
 .dashboard-page .dashboard-action-grid>.panel::before{
-  box-shadow:0 0 5px rgba(111,113,245,.22)!important;
+  animation:cpDashNeonTravel 8s linear infinite!important;
+  filter:none!important;
+  box-shadow:0 0 6px rgba(111,113,245,.32)!important;
+  background-size:100% 100%!important;
+  will-change:transform,opacity;
+  backface-visibility:hidden;
 }
 .dashboard-page .dashboard-metrics>.metric::after,
 .dashboard-page .dashboard-action-grid>.panel::after{
   animation:none!important;
   filter:none!important;
-  opacity:.65!important;
+  opacity:.2!important;
+  transform:none!important;
 }
+.dashboard-page .dashboard-metrics>.metric:nth-child(2)::before,
+.dashboard-page .dashboard-action-grid>.panel:nth-child(2)::before{animation-delay:1.8s!important}
+.dashboard-page .dashboard-metrics>.metric:nth-child(3)::before{animation-delay:3.6s!important}
+.dashboard-page .dashboard-metrics>.metric:nth-child(4)::before{animation-delay:5.4s!important}
+
 .modern-customers-page .modern-table-panel::before{
-  box-shadow:0 0 6px rgba(111,113,245,.2)!important;
+  animation:cpCustomersNeonSweep 9s linear infinite!important;
+  filter:none!important;
+  box-shadow:0 0 6px rgba(111,113,245,.32)!important;
+  will-change:transform,opacity;
+  backface-visibility:hidden;
+}
+
+@keyframes cpPaymentNeonSweep{
+  0%{transform:translate3d(-120%,0,0);opacity:.18}
+  12%{opacity:1}
+  88%{opacity:1}
+  100%{transform:translate3d(420%,0,0);opacity:.18}
 }
 .payments-page .payments-metrics .metric::before,
 .payments-page .payments-history-panel::before{
+  right:auto!important;
+  width:28%!important;
+  background-size:100% 100%!important;
   background-position:center!important;
-  box-shadow:0 0 5px rgba(104,106,255,.2)!important;
+  animation:cpPaymentNeonSweep 7.5s linear infinite!important;
+  filter:none!important;
+  will-change:transform,opacity;
+  backface-visibility:hidden;
 }
+.payments-page .payments-metrics .metric::before{left:16px!important}
+.payments-page .payments-history-panel::before{left:22px!important}
+.payments-page .payments-metrics .metric:nth-child(2)::before{
+  box-shadow:0 0 6px rgba(76,205,139,.28)!important;
+}
+.payments-page .payments-metrics .metric::before,
+.payments-page .payments-history-panel::before{
+  box-shadow:0 0 6px rgba(104,106,255,.28)!important;
+}
+
+/* Cobranças: feixe neon discreto no topo da tabela */
+@keyframes cpChargesNeonSweep{
+  0%{transform:translate3d(-130%,0,0);opacity:.16}
+  12%{opacity:.95}
+  88%{opacity:.95}
+  100%{transform:translate3d(430%,0,0);opacity:.16}
+}
+.modern-charges-page .modern-table-panel{
+  position:relative!important;
+  isolation:isolate!important;
+}
+.modern-charges-page .modern-table-panel::before{
+  content:""!important;
+  position:absolute!important;
+  z-index:3!important;
+  top:0!important;
+  left:0!important;
+  width:26%!important;
+  height:2px!important;
+  border-radius:999px!important;
+  pointer-events:none!important;
+  background:linear-gradient(90deg,transparent,rgba(113,115,244,.9),rgba(187,188,255,.95),transparent)!important;
+  box-shadow:0 0 6px rgba(111,113,245,.32)!important;
+  animation:cpChargesNeonSweep 8s linear infinite!important;
+  will-change:transform,opacity;
+  backface-visibility:hidden;
+}
+html[data-theme="dark"] .modern-charges-page .modern-table-panel::before{
+  background:linear-gradient(90deg,transparent,rgba(137,139,255,.95),rgba(210,211,255,.92),transparent)!important;
+  box-shadow:0 0 7px rgba(119,121,255,.4)!important;
+}
+
 @media(prefers-reduced-motion:reduce){
   .dashboard-page .dashboard-metrics>.metric::before,
   .dashboard-page .dashboard-action-grid>.panel::before,
+  .dashboard-page .dashboard-metrics>.metric::after,
+  .dashboard-page .dashboard-action-grid>.panel::after,
   .modern-customers-page .modern-table-panel::before,
   .payments-page .payments-metrics .metric::before,
   .payments-page .payments-history-panel::before,
-  .dashboard-page .dashboard-metrics>.metric::after,
-  .dashboard-page .dashboard-action-grid>.panel::after{
+  .modern-charges-page .modern-table-panel::before{
     animation:none!important;
-    transition:none!important;
+    will-change:auto!important;
   }
 }
