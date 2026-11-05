@@ -13009,3 +13009,97 @@ html[data-theme="dark"] .app-layout .user-mini-button{
   .app-layout .side-brand .brand-logo{width:205px!important}
 }
 
+
+
+/* Cobranças: filtros de situação dentro da página */
+.modern-charges-page .modern-filter-tabs{
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  min-height:48px!important;
+  padding:4px!important;
+  border:1px solid #e7e8ef!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  box-shadow:0 2px 7px rgba(19,24,40,.025)!important;
+}
+.modern-charges-page .modern-filter-tabs button{
+  position:relative!important;
+  min-height:38px!important;
+  padding:0 16px!important;
+  border:1px solid transparent!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:#777985!important;
+  font-size:12px!important;
+  font-weight:650!important;
+  white-space:nowrap!important;
+  transition:background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease!important;
+}
+.modern-charges-page .modern-filter-tabs button:hover{
+  background:#f7f7fb!important;
+  color:#353642!important;
+}
+.modern-charges-page .modern-filter-tabs button.active{
+  border-color:#dedfff!important;
+  background:#f0f0ff!important;
+  color:#5355c9!important;
+  box-shadow:0 2px 5px rgba(83,85,201,.08)!important;
+}
+.modern-charges-page .modern-filter-tabs button:nth-child(2).active{
+  border-color:#f3dada!important;
+  background:#fff3f3!important;
+  color:#c45252!important;
+  box-shadow:0 2px 5px rgba(196,82,82,.07)!important;
+}
+.modern-charges-page .modern-filter-tabs button:nth-child(3).active{
+  border-color:#d4ecdf!important;
+  background:#f0faf4!important;
+  color:#258355!important;
+  box-shadow:0 2px 5px rgba(37,131,85,.07)!important;
+}
+.modern-charges-page .modern-filter-tabs button:focus-visible{
+  outline:3px solid rgba(102,105,220,.2)!important;
+  outline-offset:2px!important;
+}
+html[data-theme="dark"] .modern-charges-page .modern-filter-tabs{
+  border-color:#30313e!important;
+  background:#1b1c25!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.12)!important;
+}
+html[data-theme="dark"] .modern-charges-page .modern-filter-tabs button{
+  color:#a5a7b3!important;
+}
+html[data-theme="dark"] .modern-charges-page .modern-filter-tabs button:hover{
+  background:#242530!important;
+  color:#f0f0f4!important;
+}
+html[data-theme="dark"] .modern-charges-page .modern-filter-tabs button.active{
+  border-color:#45467c!important;
+  background:#292a49!important;
+  color:#b9baff!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.15)!important;
+}
+html[data-theme="dark"] .modern-charges-page .modern-filter-tabs button:nth-child(2).active{
+  border-color:#704044!important;
+  background:#38262b!important;
+  color:#ffb1b1!important;
+}
+html[data-theme="dark"] .modern-charges-page .modern-filter-tabs button:nth-child(3).active{
+  border-color:#315d4b!important;
+  background:#20372c!important;
+  color:#9de0b9!important;
+}
+@media(max-width:700px){
+  .modern-charges-page .modern-toolbar{align-items:stretch!important}
+  .modern-charges-page .modern-filter-tabs{
+    width:100%!important;
+    justify-content:stretch!important;
+  }
+  .modern-charges-page .modern-filter-tabs button{
+    flex:1 1 0!important;
+    min-width:0!important;
+    padding:0 10px!important;
+    font-size:11px!important;
+  }
+}
