@@ -603,6 +603,16 @@ function Price({plan, featured, session, annual=false}) {
   </div>;
 }
 function AuthLayout({children,title,subtitle}) {
+  useEffect(()=>{
+    const root=document.documentElement;
+    const previousTheme=root.getAttribute("data-theme");
+    root.setAttribute("data-theme","dark");
+    return ()=>{
+      if(previousTheme) root.setAttribute("data-theme",previousTheme);
+      else root.removeAttribute("data-theme");
+    };
+  },[]);
+
   return <div className="auth-page"><div className="auth-card"><Link to="/" className="brand auth-brand"><img className="brand-logo" src="/logo.png" alt="CobrançaPro" /></Link><div className="auth-heading"><h1>{title}</h1><p>{subtitle}</p></div>{children}</div></div>
 }
 
