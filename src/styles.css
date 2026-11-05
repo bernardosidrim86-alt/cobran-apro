@@ -12093,3 +12093,19 @@ html[data-theme="dark"] .app-layout .side-nav .side-nav-parent.active{
     font-size:9px!important;
   }
 }
+
+
+/* Acabamento da lateral: contorno mais presente e cantos menos retos no tema escuro */
+.app-layout .sidebar{
+  border-right:1px solid #e2e4eb!important;
+  border-radius:0 16px 16px 0!important;
+  box-shadow:5px 0 22px rgba(20,24,40,.045)!important;
+}
+html[data-theme="dark"] .app-layout .sidebar{
+  background:#181920!important;
+  border-right:2px solid #383a47!important;
+  border-top:1px solid rgba(255,255,255,.035)!important;
+  border-bottom:1px solid rgba(255,255,255,.035)!important;
+  border-radius:0 18px 18px 0!important;
+  box-shadow:8px 0 28px rgba(0,0,0,.24),inset -1px 0 0 rgba(255,255,255,.035)!important;
+}
