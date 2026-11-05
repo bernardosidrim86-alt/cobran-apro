@@ -151,7 +151,7 @@ language sql
 stable
 security definer
 set search_path = ''
-as $
+as $$
   select case
     when p.id is null then false
     when p.plan = 'free' then
@@ -164,7 +164,7 @@ as $
   from public.profiles p
   left join auth.users u on u.id = p.id
   where p.id = (select auth.uid())
-$;
+$$;
 
 revoke all on function private.has_active_app_access() from public, anon;
 grant usage on schema private to authenticated;
@@ -436,7 +436,7 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $$
 declare
   v_uid uuid := (select auth.uid());
   v_plan text;
@@ -513,7 +513,7 @@ begin
 
   return new;
 end;
-$;
+$$;
 
 revoke all on function private.enforce_plan_insert_limit() from public, anon, authenticated;
 
@@ -530,14 +530,14 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $$
 begin
   new.id := old.id;
   new.company_id := old.company_id;
   new.created_at := old.created_at;
   return new;
 end;
-$;
+$$;
 
 revoke all on function private.guard_immutable_fields() from public, anon, authenticated;
 
