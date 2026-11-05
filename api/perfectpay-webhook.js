@@ -2,10 +2,10 @@ import { createClient } from "@supabase/supabase-js";
 import { hasPaidSubscriptionAccess } from "../src/lib/subscription-access.js";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 const PERFECTPAY_WEBHOOK_TOKEN = process.env.PERFECTPAY_WEBHOOK_TOKEN;
 
-const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
@@ -156,7 +156,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: "method_not_allowed" });
   }
 
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !PERFECTPAY_WEBHOOK_TOKEN) {
+  if (!SUPABASE_URL || !SUPABASE_SECRET_KEY || !PERFECTPAY_WEBHOOK_TOKEN) {
     console.error("Webhook env vars ausentes.");
     return res.status(500).json({ ok: false, error: "webhook_not_configured" });
   }
