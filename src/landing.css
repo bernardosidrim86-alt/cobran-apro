@@ -1537,3 +1537,117 @@
   .lp-final-cta{transition:none!important}
   .lp .lp-animate{opacity:1!important;transform:none!important;transition:none!important}
 }
+
+
+/* LANDING 5.4 — movimento e profundidade */
+@media (prefers-reduced-motion:no-preference){
+  .lp-hero{
+    position:relative!important;
+    isolation:isolate!important;
+    overflow:hidden!important;
+  }
+  .lp-hero::before{
+    content:""!important;
+    position:absolute!important;
+    z-index:-1!important;
+    width:min(62vw,760px)!important;
+    aspect-ratio:1!important;
+    top:-48%!important;
+    left:48%!important;
+    border-radius:50%!important;
+    background:radial-gradient(circle,rgba(112,118,255,.17) 0%,rgba(112,118,255,.055) 38%,transparent 70%)!important;
+    filter:blur(12px)!important;
+    pointer-events:none!important;
+    animation:lpAmbient 12s ease-in-out infinite alternate!important;
+  }
+  .lp-hero::after{
+    content:""!important;
+    position:absolute!important;
+    z-index:-1!important;
+    inset:0!important;
+    opacity:.13!important;
+    pointer-events:none!important;
+    background-image:linear-gradient(rgba(151,157,255,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(151,157,255,.13) 1px,transparent 1px)!important;
+    background-size:58px 58px!important;
+    mask-image:linear-gradient(to bottom,black,transparent 88%)!important;
+  }
+  .lp-hero-shot .lp-frame{
+    transform:perspective(1400px) rotateY(-5deg) rotateX(1deg)!important;
+    transform-origin:center center!important;
+    animation:lpMockupFloat 7s ease-in-out infinite!important;
+    transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s ease!important;
+    box-shadow:0 35px 80px rgba(0,0,0,.42),0 0 0 1px rgba(143,148,255,.13),0 0 55px rgba(103,109,245,.09)!important;
+  }
+  .lp-hero-shot:hover .lp-frame{
+    transform:perspective(1400px) rotateY(-1deg) rotateX(0) translateY(-5px)!important;
+    box-shadow:0 42px 90px rgba(0,0,0,.48),0 0 0 1px rgba(143,148,255,.24),0 0 70px rgba(103,109,245,.15)!important;
+  }
+  .lp-header{transition:background .3s ease,border-color .3s ease!important}
+  .lp-header-cta .lp-btn-primary,
+  .lp-cta-row .lp-btn-primary,
+  .lp-final-cta{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+  }
+  .lp-header-cta .lp-btn-primary::after,
+  .lp-cta-row .lp-btn-primary::after,
+  .lp-final-cta::after{
+    content:""!important;
+    position:absolute!important;
+    inset:-40% auto -40% -55%!important;
+    width:35%!important;
+    transform:skewX(-22deg)!important;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent)!important;
+    transition:left .65s ease!important;
+    pointer-events:none!important;
+    z-index:-1!important;
+  }
+  .lp-header-cta .lp-btn-primary:hover::after,
+  .lp-cta-row .lp-btn-primary:hover::after,
+  .lp-final-cta:hover::after{left:125%!important}
+  .lp-features>div,
+  .lp-plans .price-card{
+    transform:translateZ(0)!important;
+    will-change:transform!important;
+  }
+  .lp-features>div::after,
+  .lp-plans .price-card::after{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    border-radius:inherit!important;
+    opacity:0!important;
+    pointer-events:none!important;
+    background:radial-gradient(340px circle at var(--pointer-x,50%) var(--pointer-y,0%),rgba(132,139,255,.12),transparent 58%)!important;
+    transition:opacity .25s ease!important;
+  }
+  .lp-features>div:hover::after,
+  .lp-plans .price-card:hover::after{opacity:1!important}
+  .lp-step img,
+  .lp-step .lp-image-zoom img{
+    transition:transform .7s cubic-bezier(.2,.8,.2,1),filter .5s ease!important;
+  }
+  .lp-step .lp-image-zoom:hover img{transform:scale(1.025)!important;filter:saturate(1.08)!important}
+  .lp-faq details{transition:transform .22s ease,border-color .22s ease,background .22s ease!important}
+  .lp-faq details[open]{transform:translateX(3px)!important}
+  .lp-final::before{animation:lpOrbit 24s linear infinite!important}
+  @keyframes lpAmbient{
+    from{transform:translate3d(-4%,0,0) scale(.92);opacity:.65}
+    to{transform:translate3d(5%,8%,0) scale(1.12);opacity:1}
+  }
+  @keyframes lpMockupFloat{
+    0%,100%{translate:0 0}
+    50%{translate:0 -9px}
+  }
+  @keyframes lpOrbit{to{transform:rotate(360deg)}}
+}
+@media(max-width:900px) and (prefers-reduced-motion:no-preference){
+  .lp-hero-shot .lp-frame{transform:none!important;animation:lpMobileFloat 7s ease-in-out infinite!important}
+  @keyframes lpMobileFloat{0%,100%{translate:0 0}50%{translate:0 -6px}}
+}
+@media(prefers-reduced-motion:reduce){
+  .lp-hero::before,.lp-hero::after,.lp-hero-shot .lp-frame,.lp-final::before{animation:none!important}
+  .lp-hero-shot .lp-frame{transform:none!important}
+  .lp-features>div,.lp-plans .price-card,.lp-faq details,.lp-step img{will-change:auto!important;transition:none!important}
+}
