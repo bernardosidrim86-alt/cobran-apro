@@ -15117,3 +15117,60 @@ html[data-theme="dark"] .app-layout .settings-layout>.settings-nav>button.active
   .app-layout .settings-layout>.settings-nav>button.active{box-shadow:inset 0 -2px 0 #6667e8!important}
   html[data-theme="dark"] .app-layout .settings-layout>.settings-nav>button.active{box-shadow:inset 0 -2px 0 #8889ff!important}
 }
+
+
+/* Avisos de limite do plano */
+.plan-limit-notice{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin:0 0 18px!important;
+  padding:15px 17px!important;
+  border:1px solid #ead8a8!important;
+  border-left:3px solid #d49a32!important;
+  border-radius:12px!important;
+  background:#fffaf0!important;
+  color:#66512b!important;
+}
+.plan-limit-notice>div{min-width:0!important}
+.plan-limit-notice strong{display:block!important;font-size:12px!important;font-weight:750!important;color:#79591c!important}
+.plan-limit-notice p{margin:4px 0 0!important;font-size:11px!important;line-height:1.5!important;color:#806d4c!important}
+.plan-limit-notice>a{
+  display:inline-flex!important;
+  flex:0 0 auto!important;
+  align-items:center!important;
+  gap:6px!important;
+  min-height:34px!important;
+  padding:0 11px!important;
+  border:1px solid #e7d5a7!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#79591c!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+}
+.plan-limit-notice>a:hover{background:#fff4d9!important;border-color:#d8bd7d!important}
+.plan-limit-notice-modal{margin:0 0 2px!important}
+html[data-theme="dark"] .plan-limit-notice{
+  background:#30291d!important;
+  border-color:#5c4b2d!important;
+  border-left-color:#d6a84e!important;
+  color:#f1dfb8!important;
+}
+html[data-theme="dark"] .plan-limit-notice strong{color:#f2d28e!important}
+html[data-theme="dark"] .plan-limit-notice p{color:#d4c39e!important}
+html[data-theme="dark"] .plan-limit-notice>a{
+  background:#3a3122!important;
+  border-color:#655331!important;
+  color:#f3d99d!important;
+}
+html[data-theme="dark"] .plan-limit-notice>a:hover{background:#493b25!important}
+@media(max-width:600px){
+  .plan-limit-notice{align-items:flex-start!important;flex-direction:column!important;gap:10px!important;padding:13px!important}
+  .plan-limit-notice>a{min-height:32px!important}
+}
