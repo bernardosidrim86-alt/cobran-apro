@@ -19,9 +19,10 @@ export function Customers({companyId}){
   const [deleting,setDeleting]=useState(false);
   const [saving,setSaving]=useState(false);
   const [planKey,setPlanKey]=useState("free");
+  const [planLoaded,setPlanLoaded]=useState(false);
   const [limitError,setLimitError]=useState("");
   const activePlan=PLAN_OPTIONS.find(p=>p.key===planKey)||PLAN_OPTIONS[0];
-  const customerLimitReached=activePlan.maxCustomers!==null&&rows.length>=activePlan.maxCustomers;
+  const customerLimitReached=planLoaded&&activePlan.maxCustomers!==null&&rows.length>=activePlan.maxCustomers;
   const [editingCustomer,setEditingCustomer]=useState(null);
   const [editingForm,setEditingForm]=useState({name:"",phone:"",email:"",notes:""});
   const [editingSaving,setEditingSaving]=useState(false);
@@ -32,7 +33,7 @@ export function Customers({companyId}){
   const [companyLookupComplete,setCompanyLookupComplete]=useState(false);
   const activeCompanyId=companyId||resolvedCompanyId;
 
-  useEffect(()=>{let active=true;supabase.auth.getUser().then(async({data})=>{if(!data?.user?.id)return;const {data:profile}=await supabase.from("profiles").select("plan").eq("id",data.user.id).maybeSingle();if(active)setPlanKey(profile?.plan||"free");});return()=>{active=false;};},[]);
+  useEffect(()=>{let active=true;supabase.auth.getUser().then(async({data})=>{if(!data?.user?.id)return;const {data:profile}=await supabase.from("profiles").select("plan").eq("id",data.user.id).maybeSingle();if(active){setPlanKey(profile?.plan||"free");setPlanLoaded(true);}}).catch(()=>{if(active)setPlanLoaded(true);});return()=>{active=false;};},[]);
 
   // O shell carrega o perfil de forma assíncrona. Resolva a empresa aqui também
   // para evitar que um clique rápido no cadastro use companyId ainda nulo.
