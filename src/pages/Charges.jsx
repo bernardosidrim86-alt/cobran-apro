@@ -8,7 +8,6 @@ import { downloadCsv } from "../lib/export";
 import { buildPixPayload } from "../lib/pix";
 import { Button, Input, Empty, PageTitle } from "../components/AppPrimitives";
 import { toast, confirmDialog } from "../ui";
-import { PLAN_OPTIONS } from "../lib/plans";
 
 function addDays(date,days){
   const d=new Date(date+"T12:00:00");
