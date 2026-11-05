@@ -12109,3 +12109,115 @@ html[data-theme="dark"] .app-layout .sidebar{
   border-radius:0 18px 18px 0!important;
   box-shadow:8px 0 28px rgba(0,0,0,.24),inset -1px 0 0 rgba(255,255,255,.035)!important;
 }
+
+
+/* Dashboard motion polish — neon traces, depth and subtle entrance */
+@keyframes cpDashNeonTravel{
+  0%{transform:translateX(-120%);opacity:0}
+  12%{opacity:.85}
+  82%{opacity:.9}
+  100%{transform:translateX(270%);opacity:0}
+}
+@keyframes cpDashGlowPulse{
+  0%,100%{opacity:.16;transform:scale(.88)}
+  50%{opacity:.42;transform:scale(1.08)}
+}
+@keyframes cpDashRise{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.dashboard-page .dashboard-hero{
+  animation:cpDashRise .55s cubic-bezier(.2,.7,.2,1) both;
+}
+.dashboard-page .dashboard-metrics>.metric,
+.dashboard-page .dashboard-action-grid>.panel{
+  position:relative!important;
+  isolation:isolate;
+  overflow:hidden;
+  transition:transform .28s cubic-bezier(.2,.7,.2,1),border-color .28s ease,box-shadow .28s ease;
+  animation:cpDashRise .62s cubic-bezier(.2,.7,.2,1) both;
+}
+.dashboard-page .dashboard-metrics>.metric:nth-child(1){animation-delay:.04s}
+.dashboard-page .dashboard-metrics>.metric:nth-child(2){animation-delay:.1s}
+.dashboard-page .dashboard-metrics>.metric:nth-child(3){animation-delay:.16s}
+.dashboard-page .dashboard-metrics>.metric:nth-child(4){animation-delay:.22s}
+.dashboard-page .dashboard-action-grid>.panel:nth-child(1){animation-delay:.28s}
+.dashboard-page .dashboard-action-grid>.panel:nth-child(2){animation-delay:.36s}
+.dashboard-page .dashboard-metrics>.metric::before,
+.dashboard-page .dashboard-action-grid>.panel::before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  top:0;
+  left:0;
+  width:38%;
+  height:2px;
+  border-radius:999px;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(111,113,245,.18) 18%,rgba(126,128,255,.96) 52%,rgba(185,186,255,.7) 72%,transparent 100%);
+  filter:drop-shadow(0 0 4px rgba(111,113,245,.7)) drop-shadow(0 0 9px rgba(111,113,245,.34));
+  animation:cpDashNeonTravel 8s linear infinite;
+}
+.dashboard-page .dashboard-metrics>.metric:nth-child(2)::before,
+.dashboard-page .dashboard-action-grid>.panel:nth-child(2)::before{animation-delay:1.8s}
+.dashboard-page .dashboard-metrics>.metric:nth-child(3)::before{animation-delay:3.6s}
+.dashboard-page .dashboard-metrics>.metric:nth-child(4)::before{animation-delay:5.4s}
+.dashboard-page .dashboard-metrics>.metric::after,
+.dashboard-page .dashboard-action-grid>.panel::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  top:-48px;
+  right:-34px;
+  width:150px;
+  height:110px;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(ellipse,rgba(111,113,245,.12) 0%,rgba(111,113,245,.045) 42%,transparent 72%);
+  filter:blur(7px);
+  animation:cpDashGlowPulse 6s ease-in-out infinite;
+}
+.dashboard-page .dashboard-metrics>.metric>*,
+.dashboard-page .dashboard-action-grid>.panel>*{
+  position:relative;
+  z-index:1;
+}
+.dashboard-page .dashboard-metrics>.metric:hover,
+.dashboard-page .dashboard-action-grid>.panel:hover{
+  transform:translateY(-3px);
+  border-color:rgba(112,114,245,.38)!important;
+  box-shadow:0 12px 30px rgba(42,43,100,.09),0 0 0 1px rgba(112,114,245,.08)!important;
+}
+.dashboard-page .dashboard-metrics>.metric .metric-icon{
+  transition:transform .3s ease,box-shadow .3s ease;
+}
+.dashboard-page .dashboard-metrics>.metric:hover .metric-icon{
+  transform:translateY(-2px) scale(1.045);
+  box-shadow:0 0 18px rgba(111,113,245,.2);
+}
+html[data-theme="dark"] .dashboard-page .dashboard-metrics>.metric::before,
+html[data-theme="dark"] .dashboard-page .dashboard-action-grid>.panel::before{
+  background:linear-gradient(90deg,transparent 0%,rgba(119,121,255,.24) 18%,rgba(139,141,255,1) 52%,rgba(205,206,255,.82) 72%,transparent 100%);
+  filter:drop-shadow(0 0 5px rgba(119,121,255,.9)) drop-shadow(0 0 12px rgba(119,121,255,.48));
+}
+html[data-theme="dark"] .dashboard-page .dashboard-metrics>.metric::after,
+html[data-theme="dark"] .dashboard-page .dashboard-action-grid>.panel::after{
+  background:radial-gradient(ellipse,rgba(119,121,255,.2) 0%,rgba(119,121,255,.07) 42%,transparent 72%);
+}
+html[data-theme="dark"] .dashboard-page .dashboard-metrics>.metric:hover,
+html[data-theme="dark"] .dashboard-page .dashboard-action-grid>.panel:hover{
+  border-color:rgba(139,141,255,.55)!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.24),0 0 20px rgba(111,113,245,.09)!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .dashboard-page .dashboard-hero,
+  .dashboard-page .dashboard-metrics>.metric,
+  .dashboard-page .dashboard-action-grid>.panel,
+  .dashboard-page .dashboard-metrics>.metric::before,
+  .dashboard-page .dashboard-action-grid>.panel::before,
+  .dashboard-page .dashboard-metrics>.metric::after,
+  .dashboard-page .dashboard-action-grid>.panel::after{
+    animation:none!important;
+    transition:none!important;
+  }
+}
