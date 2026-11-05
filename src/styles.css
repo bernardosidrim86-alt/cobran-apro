@@ -14575,9 +14575,7 @@ html[data-theme="dark"] .modern-charges-page .modern-table-panel::before{
   will-change:transform,opacity;
   backface-visibility:hidden;
 }
-.cp-reports-page .cp-report-kpi:nth-child(2)::before{animation-delay:1.8s!important}
-.cp-reports-page .cp-report-kpi:nth-child(3)::before{animation-delay:3.6s!important}
-.cp-reports-page .cp-report-kpi:nth-child(4)::before{animation-delay:5.4s!important}
+.cp-reports-page .cp-report-kpi::before{animation-delay:0s!important}
 .cp-reports-page .cp-report-kpi-success::before{
   background:linear-gradient(90deg,transparent,rgba(53,185,119,.95),rgba(160,237,193,.95),transparent)!important;
   box-shadow:0 0 7px rgba(53,185,119,.28)!important;
@@ -14664,8 +14662,7 @@ html[data-theme="dark"] .modern-charges-page .modern-table-panel::before{
   will-change:transform,opacity;
   backface-visibility:hidden;
 }
-.cp-reports-page .cp-report-panel:nth-child(2)::before{animation-delay:2.5s!important}
-.cp-reports-page .cp-report-bottom-grid .cp-report-panel:nth-child(2)::before{animation-delay:5s!important}
+.cp-reports-page .cp-report-panel::before{animation-delay:0s!important}
 .cp-reports-page .cp-report-panel-head{
   background:linear-gradient(180deg,#fff 0%,#fdfdff 100%)!important;
   border-bottom-color:#ececf3!important;
