@@ -11687,3 +11687,39 @@ html[data-theme="dark"] .plan-usage-expiry-inline svg{color:#9ea1ae}
     min-width:800px!important;
   }
 }
+
+
+/* Navegação lateral — manter Cobranças alinhado aos demais itens */
+.app-layout .side-nav .side-nav-parent{
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  width:100%!important;
+  height:40px!important;
+  min-height:40px!important;
+  padding:0 11px!important;
+  gap:10px!important;
+  border:0!important;
+  border-radius:8px!important;
+  font-family:inherit!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  line-height:1!important;
+  box-shadow:none;
+}
+.app-layout .side-nav .side-nav-parent>svg:first-child{
+  width:18px!important;
+  height:18px!important;
+  flex:0 0 18px!important;
+}
+.app-layout .side-nav .side-nav-parent.active{
+  background:#f0f1ff!important;
+  color:#4f50d4!important;
+  font-weight:700!important;
+  box-shadow:inset 3px 0 0 #5b5ce2!important;
+}
+html[data-theme="dark"] .app-layout .side-nav .side-nav-parent.active{
+  background:#24254a!important;
+  color:#aeb0ff!important;
+  box-shadow:inset 3px 0 0 #7779ff!important;
+}
