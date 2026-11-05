@@ -11588,3 +11588,102 @@ html[data-theme="dark"] .settings-pix-note{background:#1b1c24!important;border-c
 .plan-usage-expiry-inline svg{flex-shrink:0;color:#858b98}
 html[data-theme="dark"] .plan-usage-expiry-inline{background:#20212a;border-color:#343641;color:#b0b3bf}
 html[data-theme="dark"] .plan-usage-expiry-inline svg{color:#9ea1ae}
+
+
+/* Clientes — dimensões ligeiramente maiores para melhorar a leitura */
+.modern-customers-page .page-title h1{
+  font-size:26px!important;
+}
+.modern-customers-page .page-title p{
+  font-size:13px!important;
+}
+.modern-customers-page .modern-toolbar{
+  gap:12px!important;
+  margin-bottom:14px!important;
+}
+.modern-customers-page .modern-search{
+  width:min(460px,100%)!important;
+  min-height:44px!important;
+  height:44px!important;
+  flex:1 1 360px!important;
+  padding:0 13px!important;
+  gap:10px!important;
+}
+.modern-customers-page .modern-search svg{
+  width:18px!important;
+  height:18px!important;
+  flex:0 0 auto!important;
+}
+.modern-customers-page .modern-search input{
+  font-size:12.5px!important;
+}
+.modern-customers-page .modern-select{
+  height:44px!important;
+  padding:0 12px!important;
+  gap:9px!important;
+}
+.modern-customers-page .modern-select span{
+  font-size:11px!important;
+}
+.modern-customers-page .modern-select select{
+  height:32px!important;
+  max-width:180px!important;
+  font-size:12px!important;
+}
+.modern-customers-page .modern-toolbar-actions>.btn{
+  min-height:44px!important;
+  height:44px!important;
+  padding:0 14px!important;
+  font-size:12px!important;
+}
+.modern-customers-page .modern-list-meta{
+  margin:0 2px 12px!important;
+  font-size:11.5px!important;
+}
+.modern-customers-page .modern-table{
+  min-width:800px!important;
+  font-size:12px!important;
+}
+.modern-customers-page .modern-table th{
+  height:48px!important;
+  padding:0 20px!important;
+  font-size:10px!important;
+}
+.modern-customers-page .modern-table td{
+  padding:17px 20px!important;
+  font-size:12px!important;
+}
+.modern-customers-page .modern-person{
+  gap:12px!important;
+  min-width:230px!important;
+}
+.modern-customers-page .modern-person b{
+  font-size:12.5px!important;
+}
+.modern-customers-page .modern-person small{
+  margin-top:4px!important;
+  font-size:10.5px!important;
+  max-width:300px!important;
+}
+.modern-customers-page .modern-avatar{
+  width:38px!important;
+  height:38px!important;
+  border-radius:11px!important;
+  font-size:12px!important;
+}
+.modern-customers-page .modern-actions-trigger svg{
+  width:20px!important;
+  height:20px!important;
+}
+@media(max-width:700px){
+  .modern-customers-page .modern-search{
+    width:100%!important;
+    flex-basis:100%!important;
+  }
+  .modern-customers-page .modern-toolbar-actions>.btn{
+    min-height:44px!important;
+  }
+  .modern-customers-page .modern-table{
+    min-width:800px!important;
+  }
+}
