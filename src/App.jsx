@@ -1656,16 +1656,7 @@ function AIPage({locked=false,currentPlan="free"}){
 
   return <>
     <PageTitle title="Assistente IA" subtitle="Pergunte sobre seu negócio e prepare mensagens de cobrança."/>
-    {locked ? <div className="panel ai-locked-simple">
-      <div className="ai-locked-simple-icon"><Lock size={19}/></div>
-      <div className="ai-locked-simple-copy">
-        <span className="ai-locked-simple-eyebrow">PLANO PROFISSIONAL</span>
-        <h2>Assistente IA</h2>
-        <p>Tenha respostas sobre suas cobranças e recebimentos em segundos.</p>
-        <span className="ai-locked-simple-plan">Seu plano: {planLabel}</span>
-      </div>
-      <a href="/#precos" className="btn btn-primary">Conhecer planos <ArrowRight size={15}/></a>
-    </div> : <div className="ai-layout">
+    {locked ? <div className="panel ai-locked-panel"><div className="ai-locked-icon"><Lock size={24}/></div><span className="panel-kicker">RECURSO PREMIUM</span><h2>Assistente IA</h2><p>O Assistente IA está disponível a partir do plano Profissional.</p><small>Seu plano atual: <b>{planLabel}</b></small><a href="/#precos" className="btn btn-primary">Ver planos</a><div className="ai-locked-features"><span><Check size={14}/> Análise das suas cobranças</span><span><Check size={14}/> Respostas sobre recebimentos</span><span><Check size={14}/> Mensagens de cobrança com IA</span></div></div> : <div className="ai-layout">
       <div className="panel ai-chat-panel">
         <div className="panel-head">
           <div><span className="panel-kicker">ASSISTENTE</span><h2>Converse com seus dados</h2><p>Pergunte sobre clientes, cobranças e recebimentos.</p></div>
