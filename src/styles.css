@@ -14408,10 +14408,10 @@ html[data-theme="dark"] .payments-history-search{
   opacity:.2!important;
   transform:none!important;
 }
-.dashboard-page .dashboard-metrics>.metric:nth-child(2)::before,
-.dashboard-page .dashboard-action-grid>.panel:nth-child(2)::before{animation-delay:1.8s!important}
-.dashboard-page .dashboard-metrics>.metric:nth-child(3)::before{animation-delay:3.6s!important}
-.dashboard-page .dashboard-metrics>.metric:nth-child(4)::before{animation-delay:5.4s!important}
+.dashboard-page .dashboard-metrics>.metric::before,
+.dashboard-page .dashboard-action-grid>.panel::before{
+  animation-delay:0s!important;
+}
 
 .modern-customers-page .modern-table-panel::before{
   animation:cpCustomersNeonSweep 9s linear infinite!important;
