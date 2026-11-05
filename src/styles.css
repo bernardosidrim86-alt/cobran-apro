@@ -14500,3 +14500,10 @@ html[data-theme="dark"] .modern-charges-page .modern-table-panel::before{
   min-height:24px;
   background:transparent;
 }
+
+
+/* Relatórios: evitar piscada entre ID da empresa, skeleton e dados */
+.cp-report-loading-pending{
+  min-height:24px;
+  background:transparent;
+}
