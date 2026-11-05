@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { hasPaidSubscriptionAccess } from "../src/lib/subscription-access.js";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 const APP_URL = process.env.APP_URL || "https://www.cobrancaproai.site";
 const BUSINESS_SEAT_LIMIT = 5;
 
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
     return respond(res, 405, { error: "Método não permitido." });
   }
 
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+  if (!SUPABASE_URL || !SUPABASE_SECRET_KEY) {
     return respond(res, 500, { error: "Configuração do servidor incompleta." });
   }
 
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
   const token = authorization.match(/^Bearer\s+(.+)$/i)?.[1];
   if (!token) return respond(res, 401, { error: "Faça login para continuar." });
 
-  const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
