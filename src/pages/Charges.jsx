@@ -295,27 +295,12 @@ export function Charges({companyId}){
     finally{setSaving(false);}
   }
 
-  const pendingCount=rows.filter(x=>x.status==="pending"&&x.due_date>=todayISO()).length;
-  const overdueCount=rows.filter(x=>x.status==="pending"&&x.due_date<todayISO()).length;
-  const paidCount=rows.filter(x=>x.status==="paid").length;
-
   const sectionTitle=filter==="paid"?"Recebidas":filter==="overdue"?"Atrasadas":"A receber";
   const sectionSubtitle=filter==="paid"?"Histórico de cobranças já recebidas.":filter==="overdue"?"Cobranças vencidas que precisam de atenção.":"Cobranças pendentes e dentro do prazo.";
 
   return <div className="modern-page modern-charges-page">
     <PageTitle title={sectionTitle} subtitle={sectionSubtitle} action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Nova cobrança</Button>}/>
     <div className="modern-toolbar">
-      <div className="modern-filter-tabs" role="group" aria-label="Filtrar cobranças">
-        <button type="button" className={`charge-filter-btn pending ${filter==="pending"?"active":""}`} onClick={()=>setFilter("pending")} aria-pressed={filter==="pending"}>
-          <span className="charge-filter-label"><span className="charge-filter-dot"/>A receber</span><span className="charge-filter-count">{pendingCount}</span>
-        </button>
-        <button type="button" className={`charge-filter-btn overdue ${filter==="overdue"?"active":""}`} onClick={()=>setFilter("overdue")} aria-pressed={filter==="overdue"}>
-          <span className="charge-filter-label"><span className="charge-filter-dot"/>Atrasadas</span><span className="charge-filter-count">{overdueCount}</span>
-        </button>
-        <button type="button" className={`charge-filter-btn paid ${filter==="paid"?"active":""}`} onClick={()=>setFilter("paid")} aria-pressed={filter==="paid"}>
-          <span className="charge-filter-label"><span className="charge-filter-dot"/>Recebidas</span><span className="charge-filter-count">{paidCount}</span>
-        </button>
-      </div>
       <div className="modern-toolbar-actions"><label className="modern-select"><span><ArrowDownUp size={14}/> Ordenar</span><select value={sort} onChange={e=>setSort(e.target.value)}><option value="due-asc">Vencimento mais próximo</option><option value="due-desc">Vencimento mais distante</option><option value="amount-desc">Maior valor</option><option value="amount-asc">Menor valor</option><option value="customer">Cliente A–Z</option></select></label><Button variant="secondary" onClick={exportCharges} disabled={!filtered.length}><Download size={16}/> Exportar</Button></div>
     </div>
     <div className="modern-list-meta"><span>{filtered.length} {filtered.length===1?"cobrança":"cobranças"}</span><span>Ordenação: {sort==="customer"?"Cliente A–Z":sort==="amount-desc"?"Maior valor":sort==="amount-asc"?"Menor valor":sort==="due-desc"?"Vencimento distante":"Vencimento próximo"}</span></div>
