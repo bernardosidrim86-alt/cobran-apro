@@ -613,7 +613,29 @@ function AuthLayout({children,title,subtitle}) {
     };
   },[]);
 
-  return <div className="auth-page"><div className="auth-card"><Link to="/" className="brand auth-brand"><img className="brand-logo" src="/logo-escuro.png" alt="CobrançaPro" /></Link><div className="auth-heading"><h1>{title}</h1><p>{subtitle}</p></div>{children}</div></div>
+  return <main className="auth-page">
+    <div className="auth-shell">
+      <aside className="auth-aside">
+        <div className="auth-aside-copy">
+          <span className="auth-kicker"><i/> Gestão financeira inteligente</span>
+          <h2>Seu negócio em dia. <span>Seu crescimento também.</span></h2>
+          <p>Tenha clientes, cobranças e recebimentos organizados em um só lugar. Mais clareza para decidir e menos tempo perdido acompanhando pagamentos.</p>
+          <div className="auth-proof-list">
+            <div className="auth-proof-item"><span><Check size={15}/></span><div><b>Controle em tempo real</b><small>Saiba o que entrou, vence hoje e está atrasado.</small></div></div>
+            <div className="auth-proof-item"><span><Check size={15}/></span><div><b>Cobranças organizadas</b><small>Encontre cada cliente e cobrança sem complicação.</small></div></div>
+            <div className="auth-proof-item"><span><Check size={15}/></span><div><b>Mais foco no seu negócio</b><small>Menos tarefas manuais na rotina financeira.</small></div></div>
+          </div>
+        </div>
+        <div className="auth-aside-footer"><Lock size={14}/><span>Ambiente protegido para sua empresa e seus dados.</span></div>
+      </aside>
+      <section className="auth-card">
+        <div className="auth-card-glow" aria-hidden="true"/>
+        <Link to="/" className="brand auth-brand"><img className="brand-logo" src="/logo-escuro.png" alt="CobrançaPro"/></Link>
+        <div className="auth-heading"><h1>{title}</h1><p>{subtitle}</p></div>
+        {children}
+      </section>
+    </div>
+  </main>
 }
 
 function Login() {
