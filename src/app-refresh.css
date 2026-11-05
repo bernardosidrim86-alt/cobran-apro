@@ -1871,20 +1871,37 @@ html[data-theme="dark"] .calendar-empty-day span{color:#9295a2!important}
 }
 
 
-/* Calendar neon: static compositor-friendly highlight */
+/* Calendar neon motion: feixe móvel usando somente transform e opacity */
+@keyframes cpCalendarNeonSweep{
+  0%{transform:translate3d(-120%,0,0);opacity:.18}
+  12%{opacity:.95}
+  88%{opacity:.95}
+  100%{transform:translate3d(340%,0,0);opacity:.18}
+}
 .app-layout .calendar-summary-card::before,
 .app-layout .calendar-panel::before,
 .app-layout .calendar-day-panel::before{
-  animation:none!important;
+  left:8%!important;
+  right:auto!important;
+  width:28%!important;
   background-size:100% 100%!important;
   background-position:center!important;
-  opacity:.78!important;
-  box-shadow:0 0 6px rgba(112,114,255,.2)!important;
-  transform:none!important;
+  animation:cpCalendarNeonSweep 7.2s linear infinite!important;
+  box-shadow:0 0 7px rgba(112,114,255,.26)!important;
+  will-change:transform,opacity;
+  backface-visibility:hidden;
 }
 .app-layout .calendar-summary-card:nth-child(2)::before{
-  box-shadow:0 0 6px rgba(69,189,131,.18)!important;
+  box-shadow:0 0 7px rgba(69,189,131,.25)!important;
 }
 .app-layout .calendar-summary-card:nth-child(4)::before{
-  box-shadow:0 0 6px rgba(226,106,117,.18)!important;
+  box-shadow:0 0 7px rgba(226,106,117,.24)!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .app-layout .calendar-summary-card::before,
+  .app-layout .calendar-panel::before,
+  .app-layout .calendar-day-panel::before{
+    animation:none!important;
+    will-change:auto!important;
+  }
 }
