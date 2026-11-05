@@ -6,6 +6,7 @@ import { money } from "../lib/formatters";
 import { downloadCsv } from "../lib/export";
 import { Button, Input, Empty, PageTitle } from "../components/AppPrimitives";
 import { toast, confirmDialog } from "../ui";
+import { PLAN_OPTIONS } from "../lib/plans";
 
 export function Customers({companyId}){
   const [rows,setRows]=useState([]);
@@ -17,6 +18,10 @@ export function Customers({companyId}){
   const [form,setForm]=useState({name:"",phone:"",email:"",notes:""});
   const [deleting,setDeleting]=useState(false);
   const [saving,setSaving]=useState(false);
+  const [planKey,setPlanKey]=useState("free");
+  const [limitError,setLimitError]=useState("");
+  const activePlan=PLAN_OPTIONS.find(p=>p.key===planKey)||PLAN_OPTIONS[0];
+  const customerLimitReached=activePlan.maxCustomers!==null&&rows.length>=activePlan.maxCustomers;
   const [editingCustomer,setEditingCustomer]=useState(null);
   const [editingForm,setEditingForm]=useState({name:"",phone:"",email:"",notes:""});
   const [editingSaving,setEditingSaving]=useState(false);
@@ -26,6 +31,8 @@ export function Customers({companyId}){
   const [resolvedCompanyId,setResolvedCompanyId]=useState("");
   const [companyLookupComplete,setCompanyLookupComplete]=useState(false);
   const activeCompanyId=companyId||resolvedCompanyId;
+
+  useEffect(()=>{let active=true;supabase.auth.getUser().then(async({data})=>{if(!data?.user?.id)return;const {data:profile}=await supabase.from("profiles").select("plan").eq("id",data.user.id).maybeSingle();if(active)setPlanKey(profile?.plan||"free");});return()=>{active=false;};},[]);
 
   // O shell carrega o perfil de forma assíncrona. Resolva a empresa aqui também
   // para evitar que um clique rápido no cadastro use companyId ainda nulo.
@@ -134,6 +141,7 @@ export function Customers({companyId}){
   async function save(e){
     e.preventDefault();
     if(saving)return;
+    if(customerLimitReached){setLimitError("Você atingiu o limite de "+activePlan.maxCustomers+" clientes do plano "+activePlan.title+". Faça upgrade para cadastrar mais clientes.");return;}
     if(!companyId){
       toast("Sua empresa ainda está carregando. Tente novamente em instantes.");
       return;
@@ -166,7 +174,7 @@ export function Customers({companyId}){
       if(error){
         const message=String(error.message||"");
         if(message.includes("plan_customer_limit")){
-          toast("Você atingiu o limite de clientes do seu plano. Consulte os planos para continuar.");
+          setLimitError("Você atingiu o limite de clientes do seu plano. Faça upgrade para continuar.");
         }else if(message.includes("subscription_inactive")){
           toast("Seu acesso está inativo. Confira o status da sua assinatura.");
         }else if(message.includes("company_access_denied")){
@@ -178,6 +186,7 @@ export function Customers({companyId}){
         return;
       }
 
+      setLimitError("");
       setForm({name:"",phone:"",email:"",notes:""});
       setOpen(false);
       await load();
@@ -223,7 +232,8 @@ export function Customers({companyId}){
   }
 
   return <div className="modern-page modern-customers-page">
-    <PageTitle title="Clientes" subtitle="Organize seus clientes e acompanhe o histórico." action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Novo cliente</Button>}/>
+    <PageTitle title="Clientes" subtitle="Organize seus clientes e acompanhe o histórico." action={<Button onClick={()=>{setLimitError("");setOpen(true);}}><Plus size={17}/> Novo cliente</Button>}/>
+    {customerLimitReached&&<div className="plan-limit-notice" role="alert"><div><strong>Limite de clientes atingido</strong><p>Seu plano {activePlan.title} permite até {activePlan.maxCustomers} clientes. Para cadastrar mais, escolha um plano com maior capacidade.</p></div><a href="/#precos">Ver planos <span aria-hidden="true">→</span></a></div>}
     <div className="modern-toolbar">
       <div className="searchbox modern-search"><Search size={17}/><input placeholder="Buscar por nome, telefone ou e-mail" value={search} onChange={e=>setSearch(e.target.value)}/></div>
       <div className="modern-toolbar-actions">
@@ -247,11 +257,12 @@ export function Customers({companyId}){
       <button type="button" className="modal-x" onClick={()=>setOpen(false)}><X/></button>
       <div className="modal-head"><div className="icon-box"><UserRound/></div><div><h2>Novo cliente</h2><p>Cadastre os dados básicos.</p></div></div>
       {!activeCompanyId&&companyLookupComplete&&<p className="error">Não conseguimos localizar sua empresa. Atualize a página e entre novamente.</p>}
+      {(limitError||customerLimitReached)&&<div className="plan-limit-notice plan-limit-notice-modal" role="alert"><div><strong>Limite de clientes atingido</strong><p>{limitError||"Seu plano "+activePlan.title+" permite até "+activePlan.maxCustomers+" clientes. Faça upgrade para cadastrar mais."}</p></div><a href="/#precos">Ver planos <span aria-hidden="true">→</span></a></div>}
       <Input label="Nome" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/>
       <Input label="Telefone" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/>
       <Input label="E-mail" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/>
       <label className="field"><span>Observações</span><textarea value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></label>
-      <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)}>Cancelar</Button><Button type="submit" disabled={saving||!activeCompanyId}>{saving?"Criando...":"Criar cliente"}</Button></div>
+      <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)}>Cancelar</Button><Button type="submit" disabled={saving||!activeCompanyId||customerLimitReached}>{saving?"Criando...":"Criar cliente"}</Button></div>
     </form></div>}
 
     {editingCustomer&&createPortal(<div className="client-modal-root" role="dialog" aria-modal="true">
