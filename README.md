@@ -27,7 +27,7 @@ VITE_APP_URL=https://cobrancapro.com
 VITE_TURNSTILE_SITE_KEY=<public-site-key>
 ```
 
-As funções de servidor usam `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `GROQ_API_KEY`, `PERFECTPAY_WEBHOOK_TOKEN` e `APP_URL`. Configure-as nas variáveis da Vercel por ambiente. `APP_URL` deve ser a origem pública oficial usada nos links de convite; `VITE_APP_URL` deve corresponder à origem autorizada para recuperação de senha. Em domínios alternativos oficiais, configure a origem correspondente.
+As funções de servidor usam `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `GROQ_API_KEY`, `PERFECTPAY_WEBHOOK_TOKEN` e `APP_URL`. Configure-as nas variáveis da Vercel por ambiente. `APP_URL` deve ser a origem pública oficial usada nos links de convite; `VITE_APP_URL` deve corresponder à origem autorizada para recuperação de senha. Em domínios alternativos oficiais, configure a origem correspondente.
 
 ## Supabase
 
