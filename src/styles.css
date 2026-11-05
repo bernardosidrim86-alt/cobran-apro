@@ -13103,3 +13103,49 @@ html[data-theme="dark"] .modern-charges-page .modern-filter-tabs button:nth-chil
     font-size:11px!important;
   }
 }
+
+
+/* Cobranças: remover o retângulo cinza do seletor de ordenação */
+.modern-charges-page .modern-toolbar-actions .modern-select{
+  border:0!important;
+  border-bottom:1px solid #dedfeb!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  box-shadow:none!important;
+  outline:0!important;
+  padding-left:2px!important;
+  padding-right:2px!important;
+}
+.modern-charges-page .modern-toolbar-actions .modern-select select{
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  box-shadow:none!important;
+  outline:0!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+}
+.modern-charges-page .modern-toolbar-actions .modern-select:focus-within{
+  border:0!important;
+  border-bottom:1px solid #8587ef!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .modern-charges-page .modern-toolbar-actions .modern-select,
+html[data-theme="dark"] .modern-charges-page .modern-toolbar-actions .modern-select select{
+  border-top:0!important;
+  border-left:0!important;
+  border-right:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .modern-charges-page .modern-toolbar-actions .modern-select{
+  border-bottom:1px solid #383a49!important;
+}
+html[data-theme="dark"] .modern-charges-page .modern-toolbar-actions .modern-select:focus-within{
+  border-bottom-color:#898bff!important;
+}
