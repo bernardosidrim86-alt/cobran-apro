@@ -15006,3 +15006,114 @@ html[data-theme="dark"] .modern-charge-modal .charge-pix-config-hint>button{
   .modern-charge-modal .charge-pix-config-hint>span{flex:1 1 calc(100% - 30px)!important}
   .modern-charge-modal .charge-pix-config-hint>button{margin-left:27px!important}
 }
+
+
+/* Correção da navegação por abas de Configurações */
+.app-layout .settings-layout>.settings-nav{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+}
+.app-layout .settings-layout>.settings-nav>button{
+  display:flex!important;
+  flex:0 0 auto!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:11px!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:43px!important;
+  height:43px!important;
+  margin:0!important;
+  padding:0 12px!important;
+  border:1px solid transparent!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:#747786!important;
+  text-align:left!important;
+  line-height:1.2!important;
+  font-size:12px!important;
+  font-weight:600!important;
+  white-space:nowrap!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  box-shadow:none!important;
+}
+.app-layout .settings-layout>.settings-nav>button>svg:first-child{
+  display:block!important;
+  flex:0 0 17px!important;
+  width:17px!important;
+  height:17px!important;
+}
+.app-layout .settings-layout>.settings-nav>button>span{
+  display:block!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  text-align:left!important;
+}
+.app-layout .settings-layout>.settings-nav>button>.settings-nav-chevron{
+  display:block!important;
+  flex:0 0 14px!important;
+  width:14px!important;
+  height:14px!important;
+  margin-left:auto!important;
+  opacity:.55!important;
+}
+.app-layout .settings-layout>.settings-nav>button:hover{
+  background:#f5f5fb!important;
+  color:#4f50d4!important;
+}
+.app-layout .settings-layout>.settings-nav>button.active{
+  background:#eeeeff!important;
+  border-color:#e2e3ff!important;
+  color:#5051d1!important;
+  box-shadow:inset 3px 0 0 #6667e8!important;
+}
+html[data-theme="dark"] .app-layout .settings-layout>.settings-nav>button{
+  color:#aeb0bd!important;
+}
+html[data-theme="dark"] .app-layout .settings-layout>.settings-nav>button:hover{
+  background:#22232c!important;
+  color:#f0f1f5!important;
+}
+html[data-theme="dark"] .app-layout .settings-layout>.settings-nav>button.active{
+  background:#303157!important;
+  border-color:#3b3d70!important;
+  color:#c7c8ff!important;
+  box-shadow:inset 3px 0 0 #8889ff!important;
+}
+@media(max-width:700px){
+  .app-layout .settings-layout>.settings-nav{
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:5px!important;
+    width:100%!important;
+    padding:5px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    scrollbar-width:none!important;
+  }
+  .app-layout .settings-layout>.settings-nav::-webkit-scrollbar{display:none!important}
+  .app-layout .settings-layout>.settings-nav>button{
+    flex:0 0 auto!important;
+    width:auto!important;
+    min-width:max-content!important;
+    min-height:39px!important;
+    height:39px!important;
+    padding:0 12px!important;
+    gap:8px!important;
+    border-radius:8px!important;
+    box-shadow:none!important;
+  }
+  .app-layout .settings-layout>.settings-nav>button>.settings-nav-chevron{display:none!important}
+  .app-layout .settings-layout>.settings-nav>button.active{box-shadow:inset 0 -2px 0 #6667e8!important}
+  html[data-theme="dark"] .app-layout .settings-layout>.settings-nav>button.active{box-shadow:inset 0 -2px 0 #8889ff!important}
+}
