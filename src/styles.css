@@ -12545,3 +12545,60 @@ html[data-theme="dark"] .modern-customers-page .modern-select:focus-within{
   border-bottom:1px solid #898bff!important;
   box-shadow:none!important;
 }
+
+
+/* Correção definitiva: o fundo quadrado vinha dos próprios campos internos */
+.modern-customers-page .modern-toolbar .modern-search,
+.modern-customers-page .modern-toolbar .modern-select{
+  background:transparent!important;
+  background-color:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  outline:0!important;
+}
+.modern-customers-page .modern-toolbar .modern-search input,
+.modern-customers-page .modern-toolbar .modern-select select{
+  background:transparent!important;
+  background-color:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  outline:0!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+}
+.modern-customers-page .modern-toolbar .modern-search:focus-within,
+.modern-customers-page .modern-toolbar .modern-select:focus-within{
+  background:transparent!important;
+  background-color:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .modern-customers-page .modern-toolbar .modern-search,
+html[data-theme="dark"] .modern-customers-page .modern-toolbar .modern-select,
+html[data-theme="dark"] .modern-customers-page .modern-toolbar .modern-search input,
+html[data-theme="dark"] .modern-customers-page .modern-toolbar .modern-select select{
+  background:transparent!important;
+  background-color:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.modern-customers-page .modern-toolbar .modern-search{
+  border-bottom:1px solid #dedfeb!important;
+}
+.modern-customers-page .modern-toolbar .modern-select{
+  border-bottom:1px solid #dedfeb!important;
+}
+html[data-theme="dark"] .modern-customers-page .modern-toolbar .modern-search,
+html[data-theme="dark"] .modern-customers-page .modern-toolbar .modern-select{
+  border-bottom:1px solid #383a49!important;
+}
+.modern-customers-page .modern-toolbar .modern-search:focus-within,
+.modern-customers-page .modern-toolbar .modern-select:focus-within{
+  border-bottom-color:#8587ef!important;
+}
+html[data-theme="dark"] .modern-customers-page .modern-toolbar .modern-search:focus-within,
+html[data-theme="dark"] .modern-customers-page .modern-toolbar .modern-select:focus-within{
+  border-bottom-color:#898bff!important;
+}
