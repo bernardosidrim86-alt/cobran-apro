@@ -14386,3 +14386,47 @@ html[data-theme="dark"] .payments-history-search{
 @media(prefers-reduced-motion:reduce){
   .payments-page .payments-metrics .metric::before{animation:none!important}
 }
+
+
+/* Neon performance pass: keep the premium trace, remove continuous repainting */
+.dashboard-page .dashboard-metrics>.metric::before,
+.dashboard-page .dashboard-action-grid>.panel::before,
+.modern-customers-page .modern-table-panel::before,
+.payments-page .payments-metrics .metric::before,
+.payments-page .payments-history-panel::before{
+  animation:none!important;
+  background-size:100% 100%!important;
+  filter:none!important;
+  opacity:.78!important;
+  transform:none!important;
+}
+.dashboard-page .dashboard-metrics>.metric::before,
+.dashboard-page .dashboard-action-grid>.panel::before{
+  box-shadow:0 0 5px rgba(111,113,245,.22)!important;
+}
+.dashboard-page .dashboard-metrics>.metric::after,
+.dashboard-page .dashboard-action-grid>.panel::after{
+  animation:none!important;
+  filter:none!important;
+  opacity:.65!important;
+}
+.modern-customers-page .modern-table-panel::before{
+  box-shadow:0 0 6px rgba(111,113,245,.2)!important;
+}
+.payments-page .payments-metrics .metric::before,
+.payments-page .payments-history-panel::before{
+  background-position:center!important;
+  box-shadow:0 0 5px rgba(104,106,255,.2)!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .dashboard-page .dashboard-metrics>.metric::before,
+  .dashboard-page .dashboard-action-grid>.panel::before,
+  .modern-customers-page .modern-table-panel::before,
+  .payments-page .payments-metrics .metric::before,
+  .payments-page .payments-history-panel::before,
+  .dashboard-page .dashboard-metrics>.metric::after,
+  .dashboard-page .dashboard-action-grid>.panel::after{
+    animation:none!important;
+    transition:none!important;
+  }
+}
