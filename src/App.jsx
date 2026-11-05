@@ -918,7 +918,7 @@ function AppShell({session}) {
       </Link>)}
     </div>
     {notifications.length>12&&<Link to="/app/cobrancas" onClick={()=>setNotificationsOpen(false)} className="notifications-footer">Ver todas as cobranças <ChevronRight size={14}/></Link>}
-  </div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session} currentPlan={currentPlan} companyId={companyId} subscriptionExpiresAt={subscriptionExpiresAt}/>}/><Route path="clientes" element={<Customers companyId={companyId} />} /><Route path="cobrancas" element={<Charges companyId={companyId} />} /><Route path="recebimentos" element={<Payments/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/>
+  </div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session} currentPlan={currentPlan} companyId={companyId} subscriptionExpiresAt={subscriptionExpiresAt}/>}/><Route path="clientes" element={<Customers companyId={companyId} />} /><Route path="cobrancas" element={<Charges companyId={companyId} />} /><Route path="recebimentos" element={<Payments companyId={companyId}/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/>
 <Route path="configuracoes/*" element={<SettingsPage canUseAI={hasAIAccess} companyId={companyId}/>}/><Route path="*" element={<Navigate to="/app" replace/>}/></Routes></div></div></div>
 }
 
@@ -1167,15 +1167,26 @@ function CalendarPage(){
   </div>;
 }
 
-function Payments(){
-  const companyId=useCompany();
+function Payments({companyId}){
   const [rows,setRows]=useState([]);
   const [loading,setLoading]=useState(true);
+  const [showLoading,setShowLoading]=useState(false);
   const [query,setQuery]=useState("");
 
   useEffect(()=>{
+    if(!loading){setShowLoading(false);return;}
+    const timer=window.setTimeout(()=>setShowLoading(true),220);
+    return ()=>window.clearTimeout(timer);
+  },[loading]);
+
+  useEffect(()=>{
     let active=true;
-    if(!companyId){setLoading(false);return ()=>{active=false};}
+    if(companyId===null)return ()=>{active=false};
+    if(!companyId){
+      setRows([]);
+      setLoading(false);
+      return ()=>{active=false};
+    }
     setLoading(true);
     supabase
       .from("payments")
@@ -1186,6 +1197,13 @@ function Payments(){
         if(!active)return;
         if(error){console.error(error);toast("Não foi possível carregar os recebimentos.");}
         setRows(data||[]);
+        setLoading(false);
+      })
+      .catch(error=>{
+        if(!active)return;
+        console.error(error);
+        setRows([]);
+        toast("Não foi possível carregar os recebimentos.");
         setLoading(false);
       });
     return ()=>{active=false};
@@ -1247,9 +1265,9 @@ function Payments(){
         <span>VALOR RECEBIDO</span>
       </div>
 
-      {loading?<div className="payments-history-loading">
+      {loading?(showLoading?<div className="payments-history-loading">
         {[1,2,3].map(n=><div className="payments-history-skeleton" key={n}><i/><span/><b/></div>)}
-      </div>:visibleRows.length===0?
+      </div>:<div className="payments-history-loading-pending" aria-hidden="true"/>):visibleRows.length===0?
         <div className="payments-history-empty">
           <div className="payments-empty-icon"><Wallet size={22}/></div>
           <b>{query?"Nenhum recebimento encontrado":"Nenhum recebimento registrado ainda"}</b>
