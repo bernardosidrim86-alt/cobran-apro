@@ -13008,3 +13008,154 @@ html[data-theme="dark"] .app-layout .user-mini-button{
   .app-layout .sidebar{width:270px!important}
   .app-layout .side-brand .brand-logo{width:205px!important}
 }
+
+
+/* Cobranças: filtros de status com hierarquia visual e contadores */
+.modern-charges-page .modern-filter-tabs{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(118px,1fr))!important;
+  align-items:stretch!important;
+  gap:8px!important;
+  min-height:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.modern-charges-page .modern-filter-tabs button.charge-filter-btn{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  min-width:0!important;
+  min-height:48px!important;
+  height:48px!important;
+  padding:0 13px!important;
+  border:1px solid #e8e9f0!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#737582!important;
+  box-shadow:0 1px 2px rgba(19,24,40,.025)!important;
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease!important;
+}
+.modern-charges-page .charge-filter-label{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  min-width:0!important;
+  white-space:nowrap!important;
+  font-size:12px!important;
+  font-weight:650!important;
+  letter-spacing:-.01em!important;
+}
+.modern-charges-page .charge-filter-dot{
+  display:block!important;
+  width:8px!important;
+  height:8px!important;
+  flex:0 0 8px!important;
+  border-radius:50%!important;
+  background:#8b8ee8!important;
+  box-shadow:0 0 0 3px rgba(102,105,220,.10)!important;
+}
+.modern-charges-page .charge-filter-count{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:25px!important;
+  height:25px!important;
+  padding:0 7px!important;
+  border-radius:8px!important;
+  background:#f2f3f7!important;
+  color:#777b89!important;
+  font-size:11px!important;
+  line-height:1!important;
+  font-weight:750!important;
+  font-variant-numeric:tabular-nums!important;
+}
+.modern-charges-page .charge-filter-btn.pending .charge-filter-dot{background:#686be0!important;box-shadow:0 0 0 3px rgba(104,107,224,.11)!important}
+.modern-charges-page .charge-filter-btn.overdue .charge-filter-dot{background:#df6666!important;box-shadow:0 0 0 3px rgba(223,102,102,.11)!important}
+.modern-charges-page .charge-filter-btn.paid .charge-filter-dot{background:#36a875!important;box-shadow:0 0 0 3px rgba(54,168,117,.11)!important}
+.modern-charges-page .charge-filter-btn.pending.active{
+  border-color:#d9dafb!important;
+  background:#f7f7ff!important;
+  color:#5154c8!important;
+  box-shadow:0 5px 16px rgba(83,85,190,.08),inset 0 0 0 1px rgba(112,114,222,.035)!important;
+}
+.modern-charges-page .charge-filter-btn.overdue.active{
+  border-color:#f2d7d7!important;
+  background:#fff8f8!important;
+  color:#c64f4f!important;
+  box-shadow:0 5px 16px rgba(185,75,75,.07),inset 0 0 0 1px rgba(210,95,95,.035)!important;
+}
+.modern-charges-page .charge-filter-btn.paid.active{
+  border-color:#cdebdc!important;
+  background:#f5fcf8!important;
+  color:#218354!important;
+  box-shadow:0 5px 16px rgba(43,139,91,.07),inset 0 0 0 1px rgba(54,168,117,.035)!important;
+}
+.modern-charges-page .charge-filter-btn.pending.active .charge-filter-count{background:#e9eaff!important;color:#5558c8!important}
+.modern-charges-page .charge-filter-btn.overdue.active .charge-filter-count{background:#fdeaea!important;color:#c64f4f!important}
+.modern-charges-page .charge-filter-btn.paid.active .charge-filter-count{background:#e3f6eb!important;color:#218354!important}
+.modern-charges-page .charge-filter-btn:not(.active):hover{
+  transform:translateY(-1px)!important;
+  border-color:#d8d9e2!important;
+  background:#fcfcfe!important;
+  box-shadow:0 5px 13px rgba(20,24,40,.045)!important;
+}
+.modern-charges-page .charge-filter-btn:focus-visible{
+  outline:3px solid rgba(102,105,220,.22)!important;
+  outline-offset:2px!important;
+}
+html[data-theme="dark"] .modern-charges-page .modern-filter-tabs button.charge-filter-btn{
+  border-color:#30313e!important;
+  background:#1b1c25!important;
+  color:#a6a8b4!important;
+  box-shadow:0 2px 7px rgba(0,0,0,.12)!important;
+}
+html[data-theme="dark"] .modern-charges-page .charge-filter-count{
+  background:#292b36!important;
+  color:#b0b2bf!important;
+}
+html[data-theme="dark"] .modern-charges-page .charge-filter-btn.pending.active{
+  border-color:#45467c!important;
+  background:#24253d!important;
+  color:#b2b4ff!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.18),inset 0 0 0 1px rgba(148,149,255,.05)!important;
+}
+html[data-theme="dark"] .modern-charges-page .charge-filter-btn.overdue.active{
+  border-color:#704044!important;
+  background:#302126!important;
+  color:#ffaaaa!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.18),inset 0 0 0 1px rgba(255,150,150,.04)!important;
+}
+html[data-theme="dark"] .modern-charges-page .charge-filter-btn.paid.active{
+  border-color:#315d4b!important;
+  background:#1d3028!important;
+  color:#8bd5ad!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.18),inset 0 0 0 1px rgba(100,210,154,.04)!important;
+}
+html[data-theme="dark"] .modern-charges-page .charge-filter-btn.pending.active .charge-filter-count{background:#34365f!important;color:#c3c4ff!important}
+html[data-theme="dark"] .modern-charges-page .charge-filter-btn.overdue.active .charge-filter-count{background:#512e34!important;color:#ffc1c1!important}
+html[data-theme="dark"] .modern-charges-page .charge-filter-btn.paid.active .charge-filter-count{background:#254a39!important;color:#a1e4bd!important}
+html[data-theme="dark"] .modern-charges-page .charge-filter-btn:not(.active):hover{
+  border-color:#464856!important;
+  background:#20212b!important;
+}
+@media(max-width:700px){
+  .modern-charges-page .modern-filter-tabs{
+    width:100%!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:6px!important;
+  }
+  .modern-charges-page .modern-filter-tabs button.charge-filter-btn{
+    gap:6px!important;
+    min-height:46px!important;
+    height:46px!important;
+    padding:0 9px!important;
+    border-radius:10px!important;
+  }
+  .modern-charges-page .charge-filter-label{gap:6px!important;font-size:10.5px!important}
+  .modern-charges-page .charge-filter-dot{width:7px!important;height:7px!important;flex-basis:7px!important}
+  .modern-charges-page .charge-filter-count{min-width:21px!important;height:21px!important;padding:0 5px!important;font-size:10px!important}
+}
