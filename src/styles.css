@@ -13652,7 +13652,10 @@ html[data-theme="dark"] .modern-charges-page .modern-table-panel .empty-icon{
 /* Recebimentos — redesign premium */
 .payments-page{
   max-width:1280px!important;
-  animation:cpPaymentsEnter .34s ease both;
+  animation:none!important;
+  opacity:1!important;
+  transform:none!important;
+  visibility:visible!important;
 }
 .payments-page>.page-title{
   margin-bottom:19px!important;
@@ -14489,4 +14492,11 @@ html[data-theme="dark"] .modern-charges-page .modern-table-panel::before{
     animation:none!important;
     will-change:auto!important;
   }
+}
+
+
+/* Recebimentos: evitar flash de conteúdo ao entrar na página */
+.payments-history-loading-pending{
+  min-height:24px;
+  background:transparent;
 }
