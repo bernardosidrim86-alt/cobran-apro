@@ -25,12 +25,6 @@ function addMonths(date,months){
 
 function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
   const [saving,setSaving]=useState(false);
-  const [planKey,setPlanKey]=useState("free");
-  const [limitError,setLimitError]=useState("");
-  const activePlan=PLAN_OPTIONS.find(p=>p.key===planKey)||PLAN_OPTIONS[0];
-  const monthStart=new Date();monthStart.setDate(1);monthStart.setHours(0,0,0,0);
-  const monthlyChargeCount=rows.filter(item=>item.created_at&&new Date(item.created_at)>=monthStart).length;
-  const chargeLimitReached=activePlan.maxCharges!==null&&monthlyChargeCount>=activePlan.maxCharges;
   const [deleting,setDeleting]=useState(false);
   const [repeating,setRepeating]=useState(false);
   const [editing,setEditing]=useState(false);
@@ -227,6 +221,12 @@ export function Charges({companyId}){
   const [sort,setSort]=useState("due-asc");
   const [form,setForm]=useState({customer_id:"",description:"",amount:"",due_date:todayISO(),payment_method:"Pix",recurrence:"none",notes:""});
   const [saving,setSaving]=useState(false);
+  const [planKey,setPlanKey]=useState("free");
+  const [limitError,setLimitError]=useState("");
+  const activePlan=PLAN_OPTIONS.find(p=>p.key===planKey)||PLAN_OPTIONS[0];
+  const monthStart=new Date();monthStart.setDate(1);monthStart.setHours(0,0,0,0);
+  const monthlyChargeCount=rows.filter(item=>item.created_at&&new Date(item.created_at)>=monthStart).length;
+  const chargeLimitReached=activePlan.maxCharges!==null&&monthlyChargeCount>=activePlan.maxCharges;
 
   useEffect(()=>{let active=true;supabase.auth.getUser().then(async({data})=>{if(!data?.user?.id)return;const {data:profile}=await supabase.from("profiles").select("plan").eq("id",data.user.id).maybeSingle();if(active)setPlanKey(profile?.plan||"free");});return()=>{active=false;};},[]);
 
