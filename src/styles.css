@@ -12497,3 +12497,51 @@ html[data-theme="dark"] .modern-customers-page .modern-actions-trigger:hover{
     transition:none!important;
   }
 }
+
+
+/* Clientes: remover os blocos quadrados atrás da busca e ordenação */
+.modern-customers-page .modern-search,
+.modern-customers-page .modern-select{
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  outline:0!important;
+}
+.modern-customers-page .modern-search:focus-within,
+.modern-customers-page .modern-select:focus-within{
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.modern-customers-page .modern-search{
+  border-bottom:1px solid #dedfeb!important;
+}
+.modern-customers-page .modern-search:focus-within{
+  border-bottom:1px solid #8587ef!important;
+}
+.modern-customers-page .modern-select{
+  border-bottom:1px solid #dedfeb!important;
+}
+.modern-customers-page .modern-select:focus-within{
+  border-bottom:1px solid #8587ef!important;
+}
+html[data-theme="dark"] .modern-customers-page .modern-search,
+html[data-theme="dark"] .modern-customers-page .modern-select{
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .modern-customers-page .modern-search{
+  border-bottom:1px solid #383a49!important;
+}
+html[data-theme="dark"] .modern-customers-page .modern-select{
+  border-bottom:1px solid #383a49!important;
+}
+html[data-theme="dark"] .modern-customers-page .modern-search:focus-within,
+html[data-theme="dark"] .modern-customers-page .modern-select:focus-within{
+  border-bottom:1px solid #898bff!important;
+  box-shadow:none!important;
+}
