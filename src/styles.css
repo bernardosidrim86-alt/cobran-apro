@@ -15593,3 +15593,28 @@ html[data-theme="dark"] .app-layout .ai-locked-features span{
 }
 html[data-theme="dark"] .app-layout .ai-locked-demo-tags svg{color:#b3b5ff!important}
 html[data-theme="dark"] .app-layout .ai-locked-features{border-color:#343641!important}
+
+
+/* Assistente IA bloqueado: versão compacta */
+.app-layout .ai-locked-simple{
+  display:flex;align-items:center;gap:18px;padding:24px 26px;
+  border:1px solid rgba(139,92,246,.2);border-radius:16px;
+  background:linear-gradient(110deg,rgba(139,92,246,.075),transparent 58%),var(--panel,#fff);
+}
+.app-layout .ai-locked-simple-icon{
+  width:44px;height:44px;flex:0 0 44px;border-radius:13px;
+  display:grid;place-items:center;color:#a78bfa;
+  background:rgba(139,92,246,.13);border:1px solid rgba(139,92,246,.2);
+}
+.app-layout .ai-locked-simple-copy{min-width:0;flex:1}
+.app-layout .ai-locked-simple-eyebrow{font-size:10px;font-weight:800;letter-spacing:.12em;color:#9b7bea}
+.app-layout .ai-locked-simple h2{margin:5px 0 3px;font-size:19px;line-height:1.25;font-weight:750}
+.app-layout .ai-locked-simple p{margin:0;color:var(--muted,#858596);font-size:13px;line-height:1.5}
+.app-layout .ai-locked-simple-plan{display:inline-flex;margin-top:10px;padding:4px 9px;border-radius:7px;background:rgba(139,92,246,.09);color:#a78bfa;font-size:11px;font-weight:650}
+.app-layout .ai-locked-simple>.btn{flex:0 0 auto;white-space:nowrap}
+html[data-theme="dark"] .app-layout .ai-locked-simple{background:linear-gradient(110deg,rgba(139,92,246,.11),transparent 58%),#191a24;border-color:#353044}
+@media(max-width:640px){
+  .app-layout .ai-locked-simple{align-items:flex-start;flex-wrap:wrap;padding:19px;gap:13px}
+  .app-layout .ai-locked-simple-copy{flex:1 1 calc(100% - 58px)}
+  .app-layout .ai-locked-simple>.btn{width:100%;justify-content:center}
+}
