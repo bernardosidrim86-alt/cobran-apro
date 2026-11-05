@@ -11807,3 +11807,289 @@ html[data-theme="dark"] .app-layout .side-nav .side-nav-parent.active{
   .modern-charges-page .modern-filter-tabs button,
   .modern-charges-page .modern-filter-tabs a{padding:0 12px!important}
 }
+
+
+/* Relatórios — mesma escala de leitura aplicada em Clientes e Cobranças */
+.cp-reports-page .page-title{
+  margin-bottom:20px!important;
+}
+.cp-reports-page .page-title h1{
+  font-size:26px!important;
+}
+.cp-reports-page .page-title p{
+  font-size:13px!important;
+}
+.cp-reports-page .cp-report-toolbar{
+  gap:12px!important;
+  margin-bottom:18px!important;
+}
+.cp-reports-page .cp-report-periods{
+  min-height:44px!important;
+  padding:4px!important;
+  gap:4px!important;
+  border-radius:11px!important;
+}
+.cp-reports-page .cp-report-periods button{
+  height:36px!important;
+  padding:0 15px!important;
+  font-size:12px!important;
+  font-weight:600!important;
+}
+.cp-reports-page .cp-report-dates{
+  gap:9px!important;
+  font-size:11px!important;
+}
+.cp-reports-page .cp-report-dates input{
+  width:138px!important;
+  height:40px!important;
+  padding:0 11px!important;
+  font-size:12px!important;
+}
+.cp-reports-page .cp-report-refresh{
+  height:44px!important;
+  padding:0 14px!important;
+  gap:9px!important;
+  font-size:12px!important;
+}
+.cp-reports-page .cp-report-refresh svg{
+  width:17px!important;
+  height:17px!important;
+}
+.cp-reports-page .cp-report-notice{
+  padding:13px 15px!important;
+  font-size:12px!important;
+}
+.cp-reports-page .cp-report-error{
+  padding:15px 17px!important;
+}
+.cp-reports-page .cp-report-error strong{
+  font-size:12px!important;
+}
+.cp-reports-page .cp-report-error span{
+  font-size:11px!important;
+}
+.cp-reports-page .cp-report-error button{
+  height:38px!important;
+  padding:0 13px!important;
+  font-size:11px!important;
+}
+.cp-reports-page .cp-report-kpis{
+  gap:14px!important;
+  margin-bottom:18px!important;
+}
+.cp-reports-page .cp-report-kpi{
+  min-height:136px!important;
+  padding:20px 21px!important;
+  border-radius:13px!important;
+}
+.cp-reports-page .cp-report-kpi span{
+  font-size:11px!important;
+}
+.cp-reports-page .cp-report-kpi strong{
+  margin-top:12px!important;
+  font-size:27px!important;
+}
+.cp-reports-page .cp-report-kpi small{
+  margin-top:11px!important;
+  font-size:10px!important;
+}
+.cp-reports-page .cp-report-grid{
+  gap:16px!important;
+}
+.cp-reports-page .cp-report-bottom-grid{
+  margin-top:16px!important;
+}
+.cp-reports-page .cp-report-panel{
+  border-radius:14px!important;
+}
+.cp-reports-page .cp-report-panel-head{
+  padding:20px 22px 17px!important;
+}
+.cp-reports-page .cp-report-eyebrow{
+  margin-bottom:6px!important;
+  font-size:9px!important;
+}
+.cp-reports-page .cp-report-panel-head h2{
+  font-size:16px!important;
+}
+.cp-reports-page .cp-report-panel-head p{
+  margin-top:6px!important;
+  font-size:11px!important;
+}
+.cp-reports-page .cp-report-legend{
+  gap:14px!important;
+  font-size:11px!important;
+}
+.cp-reports-page .cp-report-legend i,
+.cp-reports-page .cp-report-status-list i{
+  width:8px!important;
+  height:8px!important;
+  margin-right:7px!important;
+}
+.cp-reports-page .cp-report-chart{
+  grid-template-columns:64px minmax(0,1fr)!important;
+  gap:11px!important;
+  padding:18px 22px 11px!important;
+}
+.cp-reports-page .cp-report-axis{
+  height:250px!important;
+  font-size:10px!important;
+}
+.cp-reports-page .cp-report-bars{
+  height:250px!important;
+  gap:10px!important;
+}
+.cp-reports-page .cp-report-bar-wrap{
+  height:222px!important;
+  gap:5px!important;
+}
+.cp-reports-page .cp-report-bar-col>span{
+  min-height:13px!important;
+  font-size:10px!important;
+}
+.cp-reports-page .cp-report-chart-foot{
+  padding:14px 22px 19px!important;
+}
+.cp-reports-page .cp-report-chart-foot span{
+  font-size:10px!important;
+}
+.cp-reports-page .cp-report-chart-foot strong{
+  font-size:14px!important;
+}
+.cp-reports-page .cp-report-status-score{
+  padding:23px 22px 17px!important;
+}
+.cp-reports-page .cp-report-status-score strong{
+  font-size:34px!important;
+}
+.cp-reports-page .cp-report-status-score span{
+  font-size:11px!important;
+}
+.cp-reports-page .cp-report-status-track{
+  height:9px!important;
+  margin:0 22px!important;
+}
+.cp-reports-page .cp-report-status-list{
+  margin:16px 22px 0!important;
+}
+.cp-reports-page .cp-report-status-list>div{
+  min-height:46px!important;
+}
+.cp-reports-page .cp-report-status-list span{
+  font-size:11px!important;
+}
+.cp-reports-page .cp-report-status-list strong{
+  font-size:12px!important;
+}
+.cp-reports-page .cp-report-status-foot{
+  padding:13px 22px 18px!important;
+  font-size:10px!important;
+}
+.cp-reports-page .cp-report-ranking{
+  padding:5px 22px 9px!important;
+}
+.cp-reports-page .cp-report-rank{
+  grid-template-columns:28px minmax(0,1fr) auto!important;
+  gap:12px!important;
+  min-height:64px!important;
+}
+.cp-reports-page .cp-report-rank>.position{
+  width:25px!important;
+  height:25px!important;
+  font-size:10px!important;
+}
+.cp-reports-page .cp-report-rank>.main b{
+  margin-bottom:7px!important;
+  font-size:12px!important;
+}
+.cp-reports-page .cp-report-rank>.main em{
+  height:5px!important;
+}
+.cp-reports-page .cp-report-rank>strong{
+  font-size:12px!important;
+}
+.cp-reports-page .cp-report-empty{
+  padding:38px 22px 42px!important;
+  font-size:11px!important;
+}
+.cp-reports-page .cp-report-summary{
+  padding:5px 22px 10px!important;
+}
+.cp-reports-page .cp-report-summary>div{
+  min-height:52px!important;
+}
+.cp-reports-page .cp-report-summary span{
+  font-size:11px!important;
+}
+.cp-reports-page .cp-report-summary strong{
+  font-size:12px!important;
+}
+.cp-reports-page .cp-report-loading-card{
+  height:136px!important;
+}
+.cp-reports-page .cp-report-loading-panel{
+  height:410px!important;
+}
+@media(max-width:700px){
+  .cp-reports-page .cp-report-periods button{
+    padding:0 12px!important;
+  }
+  .cp-reports-page .cp-report-chart{
+    grid-template-columns:42px minmax(0,1fr)!important;
+    padding:16px 14px 10px!important;
+  }
+  .cp-reports-page .cp-report-bars{
+    gap:5px!important;
+  }
+  .cp-reports-page .cp-report-panel-head{
+    padding:18px 16px 15px!important;
+  }
+  .cp-reports-page .cp-report-chart-foot{
+    padding:13px 16px 17px!important;
+  }
+  .cp-reports-page .cp-report-status-track{
+    margin-left:16px!important;
+    margin-right:16px!important;
+  }
+  .cp-reports-page .cp-report-status-list{
+    margin-left:16px!important;
+    margin-right:16px!important;
+  }
+  .cp-reports-page .cp-report-status-foot{
+    padding-left:16px!important;
+    padding-right:16px!important;
+  }
+  .cp-reports-page .cp-report-ranking,
+  .cp-reports-page .cp-report-summary{
+    padding-left:16px!important;
+    padding-right:16px!important;
+  }
+}
+@media(max-width:560px){
+  .cp-reports-page .cp-report-kpi{
+    min-height:112px!important;
+    padding:17px 18px!important;
+  }
+  .cp-reports-page .cp-report-kpi strong{
+    font-size:25px!important;
+  }
+  .cp-reports-page .cp-report-toolbar-right{
+    align-items:stretch!important;
+  }
+  .cp-reports-page .cp-report-refresh{
+    height:40px!important;
+  }
+  .cp-reports-page .cp-report-chart{
+    grid-template-columns:35px minmax(0,1fr)!important;
+  }
+  .cp-reports-page .cp-report-bars{
+    gap:3px!important;
+  }
+  .cp-reports-page .cp-report-bar-wrap{
+    height:205px!important;
+  }
+  .cp-reports-page .cp-report-axis{
+    height:230px!important;
+    font-size:9px!important;
+  }
+}
