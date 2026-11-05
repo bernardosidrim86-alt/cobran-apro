@@ -918,7 +918,7 @@ function AppShell({session}) {
       </Link>)}
     </div>
     {notifications.length>12&&<Link to="/app/cobrancas" onClick={()=>setNotificationsOpen(false)} className="notifications-footer">Ver todas as cobranças <ChevronRight size={14}/></Link>}
-  </div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session} currentPlan={currentPlan} companyId={companyId} subscriptionExpiresAt={subscriptionExpiresAt}/>}/><Route path="clientes" element={<Customers companyId={companyId} />} /><Route path="cobrancas" element={<Charges companyId={companyId} />} /><Route path="recebimentos" element={<Payments companyId={companyId}/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/>
+  </div>}</div><div className="header-menu"><button className={`avatar avatar-button ${profileOpen?"active":""}`} onClick={openProfile} aria-label="Perfil">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</button>{profileOpen&&<div className="header-dropdown profile-dropdown"><div className="profile-summary"><div className="avatar large">{companyAvatar?<img src={companyAvatar} alt="" />:initials}</div><div><b>{fullName}</b><span>{email}</span></div></div><div className="dropdown-divider"></div><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><UserRound size={16}/> Meu perfil <ChevronRight size={14}/></Link><Link to="/app/configuracoes" onClick={()=>setProfileOpen(false)}><Settings size={16}/> Configurações <ChevronRight size={14}/></Link><button onClick={logout}><LogOut size={16}/> Sair <ChevronRight size={14}/></button></div>}</div></div></header><div className="page">{currentPlan==="free"&&<div className="trial-banner"><span><strong>Teste grátis</strong> · {trialDays} {trialDays===1?"dia":"dias"} restantes</span><a href="/#precos">Ver planos <ArrowRight size={14}/></a></div>}<Routes><Route index element={<Dashboard session={session} currentPlan={currentPlan} companyId={companyId} subscriptionExpiresAt={subscriptionExpiresAt}/>}/><Route path="clientes" element={<Customers companyId={companyId} />} /><Route path="cobrancas" element={<Charges companyId={companyId} />} /><Route path="recebimentos" element={<Payments companyId={companyId}/>}/><Route path="calendario" element={<CalendarPage/>}/><Route path="relatorios" element={<Reports companyId={companyId}/>}/><Route path="ia" element={<AIPage locked={!hasAIAccess} currentPlan={currentPlan}/>}/>
 <Route path="configuracoes/*" element={<SettingsPage canUseAI={hasAIAccess} companyId={companyId}/>}/><Route path="*" element={<Navigate to="/app" replace/>}/></Routes></div></div></div>
 }
 
@@ -1293,10 +1293,15 @@ function Payments({companyId}){
     </section>
   </div>;
 }
-function Reports(){
-  const companyId=useCompany();
+function Reports({companyId}){
   const [range,setRange]=useState("30"),[from,setFrom]=useState(""),[to,setTo]=useState("");
-  const [charges,setCharges]=useState([]),[payments,setPayments]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState("");
+  const [charges,setCharges]=useState([]),[payments,setPayments]=useState([]),[loading,setLoading]=useState(true),[showLoading,setShowLoading]=useState(false),[error,setError]=useState("");
+
+  useEffect(()=>{
+    if(!loading){setShowLoading(false);return;}
+    const timer=window.setTimeout(()=>setShowLoading(true),220);
+    return()=>window.clearTimeout(timer);
+  },[loading]);
 
   const parseLocalDate=(value,endOfDay=false)=>{
     if(!value)return null;
@@ -1324,6 +1329,7 @@ function Reports(){
 
   useEffect(()=>{
     let active=true;
+    if(companyId===null)return()=>{active=false};
     if(!companyId){
       setLoading(false);
       setCharges([]);
@@ -1483,7 +1489,7 @@ function Reports(){
     {customInvalid&&<div className="cp-report-notice">Selecione um período válido para visualizar o relatório.</div>}
     {error&&<div className="cp-report-error"><div><strong>Não foi possível carregar todos os dados.</strong><span>{error}</span></div><button type="button" onClick={refresh}>Tentar novamente</button></div>}
 
-    {loading?<div className="cp-report-loading"><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-panel"/><div className="cp-report-loading-panel"/></div>:!customInvalid&&<>
+    {loading?(showLoading?<div className="cp-report-loading"><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-panel"/><div className="cp-report-loading-panel"/></div>:<div className="cp-report-loading-pending" aria-hidden="true"/>):!customInvalid&&<>
       <div className="cp-report-kpis">
         <div className="cp-report-kpi cp-report-kpi-success"><span>Recebido no período</span><strong>{money(received)}</strong><small>{periodPayments.length} recebimento{periodPayments.length===1?"":"s"}</small></div>
         <div className="cp-report-kpi"><span>Em aberto</span><strong>{money(open)}</strong><small>{pendingCount+lateCount} cobrança{pendingCount+lateCount===1?"":"s"} pendente{pendingCount+lateCount===1?"":"s"}</small></div>
