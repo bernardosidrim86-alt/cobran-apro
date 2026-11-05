@@ -1869,3 +1869,22 @@ html[data-theme="dark"] .calendar-empty-day span{color:#9295a2!important}
   .app-layout .calendar-panel::before,
   .app-layout .calendar-day-panel::before{animation:none!important}
 }
+
+
+/* Calendar neon: static compositor-friendly highlight */
+.app-layout .calendar-summary-card::before,
+.app-layout .calendar-panel::before,
+.app-layout .calendar-day-panel::before{
+  animation:none!important;
+  background-size:100% 100%!important;
+  background-position:center!important;
+  opacity:.78!important;
+  box-shadow:0 0 6px rgba(112,114,255,.2)!important;
+  transform:none!important;
+}
+.app-layout .calendar-summary-card:nth-child(2)::before{
+  box-shadow:0 0 6px rgba(69,189,131,.18)!important;
+}
+.app-layout .calendar-summary-card:nth-child(4)::before{
+  box-shadow:0 0 6px rgba(226,106,117,.18)!important;
+}
