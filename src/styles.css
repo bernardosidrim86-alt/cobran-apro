@@ -14244,3 +14244,145 @@ html[data-theme="dark"] .payments-history-skeleton{border-color:#2b2c36}
   .payments-history-skeleton span,
   .payments-history-skeleton b{animation:none!important}
 }
+
+
+/* Recebimentos — linhas neon e tipografia legível */
+.payments-page .payments-metrics .metric{
+  isolation:isolate!important;
+  border-color:#dedff0!important;
+  box-shadow:0 6px 20px rgba(28,30,65,.045),inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+.payments-page .payments-metrics .metric::before{
+  content:""!important;
+  position:absolute!important;
+  z-index:2!important;
+  top:0!important;
+  left:16px!important;
+  right:16px!important;
+  height:1px!important;
+  border-radius:2px!important;
+  background:linear-gradient(90deg,transparent 0%,rgba(111,113,255,.22) 12%,#7779ff 48%,rgba(111,113,255,.22) 88%,transparent 100%)!important;
+  background-size:220% 100%!important;
+  animation:cpPaymentNeonLine 4.2s linear infinite!important;
+  box-shadow:0 0 7px rgba(104,106,255,.35),0 0 15px rgba(104,106,255,.12)!important;
+  pointer-events:none!important;
+}
+.payments-page .payments-metrics .metric:nth-child(2)::before{
+  background:linear-gradient(90deg,transparent,rgba(76,205,139,.2),#55d99a,rgba(76,205,139,.2),transparent)!important;
+  box-shadow:0 0 7px rgba(76,205,139,.3),0 0 14px rgba(76,205,139,.1)!important;
+}
+.payments-page .payments-metrics .metric:nth-child(3)::before{
+  background:linear-gradient(90deg,transparent,rgba(111,113,255,.2),#a18bff,rgba(111,113,255,.2),transparent)!important;
+}
+.payments-page .payments-history-panel{
+  position:relative!important;
+  isolation:isolate!important;
+  box-shadow:0 7px 24px rgba(24,26,48,.045),inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+.payments-page .payments-history-panel::before{
+  content:""!important;
+  position:absolute!important;
+  z-index:3!important;
+  top:0!important;
+  left:22px!important;
+  right:22px!important;
+  height:1px!important;
+  background:linear-gradient(90deg,transparent,rgba(116,118,255,.25),#8586ff,rgba(116,118,255,.25),transparent)!important;
+  box-shadow:0 0 8px rgba(104,106,255,.3)!important;
+  pointer-events:none!important;
+}
+.payments-history-count{
+  position:relative!important;
+  overflow:hidden!important;
+}
+.payments-history-count::before{
+  content:""!important;
+  position:absolute!important;
+  top:0!important;
+  left:9px!important;
+  right:9px!important;
+  height:1px!important;
+  background:linear-gradient(90deg,transparent,#898bff,transparent)!important;
+  box-shadow:0 0 7px rgba(104,106,255,.38)!important;
+}
+.payments-history-search{
+  border-color:#e1e2ef!important;
+  box-shadow:inset 0 1px 2px rgba(30,32,70,.025)!important;
+}
+.payments-history-search:focus-within{
+  border-color:#aeb0ed!important;
+  box-shadow:0 0 0 3px rgba(91,92,226,.09),0 0 12px rgba(91,92,226,.07)!important;
+}
+
+/* Aumenta os textos secundários que estavam pequenos demais */
+.payments-overview-label>span{font-size:10px!important}
+.payments-overview-label>small{font-size:11px!important}
+.payments-page .payments-metrics .metric>span{font-size:12px!important}
+.payments-page .payments-metrics .metric>strong{font-size:23px!important}
+.payments-history-kicker{font-size:10px!important}
+.payments-history-title h2{font-size:17px!important}
+.payments-history-title p{font-size:12px!important}
+.payments-history-count span{font-size:9px!important}
+.payments-history-search input{font-size:12px!important}
+.payments-history-caption{font-size:11px!important}
+.payments-history-columns span{font-size:9px!important}
+.payments-history-customer b{font-size:12px!important}
+.payments-history-customer small{font-size:10.5px!important}
+.payments-history-date b{font-size:11px!important}
+.payments-method-pill{font-size:10px!important}
+.payments-history-amount strong{font-size:13px!important}
+.payments-history-empty>b{font-size:14px!important}
+.payments-history-empty>span{font-size:11px!important}
+.payments-history-empty>button{font-size:11px!important}
+.payments-history-search input::placeholder{font-size:11px!important}
+.payments-history-columns{min-height:42px!important}
+.payments-history-row{min-height:76px!important}
+
+html[data-theme="dark"] .payments-page .payments-metrics .metric{
+  border-color:#37384a!important;
+  box-shadow:0 7px 22px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+html[data-theme="dark"] .payments-page .payments-metrics .metric::before{
+  background:linear-gradient(90deg,transparent,rgba(129,131,255,.3),#7779ff,rgba(129,131,255,.3),transparent)!important;
+  box-shadow:0 0 9px rgba(112,114,255,.48),0 0 18px rgba(112,114,255,.18)!important;
+}
+html[data-theme="dark"] .payments-page .payments-metrics .metric:nth-child(2)::before{
+  background:linear-gradient(90deg,transparent,rgba(88,218,150,.25),#5cdb9d,rgba(88,218,150,.25),transparent)!important;
+  box-shadow:0 0 9px rgba(88,218,150,.38),0 0 17px rgba(88,218,150,.14)!important;
+}
+html[data-theme="dark"] .payments-page .payments-history-panel{
+  border-color:#37384a!important;
+  box-shadow:0 8px 26px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+html[data-theme="dark"] .payments-page .payments-history-panel::before{
+  background:linear-gradient(90deg,transparent,rgba(129,131,255,.3),#7779ff,rgba(129,131,255,.3),transparent)!important;
+  box-shadow:0 0 10px rgba(112,114,255,.45)!important;
+}
+html[data-theme="dark"] .payments-history-count::before{
+  background:linear-gradient(90deg,transparent,#898bff,transparent)!important;
+  box-shadow:0 0 8px rgba(104,106,255,.5)!important;
+}
+html[data-theme="dark"] .payments-history-search{
+  border-color:#414354!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.2)!important;
+}
+@keyframes cpPaymentNeonLine{
+  0%{background-position:100% 0;opacity:.65}
+  50%{opacity:1}
+  100%{background-position:-120% 0;opacity:.65}
+}
+@media(max-width:700px){
+  .payments-page .payments-metrics .metric>span{font-size:11px!important}
+  .payments-page .payments-metrics .metric>strong{font-size:19px!important}
+  .payments-history-title h2{font-size:15px!important}
+  .payments-history-title p{font-size:10px!important}
+  .payments-history-customer b{font-size:11px!important}
+  .payments-history-customer small{font-size:10px!important}
+  .payments-history-date b{font-size:10px!important}
+  .payments-method-pill{font-size:9px!important}
+  .payments-history-amount strong{font-size:12px!important}
+  .payments-mobile-label{font-size:9px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .payments-page .payments-metrics .metric::before{animation:none!important}
+}
