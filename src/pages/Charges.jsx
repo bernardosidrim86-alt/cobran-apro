@@ -8,6 +8,7 @@ import { downloadCsv } from "../lib/export";
 import { buildPixPayload } from "../lib/pix";
 import { Button, Input, Empty, PageTitle } from "../components/AppPrimitives";
 import { toast, confirmDialog } from "../ui";
+import { PLAN_OPTIONS } from "../lib/plans";
 
 function addDays(date,days){
   const d=new Date(date+"T12:00:00");
@@ -25,6 +26,12 @@ function addMonths(date,months){
 
 function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
   const [saving,setSaving]=useState(false);
+  const [planKey,setPlanKey]=useState("free");
+  const [limitError,setLimitError]=useState("");
+  const activePlan=PLAN_OPTIONS.find(p=>p.key===planKey)||PLAN_OPTIONS[0];
+  const monthStart=new Date();monthStart.setDate(1);monthStart.setHours(0,0,0,0);
+  const monthlyChargeCount=rows.filter(item=>item.created_at&&new Date(item.created_at)>=monthStart).length;
+  const chargeLimitReached=activePlan.maxCharges!==null&&monthlyChargeCount>=activePlan.maxCharges;
   const [deleting,setDeleting]=useState(false);
   const [repeating,setRepeating]=useState(false);
   const [editing,setEditing]=useState(false);
@@ -222,6 +229,8 @@ export function Charges({companyId}){
   const [form,setForm]=useState({customer_id:"",description:"",amount:"",due_date:todayISO(),payment_method:"Pix",recurrence:"none",notes:""});
   const [saving,setSaving]=useState(false);
 
+  useEffect(()=>{let active=true;supabase.auth.getUser().then(async({data})=>{if(!data?.user?.id)return;const {data:profile}=await supabase.from("profiles").select("plan").eq("id",data.user.id).maybeSingle();if(active)setPlanKey(profile?.plan||"free");});return()=>{active=false;};},[]);
+
   async function load(){
     if(!companyId)return;
     const [{data:c,error:chargeError},{data:cu,error:customerError},{data:settings}]=await Promise.all([
@@ -268,6 +277,7 @@ export function Charges({companyId}){
 
   async function save(e){
     e.preventDefault();if(saving)return;
+    if(chargeLimitReached){setLimitError("Você atingiu o limite de "+activePlan.maxCharges+" cobranças mensais do plano "+activePlan.title+". Faça upgrade para continuar.");return;}
     if(!companyId){toast("Sua empresa ainda está carregando. Tente novamente em instantes.");return;}
     const customerId=String(form.customer_id||"").trim(),description=String(form.description||"").trim(),amount=Number(form.amount),dueDate=String(form.due_date||"").trim();
     if(!customerId){toast("Selecione um cliente.");return;}
@@ -285,12 +295,12 @@ export function Charges({companyId}){
         const start=new Date();start.setDate(1);
         const {count,error}=await supabase.from("charges").select("id",{count:"exact",head:true}).eq("company_id",companyId).gte("created_at",start.toISOString().slice(0,10)).lt("created_at",new Date(start.getFullYear(),start.getMonth()+1,1).toISOString().slice(0,10));
         if(error)throw error;
-        if((count||0)>=plan.maxCharges){toast("Seu plano atingiu o limite de "+plan.maxCharges+" cobranças neste mês.");return;}
+        if((count||0)>=plan.maxCharges){setLimitError("Você atingiu o limite de "+plan.maxCharges+" cobranças mensais do plano "+plan.title+". Faça upgrade para continuar.");return;}
       }
       const {data:created,error}=await supabase.from("charges").insert({company_id:companyId,customer_id:customerId,description,amount,due_date:dueDate,payment_method:form.payment_method||"Pix",recurrence:form.recurrence||"none",notes:String(form.notes||"").trim()||null}).select("id").single();
       if(error)throw error;
       if(!created?.id)throw new Error("A cobrança não foi confirmada pelo banco.");
-      setOpen(false);setForm({customer_id:"",description:"",amount:"",due_date:todayISO(),payment_method:"Pix",recurrence:"none",notes:""});
+      setLimitError("");setOpen(false);setForm({customer_id:"",description:"",amount:"",due_date:todayISO(),payment_method:"Pix",recurrence:"none",notes:""});
       await load();toast("Cobrança criada com sucesso.","success");
     }catch(error){console.error(error);toast(error?.message||"Não foi possível criar a cobrança.");}
     finally{setSaving(false);}
@@ -300,7 +310,8 @@ export function Charges({companyId}){
   const sectionSubtitle=filter==="paid"?"Histórico de cobranças já recebidas.":filter==="overdue"?"Cobranças vencidas que precisam de atenção.":"Cobranças pendentes e dentro do prazo.";
 
   return <div className="modern-page modern-charges-page">
-    <PageTitle title={sectionTitle} subtitle={sectionSubtitle} action={<Button onClick={()=>setOpen(true)}><Plus size={17}/> Nova cobrança</Button>}/>
+    <PageTitle title={sectionTitle} subtitle={sectionSubtitle} action={<Button onClick={()=>{setLimitError("");setOpen(true);}}><Plus size={17}/> Nova cobrança</Button>}/>
+    {chargeLimitReached&&<div className="plan-limit-notice" role="alert"><div><strong>Limite mensal de cobranças atingido</strong><p>Seu plano {activePlan.title} permite até {activePlan.maxCharges} cobranças por mês. Para continuar criando, escolha um plano com maior capacidade.</p></div><a href="/#precos">Ver planos <span aria-hidden="true">→</span></a></div>}
     <div className="modern-toolbar">
       <div className="modern-filter-tabs" role="group" aria-label="Filtrar cobranças">
         <button type="button" className={filter==="pending"?"active":""} onClick={()=>setFilter("pending")} aria-pressed={filter==="pending"}>A receber</button>
@@ -326,6 +337,7 @@ export function Charges({companyId}){
       <form className="modal modern-charge-modal" onSubmit={save} noValidate role="dialog" aria-modal="true" aria-labelledby="new-charge-title">
         <button type="button" className="modal-x" onClick={()=>setOpen(false)} aria-label="Fechar"><X/></button>
         <div className="modal-head"><div className="icon-box"><Receipt/></div><div><h2 id="new-charge-title">Nova cobrança</h2><p>Crie um valor a receber.</p></div></div>
+        {(limitError||chargeLimitReached)&&<div className="plan-limit-notice plan-limit-notice-modal" role="alert"><div><strong>Limite mensal de cobranças atingido</strong><p>{limitError||"Seu plano "+activePlan.title+" permite até "+activePlan.maxCharges+" cobranças por mês. Faça upgrade para continuar."}</p></div><a href="/#precos">Ver planos <span aria-hidden="true">→</span></a></div>}
         <div className="charge-form-grid">
           <label className="field"><span>Cliente</span><select value={form.customer_id} onChange={e=>setForm({...form,customer_id:e.target.value})} required><option value="">Selecione</option>{customers.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}</select></label>
           <Input label="Descrição" placeholder="Ex.: Mensalidade" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} required/>
@@ -336,7 +348,7 @@ export function Charges({companyId}){
         </div>
         <div className="recurrence-hint">{form.recurrence==="none"?"Cobrança única.":"Ao marcar como paga, a próxima cobrança será criada automaticamente."}</div>
         {form.payment_method==="Pix"&&!pixSettings.pix_key&&<div className="charge-pix-config-hint"><QrCode size={17}/><span>Pix selecionado, mas a chave da empresa ainda não foi configurada.</span><button type="button" onClick={()=>window.location.href="/app/configuracoes?tab=pix"}>Configurar</button></div>}
-        <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)} disabled={saving}>Cancelar</Button><Button type="submit" disabled={saving}>{saving?"Criando...":"Criar cobrança"}</Button></div>
+        <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)} disabled={saving}>Cancelar</Button><Button type="submit" disabled={saving||chargeLimitReached}>{saving?"Criando...":"Criar cobrança"}</Button></div>
       </form>
     </div>,document.body)}
 
