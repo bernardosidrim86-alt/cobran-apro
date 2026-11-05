@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { MessageCircle, Plus, Receipt, X, Check, Download, ArrowDownUp, Copy, QrCode, Settings } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { PLAN_OPTIONS } from "../lib/plans";
@@ -321,19 +322,23 @@ export function Charges({companyId}){
       </table></div>}
     </div>
 
-    {open&&<div className="modal-backdrop"><form className="modal modern-charge-modal" onSubmit={save} noValidate>
-      <button type="button" className="modal-x" onClick={()=>setOpen(false)}><X/></button>
-      <div className="modal-head"><div className="icon-box"><Receipt/></div><div><h2>Nova cobrança</h2><p>Crie um valor a receber.</p></div></div>
-      <label className="field"><span>Cliente</span><select value={form.customer_id} onChange={e=>setForm({...form,customer_id:e.target.value})} required><option value="">Selecione</option>{customers.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}</select></label>
-      <Input label="Descrição" placeholder="Ex.: Mensalidade" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} required/>
-      <Input label="Valor" type="number" min="0.01" step="0.01" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} required/>
-      <Input label="Vencimento" type="date" value={form.due_date} onChange={e=>setForm({...form,due_date:e.target.value})} required/>
-      <label className="field"><span>Método</span><select value={form.payment_method} onChange={e=>setForm({...form,payment_method:e.target.value})}>{["Pix","Dinheiro","Cartão","Transferência","Outro"].map(x=><option key={x}>{x}</option>)}</select></label>
-      <label className="field"><span>Recorrência</span><select value={form.recurrence} onChange={e=>setForm({...form,recurrence:e.target.value})}><option value="none">Não repetir</option><option value="weekly">Semanal</option><option value="biweekly">Quinzenal</option><option value="monthly">Mensal</option><option value="annual">Anual</option></select></label>
-      <div className="recurrence-hint">{form.recurrence==="none"?"Cobrança única.":"Ao marcar como paga, a próxima cobrança será criada automaticamente."}</div>
-      {form.payment_method==="Pix"&&!pixSettings.pix_key&&<div className="charge-pix-config-hint"><QrCode size={17}/><span>Pix selecionado, mas a chave da empresa ainda não foi configurada.</span><button type="button" onClick={()=>window.location.href="/app/configuracoes?tab=pix"}>Configurar</button></div>}
-      <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)} disabled={saving}>Cancelar</Button><Button type="submit" disabled={saving}>{saving?"Criando...":"Criar cobrança"}</Button></div>
-    </form></div>}
+    {open&&createPortal(<div className="modal-backdrop charge-modal-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget&&!saving)setOpen(false);}}>
+      <form className="modal modern-charge-modal" onSubmit={save} noValidate role="dialog" aria-modal="true" aria-labelledby="new-charge-title">
+        <button type="button" className="modal-x" onClick={()=>setOpen(false)} aria-label="Fechar"><X/></button>
+        <div className="modal-head"><div className="icon-box"><Receipt/></div><div><h2 id="new-charge-title">Nova cobrança</h2><p>Crie um valor a receber.</p></div></div>
+        <div className="charge-form-grid">
+          <label className="field"><span>Cliente</span><select value={form.customer_id} onChange={e=>setForm({...form,customer_id:e.target.value})} required><option value="">Selecione</option>{customers.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}</select></label>
+          <Input label="Descrição" placeholder="Ex.: Mensalidade" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} required/>
+          <Input label="Valor" type="number" min="0.01" step="0.01" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} required/>
+          <Input label="Vencimento" type="date" value={form.due_date} onChange={e=>setForm({...form,due_date:e.target.value})} required/>
+          <label className="field"><span>Método</span><select value={form.payment_method} onChange={e=>setForm({...form,payment_method:e.target.value})}>{["Pix","Dinheiro","Cartão","Transferência","Outro"].map(x=><option key={x}>{x}</option>)}</select></label>
+          <label className="field"><span>Recorrência</span><select value={form.recurrence} onChange={e=>setForm({...form,recurrence:e.target.value})}><option value="none">Não repetir</option><option value="weekly">Semanal</option><option value="biweekly">Quinzenal</option><option value="monthly">Mensal</option><option value="annual">Anual</option></select></label>
+        </div>
+        <div className="recurrence-hint">{form.recurrence==="none"?"Cobrança única.":"Ao marcar como paga, a próxima cobrança será criada automaticamente."}</div>
+        {form.payment_method==="Pix"&&!pixSettings.pix_key&&<div className="charge-pix-config-hint"><QrCode size={17}/><span>Pix selecionado, mas a chave da empresa ainda não foi configurada.</span><button type="button" onClick={()=>window.location.href="/app/configuracoes?tab=pix"}>Configurar</button></div>}
+        <div className="modal-actions"><Button type="button" variant="secondary" onClick={()=>setOpen(false)} disabled={saving}>Cancelar</Button><Button type="submit" disabled={saving}>{saving?"Criando...":"Criar cobrança"}</Button></div>
+      </form>
+    </div>,document.body)}
 
     {selected&&<ChargeDetail charge={selected} customers={customers} pixSettings={pixSettings} onClose={()=>setSelected(null)} onPaid={()=>{setSelected(null);load();}}/>}
   </div>;
