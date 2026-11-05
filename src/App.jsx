@@ -1491,10 +1491,10 @@ function Reports({companyId}){
 
     {loading?(showLoading?<div className="cp-report-loading"><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-card"/><div className="cp-report-loading-panel"/><div className="cp-report-loading-panel"/></div>:<div className="cp-report-loading-pending" aria-hidden="true"/>):!customInvalid&&<>
       <div className="cp-report-kpis">
-        <div className="cp-report-kpi cp-report-kpi-success"><span>Recebido no período</span><strong>{money(received)}</strong><small>{periodPayments.length} recebimento{periodPayments.length===1?"":"s"}</small></div>
-        <div className="cp-report-kpi"><span>Em aberto</span><strong>{money(open)}</strong><small>{pendingCount+lateCount} cobrança{pendingCount+lateCount===1?"":"s"} pendente{pendingCount+lateCount===1?"":"s"}</small></div>
-        <div className="cp-report-kpi cp-report-kpi-danger"><span>Atrasado</span><strong>{money(overdue)}</strong><small>{lateCount} cobrança{lateCount===1?"":"s"} em atraso</small></div>
-        <div className="cp-report-kpi"><span>Taxa de recebimento</span><strong>{rate}%</strong><small>{paidCount} de {statusTotal} cobranças pagas</small></div>
+        <div className="cp-report-kpi cp-report-kpi-success"><div className="cp-report-kpi-top"><span>Recebido no período</span><i className="received"><Wallet size={18}/></i></div><strong>{money(received)}</strong><small>{periodPayments.length} recebimento{periodPayments.length===1?"":"s"}</small></div>
+        <div className="cp-report-kpi"><div className="cp-report-kpi-top"><span>Em aberto</span><i><Receipt size={18}/></i></div><strong>{money(open)}</strong><small>{pendingCount+lateCount} cobrança{pendingCount+lateCount===1?"":"s"} pendente{pendingCount+lateCount===1?"":"s"}</small></div>
+        <div className="cp-report-kpi cp-report-kpi-danger"><div className="cp-report-kpi-top"><span>Atrasado</span><i className="overdue"><CircleDollarSign size={18}/></i></div><strong>{money(overdue)}</strong><small>{lateCount} cobrança{lateCount===1?"":"s"} em atraso</small></div>
+        <div className="cp-report-kpi"><div className="cp-report-kpi-top"><span>Taxa de recebimento</span><i><TrendingUp size={18}/></i></div><strong>{rate}%</strong><small>{paidCount} de {statusTotal} cobranças pagas</small></div>
       </div>
 
       <div className="cp-report-grid cp-report-top-grid">
