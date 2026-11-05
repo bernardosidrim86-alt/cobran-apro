@@ -12134,7 +12134,7 @@ html[data-theme="dark"] .app-layout .sidebar{
   position:relative!important;
   isolation:isolate;
   overflow:hidden;
-  transition:transform .28s cubic-bezier(.2,.7,.2,1),border-color .28s ease,box-shadow .28s ease;
+  translate:0 0;transition:translate .28s cubic-bezier(.2,.7,.2,1),border-color .28s ease,box-shadow .28s ease;
   animation:cpDashRise .62s cubic-bezier(.2,.7,.2,1) both;
 }
 .dashboard-page .dashboard-metrics>.metric:nth-child(1){animation-delay:.04s}
@@ -12184,7 +12184,7 @@ html[data-theme="dark"] .app-layout .sidebar{
 }
 .dashboard-page .dashboard-metrics>.metric:hover,
 .dashboard-page .dashboard-action-grid>.panel:hover{
-  transform:translateY(-3px);
+  translate:0 -3px;
   border-color:rgba(112,114,245,.38)!important;
   box-shadow:0 12px 30px rgba(42,43,100,.09),0 0 0 1px rgba(112,114,245,.08)!important;
 }
