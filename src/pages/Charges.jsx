@@ -170,7 +170,7 @@ function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
   }
 
   const selectedCustomer=customers.find(c=>c.id===editForm.customer_id);
-  return <div className="modal-backdrop"><div className="modal modern-charge-modal">
+  return createPortal(<div className="modal-backdrop charge-detail-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)onClose();}}><div className="modal modern-charge-modal charge-detail-modal">
     <button className="modal-x" type="button" onClick={onClose}><X/></button>
     {editing?<form onSubmit={saveEdit}>
       <div className="modal-head"><div className="icon-box"><Receipt/></div><div><h2>Editar cobrança</h2><p>Atualize os dados desta cobrança.</p></div></div>
@@ -218,7 +218,7 @@ function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
       </div>
       <p className="modal-note">{charge.status==="paid"?"A cobrança original continua como paga.":"O botão do WhatsApp abre uma conversa com a mensagem preenchida. Ele não simula um envio pela plataforma."}</p>
     </div>}
-  </div></div>;
+  </div></div>,document.body);
 }
 
 export function Charges({companyId}){
