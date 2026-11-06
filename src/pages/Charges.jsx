@@ -121,6 +121,17 @@ function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
       const {error}=await supabase.rpc("record_charge_payment",{p_charge_id:charge.id});
       if(error)throw error;
 
+      // Envia o push em segundo plano. A confirmação financeira não depende do serviço de notificações.
+      supabase.auth.getSession().then(({data})=>{
+        const accessToken=data?.session?.access_token;
+        if(!accessToken)return;
+        fetch("/api/push-payment",{
+          method:"POST",
+          headers:{"Content-Type":"application/json","Authorization":"Bearer "+accessToken},
+          body:JSON.stringify({charge_id:charge.id})
+        }).catch(pushError=>console.warn("Falha ao solicitar notificação de pagamento:",pushError));
+      }).catch(pushError=>console.warn("Não foi possível iniciar a notificação de pagamento:",pushError));
+
       if(charge.recurrence&&charge.recurrence!=="none"){
         const nextDate=charge.recurrence==="weekly"?addDays(charge.due_date,7):charge.recurrence==="biweekly"?addDays(charge.due_date,14):charge.recurrence==="annual"?addMonths(charge.due_date,12):addMonths(charge.due_date,1);
         const {error:recurrenceError}=await supabase.from("charges").insert({company_id:charge.company_id,customer_id:charge.customer_id,description:charge.description,amount:Number(charge.amount),due_date:nextDate,payment_method:charge.payment_method,status:"pending",recurrence:charge.recurrence});
