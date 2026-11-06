@@ -817,3 +817,110 @@
   .lp-journey-track i,.lp-journey-dots a{transition:none!important}
   .lp-step-media{position:relative!important;top:auto!important}
 }
+
+
+/* Ajuste de legibilidade: vantagens do hero e indicador da jornada */
+.lp-trust-points{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:12px 20px!important;
+  margin-top:22px!important;
+}
+.lp-trust-item{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-width:0!important;
+  white-space:nowrap!important;
+}
+.lp-trust-icon{
+  display:grid!important;
+  flex:0 0 25px!important;
+  place-items:center!important;
+  width:25px!important;
+  height:25px!important;
+  border:1px solid rgba(124,130,255,.2)!important;
+  border-radius:50%!important;
+  background:rgba(124,130,255,.1)!important;
+  color:#9ba1ff!important;
+}
+.lp-trust-icon svg{
+  display:block!important;
+  width:14px!important;
+  height:14px!important;
+  flex:none!important;
+  stroke:currentColor!important;
+}
+.lp-trust-label{
+  display:block!important;
+  color:#aeb6c2!important;
+  font-size:13px!important;
+  font-weight:550!important;
+  line-height:1.35!important;
+  white-space:normal!important;
+}
+.lp-journey-shell{
+  grid-template-columns:140px minmax(0,1fr)!important;
+  gap:44px!important;
+}
+.lp-journey-label{
+  color:#a6adbd!important;
+  font-size:13px!important;
+  font-weight:750!important;
+  letter-spacing:.1em!important;
+  line-height:1.3!important;
+}
+.lp-journey-count{
+  gap:7px!important;
+}
+.lp-journey-count b{
+  font-size:38px!important;
+  font-weight:750!important;
+  letter-spacing:-.045em!important;
+}
+.lp-journey-count span{
+  color:#a0a8b8!important;
+  font-size:14px!important;
+  font-weight:600!important;
+}
+.lp-journey-rail-inner>p{
+  max-width:136px!important;
+  min-height:42px!important;
+  margin-top:10px!important;
+  color:#d0d5e0!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  line-height:1.45!important;
+}
+@media(max-width:900px){
+  .lp-trust-points{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:10px 16px!important;
+  }
+  .lp-trust-label{font-size:12px!important}
+}
+@media(max-width:640px){
+  .lp-trust-points{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px 12px!important;
+    margin-top:18px!important;
+  }
+  .lp-trust-item{
+    white-space:normal!important;
+    align-items:flex-start!important;
+    gap:7px!important;
+  }
+  .lp-trust-icon{
+    flex-basis:22px!important;
+    width:22px!important;
+    height:22px!important;
+  }
+  .lp-trust-icon svg{width:12px!important;height:12px!important}
+  .lp-trust-label{
+    font-size:11px!important;
+    line-height:1.4!important;
+  }
+}
