@@ -1487,3 +1487,42 @@
   .lp-story-screen-wrap .lp-story-screen,
   .lp-story-current-info{animation:none!important}
 }
+
+
+/* Mobile scroll story: the live product preview stays pinned while chapters pass */
+@media(max-width:1000px){
+  .lp-story-layout{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:1fr!important;
+    align-items:stretch!important;
+    gap:0!important;
+  }
+  .lp-story-visual{
+    grid-area:1 / 1!important;
+    position:relative!important;
+    align-self:stretch!important;
+    margin:0!important;
+    z-index:5!important;
+  }
+  .lp-story-visual-card{
+    position:sticky!important;
+    top:76px!important;
+  }
+  .lp-story-chapters{
+    grid-area:1 / 1!important;
+    position:relative!important;
+    z-index:1!important;
+    padding-top:clamp(410px,calc(32svh + 200px),500px)!important;
+  }
+}
+@media(max-width:640px){
+  .lp-story-visual{margin:0 -4px!important}
+  .lp-story-visual-card{
+    position:sticky!important;
+    top:calc(env(safe-area-inset-top) + 68px)!important;
+  }
+  .lp-story-chapters{
+    padding-top:calc(clamp(155px,24svh,205px) + 145px)!important;
+  }
+}
