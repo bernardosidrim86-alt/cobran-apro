@@ -302,7 +302,7 @@ export function PushNotificationsSettings() {
         </div>
 
         <label className="push-preference">
-          <span><b>Pagamentos confirmados</b><small>Quando uma cobrança for marcada como recebida.</small></span>
+          <span><b>Pagamentos confirmados</b><small>Aviso imediato quando receber e resumo diário dos pagamentos.</small></span>
           <input type="checkbox" checked={preferences.notify_payments} onChange={event => updatePreference("notify_payments", event.target.checked)} disabled={!enabled || busy} />
         </label>
         <label className="push-preference">
