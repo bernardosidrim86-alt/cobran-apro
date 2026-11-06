@@ -33,6 +33,7 @@ export default async function handler(req, res) {
 
   try {
     const admin = createAdminClient();
+    await admin.from("push_delivery_log").delete().lt("created_at", new Date(Date.now() - 90 * 86400000).toISOString());
     const today = saoPauloDate();
     const tomorrow = addDate(today, 1);
     const eventKey = "daily:" + today;
@@ -98,6 +99,7 @@ export default async function handler(req, res) {
       const todayTotal = dueToday.reduce((sum, item) => sum + Number(item.amount || 0), 0);
       const tomorrowTotal = dueTomorrow.reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
+      const sentBeforeUser = sent;
       for (const row of userRows) {
         const parts = [];
         if (row.notify_overdue && overdue.length) {
@@ -122,7 +124,7 @@ export default async function handler(req, res) {
       }
 
       if (userRows.length) usersProcessed += 1;
-      if (!sent) {
+      if (sent === sentBeforeUser) {
         await admin.from("push_delivery_log").delete().eq("user_id", userId).eq("event_key", eventKey);
       }
     }
