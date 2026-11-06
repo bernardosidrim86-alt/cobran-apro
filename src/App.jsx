@@ -454,9 +454,9 @@ function Landing({session}) {
             </div>
             <p className="lp-micro">7 dias grátis · Sem cartão de crédito</p>
             <div className="lp-trust-points" aria-label="Vantagens do CobrançaPro">
-              <span><Check size={15}/> Organização em tempo real</span>
-              <span><Check size={15}/> Cobranças pelo WhatsApp</span>
-              <span><Check size={15}/> Acesso pelo navegador</span>
+              <span className="lp-trust-item"><span className="lp-trust-icon" aria-hidden="true"><Check size={14}/></span><span className="lp-trust-label">Organização em tempo real</span></span>
+              <span className="lp-trust-item"><span className="lp-trust-icon" aria-hidden="true"><Check size={14}/></span><span className="lp-trust-label">Cobranças pelo WhatsApp</span></span>
+              <span className="lp-trust-item"><span className="lp-trust-icon" aria-hidden="true"><Check size={14}/></span><span className="lp-trust-label">Acesso pelo navegador</span></span>
             </div>
           </div>
           <div className="lp-hero-shot">
