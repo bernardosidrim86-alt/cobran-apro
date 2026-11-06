@@ -11,6 +11,14 @@ import "./dark-mode.css";
 import "./polish-v2.css";
 import "./workspace-pages.css";
 import "./auth-dark.css";
+import "./push-notifications.css";
+
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js", { scope: "/" })
+      .catch(error => console.error("Falha ao registrar service worker:", error));
+  });
+}
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
