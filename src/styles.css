@@ -15568,3 +15568,26 @@ html[data-theme="dark"] .auth-card{
     justify-content:center!important;
   }
 }
+
+
+/* Correção do detalhe da cobrança no modal renderizado fora do app-layout */
+html[data-theme="dark"] .charge-detail-modal .detail-grid{
+  background:#191a22!important;
+  border:1px solid #30323d!important;
+  border-radius:14px!important;
+  overflow:hidden!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"] .charge-detail-modal .detail-grid>div{
+  background:transparent!important;
+  border-color:#30323d!important;
+}
+html[data-theme="dark"] .charge-detail-modal .detail-grid span{
+  color:#a1a3af!important;
+}
+html[data-theme="dark"] .charge-detail-modal .detail-grid b{
+  color:#f3f4f6!important;
+}
+html[data-theme="dark"] .charge-detail-modal .detail-grid *{
+  text-shadow:none!important;
+}
