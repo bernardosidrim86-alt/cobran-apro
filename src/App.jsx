@@ -494,7 +494,7 @@ function Landing({session}) {
               </div>
             </aside>
             <div className="lp-steps">
-            {steps.map((st,index)=><article id={`lp-step-${st.n}`} data-chapter-index={index} className="lp-step" key={st.n}>
+            {steps.map((st,index)=><article id={`lp-step-${st.n}`} data-chapter-index={index} data-step-number={st.n} className="lp-step" key={st.n}>
               <div className="lp-step-text"><span className="lp-step-n">{st.n}</span><h3>{st.title}</h3><p>{st.text}</p></div>
               <div className="lp-step-media">
                 <div
