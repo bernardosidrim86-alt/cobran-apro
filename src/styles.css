@@ -15517,3 +15517,54 @@ html[data-theme="dark"] .auth-card{
   .auth-card .form-stack>.btn,
   .auth-card .field input{transition:none!important}
 }
+
+
+/* Modal de cobrança: renderização isolada e interação confiável em mobile */
+.modal-backdrop.charge-detail-backdrop{
+  position:fixed!important;
+  inset:0!important;
+  z-index:10000!important;
+  display:grid!important;
+  place-items:center!important;
+  box-sizing:border-box!important;
+  padding: max(16px, env(safe-area-inset-top)) 14px max(16px, env(safe-area-inset-bottom))!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  pointer-events:auto!important;
+}
+.charge-detail-backdrop .charge-detail-modal{
+  position:relative!important;
+  width:min(560px,100%)!important;
+  max-width:100%!important;
+  max-height:calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;
+  min-width:0!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+  pointer-events:auto!important;
+}
+@media(max-width:560px){
+  .modal-backdrop.charge-detail-backdrop{
+    align-items:start!important;
+    padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom))!important;
+  }
+  .charge-detail-backdrop .charge-detail-modal{
+    width:100%!important;
+    max-height:calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;
+    padding:19px!important;
+    border-radius:16px!important;
+  }
+  .charge-detail-backdrop .charge-detail-modal .modal-actions{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:8px!important;
+  }
+  .charge-detail-backdrop .charge-detail-modal .modal-actions .btn{
+    min-height:42px!important;
+    flex:1 1 135px!important;
+    justify-content:center!important;
+  }
+}
