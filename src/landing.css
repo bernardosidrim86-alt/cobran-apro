@@ -1654,7 +1654,7 @@
 
 /* LANDING 6.0 — experiência narrativa conduzida pela rolagem */
 .lp-scroll-progress{position:fixed!important;z-index:100!important;inset:0 auto auto 0!important;width:100%!important;height:3px!important;overflow:hidden!important;background:rgba(255,255,255,.035)!important;pointer-events:none!important}
-.lp-scroll-progress>span{display:block!important;width:100%!important;height:100%!important;transform:scaleX(0)!important;transform-origin:left center!important;background:linear-gradient(90deg,#5e63df 0%,#8c91ff 55%,#c1c4ff 100%)!important;box-shadow:0 0 12px rgba(125,130,255,.65)!important;will-change:transform!important}
+.lp-scroll-progress>span{display:block!important;width:100%!important;height:100%!important;transform:scaleX(0);transform-origin:left center!important;background:linear-gradient(90deg,#5e63df 0%,#8c91ff 55%,#c1c4ff 100%)!important;box-shadow:0 0 12px rgba(125,130,255,.65)!important;will-change:transform!important}
 .lp-hero{min-height:calc(100svh - 76px)!important;display:flex!important;align-items:center!important}
 .lp-hero-grid{width:100%!important}
 .lp-journey{position:relative!important;isolation:isolate!important;overflow:clip!important;background:radial-gradient(ellipse 44% 28% at 8% 18%,rgba(84,91,218,.12),transparent 78%),radial-gradient(ellipse 42% 34% at 93% 73%,rgba(84,91,218,.08),transparent 75%),#0b0e15!important}
@@ -1677,7 +1677,7 @@
 .lp-steps{position:relative!important;display:grid!important;gap:36px!important}
 .lp-steps::before{content:""!important;position:absolute!important;top:6%!important;bottom:6%!important;left:-22px!important;width:1px!important;background:linear-gradient(180deg,transparent,#30374c 9%,#30374c 91%,transparent)!important;pointer-events:none!important}
 .lp-step{position:relative!important;min-height:clamp(520px,70svh,760px)!important;align-content:center!important;padding:44px 0!important;gap:clamp(30px,5vw,74px)!important}
-.lp-step::before{content:attr(data-chapter-index)!important;position:absolute!important;top:50%!important;left:-34px!important;display:grid!important;place-items:center!important;width:24px!important;height:24px!important;transform:translateY(-50%)!important;border:1px solid #454d6a!important;border-radius:50%!important;background:#111522!important;color:#a8adff!important;font-size:9px!important;font-weight:800!important;box-shadow:0 0 0 6px #0b0e15!important}
+.lp-step::before{content:attr(data-step-number)!important;position:absolute!important;top:50%!important;left:-34px!important;display:grid!important;place-items:center!important;width:24px!important;height:24px!important;transform:translateY(-50%)!important;border:1px solid #454d6a!important;border-radius:50%!important;background:#111522!important;color:#a8adff!important;font-size:9px!important;font-weight:800!important;box-shadow:0 0 0 6px #0b0e15!important}
 .lp-step-text{position:relative!important;align-self:center!important;padding:20px 0!important}
 .lp-step-text::after{content:""!important;display:block!important;width:48px!important;height:2px!important;margin-top:25px!important;border-radius:99px!important;background:linear-gradient(90deg,#8589ff,transparent)!important;box-shadow:0 0 12px rgba(133,137,255,.24)!important}
 .lp-step-n{min-width:46px!important;height:30px!important;border-radius:8px!important;font-size:10px!important}
