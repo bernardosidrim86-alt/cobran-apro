@@ -113,6 +113,7 @@ export default async function handler(req, res) {
       const overdueTotal = overdue.reduce((sum, item) => sum + Number(item.amount || 0), 0);
       const todayTotal = dueToday.reduce((sum, item) => sum + Number(item.amount || 0), 0);
       const tomorrowTotal = dueTomorrow.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+      const receivedTotal = receivedYesterday.reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
       const sentBeforeUser = sent;
       for (const row of userRows) {
