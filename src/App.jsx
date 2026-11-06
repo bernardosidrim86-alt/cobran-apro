@@ -312,7 +312,6 @@ function Landing({session}) {
   const [annualBilling,setAnnualBilling]=useState(false);
   const [lightbox,setLightbox]=useState(null);
   const [activeStep,setActiveStep]=useState(0);
-  const scrollProgressRef=React.useRef(null);
   useEffect(()=>{
     if(window.location.hash!=="#precos") return;
     const scrollToPlans=()=>document.getElementById("precos")?.scrollIntoView({behavior:"auto",block:"start"});
@@ -324,8 +323,8 @@ function Landing({session}) {
     const selectors=[
       ".lp-problem-grid > h2",
       ".lp-problem-list > li",
-      "#como .lp-heading",
-      "#como .lp-step",
+      "#como .lp-story-intro",
+      "#como .lp-story-chapter",
       "#recursos .lp-heading",
       "#recursos .lp-features > div",
       ".lp-who-text",
@@ -367,37 +366,15 @@ function Landing({session}) {
   },[]);
 
   const steps=[
-    {n:"01",title:"Cadastre seus clientes",text:"Nome, telefone e e-mail de cada cliente em um só lugar, com busca rápida. Nada de procurar contato em conversa antiga.",img:"/landing/clientes.webp",alt:"Lista de clientes do CobrançaPro com telefone e e-mail"},
-    {n:"02",title:"Crie as cobranças",text:"Defina valor, vencimento e recorrência. O sistema separa sozinho o que está a receber, o que vence hoje, o que atrasou e o que já foi pago.",img:"/landing/cobrancas.webp",alt:"Lista de cobranças com status pago, a receber e atrasado"},
-    {n:"03",title:"Cobre pelo WhatsApp",text:"Um clique abre o WhatsApp com a mensagem de cobrança pronta. Você confere, ajusta se quiser e envia. Quando o cliente pagar, registre o recebimento.",crop:"/landing/cobrar.webp",alt:"Cobranças atrasadas com o botão Cobrar ao lado de cada cliente"},
-    {n:"04",title:"Acompanhe o resultado",text:"Veja quanto entrou, quanto está em aberto e a taxa de recebimento por período, de 7 dias até datas personalizadas.",img:"/landing/relatorios.webp",alt:"Relatórios com gráfico de cobrado e recebido por período"},
+    {n:"01",title:"Cadastre seus clientes",kicker:"Tudo começa com organização",text:"Nome, telefone e e-mail de cada cliente em um só lugar. Encontre qualquer contato rapidamente, sem procurar em conversas ou planilhas.",img:"/landing/clientes.webp",alt:"Lista de clientes do CobrançaPro com telefone e e-mail",screenLabel:"CLIENTES",calloutLabel:"BASE ORGANIZADA",calloutTitle:"Seus contatos em um só lugar",calloutText:"Dados e informações reunidos para facilitar cada próxima cobrança.",result:"Você sabe quem são seus clientes e encontra cada cadastro em segundos."},
+    {n:"02",title:"Crie e acompanhe cobranças",kicker:"Cada valor no seu devido lugar",text:"Defina o valor, o vencimento e a recorrência. O CobrançaPro organiza as cobranças por situação para você enxergar o que está a receber, o que vence e o que já atrasou.",img:"/landing/cobrancas.webp",alt:"Lista de cobranças com status pago, a receber e atrasado",screenLabel:"COBRANÇAS",calloutLabel:"CONTROLE DE VENCIMENTOS",calloutTitle:"Saiba o que precisa de atenção",calloutText:"A receber, pago e atrasado ficam separados por status.",result:"Você deixa de depender da memória para acompanhar os vencimentos."},
+    {n:"03",title:"Faça a cobrança pelo WhatsApp",kicker:"A próxima ação fica mais simples",text:"Abra a conversa do cliente com a mensagem de cobrança já preenchida. Você confere os dados, faz os ajustes necessários e envia pelo próprio WhatsApp.",crop:"/landing/cobrar.webp",alt:"Cobranças atrasadas com o botão Cobrar ao lado de cada cliente",screenLabel:"COBRAR PELO WHATSAPP",calloutLabel:"MENSAGEM PREPARADA",calloutTitle:"Menos tempo escrevendo do zero",calloutText:"A conversa abre com as informações da cobrança para você revisar e enviar.",result:"Cobrar deixa de ser uma tarefa demorada e repetitiva."},
+    {n:"04",title:"Entenda o que entrou",kicker:"Decisões com mais clareza",text:"Acompanhe os recebimentos e consulte relatórios por período. Veja quanto foi cobrado, quanto foi recebido e o que continua em aberto.",img:"/landing/relatorios.webp",alt:"Relatórios com gráfico de cobrado e recebido por período",screenLabel:"RELATÓRIOS",calloutLabel:"VISÃO FINANCEIRA",calloutTitle:"O cenário do negócio fica visível",calloutText:"Consulte os valores e acompanhe a evolução dos recebimentos.",result:"Você termina o mês entendendo melhor a situação das cobranças."},
   ];
+  const currentStep=steps[activeStep] || steps[0];
 
   useEffect(()=>{
-    let frame=0;
-    const updateProgress=()=>{
-      if(frame) return;
-      frame=window.requestAnimationFrame(()=>{
-        frame=0;
-        const bar=scrollProgressRef.current;
-        if(!bar) return;
-        const max=document.documentElement.scrollHeight-window.innerHeight;
-        const progress=max>0?Math.min(1,Math.max(0,window.scrollY/max)):0;
-        bar.style.transform=`scaleX(${progress})`;
-      });
-    };
-    updateProgress();
-    window.addEventListener("scroll",updateProgress,{passive:true});
-    window.addEventListener("resize",updateProgress);
-    return()=>{
-      window.removeEventListener("scroll",updateProgress);
-      window.removeEventListener("resize",updateProgress);
-      if(frame) window.cancelAnimationFrame(frame);
-    };
-  },[]);
-
-  useEffect(()=>{
-    const chapters=[...document.querySelectorAll(".lp-step[data-chapter-index]")];
+    const chapters=[...document.querySelectorAll(".lp-story-chapter[data-chapter-index]")];
     if(!chapters.length||!("IntersectionObserver" in window)) return;
     const observer=new IntersectionObserver((entries)=>{
       entries.forEach(entry=>{
@@ -406,7 +383,7 @@ function Landing({session}) {
           if(Number.isInteger(index)) setActiveStep(index);
         }
       });
-    },{rootMargin:"-42% 0px -42% 0px",threshold:0});
+    },{rootMargin:"-38% 0px -38% 0px",threshold:0});
     chapters.forEach(chapter=>observer.observe(chapter));
     return()=>observer.disconnect();
   },[]);
@@ -430,7 +407,6 @@ function Landing({session}) {
   ];
 
   return <div className="lp">
-    <div className="lp-scroll-progress" aria-hidden="true"><span ref={scrollProgressRef}/></div>
     <header className="lp-header">
       <div className="lp-wrap lp-header-in">
         <Link to="/" className="lp-brand"><img src="/logo.png" alt="CobrançaPro" /></Link>
@@ -478,49 +454,90 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="como" className="lp-section lp-journey">
+      <section id="como" className="lp-section lp-story">
         <div className="lp-wrap">
-          <div className="lp-heading"><p className="lp-kicker">Sua jornada começa aqui</p><h2>Do cadastro ao dinheiro na conta, em quatro passos.</h2><p className="lp-sub">Role a página e veja como a rotina de cobranças fica mais simples, etapa por etapa.</p></div>
-          <div className="lp-journey-shell">
-            <aside className="lp-journey-rail" aria-label={`Etapa ${activeStep+1} de 4: ${steps[activeStep]?.title}`}>
-              <div className="lp-journey-rail-inner">
-                <span className="lp-journey-label">O PERCURSO</span>
-                <div className="lp-journey-track"><i style={{transform:`scaleY(${(activeStep+1)/steps.length})`}}/></div>
-                <div className="lp-journey-count"><b>0{activeStep+1}</b><span>/ 04</span></div>
-                <p>{steps[activeStep]?.title}</p>
-                <nav className="lp-journey-dots" aria-label="Ir para uma etapa">
-                  {steps.map((step,index)=><a key={step.n} href={`#lp-step-${step.n}`} className={activeStep===index?"active":""} aria-label={`Ir para etapa ${index+1}: ${step.title}`}/>)}
-                </nav>
-              </div>
-            </aside>
-            <div className="lp-steps">
-            {steps.map((st,index)=><article id={`lp-step-${st.n}`} data-chapter-index={index} data-step-number={st.n} className="lp-step" key={st.n}>
-              <div className="lp-step-text"><span className="lp-step-n">{st.n}</span><h3>{st.title}</h3><p>{st.text}</p></div>
-              <div className="lp-step-media">
-                <div
-                  className="lp-image-zoom"
-                  role="button"
-                  tabIndex={0}
-                  onClick={()=>setLightbox({src:st.crop||st.img,alt:st.alt})}
-                  onKeyDown={(event)=>{
-                    if(event.key==="Enter"||event.key===" "){
-                      event.preventDefault();
-                      setLightbox({src:st.crop||st.img,alt:st.alt});
-                    }
-                  }}
-                  aria-label={`Ampliar: ${st.alt}`}
-                >
-                  {st.crop ? <div className="lp-crop"><img src={st.crop} alt={st.alt} width="1200" height="568" loading="lazy" decoding="async" /></div> : <BrowserFrame src={st.img} alt={st.alt} width="1400" height="900" />}
-                  <span className="lp-image-zoom-hint" aria-hidden="true"><Search size={16}/></span>
+          <div className="lp-story-intro lp-heading">
+            <p className="lp-kicker">COMO O COBRANÇAPRO TRABALHA</p>
+            <h2>Da primeira informação ao recebimento, <span>tudo se conecta.</span></h2>
+            <p className="lp-sub">Acompanhe o fluxo completo de uma rotina de cobranças organizada. Cada etapa prepara a próxima.</p>
+          </div>
+
+          <div className="lp-story-layout">
+            <div className="lp-story-visual" aria-label={`Prévia da etapa ${activeStep+1}: ${currentStep.title}`}>
+              <div className="lp-story-visual-card">
+                <div className="lp-story-topbar">
+                  <div className="lp-story-brand">
+                    <span className="lp-story-brand-mark">CP</span>
+                    <span><b>CobrançaPro</b><small>GESTÃO DE COBRANÇAS</small></span>
+                  </div>
+                  <div className="lp-story-counter"><b>0{activeStep+1}</b><span>/ 04</span></div>
+                </div>
+
+                <div className="lp-story-progress-track" aria-hidden="true">
+                  <span style={{width:`${((activeStep+1)/steps.length)*100}%`}}/>
+                </div>
+
+                <div className="lp-story-screen-heading">
+                  <span>VISÃO DO PRODUTO</span>
+                  <span><i/> {currentStep.screenLabel}</span>
+                </div>
+
+                <div className="lp-story-screen-wrap" key={currentStep.n}>
+                  <img
+                    className={`lp-story-screen ${currentStep.crop?"is-crop":""}`}
+                    src={currentStep.crop||currentStep.img}
+                    alt={currentStep.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+
+                <div className="lp-story-current-info" key={`info-${currentStep.n}`}>
+                  <span className="lp-story-current-check" aria-hidden="true"><Check size={16}/></span>
+                  <div className="lp-story-current-copy">
+                    <span>{currentStep.calloutLabel}</span>
+                    <strong>{currentStep.calloutTitle}</strong>
+                    <p>{currentStep.calloutText}</p>
+                  </div>
+                  <span className="lp-story-current-arrow" aria-hidden="true"><ArrowRight size={17}/></span>
+                </div>
+
+                <div className="lp-story-step-indicators" aria-label={`Etapa ${activeStep+1} de 4`}>
+                  {steps.map((step,index)=><span key={step.n} className={activeStep===index?"active":""}/>)}
                 </div>
               </div>
-            </article>)}
+              <p className="lp-story-visual-caption">Uma visão prática de cada etapa dentro do CobrançaPro.</p>
+            </div>
+
+            <div className="lp-story-chapters">
+              {steps.map((st,index)=><article
+                id={`lp-step-${st.n}`}
+                data-chapter-index={index}
+                className={`lp-story-chapter ${activeStep===index?"is-active":""}`}
+                key={st.n}
+              >
+                <div className="lp-story-chapter-meta">
+                  <span className="lp-story-chapter-number">0{index+1}</span>
+                  <span className="lp-story-chapter-kicker">{st.kicker}</span>
+                  <span className="lp-story-chapter-rule"/>
+                </div>
+                <h3>{st.title}</h3>
+                <p>{st.text}</p>
+                <div className="lp-story-result">
+                  <span>O QUE MUDA NA PRÁTICA</span>
+                  <strong>{st.result}</strong>
+                </div>
+              </article>)}
             </div>
           </div>
-          <div className="lp-journey-outro">
-            <span>É ASSIM QUE A ROTINA MUDA</span>
-            <h3>Menos tempo procurando quem deve. Mais clareza sobre o que entrou.</h3>
-            <a href="#precos">Conhecer os planos <ArrowRight size={16}/></a>
+
+          <div className="lp-story-finish">
+            <div>
+              <span>DO INÍCIO AO FIM</span>
+              <h3>Menos controle manual. Mais clareza para receber.</h3>
+              <p>Clientes, cobranças, WhatsApp e relatórios trabalhando dentro da mesma rotina.</p>
+            </div>
+            <a href="#precos">Conhecer os planos <ArrowRight size={17}/></a>
           </div>
         </div>
       </section>
