@@ -1526,3 +1526,9 @@
     padding-top:calc(clamp(155px,24svh,205px) + 145px)!important;
   }
 }
+
+
+/* Keep the current story chapter visually prominent after its reveal animation */
+.lp-story-chapter.lp-animate:not(.is-visible){opacity:0!important}
+.lp-story-chapter.lp-animate.is-visible:not(.is-active){opacity:.46!important}
+.lp-story-chapter.lp-animate.is-visible.is-active{opacity:1!important}
