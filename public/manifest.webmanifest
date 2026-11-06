@@ -1,0 +1,28 @@
+{
+  "id": "/",
+  "name": "CobrançaPro",
+  "short_name": "CobrançaPro",
+  "description": "Controle de cobranças, clientes e recebimentos da sua empresa.",
+  "lang": "pt-BR",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0B0C12",
+  "theme_color": "#5B5CE2",
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
