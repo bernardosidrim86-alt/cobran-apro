@@ -3,7 +3,7 @@ import {
   getAuthenticatedUser,
   sendToSubscriptionRows,
   jsonError,
-} from "./_lib/push.js";
+} from "../server/push.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return jsonError(res, 405, "Método não permitido.");
