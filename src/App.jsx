@@ -311,6 +311,8 @@ function ImageLightbox({image, onClose}) {
 function Landing({session}) {
   const [annualBilling,setAnnualBilling]=useState(false);
   const [lightbox,setLightbox]=useState(null);
+  const [activeStep,setActiveStep]=useState(0);
+  const scrollProgressRef=React.useRef(null);
   useEffect(()=>{
     if(window.location.hash!=="#precos") return;
     const scrollToPlans=()=>document.getElementById("precos")?.scrollIntoView({behavior:"auto",block:"start"});
@@ -370,6 +372,44 @@ function Landing({session}) {
     {n:"03",title:"Cobre pelo WhatsApp",text:"Um clique abre o WhatsApp com a mensagem de cobrança pronta. Você confere, ajusta se quiser e envia. Quando o cliente pagar, registre o recebimento.",crop:"/landing/cobrar.webp",alt:"Cobranças atrasadas com o botão Cobrar ao lado de cada cliente"},
     {n:"04",title:"Acompanhe o resultado",text:"Veja quanto entrou, quanto está em aberto e a taxa de recebimento por período, de 7 dias até datas personalizadas.",img:"/landing/relatorios.webp",alt:"Relatórios com gráfico de cobrado e recebido por período"},
   ];
+
+  useEffect(()=>{
+    let frame=0;
+    const updateProgress=()=>{
+      if(frame) return;
+      frame=window.requestAnimationFrame(()=>{
+        frame=0;
+        const bar=scrollProgressRef.current;
+        if(!bar) return;
+        const max=document.documentElement.scrollHeight-window.innerHeight;
+        const progress=max>0?Math.min(1,Math.max(0,window.scrollY/max)):0;
+        bar.style.transform=`scaleX(${progress})`;
+      });
+    };
+    updateProgress();
+    window.addEventListener("scroll",updateProgress,{passive:true});
+    window.addEventListener("resize",updateProgress);
+    return()=>{
+      window.removeEventListener("scroll",updateProgress);
+      window.removeEventListener("resize",updateProgress);
+      if(frame) window.cancelAnimationFrame(frame);
+    };
+  },[]);
+
+  useEffect(()=>{
+    const chapters=[...document.querySelectorAll(".lp-step[data-chapter-index]")];
+    if(!chapters.length||!("IntersectionObserver" in window)) return;
+    const observer=new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          const index=Number(entry.target.dataset.chapterIndex);
+          if(Number.isInteger(index)) setActiveStep(index);
+        }
+      });
+    },{rootMargin:"-42% 0px -42% 0px",threshold:0});
+    chapters.forEach(chapter=>observer.observe(chapter));
+    return()=>observer.disconnect();
+  },[]);
   const features=[
     ["Painel financeiro","A receber, vencendo hoje, atrasado e recebido, logo na primeira tela."],
     ["Clientes","Cadastro com telefone e e-mail, organizado e fácil de buscar."],
@@ -390,6 +430,7 @@ function Landing({session}) {
   ];
 
   return <div className="lp">
+    <div className="lp-scroll-progress" aria-hidden="true"><span ref={scrollProgressRef}/></div>
     <header className="lp-header">
       <div className="lp-wrap lp-header-in">
         <Link to="/" className="lp-brand"><img src="/logo.png" alt="CobrançaPro" /></Link>
@@ -437,11 +478,23 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="como" className="lp-section">
+      <section id="como" className="lp-section lp-journey">
         <div className="lp-wrap">
-          <div className="lp-heading"><p className="lp-kicker">Como funciona</p><h2>Do cadastro ao dinheiro na conta, em quatro passos.</h2></div>
-          <div className="lp-steps">
-            {steps.map(st=><article className="lp-step" key={st.n}>
+          <div className="lp-heading"><p className="lp-kicker">Sua jornada começa aqui</p><h2>Do cadastro ao dinheiro na conta, em quatro passos.</h2><p className="lp-sub">Role a página e veja como a rotina de cobranças fica mais simples, etapa por etapa.</p></div>
+          <div className="lp-journey-shell">
+            <aside className="lp-journey-rail" aria-label={`Etapa ${activeStep+1} de 4: ${steps[activeStep]?.title}`}>
+              <div className="lp-journey-rail-inner">
+                <span className="lp-journey-label">O PERCURSO</span>
+                <div className="lp-journey-track"><i style={{transform:`scaleY(${(activeStep+1)/steps.length})`}}/></div>
+                <div className="lp-journey-count"><b>0{activeStep+1}</b><span>/ 04</span></div>
+                <p>{steps[activeStep]?.title}</p>
+                <nav className="lp-journey-dots" aria-label="Ir para uma etapa">
+                  {steps.map((step,index)=><a key={step.n} href={`#lp-step-${step.n}`} className={activeStep===index?"active":""} aria-label={`Ir para etapa ${index+1}: ${step.title}`}/>)}
+                </nav>
+              </div>
+            </aside>
+            <div className="lp-steps">
+            {steps.map((st,index)=><article id={`lp-step-${st.n}`} data-chapter-index={index} className="lp-step" key={st.n}>
               <div className="lp-step-text"><span className="lp-step-n">{st.n}</span><h3>{st.title}</h3><p>{st.text}</p></div>
               <div className="lp-step-media">
                 <div
@@ -462,6 +515,12 @@ function Landing({session}) {
                 </div>
               </div>
             </article>)}
+            </div>
+          </div>
+          <div className="lp-journey-outro">
+            <span>É ASSIM QUE A ROTINA MUDA</span>
+            <h3>Menos tempo procurando quem deve. Mais clareza sobre o que entrou.</h3>
+            <a href="#precos">Conhecer os planos <ArrowRight size={16}/></a>
           </div>
         </div>
       </section>
