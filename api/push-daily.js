@@ -2,7 +2,7 @@ import {
   createAdminClient,
   sendToSubscriptionRows,
   jsonError,
-} from "./_lib/push.js";
+} from "../server/push.js";
 
 function saoPauloDate() {
   return new Intl.DateTimeFormat("en-CA", {
