@@ -924,3 +924,54 @@
     line-height:1.4!important;
   }
 }
+
+
+/* MOBILE — volta ao layout simples dos quatro passos, sem a experiência de percurso */
+@media (max-width:640px){
+  .lp-scroll-progress{
+    display:none!important;
+  }
+  .lp-journey-shell{
+    display:block!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:0!important;
+  }
+  .lp-journey-rail{
+    display:none!important;
+  }
+  .lp-steps{
+    display:grid!important;
+    gap:64px!important;
+  }
+  .lp-steps::before{
+    display:none!important;
+    content:none!important;
+  }
+  .lp-step,
+  .lp-step:nth-child(even){
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    min-height:0!important;
+    align-content:initial!important;
+    gap:28px!important;
+    padding:0!important;
+  }
+  .lp-step:nth-child(even) .lp-step-text{
+    order:0!important;
+  }
+  .lp-step::before{
+    display:none!important;
+    content:none!important;
+  }
+  .lp-step-text{
+    padding-left:0!important;
+  }
+  .lp-step-media{
+    position:static!important;
+    top:auto!important;
+    align-self:stretch!important;
+  }
+  .lp-journey .lp-heading .lp-sub{
+    font-size:15px!important;
+  }
+}
