@@ -243,6 +243,17 @@ function SessionRedirect({session}) {
   return <div className="screen-center">{checking ? "Entrando..." : "Continuando..."}</div>;
 }
 
+function KineticText({children}) {
+  const text = String(children ?? "");
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  return <>
+    <span className="lp-motion-text" aria-hidden="true">
+      {words.map((word,index)=><span className="lp-motion-word" style={{"--word-index":index}} key={index}>{word}</span>)}
+    </span>
+    <span className="lp-kinetic-sr">{text}</span>
+  </>;
+}
+
 function ScrollReveal({children, className="", delay=0}) {
   const ref = React.useRef(null);
   useEffect(()=>{
@@ -330,6 +341,7 @@ function Landing({session}) {
       ".lp-problem-list > li",
       "#como .lp-heading",
       "#como .lp-step",
+      ".lp-journey-outro h3",
       "#recursos .lp-heading",
       "#recursos .lp-features > div",
       ".lp-who-text",
@@ -481,7 +493,7 @@ function Landing({session}) {
 
       <section className="lp-problem">
         <div className="lp-wrap lp-problem-grid">
-          <h2>Cobrança espalhada em planilha, caderno e WhatsApp vira dinheiro esquecido.</h2>
+          <h2><KineticText>Cobrança espalhada em planilha, caderno e WhatsApp vira dinheiro esquecido.</KineticText></h2>
           <ul className="lp-problem-list">
             <li><b>Você esquece quem venceu.</b><span>Sem um lugar único, o atraso só aparece quando o caixa aperta.</span></li>
             <li><b>Você não sabe quanto já entrou.</b><span>Somar pagamentos de várias fontes toma tempo e raramente fecha.</span></li>
@@ -492,7 +504,7 @@ function Landing({session}) {
 
       <section id="como" className="lp-section lp-journey">
         <div className="lp-wrap">
-          <div className="lp-heading"><p className="lp-kicker">Sua jornada começa aqui</p><h2>Do cadastro ao dinheiro na conta, em quatro passos.</h2><p className="lp-sub">Role a página e veja como a rotina de cobranças fica mais simples, etapa por etapa.</p></div>
+          <div className="lp-heading"><p className="lp-kicker">Sua jornada começa aqui</p><h2><KineticText>Do cadastro ao dinheiro na conta, em quatro passos.</KineticText></h2><p className="lp-sub">Role a página e veja como a rotina de cobranças fica mais simples, etapa por etapa.</p></div>
           <div className="lp-journey-shell">
             <aside className="lp-journey-rail" aria-label={`Etapa ${activeStep+1} de 4: ${steps[activeStep]?.title}`}>
               <div className="lp-journey-rail-inner">
@@ -507,7 +519,7 @@ function Landing({session}) {
             </aside>
             <div className="lp-steps">
             {steps.map((st,index)=><article id={`lp-step-${st.n}`} data-chapter-index={index} data-step-number={st.n} className="lp-step" key={st.n}>
-              <div className="lp-step-text"><span className="lp-step-n">{st.n}</span><h3>{st.title}</h3><p>{st.text}</p></div>
+              <div className="lp-step-text"><span className="lp-step-n">{st.n}</span><h3><KineticText>{st.title}</KineticText></h3><p>{st.text}</p></div>
               <div className="lp-step-media">
                 <div
                   className="lp-image-zoom"
@@ -531,7 +543,7 @@ function Landing({session}) {
           </div>
           <div className="lp-journey-outro">
             <span>É ASSIM QUE A ROTINA MUDA</span>
-            <h3>Menos tempo procurando quem deve. Mais clareza sobre o que entrou.</h3>
+            <h3><KineticText>Menos tempo procurando quem deve. Mais clareza sobre o que entrou.</KineticText></h3>
             <a href="#precos">Conhecer os planos <ArrowRight size={16}/></a>
           </div>
         </div>
@@ -539,9 +551,9 @@ function Landing({session}) {
 
       <section id="recursos" className="lp-section lp-soft">
         <div className="lp-wrap">
-          <div className="lp-heading"><p className="lp-kicker">Recursos</p><h2>O que vem no sistema.</h2></div>
+          <div className="lp-heading"><p className="lp-kicker">Recursos</p><h2><KineticText>O que vem no sistema.</KineticText></h2></div>
           <dl className="lp-features">
-            {features.map(([t,d])=><div key={t}><dt>{t}</dt><dd>{d}</dd></div>)}
+            {features.map(([t,d])=><div key={t}><dt><KineticText>{t}</KineticText></dt><dd>{d}</dd></div>)}
           </dl>
         </div>
       </section>
@@ -549,13 +561,21 @@ function Landing({session}) {
       <section className="lp-who">
         <div className="lp-wrap">
           <p className="lp-kicker">Para quem é</p>
-          <p className="lp-who-text">Feito para quem precisa receber: <b>prestadores de serviço</b>, <b>barbearias e salões</b>, <b>clínicas e consultórios</b>, <b>oficinas e negócios locais</b>, <b>profissionais autônomos</b> e <b>pequenas empresas</b> que cobram todo mês.</p>
+          <p className="lp-who-text">
+            <KineticText>Feito para quem precisa receber:</KineticText>{" "}
+            <b className="lp-motion-emphasis" style={{"--word-index":8}}>prestadores de serviço</b>,{" "}
+            <b className="lp-motion-emphasis" style={{"--word-index":9}}>barbearias e salões</b>,{" "}
+            <b className="lp-motion-emphasis" style={{"--word-index":10}}>clínicas e consultórios</b>,{" "}
+            <b className="lp-motion-emphasis" style={{"--word-index":11}}>oficinas e negócios locais</b>,{" "}
+            <b className="lp-motion-emphasis" style={{"--word-index":12}}>profissionais autônomos</b> e{" "}
+            <b className="lp-motion-emphasis" style={{"--word-index":13}}>pequenas empresas</b> que cobram todo mês.
+          </p>
         </div>
       </section>
 
       <section id="precos" className="lp-section lp-soft lp-plans">
         <div className="lp-wrap">
-          <div className="lp-heading"><p className="lp-kicker">Planos</p><h2>Comece de graça. Faça upgrade quando precisar.</h2><p className="lp-sub">Teste por 7 dias, sem cartão de crédito. A assinatura é processada pela Perfect Pay.</p></div>
+          <div className="lp-heading"><p className="lp-kicker">Planos</p><h2><KineticText>Comece de graça. Faça upgrade quando precisar.</KineticText></h2><p className="lp-sub">Teste por 7 dias, sem cartão de crédito. A assinatura é processada pela Perfect Pay.</p></div>
           <div className="lp-billing" role="group" aria-label="Periodicidade do plano">
             <button type="button" className={!annualBilling?"active":""} onClick={()=>setAnnualBilling(false)}>Mensal</button>
             <button type="button" className={annualBilling?"active":""} onClick={()=>setAnnualBilling(true)}>Anual <span>Economize 20%</span></button>
@@ -568,7 +588,7 @@ function Landing({session}) {
 
       <section id="duvidas" className="lp-section">
         <div className="lp-wrap lp-faq-grid">
-          <div className="lp-heading"><p className="lp-kicker">Dúvidas</p><h2>Perguntas frequentes.</h2></div>
+          <div className="lp-heading"><p className="lp-kicker">Dúvidas</p><h2><KineticText>Perguntas frequentes.</KineticText></h2></div>
           <div className="lp-faq">
             {faq.map(([q,a])=><details key={q}><summary>{q}</summary><p>{a}</p></details>)}
           </div>
@@ -577,7 +597,7 @@ function Landing({session}) {
 
       <section className="lp-final">
         <div className="lp-wrap lp-final-in">
-          <div><h2>Chega de planilha para saber quem está te devendo.</h2><p>7 dias grátis · Sem cartão de crédito</p></div>
+          <div><h2><KineticText>Chega de planilha para saber quem está te devendo.</KineticText></h2><p>7 dias grátis · Sem cartão de crédito</p></div>
           <Link to="/cadastro" className="lp-final-cta">Começar grátis <ArrowRight size={18}/></Link>
         </div>
       </section>

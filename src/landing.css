@@ -1040,3 +1040,59 @@
 @media (max-width:640px){
   .lp-hero h1.lp-kinetic-title{line-height:1.12}
 }
+
+
+/* ---------- Tipografia cinética nas seções da landing ---------- */
+/* O hero mantém sua animação original e continua sendo o destaque principal. */
+.lp .lp-motion-text{
+  display:inline;
+}
+.lp .lp-motion-word{
+  display:inline-block;
+  margin-right:.22em;
+  transform-origin:50% 100%;
+  backface-visibility:hidden;
+}
+.lp .lp-motion-word:last-child{margin-right:0}
+.lp .lp-who-text .lp-motion-emphasis{
+  display:inline-block;
+  transform-origin:50% 100%;
+  backface-visibility:hidden;
+}
+@media (prefers-reduced-motion:no-preference){
+  .lp .lp-animate.is-visible .lp-motion-word{
+    animation:lpSectionWord .48s cubic-bezier(.2,.78,.18,1) both;
+    animation-delay:calc(25ms + var(--word-index,0) * 38ms);
+    will-change:transform,opacity,filter;
+  }
+  .lp .lp-who-text.is-visible .lp-motion-emphasis{
+    animation:lpSectionWord .5s cubic-bezier(.2,.78,.18,1) both;
+    animation-delay:calc(300ms + (var(--word-index,0) - 8) * 42ms);
+    will-change:transform,opacity,filter;
+  }
+  @keyframes lpSectionWord{
+    0%{
+      opacity:0;
+      transform:translate3d(0,.38em,0) rotateX(-24deg);
+      filter:blur(4px);
+    }
+    72%{
+      opacity:1;
+      filter:blur(0);
+    }
+    100%{
+      opacity:1;
+      transform:translate3d(0,0,0) rotateX(0);
+      filter:blur(0);
+    }
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .lp .lp-motion-word,
+  .lp .lp-who-text .lp-motion-emphasis{
+    opacity:1;
+    transform:none;
+    filter:none;
+    animation:none!important;
+  }
+}
