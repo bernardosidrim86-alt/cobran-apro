@@ -4,7 +4,7 @@ import { Routes, Route, Navigate, Link, useLocation, useNavigate, useParams } fr
 import {
   ArrowRight, Bell, Check, ChevronRight, CircleDollarSign, CreditCard, QrCode,
   CalendarDays, ChevronLeft, LayoutDashboard, LogOut, Menu, MessageCircle, Plus, Receipt, Settings,
-  Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, Lock, Sun, Moon, RefreshCw
+  Sparkles, TrendingUp, UserRound, Users, X, Wallet, Search, Lock, Sun, Moon, RefreshCw, MonitorSmartphone
 } from "lucide-react";
 import { supabase } from "./lib/supabase";
 import { money, todayISO } from "./lib/formatters";
@@ -427,14 +427,14 @@ function Landing({session}) {
     return()=>observer.disconnect();
   },[]);
   const features=[
-    ["Painel financeiro","A receber, vencendo hoje, atrasado e recebido, logo na primeira tela."],
-    ["Clientes","Cadastro com telefone e e-mail, organizado e fácil de buscar."],
-    ["Cobranças","Status automático, filtros por situação e recorrência."],
-    ["Recebimentos","Histórico de tudo o que já foi pago, com cliente, valor e forma."],
-    ["Relatórios","Gráficos de cobrado e recebido para 7, 30 ou 90 dias."],
-    ["WhatsApp por link","Mensagem pronta para cada cobrança. Você revisa e envia."],
-    ["Assistente de cobrança","Mensagens de cobrança adaptadas a cada situação, para você revisar e usar."],
-    ["Celular e computador","Funciona direto no navegador, sem instalar nada."],
+    {title:"Painel financeiro",description:"Acompanhe valores a receber, vencimentos, atrasos e recebimentos em uma visão geral.",icon:LayoutDashboard},
+    {title:"Clientes",description:"Mantenha contatos e dados organizados, com busca rápida sempre que precisar.",icon:Users},
+    {title:"Cobranças",description:"Crie cobranças com valor, vencimento e recorrência. Filtre por situação em segundos.",icon:Receipt},
+    {title:"Recebimentos",description:"Consulte o histórico de pagamentos registrados, com cliente, valor, data e forma.",icon:Wallet},
+    {title:"Relatórios",description:"Compare valores cobrados e recebidos em períodos de 7, 30 ou 90 dias.",icon:TrendingUp},
+    {title:"WhatsApp por link",description:"Abra a conversa com uma mensagem pronta para revisar e enviar pelo WhatsApp.",icon:MessageCircle},
+    {title:"Assistente de cobrança",description:"Gere sugestões de mensagens conforme cada situação. Revise antes de enviar.",icon:Sparkles},
+    {title:"Celular e computador",description:"Acesse sua operação pelo navegador, no computador ou no celular.",icon:MonitorSmartphone},
   ];
   const faq=[
     ["Preciso de cartão de crédito para testar?","Não. O teste dura 7 dias e não pede cartão de crédito."],
@@ -553,9 +553,20 @@ function Landing({session}) {
 
       <section id="recursos" className="lp-section lp-soft">
         <div className="lp-wrap">
-          <div className="lp-heading"><p className="lp-kicker">Recursos</p><h2><KineticText>O que vem no sistema.</KineticText></h2></div>
+          <div className="lp-heading">
+            <p className="lp-kicker">Funcionalidades</p>
+            <h2><KineticText>Tudo para organizar, acompanhar e receber.</KineticText></h2>
+            <p className="lp-sub">Da gestão de clientes ao controle dos pagamentos, sua rotina fica conectada em um só lugar.</p>
+          </div>
           <dl className="lp-features">
-            {features.map(([t,d])=><div key={t}><dt><KineticText>{t}</KineticText></dt><dd>{d}</dd></div>)}
+            {features.map(({title,description,icon:Icon},index)=><div className="lp-feature-item" key={title}>
+              <div className="lp-feature-meta">
+                <span className="lp-feature-index">{String(index+1).padStart(2,"0")}</span>
+                <span className="lp-feature-icon" aria-hidden="true"><Icon size={18} strokeWidth={1.8}/></span>
+              </div>
+              <dt><KineticText>{title}</KineticText></dt>
+              <dd>{description}</dd>
+            </div>)}
           </dl>
         </div>
       </section>
