@@ -484,8 +484,10 @@ function Landing({session}) {
             </div>
           </div>
           <div className="lp-hero-shot">
-            <BrowserFrame src="/landing/dash.webp" alt="Painel do CobrançaPro mostrando valores a receber, atrasados e recebidos" width="1600" height="1000" priority />
-            <PhoneFrame src="/landing/m-dash.webp" alt="Painel do CobrançaPro no celular" className="lp-phone-hero" />
+            <div className="lp-hero-media">
+              <BrowserFrame src="/landing/dash.webp" alt="Painel do CobrançaPro mostrando valores a receber, atrasados e recebidos" width="1600" height="1000" priority />
+              <PhoneFrame src="/landing/m-dash.webp" alt="Painel do CobrançaPro no celular" className="lp-phone-hero" />
+            </div>
             <p className="lp-caption">Telas reais do sistema, com dados de exemplo.</p>
           </div>
         </div>

@@ -1135,3 +1135,22 @@
     font-size:11px;
   }
 }
+
+
+/* Mantém o mockup de celular preso à imagem, sem invadir a legenda abaixo. */
+.lp-hero-media{
+  position:relative;
+  width:100%;
+}
+.lp-caption{
+  position:relative;
+  z-index:1;
+  margin-top:20px;
+}
+@media(max-width:640px){
+  .lp-hero-media{
+    display:flex;
+    justify-content:center;
+    width:100%;
+  }
+}
