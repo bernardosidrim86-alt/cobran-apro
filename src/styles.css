@@ -15832,3 +15832,359 @@ html[data-theme="dark"] .plan-usage-foot{color:#858898}
   .plan-usage-metric{padding:13px 14px}
   .plan-usage-value-row{margin:10px 0}
 }
+
+
+/* Uso do plano: apresentação premium, mantendo largura controlada no dashboard. */
+.plan-usage-card.plan-usage-premium{
+  width:100%!important;
+  max-width:1128px!important;
+  box-sizing:border-box!important;
+  margin:0 0 22px!important;
+  padding:22px 24px!important;
+  border:1px solid #e8eaf1!important;
+  border-radius:17px!important;
+  background:#fff!important;
+  box-shadow:0 7px 24px rgba(20,27,45,.045),0 1px 2px rgba(20,27,45,.025)!important;
+}
+.plan-usage-premium .plan-usage-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  min-width:0;
+}
+.plan-usage-premium .plan-usage-brand{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  min-width:0;
+}
+.plan-usage-premium .plan-usage-mark{
+  display:grid;
+  place-items:center;
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
+  border:1px solid #e4e5ff;
+  border-radius:12px;
+  background:#f2f2ff;
+  color:#5b5ce2;
+}
+.plan-usage-premium .plan-usage-heading{min-width:0}
+.plan-usage-premium .plan-usage-title-line{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:9px;
+}
+.plan-usage-premium .plan-usage-title-line h2{
+  margin:0;
+  color:#191b24;
+  font-size:17px;
+  line-height:1.25;
+  font-weight:760;
+  letter-spacing:-.035em;
+}
+.plan-usage-premium .plan-usage-plan-badge{
+  display:inline-flex;
+  align-items:center;
+  min-height:22px;
+  padding:3px 9px;
+  border:1px solid #e5e5fb;
+  border-radius:7px;
+  background:#f5f5ff;
+  color:#5556c8;
+  font-size:10px;
+  line-height:1;
+  font-weight:750;
+  letter-spacing:.02em;
+}
+.plan-usage-premium .plan-usage-heading p{
+  margin:5px 0 0;
+  color:#777c8b;
+  font-size:12px;
+  line-height:1.45;
+}
+.plan-usage-premium .plan-usage-status{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  gap:8px;
+  flex:0 0 auto;
+}
+.plan-usage-premium .plan-usage-expiry,
+.plan-usage-premium .plan-usage-sync{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-height:29px;
+  padding:5px 9px;
+  border:1px solid #e9ebf1;
+  border-radius:8px;
+  background:#fafbfc;
+  color:#656b7b;
+  font-size:10px;
+  line-height:1.2;
+  font-weight:650;
+  white-space:nowrap;
+}
+.plan-usage-premium .plan-usage-expiry svg{color:#81879a}
+.plan-usage-premium .plan-usage-sync>span{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#22a477;
+  box-shadow:0 0 0 3px rgba(34,164,119,.11);
+}
+.plan-usage-premium .plan-usage-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;
+  margin-top:19px;
+}
+.plan-usage-premium .plan-usage-metric{
+  min-width:0;
+  padding:15px 16px 13px;
+  border:1px solid #eceef4;
+  border-radius:12px;
+  background:#fbfcfe;
+}
+.plan-usage-premium .plan-usage-metric-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.plan-usage-premium .plan-usage-metric-heading{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  color:#626879;
+  font-size:11px;
+  line-height:1.35;
+  font-weight:650;
+}
+.plan-usage-premium .plan-usage-metric-icon{
+  display:grid;
+  place-items:center;
+  flex:0 0 28px;
+  width:28px;
+  height:28px;
+  border:1px solid #e9eaf4;
+  border-radius:8px;
+  background:#fff;
+  color:#696bd5;
+}
+.plan-usage-premium .plan-usage-ratio{
+  flex:0 0 auto;
+  padding:4px 7px;
+  border:1px solid #e4e5f8;
+  border-radius:6px;
+  background:#f4f4ff;
+  color:#5b5cc8;
+  font-size:10px;
+  line-height:1;
+  font-weight:750;
+  font-variant-numeric:tabular-nums;
+}
+.plan-usage-premium .plan-usage-ratio.warning{
+  border-color:#f3e3c4;
+  background:#fff9ed;
+  color:#a66b16;
+}
+.plan-usage-premium .plan-usage-ratio.danger{
+  border-color:#f1d5d5;
+  background:#fff3f3;
+  color:#bd4444;
+}
+.plan-usage-premium .plan-usage-unlimited-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  flex:0 0 auto;
+  padding:4px 7px;
+  border:1px solid #d8eee4;
+  border-radius:6px;
+  background:#f1faf5;
+  color:#27845e;
+  font-size:10px;
+  line-height:1;
+  font-weight:750;
+}
+.plan-usage-premium .plan-usage-unlimited-badge>span{
+  font-size:15px;
+  line-height:.7;
+}
+.plan-usage-premium .plan-usage-count{
+  display:flex;
+  align-items:baseline;
+  gap:5px;
+  margin:11px 0 12px;
+  color:#858a99;
+  font-size:12px;
+  line-height:1;
+  font-weight:600;
+  font-variant-numeric:tabular-nums;
+}
+.plan-usage-premium .plan-usage-count strong{
+  color:#20232d;
+  font-size:25px;
+  line-height:1;
+  font-weight:760;
+  letter-spacing:-.045em;
+  font-variant-numeric:tabular-nums;
+}
+.plan-usage-premium .plan-usage-track{
+  width:100%;
+  height:7px;
+  overflow:hidden;
+  border-radius:999px;
+  background:#e9ebf2;
+}
+.plan-usage-premium .plan-usage-track>span{
+  display:block;
+  height:100%;
+  min-width:0;
+  border-radius:inherit;
+  background:#696be0;
+  transition:width .3s ease;
+}
+.plan-usage-premium .plan-usage-track.warning>span{background:#d69a38}
+.plan-usage-premium .plan-usage-track.danger>span{background:#d95757}
+.plan-usage-premium .plan-usage-progress-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:7px;
+  color:#858a98;
+  font-size:10px;
+  line-height:1.3;
+  font-weight:550;
+  font-variant-numeric:tabular-nums;
+}
+.plan-usage-premium .plan-usage-progress-meta span:last-child{
+  color:#656b7b;
+  font-weight:650;
+  text-align:right;
+}
+.plan-usage-premium .plan-usage-unlimited-note{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-height:24px;
+  margin-top:8px;
+  color:#6c7482;
+  font-size:10px;
+  line-height:1.3;
+  font-weight:550;
+}
+.plan-usage-premium .plan-usage-unlimited-note>span:first-child{
+  display:grid;
+  place-items:center;
+  width:21px;
+  height:21px;
+  border-radius:6px;
+  background:#edf8f2;
+  color:#27845e;
+  font-size:18px;
+  line-height:1;
+}
+html[data-theme="dark"] .plan-usage-card.plan-usage-premium{
+  border-color:#303341!important;
+  background:#171922!important;
+  box-shadow:0 9px 26px rgba(0,0,0,.2)!important;
+}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-mark{
+  border-color:#343554;
+  background:#23243a;
+  color:#a5a6ff;
+}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-title-line h2{color:#f2f3f8}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-plan-badge{
+  border-color:#3b3c61;
+  background:#25263d;
+  color:#b7b8ff;
+}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-heading p{color:#9a9eac}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-expiry,
+html[data-theme="dark"] .plan-usage-premium .plan-usage-sync{
+  border-color:#343744;
+  background:#1d202a;
+  color:#aeb2c0;
+}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-expiry svg{color:#a5aaba}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-metric{
+  border-color:#303341;
+  background:#1b1e28;
+}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-metric-heading{color:#b6bac7}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-metric-icon{
+  border-color:#36394a;
+  background:#222532;
+  color:#a5a6ff;
+}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-ratio{
+  border-color:#3b3c61;
+  background:#25263d;
+  color:#b7b8ff;
+}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-ratio.warning{
+  border-color:#57452a;
+  background:#302719;
+  color:#e5b96e;
+}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-ratio.danger{
+  border-color:#593536;
+  background:#321f22;
+  color:#f08d8d;
+}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-unlimited-badge{
+  border-color:#294d3d;
+  background:#1c3027;
+  color:#7bd4a9;
+}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-count{color:#a0a5b4}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-count strong{color:#f0f1f6}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-track{background:#303341}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-progress-meta{color:#9298a8}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-progress-meta span:last-child{color:#c0c4d0}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-unlimited-note{color:#aab0bd}
+html[data-theme="dark"] .plan-usage-premium .plan-usage-unlimited-note>span:first-child{
+  background:#20372d;
+  color:#7bd4a9;
+}
+@media(max-width:720px){
+  .plan-usage-card.plan-usage-premium{
+    padding:17px 16px!important;
+    margin-bottom:18px!important;
+    border-radius:14px!important;
+  }
+  .plan-usage-premium .plan-usage-header{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:12px;
+  }
+  .plan-usage-premium .plan-usage-status{
+    justify-content:flex-start;
+    padding-left:55px;
+  }
+  .plan-usage-premium .plan-usage-grid{
+    grid-template-columns:minmax(0,1fr);
+    gap:10px;
+    margin-top:15px;
+  }
+}
+@media(max-width:420px){
+  .plan-usage-card.plan-usage-premium{padding:15px 13px!important}
+  .plan-usage-premium .plan-usage-mark{
+    flex-basis:38px;
+    width:38px;
+    height:38px;
+  }
+  .plan-usage-premium .plan-usage-status{padding-left:51px}
+  .plan-usage-premium .plan-usage-metric{padding:13px 12px 12px}
+  .plan-usage-premium .plan-usage-metric-heading{font-size:10px}
+}
