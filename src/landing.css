@@ -1061,13 +1061,13 @@
 }
 @media (prefers-reduced-motion:no-preference){
   .lp .lp-animate.is-visible .lp-motion-word{
-    animation:lpSectionWord .48s cubic-bezier(.2,.78,.18,1) both;
-    animation-delay:calc(25ms + var(--word-index,0) * 38ms);
+    animation:lpSectionWord .72s cubic-bezier(.2,.78,.18,1) both;
+    animation-delay:calc(60ms + var(--word-index,0) * 55ms);
     will-change:transform,opacity,filter;
   }
   .lp .lp-who-text.is-visible .lp-motion-emphasis{
-    animation:lpSectionWord .5s cubic-bezier(.2,.78,.18,1) both;
-    animation-delay:calc(300ms + (var(--word-index,0) - 8) * 42ms);
+    animation:lpSectionWord .74s cubic-bezier(.2,.78,.18,1) both;
+    animation-delay:calc(850ms + (var(--word-index,0) - 8) * 62ms);
     will-change:transform,opacity,filter;
   }
   @keyframes lpSectionWord{
