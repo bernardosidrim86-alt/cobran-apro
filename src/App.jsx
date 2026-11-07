@@ -427,14 +427,14 @@ function Landing({session}) {
     return()=>observer.disconnect();
   },[]);
   const features=[
-    {title:"Painel financeiro",description:"Acompanhe valores a receber, vencimentos, atrasos e recebimentos em uma visão geral.",icon:LayoutDashboard},
-    {title:"Clientes",description:"Mantenha contatos e dados organizados, com busca rápida sempre que precisar.",icon:Users},
-    {title:"Cobranças",description:"Crie cobranças com valor, vencimento e recorrência. Filtre por situação em segundos.",icon:Receipt},
-    {title:"Recebimentos",description:"Consulte o histórico de pagamentos registrados, com cliente, valor, data e forma.",icon:Wallet},
-    {title:"Relatórios",description:"Compare valores cobrados e recebidos em períodos de 7, 30 ou 90 dias.",icon:TrendingUp},
-    {title:"WhatsApp por link",description:"Abra a conversa com uma mensagem pronta para revisar e enviar pelo WhatsApp.",icon:MessageCircle},
-    {title:"Assistente de cobrança",description:"Gere sugestões de mensagens conforme cada situação. Revise antes de enviar.",icon:Sparkles},
-    {title:"Celular e computador",description:"Acesse sua operação pelo navegador, no computador ou no celular.",icon:MonitorSmartphone},
+    {title:"Painel financeiro",description:"Tudo o que entra e está pendente.",icon:LayoutDashboard},
+    {title:"Clientes",description:"Contatos organizados e fáceis de achar.",icon:Users},
+    {title:"Cobranças",description:"Vencimentos, status e recorrência.",icon:Receipt},
+    {title:"Recebimentos",description:"Histórico de pagamentos registrados.",icon:Wallet},
+    {title:"Relatórios",description:"Compare cobrados e recebidos.",icon:TrendingUp},
+    {title:"WhatsApp por link",description:"Mensagem pronta para revisar e enviar.",icon:MessageCircle},
+    {title:"Assistente de cobrança",description:"Sugestões de mensagens por situação.",icon:Sparkles},
+    {title:"Celular e computador",description:"Acesse de qualquer dispositivo.",icon:MonitorSmartphone},
   ];
   const faq=[
     ["Preciso de cartão de crédito para testar?","Não. O teste dura 7 dias e não pede cartão de crédito."],
@@ -554,18 +554,16 @@ function Landing({session}) {
       <section id="recursos" className="lp-section lp-soft">
         <div className="lp-wrap">
           <div className="lp-heading">
-            <p className="lp-kicker">Funcionalidades</p>
-            <h2><KineticText>Tudo para organizar, acompanhar e receber.</KineticText></h2>
-            <p className="lp-sub">Da gestão de clientes ao controle dos pagamentos, sua rotina fica conectada em um só lugar.</p>
+            <p className="lp-kicker">Recursos</p>
+            <h2><KineticText>Seu financeiro, em ordem.</KineticText></h2>
           </div>
           <dl className="lp-features">
-            {features.map(({title,description,icon:Icon},index)=><div className="lp-feature-item" key={title}>
-              <div className="lp-feature-meta">
-                <span className="lp-feature-index">{String(index+1).padStart(2,"0")}</span>
-                <span className="lp-feature-icon" aria-hidden="true"><Icon size={18} strokeWidth={1.8}/></span>
+            {features.map(({title,description,icon:Icon})=><div className="lp-feature-item" key={title}>
+              <span className="lp-feature-icon" aria-hidden="true"><Icon size={17} strokeWidth={1.8}/></span>
+              <div className="lp-feature-copy">
+                <dt><KineticText>{title}</KineticText></dt>
+                <dd>{description}</dd>
               </div>
-              <dt><KineticText>{title}</KineticText></dt>
-              <dd>{description}</dd>
             </div>)}
           </dl>
         </div>

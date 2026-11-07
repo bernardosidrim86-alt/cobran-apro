@@ -1156,139 +1156,113 @@
 }
 
 
-/* ---------- Vitrine premium de funcionalidades ---------- */
+/* ---------- Recursos: lista compacta e alinhada ---------- */
 #recursos .lp-heading{
-  max-width:760px;
-  margin-bottom:42px;
+  max-width:680px;
+  margin-bottom:34px;
 }
 #recursos .lp-heading .lp-kicker{
-  margin-bottom:13px;
+  margin-bottom:12px;
   font-size:11px;
   font-weight:700;
   letter-spacing:.14em;
   text-transform:uppercase;
 }
 #recursos .lp-heading h2{
-  max-width:17ch;
-  font-size:clamp(32px,4vw,48px);
-  line-height:1.06;
-  letter-spacing:-.045em;
-}
-#recursos .lp-heading .lp-sub{
-  max-width:590px;
-  margin-top:16px;
-  font-size:15.5px;
-  line-height:1.65;
-  color:#98a1b0!important;
+  max-width:18ch;
+  font-size:clamp(32px,3.7vw,44px);
+  line-height:1.08;
+  letter-spacing:-.04em;
 }
 #recursos .lp-features{
   display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:14px;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:46px;
+  row-gap:0;
+  align-items:stretch;
 }
 #recursos .lp-feature-item{
-  position:relative;
   display:flex;
   min-width:0;
-  min-height:214px;
-  flex-direction:column;
-  align-items:flex-start;
-  padding:21px 20px 22px;
-  overflow:hidden;
-  border:1px solid #29313e;
-  border-radius:15px;
-  background:#141a23;
-  transition:transform .24s ease,border-color .24s ease,background .24s ease;
-}
-#recursos .lp-feature-meta{
-  display:flex;
-  width:100%;
+  min-height:88px;
   align-items:center;
-  justify-content:space-between;
-  margin-bottom:24px;
-}
-#recursos .lp-feature-index{
-  color:#677283;
-  font-size:11px;
-  font-weight:650;
-  letter-spacing:.11em;
-  font-variant-numeric:tabular-nums;
+  gap:15px;
+  padding:17px 12px;
+  border-top:1px solid #29313e;
+  background:transparent;
+  transition:background .2s ease,border-color .2s ease;
 }
 #recursos .lp-feature-icon{
   display:grid;
-  width:38px;
-  height:38px;
-  flex:0 0 38px;
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
   place-items:center;
-  border:1px solid rgba(145,151,255,.19);
-  border-radius:11px;
-  background:rgba(130,137,255,.075);
-  color:#a0a5ff;
+  border:1px solid #30394a;
+  border-radius:10px;
+  background:#171e29;
+  color:#a1a6ff;
+}
+#recursos .lp-feature-copy{
+  display:grid;
+  min-width:0;
+  gap:4px;
 }
 #recursos .lp-feature-item dt{
-  margin:0 0 9px;
-  color:#eef1f6!important;
-  font-size:16px;
+  margin:0;
+  color:#edf0f5!important;
+  font-size:15px;
   font-weight:650;
   line-height:1.3;
-  letter-spacing:-.015em;
+  letter-spacing:-.012em;
 }
 #recursos .lp-feature-item dd{
   margin:0;
-  color:#929dad!important;
-  font-size:13.5px;
-  line-height:1.65;
+  color:#8994a5!important;
+  font-size:13px;
+  line-height:1.45;
 }
 @media(hover:hover){
   #recursos .lp-feature-item:hover{
-    transform:translateY(-3px);
-    border-color:#414b5d;
-    background:#171e29;
+    background:rgba(255,255,255,.025);
+    border-top-color:#424d60;
   }
   #recursos .lp-feature-item:hover .lp-feature-icon{
-    border-color:rgba(145,151,255,.34);
-    background:rgba(130,137,255,.12);
+    border-color:#48516a;
+    background:#1c2431;
   }
 }
 @media(max-width:1180px){
   #recursos .lp-features{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:13px;
+    column-gap:22px;
   }
 }
 @media(max-width:640px){
   #recursos .lp-heading{
-    margin-bottom:28px;
+    margin-bottom:24px;
   }
   #recursos .lp-heading h2{
-    max-width:14ch;
-    font-size:34px;
-  }
-  #recursos .lp-heading .lp-sub{
-    font-size:14px;
+    max-width:15ch;
+    font-size:32px;
   }
   #recursos .lp-features{
     grid-template-columns:minmax(0,1fr);
-    gap:10px;
   }
   #recursos .lp-feature-item{
-    min-height:0;
-    padding:17px 17px 18px;
-    border-radius:13px;
-  }
-  #recursos .lp-feature-meta{
-    margin-bottom:15px;
+    min-height:76px;
+    gap:13px;
+    padding:14px 4px;
   }
   #recursos .lp-feature-icon{
-    width:35px;
-    height:35px;
-    flex-basis:35px;
+    width:34px;
+    height:34px;
+    flex-basis:34px;
   }
   #recursos .lp-feature-item dt{
-    font-size:16px;
+    font-size:14.5px;
   }
   #recursos .lp-feature-item dd{
-    font-size:13.5px;
+    font-size:12.5px;
   }
 }
 @media(prefers-reduced-motion:reduce){
