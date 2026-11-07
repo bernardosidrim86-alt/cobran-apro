@@ -1098,7 +1098,40 @@
 }
 
 
-/* O texto de apoio do hero permanece neutro, sem o roxo dos demais kickers. */
+/* Selo premium do hero: discreto, arredondado e com detalhe circular. */
 .lp-hero .lp-kicker{
-  color:#fff!important;
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  width:max-content;
+  max-width:100%;
+  margin:0 0 18px;
+  padding:8px 13px 8px 9px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:999px;
+  background:rgba(255,255,255,.045);
+  color:#d6d9e2!important;
+  font-size:12px;
+  font-weight:600;
+  line-height:1.25;
+  letter-spacing:.025em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.lp-hero .lp-kicker::before{
+  content:"";
+  flex:0 0 15px;
+  width:15px;
+  height:15px;
+  border:1px solid rgba(139,145,255,.58);
+  border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,#9b9fff 0 2px,rgba(139,145,255,.16) 2.5px 4px,transparent 4.5px);
+  box-shadow:0 0 12px rgba(139,145,255,.16);
+}
+@media(max-width:640px){
+  .lp-hero .lp-kicker{
+    gap:8px;
+    margin-bottom:15px;
+    padding:8px 11px 8px 8px;
+    font-size:11px;
+  }
 }
