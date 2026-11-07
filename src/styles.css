@@ -15591,3 +15591,110 @@ html[data-theme="dark"] .charge-detail-modal .detail-grid b{
 html[data-theme="dark"] .charge-detail-modal .detail-grid *{
   text-shadow:none!important;
 }
+
+
+/* Equipe da empresa */
+.team-settings{display:grid;gap:18px;min-width:0}
+.team-settings-heading,.team-roster-heading,.team-section-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.team-settings-heading h2{font-size:18px!important;margin:3px 0 5px!important}
+.team-settings-heading p,.team-section-heading span,.team-roster-heading span{display:block;color:#858895;font-size:12px;line-height:1.5}
+.team-eyebrow{font-size:10px;font-weight:750;letter-spacing:.1em;color:#7779e8}
+.team-seat-counter{display:flex;align-items:center;gap:7px;border:1px solid #e6e7ee;border-radius:12px;padding:9px 12px;color:#5b5ce2;white-space:nowrap}
+.team-seat-counter strong{font-size:15px;color:#222}
+.team-seat-counter span{font-size:11px;color:#777}
+.team-company-line{display:flex;align-items:center;gap:8px;color:#666;font-size:12px;padding:10px 12px;border:1px solid #e9eaf0;border-radius:10px}
+.team-company-line svg{color:#696be0}
+.team-role-pill{margin-left:auto;border-radius:99px;background:#f0f0ff;color:#5557ce;padding:4px 8px;font-size:10px;font-weight:700}
+.team-upgrade-panel{display:flex;gap:13px;padding:16px;border:1px solid rgba(91,92,226,.25);border-radius:13px;background:#f7f7ff}
+.team-upgrade-icon{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;border-radius:10px;background:#ececff;color:#5557d5}
+.team-upgrade-panel b{display:block;color:#25263a;font-size:13px;margin:1px 0 5px}
+.team-upgrade-panel p{margin:0;color:#656779;font-size:12px;line-height:1.6}
+.team-upgrade-panel a{display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:#5557d5;font-size:12px;font-weight:700}
+.team-invite-panel{padding:16px;border:1px solid #e7e8ef;border-radius:13px;background:#fcfcfe}
+.team-section-heading b,.team-roster-heading b{display:block;color:#24252d;font-size:13px;margin-bottom:3px}
+.team-invite-form{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:12px;margin-top:15px}
+.team-email-field{display:grid;gap:6px;min-width:0}
+.team-email-field>span{font-size:11px;font-weight:650;color:#555}
+.team-email-field>div{display:flex;align-items:center;gap:9px;min-width:0;height:42px;padding:0 11px;border:1px solid #dedfe8;border-radius:9px;background:#fff;color:#858895}
+.team-email-field input{width:100%;min-width:0;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;color:#222!important;font-size:12px!important}
+.team-invite-form .btn{height:42px;white-space:nowrap}
+.team-help-text{display:block;margin-top:9px;color:#9294a0;font-size:10px;line-height:1.5}
+.team-invite-link{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-top:14px;padding:12px;border:1px solid #dadbff;border-radius:10px;background:#f7f7ff}
+.team-invite-link>div{display:grid;gap:5px;min-width:0;flex:1}
+.team-invite-link b{font-size:11px;color:#333}
+.team-invite-link span{font-size:10px;color:#858595}
+.team-invite-link input{width:100%;min-width:0;border:1px solid #e2e2f0;border-radius:7px;padding:8px;background:#fff;color:#5051a8;font-size:10px}
+.team-invite-link .btn{white-space:nowrap}
+.team-member-notice{display:flex;align-items:center;gap:8px;padding:11px 13px;border:1px solid #e5e6ed;border-radius:10px;color:#666;font-size:11px}
+.team-member-notice svg{color:#6668dc;flex:0 0 auto}
+.team-feedback{padding:10px 12px;border-radius:9px;font-size:11px;line-height:1.5}
+.team-feedback.is-error{background:#fff1f1;border:1px solid #ffd9d9;color:#b42318}
+.team-feedback.is-success{background:#effaf3;border:1px solid #ccebd6;color:#217341}
+.team-roster{border:1px solid #e7e8ef;border-radius:13px;overflow:hidden}
+.team-roster-heading{padding:13px 15px;background:#fafafd;border-bottom:1px solid #ececf2}
+.team-roster-heading>span{font-size:10px;white-space:nowrap}
+.team-member-row{display:flex;align-items:center;gap:11px;padding:12px 14px;border-bottom:1px solid #ededf2;min-width:0}
+.team-member-row:last-child{border-bottom:0}
+.team-member-avatar{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:10px;background:#ededff;color:#5557d5;font-size:12px;font-weight:750}
+.team-member-details{display:grid;gap:3px;min-width:0;flex:1}
+.team-member-details b{font-size:12px;color:#292a33;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.team-member-details span{font-size:10px;color:#858895;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.team-member-status{flex:0 0 auto}
+.team-status-pill{display:inline-flex;align-items:center;border-radius:99px;padding:5px 8px;font-size:9px;font-weight:700;white-space:nowrap;background:#edf8f0;color:#277447}
+.team-status-pill.owner{background:#f0efff;color:#5553bb}
+.team-status-pill.pending{background:#fff7e8;color:#946314}
+.team-status-pill.expired{background:#f3f3f5;color:#747681}
+.team-remove-button{width:30px;height:30px;flex:0 0 30px;border:1px solid #f0d6d6;border-radius:8px;background:#fff;color:#c64c4c;display:grid;place-items:center}
+.team-remove-button:disabled{opacity:.45;cursor:wait}
+.team-empty,.team-loading{display:flex;align-items:center;gap:8px;padding:20px;color:#898b96;font-size:11px}
+.team-loading svg{animation:teamSpin 1s linear infinite}
+@keyframes teamSpin{to{transform:rotate(360deg)}}
+@media(max-width:600px){
+  .team-settings-heading{align-items:flex-start}
+  .team-seat-counter{padding:7px 9px}
+  .team-invite-form{grid-template-columns:minmax(0,1fr)}
+  .team-invite-form .btn{width:100%}
+  .team-invite-link{align-items:stretch;flex-direction:column}
+  .team-invite-link .btn{width:100%}
+  .team-member-row{gap:8px;padding:11px 9px}
+  .team-member-avatar{width:30px;height:30px;flex-basis:30px}
+  .team-status-pill{font-size:8px;padding:4px 6px}
+  .team-remove-button{width:28px;height:28px;flex-basis:28px}
+}
+html[data-theme="dark"] .team-seat-counter{border-color:#343642;color:#a2a4ff}
+html[data-theme="dark"] .team-seat-counter strong{color:#f4f4f7}
+html[data-theme="dark"] .team-seat-counter span,
+html[data-theme="dark"] .team-settings-heading p,
+html[data-theme="dark"] .team-section-heading span,
+html[data-theme="dark"] .team-roster-heading span{color:#9a9ba7}
+html[data-theme="dark"] .team-company-line,
+html[data-theme="dark"] .team-member-notice{border-color:#343642;color:#c2c3cc}
+html[data-theme="dark"] .team-role-pill{background:#292945;color:#b0b1ff}
+html[data-theme="dark"] .team-upgrade-panel{background:#202132;border-color:#44456e}
+html[data-theme="dark"] .team-upgrade-icon{background:#303151;color:#b0b1ff}
+html[data-theme="dark"] .team-upgrade-panel b,
+html[data-theme="dark"] .team-section-heading b,
+html[data-theme="dark"] .team-roster-heading b,
+html[data-theme="dark"] .team-invite-link b,
+html[data-theme="dark"] .team-member-details b{color:#f1f1f5}
+html[data-theme="dark"] .team-upgrade-panel p{color:#b9bbc8}
+html[data-theme="dark"] .team-upgrade-panel a{color:#a5a6ff}
+html[data-theme="dark"] .team-invite-panel,
+html[data-theme="dark"] .team-roster{background:#191a22;border-color:#343642}
+html[data-theme="dark"] .team-email-field>span{color:#c8c9d2}
+html[data-theme="dark"] .team-email-field>div{background:#20212a;border-color:#3a3b47;color:#9a9ba7}
+html[data-theme="dark"] .team-email-field input{color:#f4f4f7!important}
+html[data-theme="dark"] .team-invite-link{background:#202132;border-color:#44456e}
+html[data-theme="dark"] .team-invite-link span,
+html[data-theme="dark"] .team-member-details span,
+html[data-theme="dark"] .team-help-text{color:#a0a1ad}
+html[data-theme="dark"] .team-invite-link input{background:#171821;border-color:#3c3d4c;color:#c0c1ff}
+html[data-theme="dark"] .team-roster-heading{background:#20212a;border-color:#343642}
+html[data-theme="dark"] .team-member-row{border-color:#343642}
+html[data-theme="dark"] .team-member-avatar{background:#303151;color:#b0b1ff}
+html[data-theme="dark"] .team-status-pill.owner{background:#303151;color:#b0b1ff}
+html[data-theme="dark"] .team-status-pill.pending{background:#3a3020;color:#f3cc7a}
+html[data-theme="dark"] .team-status-pill.expired{background:#30313a;color:#b4b6c0}
+html[data-theme="dark"] .team-remove-button{background:#2a2023;border-color:#5a373c;color:#ff9399}
+html[data-theme="dark"] .team-feedback.is-error{background:#3a2325;border-color:#64363b;color:#ffb1b5}
+html[data-theme="dark"] .team-feedback.is-success{background:#203629;border-color:#315e43;color:#a8e5b7}
