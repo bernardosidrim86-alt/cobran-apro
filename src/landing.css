@@ -1054,10 +1054,14 @@
   backface-visibility:hidden;
 }
 .lp .lp-motion-word:last-child{margin-right:0}
-.lp .lp-who-text .lp-motion-emphasis{
+.lp-who-text .lp-who-word{
   display:inline-block;
+  margin:0;
   transform-origin:50% 100%;
   backface-visibility:hidden;
+}
+.lp-who-text .lp-who-word.is-emphasis{
+  font-weight:750;
 }
 @media (prefers-reduced-motion:no-preference){
   .lp .lp-animate.is-visible .lp-motion-word{
@@ -1065,10 +1069,13 @@
     animation-delay:calc(60ms + var(--word-index,0) * 55ms);
     will-change:transform,opacity,filter;
   }
-  .lp .lp-who-text.is-visible .lp-motion-emphasis{
-    animation:lpSectionWord .74s cubic-bezier(.2,.78,.18,1) both;
-    animation-delay:calc(850ms + (var(--word-index,0) - 8) * 62ms);
-    will-change:transform,opacity,filter;
+  .lp .lp-who-text.is-visible .lp-who-word{
+    animation:lpWhoWord .62s cubic-bezier(.2,.78,.18,1) both;
+    animation-delay:calc(35ms + var(--word-index,0) * 38ms);
+  }
+  @keyframes lpWhoWord{
+    0%{opacity:0;transform:translate3d(0,.32em,0) rotateX(-16deg)}
+    100%{opacity:1;transform:translate3d(0,0,0) rotateX(0)}
   }
   @keyframes lpSectionWord{
     0%{
@@ -1089,10 +1096,9 @@
 }
 @media (prefers-reduced-motion:reduce){
   .lp .lp-motion-word,
-  .lp .lp-who-text .lp-motion-emphasis{
+  .lp .lp-who-text .lp-who-word{
     opacity:1;
     transform:none;
-    filter:none;
     animation:none!important;
   }
 }

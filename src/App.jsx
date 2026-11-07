@@ -458,6 +458,15 @@ function Landing({session}) {
     {title:"Assistente de cobrança",description:"Sugestões de mensagens por situação.",icon:Sparkles},
     {title:"Celular e computador",description:"Acesse de qualquer dispositivo.",icon:MonitorSmartphone},
   ];
+  const whoWords=[
+    ["Feito",false],["para",false],["quem",false],["precisa",false],["receber:",false],
+    ["prestadores",true],["de",true],["serviço,",true],
+    ["barbearias",true],["e",true],["salões,",true],
+    ["clínicas",true],["e",true],["consultórios,",true],
+    ["oficinas",true],["e",true],["negócios",true],["locais,",true],
+    ["profissionais",true],["autônomos",true],["e",false],
+    ["pequenas",true],["empresas",true],["que",false],["cobram",false],["todo",false],["mês.",false],
+  ];
   const faq=[
     ["Preciso de cartão de crédito para testar?","Não. O teste dura 7 dias e não pede cartão de crédito."],
     ["Como funciona a cobrança pelo WhatsApp?","Em cada cobrança há um botão que abre a conversa do cliente no WhatsApp com a mensagem de cobrança pronta. Você confere e envia."],
@@ -595,13 +604,13 @@ function Landing({session}) {
         <div className="lp-wrap">
           <p className="lp-kicker">Para quem é</p>
           <p className="lp-who-text">
-            <KineticText>Feito para quem precisa receber:</KineticText>{" "}
-            <b className="lp-motion-emphasis" style={{"--word-index":8}}>prestadores de serviço</b>,{" "}
-            <b className="lp-motion-emphasis" style={{"--word-index":9}}>barbearias e salões</b>,{" "}
-            <b className="lp-motion-emphasis" style={{"--word-index":10}}>clínicas e consultórios</b>,{" "}
-            <b className="lp-motion-emphasis" style={{"--word-index":11}}>oficinas e negócios locais</b>,{" "}
-            <b className="lp-motion-emphasis" style={{"--word-index":12}}>profissionais autônomos</b> e{" "}
-            <b className="lp-motion-emphasis" style={{"--word-index":13}}>pequenas empresas</b> que cobram todo mês.
+            <span className="lp-who-kinetic" aria-hidden="true">
+              {whoWords.map(([word,emphasis],index)=><React.Fragment key={index}>
+                <span className={`lp-who-word${emphasis?" is-emphasis":""}`} style={{"--word-index":index}}>{word}</span>
+                {index<whoWords.length-1?" ":""}
+              </React.Fragment>)}
+            </span>
+            <span className="lp-kinetic-sr">{whoWords.map(([word])=>word).join(" ")}</span>
           </p>
         </div>
       </section>
