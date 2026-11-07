@@ -975,3 +975,10 @@
     font-size:15px!important;
   }
 }
+
+
+/* Frase "Para quem é" — texto inteiro em branco */
+.lp-who-text,
+.lp-who-text b{
+  color:#fff!important;
+}
