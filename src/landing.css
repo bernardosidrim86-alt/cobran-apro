@@ -1096,3 +1096,9 @@
     animation:none!important;
   }
 }
+
+
+/* O texto de apoio do hero permanece neutro, sem o roxo dos demais kickers. */
+.lp-hero .lp-kicker{
+  color:#fff!important;
+}
