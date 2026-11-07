@@ -875,7 +875,7 @@ function AcceptCompanyInvite({session}) {
         let message=raw;
         if(raw.includes("invalid_or_expired_invite"))message="Este convite é inválido, já foi utilizado ou expirou.";
         else if(raw.includes("email_confirmation_required"))message="Confirme o e-mail da sua conta antes de aceitar o convite.";
-        else if(raw.includes("already_linked_to_company"))message="Esta conta já está vinculada a outra empresa no CobrançaPro.";
+        else if(raw.includes("already_linked_to_company"))message="Esta conta já participa de outra equipe. Saia da equipe atual antes de aceitar este convite.";
         else if(raw.includes("business_plan_required"))message="O plano Business da empresa não está ativo. Peça ao proprietário para verificar a assinatura.";
         else if(raw.includes("authentication_required"))message="Entre na sua conta para aceitar o convite.";
         setError(message);
