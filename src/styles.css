@@ -15698,3 +15698,32 @@ html[data-theme="dark"] .team-status-pill.expired{background:#30313a;color:#b4b6
 html[data-theme="dark"] .team-remove-button{background:#2a2023;border-color:#5a373c;color:#ff9399}
 html[data-theme="dark"] .team-feedback.is-error{background:#3a2325;border-color:#64363b;color:#ffb1b5}
 html[data-theme="dark"] .team-feedback.is-success{background:#203629;border-color:#315e43;color:#a8e5b7}
+
+
+/* Company switching: let a member leave and return to their previous company. */
+.team-leave-notice{
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.team-member-notice-copy{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  flex:1 1 240px;
+}
+.team-member-notice-copy span{
+  line-height:1.5;
+}
+.team-leave-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+@media(max-width:600px){
+  .team-leave-button{width:100%}
+}
