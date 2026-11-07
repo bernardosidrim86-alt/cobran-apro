@@ -29,7 +29,8 @@ export function TeamSettings({ profile }) {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
-  const [removingId, setRemovingId] = useState("");\n  const [leaving, setLeaving] = useState(false);
+  const [removingId, setRemovingId] = useState("");
+  const [leaving, setLeaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [inviteLink, setInviteLink] = useState("");
