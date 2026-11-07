@@ -2,22 +2,23 @@ import React, { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { PLAN_OPTIONS } from "../lib/plans";
 
-function Metric({ label, count, max }) {
+function UsageItem({ label, count, max }) {
   const unlimited = max === null;
   const percent = unlimited || !max ? 0 : Math.min(100, Math.round((count / max) * 100));
 
   return (
-    <div className="plan-usage-basic-metric">
-      <div className="plan-usage-basic-line">
-        <span>{label}</span>
-        <strong>
-          {count.toLocaleString("pt-BR")}
-          {unlimited ? " usados · Ilimitado" : ` / ${max.toLocaleString("pt-BR")}`}
+    <div className="cp-plan-usage__item">
+      <div className="cp-plan-usage__item-head">
+        <span className="cp-plan-usage__label">{label}</span>
+        <strong className="cp-plan-usage__value">
+          {unlimited
+            ? `${count.toLocaleString("pt-BR")} usados · Ilimitado`
+            : `${count.toLocaleString("pt-BR")} / ${max.toLocaleString("pt-BR")}`}
         </strong>
       </div>
       {!unlimited && (
         <div
-          className="plan-usage-basic-track"
+          className="cp-plan-usage__track"
           role="progressbar"
           aria-label={`${label}: ${count} de ${max}`}
           aria-valuemin={0}
@@ -77,18 +78,18 @@ export function PlanUsage({ companyId, planKey = "free", expiresAt = null }) {
       : `Vence em ${remainingDays} ${remainingDays === 1 ? "dia" : "dias"}`;
 
   return (
-    <section className="plan-usage-card plan-usage-simple" aria-labelledby="plan-usage-title">
-      <div className="plan-usage-basic-head">
-        <div>
-          <span>USO DO PLANO</span>
+    <section id="plan-usage-panel" className="cp-plan-usage" aria-labelledby="plan-usage-title">
+      <div className="cp-plan-usage__header">
+        <div className="cp-plan-usage__plan">
+          <span className="cp-plan-usage__eyebrow">USO DO PLANO</span>
           <h2 id="plan-usage-title">{plan.title}</h2>
         </div>
-        {expiryLabel && <span className="plan-usage-basic-expiry">{expiryLabel}</span>}
+        {expiryLabel && <span className="cp-plan-usage__expiry">{expiryLabel}</span>}
       </div>
 
-      <div className="plan-usage-basic-grid">
-        <Metric label="Clientes" count={counts.customers} max={plan.maxCustomers} />
-        <Metric label="Cobranças no mês" count={counts.charges} max={plan.maxCharges} />
+      <div className="cp-plan-usage__grid">
+        <UsageItem label="Clientes" count={counts.customers} max={plan.maxCustomers} />
+        <UsageItem label="Cobranças no mês" count={counts.charges} max={plan.maxCharges} />
       </div>
     </section>
   );
