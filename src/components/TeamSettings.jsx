@@ -10,6 +10,8 @@ function teamErrorMessage(error) {
   if (raw.includes("cannot_invite_self")) return "Você já é o proprietário da empresa e não pode convidar o próprio e-mail.";
   if (raw.includes("member_already_exists")) return "Este e-mail já faz parte da empresa.";
   if (raw.includes("invitation_already_pending")) return "Já existe um convite pendente para este e-mail.";
+  if (raw.includes("company_return_state_already_exists")) return "Já existe uma troca de empresa pendente nesta conta. Saia da equipe atual antes de aceitar outro convite.";
+  if (raw.includes("not_team_member")) return "Esta conta não está vinculada como membro desta equipe.";
   if (raw.includes("email_already_in_another_company")) return "Este e-mail já está vinculado a outra empresa no CobrançaPro.";
   if (raw.includes("already_linked_to_company")) return "Esta conta já está vinculada a uma empresa.";
   if (raw.includes("invalid_or_expired_invite")) return "Este convite é inválido, já foi utilizado ou expirou.";
