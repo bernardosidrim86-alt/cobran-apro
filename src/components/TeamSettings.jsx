@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Copy, Crown, Link2, Lock, Mail, RefreshCw, ShieldCheck, Trash2, Users } from "lucide-react";
+import { Copy, Crown, Link2, Lock, LogOut, Mail, RefreshCw, ShieldCheck, Trash2, Users } from "lucide-react";
 import { supabase } from "../lib/supabase";
 
 function teamErrorMessage(error) {
@@ -29,7 +29,7 @@ export function TeamSettings({ profile }) {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
-  const [removingId, setRemovingId] = useState("");
+  const [removingId, setRemovingId] = useState("");\n  const [leaving, setLeaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [inviteLink, setInviteLink] = useState("");
@@ -129,6 +129,22 @@ export function TeamSettings({ profile }) {
     setRemovingId("");
   }
 
+  async function leaveTeam() {
+    if (!window.confirm("Sair desta empresa? Você voltará para sua empresa anterior e manterá os dados dela.")) return;
+
+    setLeaving(true);
+    setError("");
+    setSuccess("");
+    const { error: leaveError } = await supabase.rpc("leave_company_and_return");
+    if (leaveError) {
+      setError(teamErrorMessage(leaveError));
+      setLeaving(false);
+      return;
+    }
+
+    window.location.assign("/app");
+  }
+
   if (loading) {
     return <div className="team-settings"><div className="team-loading"><RefreshCw size={16}/> Carregando equipe...</div></div>;
   }
@@ -167,7 +183,12 @@ export function TeamSettings({ profile }) {
       </div>}
     </div>}
 
-    {businessActive && !isOwner && <div className="team-member-notice"><ShieldCheck size={16}/> Você faz parte desta equipe. O gerenciamento de membros é feito pelo proprietário da empresa.</div>}
+    {businessActive && !isOwner && <div className="team-member-notice team-leave-notice">
+      <div className="team-member-notice-copy"><ShieldCheck size={16}/><span>Você faz parte desta equipe. Ao sair, sua conta volta para a empresa anterior.</span></div>
+      <button type="button" className="btn btn-secondary team-leave-button" onClick={leaveTeam} disabled={leaving}>
+        <LogOut size={15}/>{leaving ? "Saindo..." : "Sair da equipe"}
+      </button>
+    </div>}
 
     {error && <div className="team-feedback is-error">{error}</div>}
     {success && <div className="team-feedback is-success">{success}</div>}
