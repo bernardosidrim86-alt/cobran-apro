@@ -718,8 +718,8 @@ function Login() {
     const {data,error}=await supabase.auth.signInWithPassword({email,password,options:{captchaToken}});
     setCaptchaKey(key=>key+1);
     if(error){setError(error.message==="Invalid login credentials"?"E-mail ou senha incorretos.":error.message);setBusy(false);return;}
-    if(continuePendingCheckout(data?.user?.id)) return;
     if(inviteToken){nav("/convite/"+encodeURIComponent(inviteToken),{replace:true});setBusy(false);return;}
+    if(continuePendingCheckout(data?.user?.id)) return;
     if(checkout && data?.user?.id){
       const checkoutUrl=getSafeCheckout(checkout);
       if(checkoutUrl){
@@ -730,7 +730,7 @@ function Login() {
     }
     nav("/app");setBusy(false);
   }
-  return <AuthLayout title="Bem-vindo de volta" subtitle="Entre na sua conta para continuar."><form onSubmit={submit} className="form-stack"><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} required/><TurnstileCaptcha key={captchaKey} onToken={setCaptchaToken}/><div className="form-meta"><Link to="/recuperar">Esqueci minha senha</Link></div>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Entrando...":"Entrar"}</Button></form><div className="auth-bottom">Ainda não tem conta? <Link to={checkout?`/cadastro?checkout=${encodeURIComponent(checkout)}`:"/cadastro"}>Criar conta</Link></div></AuthLayout>
+  return <AuthLayout title="Bem-vindo de volta" subtitle="Entre na sua conta para continuar."><form onSubmit={submit} className="form-stack"><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} required/><TurnstileCaptcha key={captchaKey} onToken={setCaptchaToken}/><div className="form-meta"><Link to="/recuperar">Esqueci minha senha</Link></div>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Entrando...":"Entrar"}</Button></form><div className="auth-bottom">Ainda não tem conta? <Link to={inviteToken?`/cadastro?invite=${encodeURIComponent(inviteToken)}`:checkout?`/cadastro?checkout=${encodeURIComponent(checkout)}`:"/cadastro"}>Criar conta</Link></div></AuthLayout>
 }
 
 function Signup() {
@@ -778,7 +778,7 @@ function Signup() {
     else if(!continueToCheckout(loginData?.user?.id)) nav("/onboarding");
     setBusy(false);
   }
-  return <AuthLayout title="Crie sua conta" subtitle={inviteToken?"Crie sua conta para entrar na equipe da empresa.":"Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."}><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/>{!inviteToken&&<Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/>}<Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" autoComplete="new-password" minLength="8" value={password} onChange={e=>setPassword(e.target.value)} required/><TurnstileCaptcha key={captchaKey} onToken={setCaptchaToken}/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button><p className="legal-note">Ao criar sua conta, você concorda com os <Link to="/termos" target="_blank">Termos de Uso</Link> e a <Link to="/privacidade" target="_blank">Política de Privacidade</Link>.</p></form><div className="auth-bottom">Já possui uma conta? <Link to="/login">Entrar</Link></div></AuthLayout>
+  return <AuthLayout title="Crie sua conta" subtitle={inviteToken?"Crie sua conta para entrar na equipe da empresa.":"Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."}><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/>{!inviteToken&&<Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/>}<Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" autoComplete="new-password" minLength="8" value={password} onChange={e=>setPassword(e.target.value)} required/><TurnstileCaptcha key={captchaKey} onToken={setCaptchaToken}/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button><p className="legal-note">Ao criar sua conta, você concorda com os <Link to="/termos" target="_blank">Termos de Uso</Link> e a <Link to="/privacidade" target="_blank">Política de Privacidade</Link>.</p></form><div className="auth-bottom">Já possui uma conta? <Link to={inviteToken?`/login?invite=${encodeURIComponent(inviteToken)}`:"/login"}>Entrar</Link></div></AuthLayout>
 }
 
 function ForgotPassword() {
