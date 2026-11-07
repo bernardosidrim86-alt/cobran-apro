@@ -1,14 +1,30 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { TrendingUp, CalendarClock } from "lucide-react";
+import { TrendingUp, CalendarClock, Users, Receipt, Infinity as InfinityIcon } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { PLAN_OPTIONS } from "../lib/plans";
 
-function Metric({label,count,max}){
+function Metric({label,count,max,icon:Icon}){
   const unlimited=max===null;
-  const percent=unlimited?0:Math.min(100,Math.round((count/max)*100));
+  const percent=unlimited?100:Math.min(100,Math.round((count/Math.max(1,max))*100));
+  const remaining=unlimited?null:Math.max(0,max-count);
+  const danger=!unlimited&&percent>=90;
   return <div className="plan-usage-metric">
-    <div className="plan-usage-label"><span>{label}</span><b>{unlimited?count+" usados · Ilimitado":count+" / "+max}</b></div>
-    <div className={"plan-usage-track"+(percent>=90?" danger":"")} aria-hidden="true"><span style={{width:unlimited?"100%":percent+"%"}}/></div>
+    <div className="plan-usage-metric-top">
+      <span className="plan-usage-metric-icon"><Icon size={17} aria-hidden="true"/></span>
+      <span className="plan-usage-metric-name">{label}</span>
+      {unlimited&&<span className="plan-usage-unlimited"><InfinityIcon size={12}/> Sem limite</span>}
+    </div>
+    <div className="plan-usage-value-row">
+      <strong>{count.toLocaleString("pt-BR")}</strong>
+      <span>{unlimited?"utilizados":`de ${max.toLocaleString("pt-BR")} disponíveis`}</span>
+    </div>
+    <div className={"plan-usage-track"+(danger?" danger":"")} role="progressbar" aria-label={label} aria-valuenow={unlimited?0:percent} aria-valuemin={0} aria-valuemax={100}>
+      <span style={{width:percent+"%"}}/>
+    </div>
+    <div className="plan-usage-foot">
+      <span>{unlimited?"Uso livre":danger?"Limite próximo":`${percent}% do limite utilizado`}</span>
+      {!unlimited&&<span>{remaining.toLocaleString("pt-BR")} restantes</span>}
+    </div>
   </div>;
 }
 
@@ -41,10 +57,19 @@ export function PlanUsage({companyId,planKey="free",expiresAt=null}){
   const expiryLabel=remainingDays===null?"":remainingDays===0?"Vence hoje":`Vence em ${remainingDays} ${remainingDays===1?"dia":"dias"}`;
   return <section className="plan-usage-card">
     <div className="plan-usage-head">
-      <div><span className="panel-kicker">USO DO PLANO</span><div className="plan-usage-title-line"><h2>{plan.title}</h2>{expiryLabel&&<span className="plan-usage-expiry-inline"><CalendarClock size={12} aria-hidden="true"/>{expiryLabel}</span>}</div></div>
-      <TrendingUp size={18}/>
+      <div className="plan-usage-heading">
+        <span className="plan-usage-kicker"><TrendingUp size={13}/> ACOMPANHAMENTO DO PLANO</span>
+        <div className="plan-usage-title-line">
+          <h2>{plan.title}</h2>
+          <span className="plan-usage-plan-tag">PLANO ATUAL</span>
+          {expiryLabel&&<span className="plan-usage-expiry-inline"><CalendarClock size={13} aria-hidden="true"/>{expiryLabel}</span>}
+        </div>
+        <p>Acompanhe o consumo e a capacidade da sua empresa.</p>
+      </div>
     </div>
-    <Metric label="Clientes" count={counts.customers} max={plan.maxCustomers}/>
-    <Metric label="Cobranças no mês" count={counts.charges} max={plan.maxCharges}/>
+    <div className="plan-usage-metrics">
+      <Metric label="Clientes cadastrados" count={counts.customers} max={plan.maxCustomers} icon={Users}/>
+      <Metric label="Cobranças neste mês" count={counts.charges} max={plan.maxCharges} icon={Receipt}/>
+    </div>
   </section>;
 }
