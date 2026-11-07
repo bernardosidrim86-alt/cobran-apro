@@ -15727,3 +15727,51 @@ html[data-theme="dark"] .team-feedback.is-success{background:#203629;border-colo
 @media(max-width:600px){
   .team-leave-button{width:100%}
 }
+
+
+/* Layout amplo: usar toda a largura disponível em todas as páginas internas. */
+.app-main{
+  min-width:0;
+  width:calc(100% - 235px);
+  max-width:none;
+}
+.page{
+  width:100%;
+  max-width:none;
+  padding:clamp(20px, 2vw, 36px);
+}
+.app-header{
+  padding-left:clamp(18px, 2vw, 36px);
+  padding-right:clamp(18px, 2vw, 36px);
+}
+.dashboard-page,
+.calendar-page,
+.payments-page,
+.cp-reports-page{
+  width:100%;
+  max-width:none;
+}
+.content-grid,
+.report-grid,
+.ai-layout,
+.settings-layout,
+.dashboard-main-grid,
+.dashboard-bottom-grid{
+  width:100%;
+}
+@media(max-width:900px){
+  .app-main{
+    width:100%;
+    max-width:100%;
+  }
+  .page{
+    width:100%;
+    max-width:none;
+    padding:20px 16px 32px;
+  }
+}
+@media(max-width:600px){
+  .page{
+    padding:16px 12px 28px;
+  }
+}
