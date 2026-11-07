@@ -982,3 +982,61 @@
 .lp-who-text b{
   color:#fff!important;
 }
+
+
+/* ---------- Tipografia cinética do hero ---------- */
+.lp-hero h1.lp-kinetic-title{
+  perspective:900px;
+}
+.lp-hero h1 .lp-kinetic-line{
+  color:var(--lp-ink);
+}
+.lp-hero h1 .lp-kinetic-accent{
+  color:var(--lp-brand);
+  white-space:normal;
+}
+.lp-hero h1 .lp-kinetic-word{
+  display:inline-block;
+  color:inherit;
+  transform-origin:50% 100%;
+  backface-visibility:hidden;
+}
+.lp-hero h1 .lp-kinetic-word:not(:last-child){
+  margin-right:.235em;
+}
+.lp-kinetic-sr{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+@media (prefers-reduced-motion:no-preference){
+  .lp-hero h1 .lp-kinetic-word{
+    opacity:0;
+    animation:lpKineticRise .78s cubic-bezier(.2,.78,.18,1) both;
+    animation-delay:calc(90ms + var(--word-index,0) * 66ms);
+    will-change:transform,opacity,filter;
+  }
+  .lp-hero h1 .lp-kinetic-accent .lp-kinetic-word{
+    animation-name:lpKineticAccent;
+    animation-delay:calc(650ms + var(--word-index,0) * 86ms);
+  }
+  @keyframes lpKineticRise{
+    0%{opacity:0;transform:translate3d(0,.82em,0) rotateX(-48deg);filter:blur(8px)}
+    62%{opacity:1;filter:blur(0)}
+    100%{opacity:1;transform:translate3d(0,0,0) rotateX(0);filter:blur(0)}
+  }
+  @keyframes lpKineticAccent{
+    0%{opacity:0;transform:translate3d(0,.9em,0) scale(.92) rotateX(-38deg);filter:blur(9px)}
+    68%{opacity:1;transform:translate3d(0,-.035em,0) scale(1.025);filter:blur(0)}
+    100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+  }
+}
+@media (max-width:640px){
+  .lp-hero h1.lp-kinetic-title{line-height:1.12}
+}
