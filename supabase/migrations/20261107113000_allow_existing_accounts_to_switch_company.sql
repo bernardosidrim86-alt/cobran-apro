@@ -377,6 +377,16 @@ begin
   where rs.user_id = v_user_id
   for update;
 
+  if not found then
+    v_home_company_id := null;
+    v_home_plan := 'free';
+    v_home_cycle := null;
+    v_home_status := 'inactive';
+    v_home_expiry := null;
+    v_home_sale_code := null;
+    v_home_legacy_sale_unknown_since := null;
+  end if;
+
   insert into public.company_activity (company_id, actor_user_id, event_type, entity_type, entity_id)
   values (v_company_id, v_user_id, 'team_member_left', 'team_member', v_member_id);
 
