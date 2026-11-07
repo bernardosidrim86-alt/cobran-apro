@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { Routes, Route, Navigate, Link, useLocation, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   ArrowRight, Bell, Check, ChevronRight, CircleDollarSign, CreditCard, QrCode,
   CalendarDays, ChevronLeft, LayoutDashboard, LogOut, Menu, MessageCircle, Plus, Receipt, Settings,
@@ -18,6 +18,7 @@ import { Terms, Privacy } from "./Legal";
 import { PLAN_OPTIONS } from "./lib/plans";
 import { hasFreeTrialAccess, hasPaidSubscriptionAccess } from "./lib/subscription-access";
 import TurnstileCaptcha from "./TurnstileCaptcha";
+import { TeamSettings } from "./components/TeamSettings";
 
 
 function formatNotificationMoney(value){
@@ -157,6 +158,7 @@ function App() {
     <Route path="/privacidade" element={<Privacy />} />
     <Route path="/recuperar" element={<ForgotPassword />} />
     <Route path="/nova-senha" element={<ResetPassword />} />
+    <Route path="/convite/:token" element={<AcceptCompanyInvite session={session}/>} />
     <Route path="/onboarding" element={session ? <Onboarding session={session}/> : <Navigate to="/login" replace/>} />
     <Route path="/app/*" element={session ? <AppShell session={session}/> : <Navigate to="/login" replace/>} />
     <Route path="*" element={<Navigate to="/" replace/>} />
@@ -203,6 +205,8 @@ function SessionRedirect({session}) {
     let active = true;
 
     async function redirect() {
+      const inviteToken = new URLSearchParams(window.location.search).get("invite");
+      if (inviteToken) { nav("/convite/" + encodeURIComponent(inviteToken), {replace:true}); return; }
       if (continuePendingCheckout(session?.user?.id)) return;
 
       // Usuário já autenticado não deve voltar para o onboarding toda vez
@@ -706,6 +710,7 @@ function AuthLayout({children,title,subtitle}) {
 function Login() {
   const nav=useNavigate(); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false); const [captchaToken,setCaptchaToken]=useState(""); const [captchaKey,setCaptchaKey]=useState(0);
   const checkout=getSafeCheckout(new URLSearchParams(window.location.search).get("checkout"))?.toString()||null;
+  const inviteToken=new URLSearchParams(window.location.search).get("invite")||"";
   async function submit(e){
     e.preventDefault();setError("");setBusy(true);
     if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;}
@@ -714,6 +719,7 @@ function Login() {
     setCaptchaKey(key=>key+1);
     if(error){setError(error.message==="Invalid login credentials"?"E-mail ou senha incorretos.":error.message);setBusy(false);return;}
     if(continuePendingCheckout(data?.user?.id)) return;
+    if(inviteToken){nav("/convite/"+encodeURIComponent(inviteToken),{replace:true});setBusy(false);return;}
     if(checkout && data?.user?.id){
       const checkoutUrl=getSafeCheckout(checkout);
       if(checkoutUrl){
@@ -730,6 +736,7 @@ function Login() {
 function Signup() {
   const nav=useNavigate(); const [name,setName]=useState(""); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [company,setCompany]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false); const [captchaToken,setCaptchaToken]=useState(""); const [captchaKey,setCaptchaKey]=useState(0);
   const checkout=getSafeCheckout(new URLSearchParams(window.location.search).get("checkout"))?.toString()||null;
+  const inviteToken=new URLSearchParams(window.location.search).get("invite")||"";
   function continueToCheckout(userId){
     if(continuePendingCheckout(userId)) return true;
     if(!checkout || !userId) return false;
@@ -741,10 +748,11 @@ function Signup() {
   }
   async function submit(e){e.preventDefault();setError("");setBusy(true); if(!supabase){setError("Configure o Supabase no arquivo .env.local.");setBusy(false);return;}
     if(!captchaToken){setError("Confirme a verificação de segurança para continuar.");setBusy(false);return;}
-    const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,company_name:company},captchaToken}});
+    const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,company_name:company},captchaToken,...(inviteToken?{emailRedirectTo:`${window.location.origin}/convite/${encodeURIComponent(inviteToken)}`}:{})}});
     setCaptchaKey(key=>key+1);
     if(error){setError(error.message);setBusy(false);return;}
     if(data.session){
+      if(inviteToken){nav("/convite/"+encodeURIComponent(inviteToken),{replace:true});setBusy(false);return;}
       if(!continueToCheckout(data.user?.id)) nav("/onboarding");
       setBusy(false);
       return;
@@ -765,11 +773,12 @@ function Signup() {
     }
 
     const {error:loginError,data:loginData}=await supabase.auth.signInWithPassword({email,password});
-    if(loginError) setError(loginError.message==="Invalid login credentials"?"Este e-mail já possui uma conta com outra senha. Faça login ou recupere a senha.":loginError.message);
+    if(loginError) setError(inviteToken && /email not confirmed/i.test(loginError.message) ? "Conta criada! Confirme seu e-mail. Depois, abra novamente o link do convite para entrar na equipe." : loginError.message==="Invalid login credentials"?"Este e-mail já possui uma conta com outra senha. Faça login ou recupere a senha.":loginError.message);
+    else if(inviteToken) nav("/convite/"+encodeURIComponent(inviteToken),{replace:true});
     else if(!continueToCheckout(loginData?.user?.id)) nav("/onboarding");
     setBusy(false);
   }
-  return <AuthLayout title="Crie sua conta" subtitle="Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/><Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/><Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" autoComplete="new-password" minLength="8" value={password} onChange={e=>setPassword(e.target.value)} required/><TurnstileCaptcha key={captchaKey} onToken={setCaptchaToken}/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button><p className="legal-note">Ao criar sua conta, você concorda com os <Link to="/termos" target="_blank">Termos de Uso</Link> e a <Link to="/privacidade" target="_blank">Política de Privacidade</Link>.</p></form><div className="auth-bottom">Já possui uma conta? <Link to="/login">Entrar</Link></div></AuthLayout>
+  return <AuthLayout title="Crie sua conta" subtitle={inviteToken?"Crie sua conta para entrar na equipe da empresa.":"Teste o CobrançaPro grátis por 7 dias, sem cartão de crédito."}><form onSubmit={submit} className="form-stack"><Input label="Seu nome" value={name} onChange={e=>setName(e.target.value)} required/>{!inviteToken&&<Input label="Nome da empresa" value={company} onChange={e=>setCompany(e.target.value)} required/>}<Input label="E-mail" type="email" value={email} onChange={e=>setEmail(e.target.value)} required/><Input label="Senha" type="password" autoComplete="new-password" minLength="8" value={password} onChange={e=>setPassword(e.target.value)} required/><TurnstileCaptcha key={captchaKey} onToken={setCaptchaToken}/>{error&&<div className="error">{error}</div>}<Button disabled={busy}>{busy?"Criando...":"Criar conta"}</Button><p className="legal-note">Ao criar sua conta, você concorda com os <Link to="/termos" target="_blank">Termos de Uso</Link> e a <Link to="/privacidade" target="_blank">Política de Privacidade</Link>.</p></form><div className="auth-bottom">Já possui uma conta? <Link to="/login">Entrar</Link></div></AuthLayout>
 }
 
 function ForgotPassword() {
@@ -844,6 +853,63 @@ function ResetPassword() {
   const nav=useNavigate(); const [password,setPassword]=useState(""); const [done,setDone]=useState(false); const [error,setError]=useState("");
   async function submit(e){e.preventDefault();if(!supabase)return setError("Configure o Supabase.");const {error}=await supabase.auth.updateUser({password});if(error)setError(error.message);else{setDone(true);setTimeout(()=>nav("/app"),900);}}
   return <AuthLayout title="Nova senha" subtitle="Escolha uma senha nova para sua conta.">{done?<div className="success-box"><Check size={20}/> Senha alterada. Entrando...</div>:<form onSubmit={submit} className="form-stack"><Input label="Nova senha" type="password" autoComplete="new-password" minLength="8" value={password} onChange={e=>setPassword(e.target.value)} required/>{error&&<div className="error">{error}</div>}<Button>Salvar nova senha</Button></form>}</AuthLayout>
+}
+
+
+function AcceptCompanyInvite({session}) {
+  const {token}=useParams();
+  const nav=useNavigate();
+  const [busy,setBusy]=useState(!!session);
+  const [error,setError]=useState("");
+
+  useEffect(()=>{
+    if(!session||!token)return;
+    let active=true;
+    async function accept(){
+      setBusy(true);
+      setError("");
+      const {error:acceptError}=await supabase.rpc("accept_company_invitation",{p_token:token});
+      if(!active)return;
+      if(acceptError){
+        const raw=String(acceptError.message||"");
+        let message=raw;
+        if(raw.includes("invalid_or_expired_invite"))message="Este convite é inválido, já foi utilizado ou expirou.";
+        else if(raw.includes("email_confirmation_required"))message="Confirme o e-mail da sua conta antes de aceitar o convite.";
+        else if(raw.includes("already_linked_to_company"))message="Esta conta já está vinculada a outra empresa no CobrançaPro.";
+        else if(raw.includes("business_plan_required"))message="O plano Business da empresa não está ativo. Peça ao proprietário para verificar a assinatura.";
+        else if(raw.includes("authentication_required"))message="Entre na sua conta para aceitar o convite.";
+        setError(message);
+      }else{
+        nav("/app",{replace:true});
+      }
+      setBusy(false);
+    }
+    accept();
+    return()=>{active=false;};
+  },[session?.user?.id,token,nav]);
+
+  async function switchAccount(){
+    await supabase.auth.signOut();
+    nav("/login?invite="+encodeURIComponent(token),{replace:true});
+  }
+
+  const loginUrl="/login?invite="+encodeURIComponent(token);
+  const signupUrl="/cadastro?invite="+encodeURIComponent(token);
+
+  return <AuthLayout title="Convite para equipe" subtitle="Acesse a empresa que convidou você para trabalhar no CobrançaPro.">
+    {!session
+      ? <div className="form-stack">
+          <div className="finish-box"><Users size={20}/><div><b>Você recebeu um convite</b><span>Entre com o e-mail que recebeu o convite ou crie uma conta usando esse mesmo endereço.</span></div></div>
+          <Button onClick={()=>nav(loginUrl)}>Já tenho uma conta</Button>
+          <Button variant="secondary" onClick={()=>nav(signupUrl)}>Criar conta para aceitar</Button>
+        </div>
+      : <div className="form-stack">
+          {busy&&<div className="finish-box"><RefreshCw size={18}/><div><b>Validando convite...</b><span>Conferindo e-mail, validade e acesso da empresa.</span></div></div>}
+          {error&&<div className="error">{error}</div>}
+          {error&&<Button variant="secondary" onClick={switchAccount}>Sair e entrar com outro e-mail</Button>}
+        </div>}
+    <div className="auth-bottom"><Link to="/">Voltar ao CobrançaPro</Link></div>
+  </AuthLayout>;
 }
 
 function Onboarding({session}) {
@@ -1788,9 +1854,9 @@ async function uploadAvatar(file){if(!file||!companyId)return;const allowed=["im
 async function savePix(){setPixError("");setSavedPix(false);if(!companyId){setPixError("Sua empresa ainda está carregando. Aguarde alguns segundos.");return;}const key=String(pix.key||"").trim(),name=String(pix.name||"").trim(),city=String(pix.city||"").trim();if(!key){setPixError("Informe a chave Pix da empresa.");return;}if(!name){setPixError("Informe o nome que aparecerá no pagamento.");return;}if(name.length>25){setPixError("O nome do recebedor deve ter no máximo 25 caracteres.");return;}if(!city){setPixError("Informe a cidade da empresa.");return;}if(city.length>15){setPixError("A cidade deve ter no máximo 15 caracteres.");return;}setSavingPix(true);const {error}=await supabase.from("company_settings").upsert({company_id:companyId,pix_key:key,pix_name:name,pix_city:city},{onConflict:"company_id"});if(error)setPixError("Não foi possível salvar o Pix agora. "+error.message);else{setPix({key,name,city});setSavedPix(true);}setSavingPix(false);}
 
 
-useEffect(()=>{const requested=new URLSearchParams(window.location.search).get("tab");if(["empresa","notificacoes","whatsapp","pix","ia","plano"].includes(requested)&&!(requested==="ia"&&!canUseAI))setTab(requested);},[canUseAI,profile?.plan]);
+useEffect(()=>{const requested=new URLSearchParams(window.location.search).get("tab");if(["empresa","notificacoes","whatsapp","pix","ia","equipe","plano"].includes(requested)&&!(requested==="ia"&&!canUseAI))setTab(requested);},[canUseAI,profile?.plan]);
 
-return <><PageTitle title="Configurações" subtitle="Personalize o CobrançaPro para sua empresa."/><div className="settings-layout"><div className="settings-nav">{[["empresa","Empresa",UserRound],["notificacoes","Notificações",Bell],["whatsapp","WhatsApp",MessageCircle],["pix","Pix",QrCode],...(canUseAI?[["ia","IA",Sparkles]]:[]),["plano","Plano",CreditCard]].map(([x,l,Icon])=><button className={tab===x?"active":""} onClick={()=>setTab(x)} key={x}><Icon size={17}/><span>{l}</span><ChevronRight size={14} className="settings-nav-chevron"/></button>)}</div><div className="panel settings-panel">{tab==="empresa"&&<><h2>Empresa</h2><p>Dados básicos do seu negócio.</p><div className="company-profile-editor"><div className="company-profile-avatar">{company.avatar_url?<img src={company.avatar_url} alt={company.name||"Empresa"}/>:<span>{(company.name||"E").slice(0,1).toUpperCase()}</span>}</div><div><b>Foto da empresa</b><p>Essa imagem aparece no canto superior direito do sistema.</p><label className="btn btn-secondary upload-avatar-btn">{avatarUploading?"Enviando...":"Alterar foto"}<input type="file" accept="image/jpeg,image/png,image/webp" disabled={avatarUploading} onChange={e=>{uploadAvatar(e.target.files?.[0]);e.target.value=""}}/></label></div></div><div className="form-grid"><Input label="Nome da empresa" value={company.name} placeholder="Minha empresa" readOnly/><Input label="Telefone" value={formatWhatsApp(company.phone)} placeholder="(24) 99999-9999" readOnly/><Input label="Segmento" value={company.segment} placeholder="Ex.: clínica" readOnly/></div><small>Os dados básicos da empresa são definidos no cadastro inicial.</small></>}{tab==="whatsapp"&&<><h2>WhatsApp</h2><p>Configure o número usado nas mensagens de cobrança pelo WhatsApp.</p><div className="connection"><div><span className="status-dot" style={{background:whatsapp?"#22c55e":"#9ca3af"}}></span><b>{whatsapp?"WhatsApp configurado":"WhatsApp não configurado"}</b><small>{whatsapp?"Número salvo: "+formatWhatsApp(whatsapp):"Cadastre o número do WhatsApp da sua empresa para deixar o canal pronto."}</small></div></div><div className="form-stack" style={{marginTop:20}}><Input label="Número do WhatsApp" value={whatsapp} onChange={e=>setWhatsapp(e.target.value)} placeholder="(24) 99999-9999" inputMode="tel" autoComplete="tel"/><small>Use o número completo com DDD. O CobrançaPro salva o número no formato internacional.</small>{whatsappError&&<div className="error">{whatsappError}</div>}{savedWhatsApp&&<div className="success-box"><Check size={18}/> Número do WhatsApp salvo com sucesso.</div>}<div className="modal-actions"><Button type="button" onClick={saveWhatsApp} disabled={savingWhatsApp}>{savingWhatsApp?"Salvando...":"Salvar número"}</Button>{whatsapp&&<Button type="button" variant="secondary" onClick={()=>window.open("https://wa.me/"+normalizeWhatsApp(whatsapp),"_blank")}>Testar WhatsApp</Button>}</div></div></>}{tab==="pix"&&<><div className="settings-section-heading"><div className="settings-section-icon"><QrCode size={18}/></div><div><h2>Pix</h2><p>Configure a chave que será usada para gerar o Pix Copia e Cola das cobranças.</p></div><span className={"settings-connection-badge "+(pix.key?"is-active":"")}>{pix.key?"Configurado":"Não configurado"}</span></div><div className="settings-pix-card"><div className="settings-pix-fields"><Input label="Chave Pix" value={pix.key} onChange={e=>setPix(v=>({...v,key:e.target.value}))} placeholder="CPF, CNPJ, e-mail, telefone ou chave aleatória" autoComplete="off"/><Input label="Nome do recebedor" value={pix.name} onChange={e=>setPix(v=>({...v,name:e.target.value}))} placeholder={company.name||"Nome da empresa"} maxLength={25}/><Input label="Cidade" value={pix.city} onChange={e=>setPix(v=>({...v,city:e.target.value.toUpperCase()}))} placeholder="Ex.: BARRA MANSA" maxLength={15}/></div><div className="settings-pix-note"><QrCode size={16}/><span>Esses dados aparecem no Pix gerado para cada cobrança. O nome aceita até 25 caracteres e a cidade até 15.</span></div>{pixError&&<div className="error">{pixError}</div>}{savedPix&&<div className="success-box"><Check size={18}/> Configuração Pix salva com sucesso.</div>}<div className="modal-actions"><Button type="button" onClick={savePix} disabled={savingPix}>{savingPix?"Salvando...":"Salvar configuração Pix"}</Button></div></div></>}{tab==="notificacoes"&&<PushNotificationsSettings/>}{tab==="ia"&&<><h2>Assistente IA</h2><p>Defina como o assistente deve escrever.</p><label className="field"><span>Nome do assistente</span><input defaultValue="Assistente CobrançaPro"/></label><label className="field"><span>Instruções</span><textarea rows="5" placeholder="Seja objetivo, educado e nunca invente valores."/></label><Button>Salvar</Button></>}{tab==="plano"&&<><h2>Plano</h2><p>Confira seu período de teste e sua assinatura atual.</p><div className="plan-box"><b>{profile?.plan==="free"||!profile?.plan?"Teste grátis":profile.plan.charAt(0).toUpperCase()+profile.plan.slice(1)}</b><strong>{profile?.plan==="essencial"?"R$49,90":profile?.plan==="profissional"?"R$99,90":profile?.plan==="business"?"R$199,90":"7 dias"}</strong><span>Status: {profile?.subscription_status||"inactive"}{profile?.billing_cycle?(" · "+(profile.billing_cycle==="annual"?"Anual":"Mensal")):""}</span><a href="/#precos" className="btn btn-primary">Ver planos</a></div></>}</div></div></>}
+return <><PageTitle title="Configurações" subtitle="Personalize o CobrançaPro para sua empresa."/><div className="settings-layout"><div className="settings-nav">{[["empresa","Empresa",UserRound],["notificacoes","Notificações",Bell],["whatsapp","WhatsApp",MessageCircle],["pix","Pix",QrCode],...(canUseAI?[["ia","IA",Sparkles]]:[]),["equipe","Equipe",Users],["plano","Plano",CreditCard]].map(([x,l,Icon])=><button className={tab===x?"active":""} onClick={()=>setTab(x)} key={x}><Icon size={17}/><span>{l}</span><ChevronRight size={14} className="settings-nav-chevron"/></button>)}</div><div className="panel settings-panel">{tab==="empresa"&&<><h2>Empresa</h2><p>Dados básicos do seu negócio.</p><div className="company-profile-editor"><div className="company-profile-avatar">{company.avatar_url?<img src={company.avatar_url} alt={company.name||"Empresa"}/>:<span>{(company.name||"E").slice(0,1).toUpperCase()}</span>}</div><div><b>Foto da empresa</b><p>Essa imagem aparece no canto superior direito do sistema.</p><label className="btn btn-secondary upload-avatar-btn">{avatarUploading?"Enviando...":"Alterar foto"}<input type="file" accept="image/jpeg,image/png,image/webp" disabled={avatarUploading} onChange={e=>{uploadAvatar(e.target.files?.[0]);e.target.value=""}}/></label></div></div><div className="form-grid"><Input label="Nome da empresa" value={company.name} placeholder="Minha empresa" readOnly/><Input label="Telefone" value={formatWhatsApp(company.phone)} placeholder="(24) 99999-9999" readOnly/><Input label="Segmento" value={company.segment} placeholder="Ex.: clínica" readOnly/></div><small>Os dados básicos da empresa são definidos no cadastro inicial.</small></>}{tab==="whatsapp"&&<><h2>WhatsApp</h2><p>Configure o número usado nas mensagens de cobrança pelo WhatsApp.</p><div className="connection"><div><span className="status-dot" style={{background:whatsapp?"#22c55e":"#9ca3af"}}></span><b>{whatsapp?"WhatsApp configurado":"WhatsApp não configurado"}</b><small>{whatsapp?"Número salvo: "+formatWhatsApp(whatsapp):"Cadastre o número do WhatsApp da sua empresa para deixar o canal pronto."}</small></div></div><div className="form-stack" style={{marginTop:20}}><Input label="Número do WhatsApp" value={whatsapp} onChange={e=>setWhatsapp(e.target.value)} placeholder="(24) 99999-9999" inputMode="tel" autoComplete="tel"/><small>Use o número completo com DDD. O CobrançaPro salva o número no formato internacional.</small>{whatsappError&&<div className="error">{whatsappError}</div>}{savedWhatsApp&&<div className="success-box"><Check size={18}/> Número do WhatsApp salvo com sucesso.</div>}<div className="modal-actions"><Button type="button" onClick={saveWhatsApp} disabled={savingWhatsApp}>{savingWhatsApp?"Salvando...":"Salvar número"}</Button>{whatsapp&&<Button type="button" variant="secondary" onClick={()=>window.open("https://wa.me/"+normalizeWhatsApp(whatsapp),"_blank")}>Testar WhatsApp</Button>}</div></div></>}{tab==="pix"&&<><div className="settings-section-heading"><div className="settings-section-icon"><QrCode size={18}/></div><div><h2>Pix</h2><p>Configure a chave que será usada para gerar o Pix Copia e Cola das cobranças.</p></div><span className={"settings-connection-badge "+(pix.key?"is-active":"")}>{pix.key?"Configurado":"Não configurado"}</span></div><div className="settings-pix-card"><div className="settings-pix-fields"><Input label="Chave Pix" value={pix.key} onChange={e=>setPix(v=>({...v,key:e.target.value}))} placeholder="CPF, CNPJ, e-mail, telefone ou chave aleatória" autoComplete="off"/><Input label="Nome do recebedor" value={pix.name} onChange={e=>setPix(v=>({...v,name:e.target.value}))} placeholder={company.name||"Nome da empresa"} maxLength={25}/><Input label="Cidade" value={pix.city} onChange={e=>setPix(v=>({...v,city:e.target.value.toUpperCase()}))} placeholder="Ex.: BARRA MANSA" maxLength={15}/></div><div className="settings-pix-note"><QrCode size={16}/><span>Esses dados aparecem no Pix gerado para cada cobrança. O nome aceita até 25 caracteres e a cidade até 15.</span></div>{pixError&&<div className="error">{pixError}</div>}{savedPix&&<div className="success-box"><Check size={18}/> Configuração Pix salva com sucesso.</div>}<div className="modal-actions"><Button type="button" onClick={savePix} disabled={savingPix}>{savingPix?"Salvando...":"Salvar configuração Pix"}</Button></div></div></>}{tab==="notificacoes"&&<PushNotificationsSettings/>}{tab==="ia"&&<><h2>Assistente IA</h2><p>Defina como o assistente deve escrever.</p><label className="field"><span>Nome do assistente</span><input defaultValue="Assistente CobrançaPro"/></label><label className="field"><span>Instruções</span><textarea rows="5" placeholder="Seja objetivo, educado e nunca invente valores."/></label><Button>Salvar</Button></>}{tab==="equipe"&&<TeamSettings companyId={companyId} profile={profile}/ >}{tab==="plano"&&<><h2>Plano</h2><p>Confira seu período de teste e sua assinatura atual.</p><div className="plan-box"><b>{profile?.plan==="free"||!profile?.plan?"Teste grátis":profile.plan.charAt(0).toUpperCase()+profile.plan.slice(1)}</b><strong>{profile?.plan==="essencial"?"R$49,90":profile?.plan==="profissional"?"R$99,90":profile?.plan==="business"?"R$199,90":"7 dias"}</strong><span>Status: {profile?.subscription_status||"inactive"}{profile?.billing_cycle?(" · "+(profile.billing_cycle==="annual"?"Anual":"Mensal")):""}</span><a href="/#precos" className="btn btn-primary">Ver planos</a></div></>}</div></div></>}
 
 
 export default App;
