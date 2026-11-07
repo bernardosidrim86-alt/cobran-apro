@@ -341,7 +341,9 @@ function Landing({session}) {
       ".lp-problem-list > li",
       "#como .lp-heading",
       "#como .lp-step",
+      ".lp-journey-outro > span",
       ".lp-journey-outro h3",
+      ".lp-journey-outro > a",
       "#recursos .lp-heading",
       "#recursos .lp-features > div",
       ".lp-who-text",
@@ -354,32 +356,86 @@ function Landing({session}) {
       ".lp-final-in > a"
     ];
     const items=[...document.querySelectorAll(selectors.join(","))];
+    const scenes=[...document.querySelectorAll("[data-story-scene]")];
+    const media=[...document.querySelectorAll("#como .lp-step-media")];
     if(!items.length) return;
 
     items.forEach((el,index)=>{
       el.classList.add("lp-animate");
-      el.style.setProperty("--reveal-delay", `${Math.min(index % 4, 3) * 45}ms`);
+      el.style.setProperty("--reveal-order", String(index));
     });
 
-    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-      items.forEach(el=>el.classList.add("is-visible"));
+    const reducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)");
+    if(reducedMotion.matches){
+      items.forEach(el=>{
+        el.classList.add("is-visible");
+        el.style.setProperty("--story-opacity","1");
+        el.style.setProperty("--story-y","0px");
+        el.style.setProperty("--story-scale","1");
+        el.style.setProperty("--story-blur","0px");
+      });
+      scenes.forEach(el=>{
+        el.style.setProperty("--story-scene-opacity","0");
+        el.style.setProperty("--story-scene-y","0px");
+      });
+      media.forEach(el=>{
+        el.style.setProperty("--story-image-y","0px");
+        el.style.setProperty("--story-image-scale","1");
+      });
       return;
     }
 
-    const observer=new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    },{
-      threshold:0.08,
-      rootMargin:"0px 0px -5% 0px"
-    });
+    let frame=0;
+    const clamp=(value,min=0,max=1)=>Math.min(max,Math.max(min,value));
+    const ease=(value)=>value*value*(3-2*value);
 
-    items.forEach(el=>observer.observe(el));
-    return()=>observer.disconnect();
+    const updateStory=()=>{
+      if(frame) return;
+      frame=window.requestAnimationFrame(()=>{
+        frame=0;
+        const viewport=window.innerHeight||1;
+        const startAt=viewport*.9;
+        const finishAt=viewport*.32;
+
+        items.forEach((el,index)=>{
+          const rect=el.getBoundingClientRect();
+          const progress=clamp((startAt-rect.top)/(startAt-finishAt));
+          const eased=ease(progress);
+          const depth=index%2===0?46:34;
+          el.style.setProperty("--story-opacity",String(eased));
+          el.style.setProperty("--story-y",`${(1-eased)*depth}px`);
+          el.style.setProperty("--story-scale",String(.982+eased*.018));
+          el.style.setProperty("--story-blur",`${(1-eased)*3.5}px`);
+          if(progress>.16) el.classList.add("is-visible");
+        });
+
+        scenes.forEach((el)=>{
+          const rect=el.getBoundingClientRect();
+          const progress=clamp((viewport*.96-rect.top)/(viewport*.96-viewport*.2));
+          const eased=ease(progress);
+          el.style.setProperty("--story-scene-opacity",String(eased*.14));
+          el.style.setProperty("--story-scene-y",`${(1-eased)*64-18}px`);
+        });
+
+        media.forEach((el)=>{
+          const rect=el.closest(".lp-step")?.getBoundingClientRect();
+          if(!rect) return;
+          const progress=clamp((viewport*.9-rect.top)/(viewport*.9-viewport*.16));
+          const eased=ease(progress);
+          el.style.setProperty("--story-image-y",`${(1-eased)*26-5}px`);
+          el.style.setProperty("--story-image-scale",String(1.035-eased*.035));
+        });
+      });
+    };
+
+    updateStory();
+    window.addEventListener("scroll",updateStory,{passive:true});
+    window.addEventListener("resize",updateStory);
+    return()=>{
+      window.removeEventListener("scroll",updateStory);
+      window.removeEventListener("resize",updateStory);
+      if(frame) window.cancelAnimationFrame(frame);
+    };
   },[]);
 
   const steps=[
@@ -493,7 +549,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section className="lp-problem">
+      <section className="lp-problem" data-story-scene="problem">
         <div className="lp-wrap lp-problem-grid">
           <h2><KineticText>Cobrança espalhada em planilha, caderno e WhatsApp vira dinheiro esquecido.</KineticText></h2>
           <ul className="lp-problem-list">
@@ -504,7 +560,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="como" className="lp-section lp-journey">
+      <section id="como" className="lp-section lp-journey" data-story-scene="journey">
         <div className="lp-wrap">
           <div className="lp-heading"><p className="lp-kicker">Sua jornada começa aqui</p><h2><KineticText>Do cadastro ao dinheiro na conta, em quatro passos.</KineticText></h2><p className="lp-sub">Role a página e veja como a rotina de cobranças fica mais simples, etapa por etapa.</p></div>
           <div className="lp-journey-shell">
@@ -551,7 +607,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="recursos" className="lp-section lp-soft">
+      <section id="recursos" className="lp-section lp-soft" data-story-scene="features">
         <div className="lp-wrap">
           <div className="lp-heading">
             <p className="lp-kicker">Recursos</p>
@@ -569,7 +625,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section className="lp-who">
+      <section className="lp-who" data-story-scene="audience">
         <div className="lp-wrap">
           <p className="lp-kicker">Para quem é</p>
           <p className="lp-who-text">
@@ -584,7 +640,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="precos" className="lp-section lp-soft lp-plans">
+      <section id="precos" className="lp-section lp-soft lp-plans" data-story-scene="plans">
         <div className="lp-wrap">
           <div className="lp-heading"><p className="lp-kicker">Planos</p><h2><KineticText>Comece de graça. Faça upgrade quando precisar.</KineticText></h2><p className="lp-sub">Teste por 7 dias, sem cartão de crédito. A assinatura é processada pela Perfect Pay.</p></div>
           <div className="lp-billing" role="group" aria-label="Periodicidade do plano">
@@ -597,7 +653,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section id="duvidas" className="lp-section">
+      <section id="duvidas" className="lp-section" data-story-scene="faq">
         <div className="lp-wrap lp-faq-grid">
           <div className="lp-heading"><p className="lp-kicker">Dúvidas</p><h2><KineticText>Perguntas frequentes.</KineticText></h2></div>
           <div className="lp-faq">
@@ -606,7 +662,7 @@ function Landing({session}) {
         </div>
       </section>
 
-      <section className="lp-final">
+      <section className="lp-final" data-story-scene="final">
         <div className="lp-wrap lp-final-in">
           <div><h2><KineticText>Chega de planilha para saber quem está te devendo.</KineticText></h2><p>7 dias grátis · Sem cartão de crédito</p></div>
           <Link to="/cadastro" className="lp-final-cta">Começar grátis <ArrowRight size={18}/></Link>
