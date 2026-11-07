@@ -1,0 +1,49 @@
+/* Largura real do espaço de trabalho: remove os limites herdados das páginas internas. */
+html body #root .app-layout .app-main{
+  min-width:0!important;
+  max-width:none!important;
+}
+
+html body #root .app-layout .app-main > .page{
+  display:block!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:clamp(20px, 2vw, 36px)!important;
+}
+
+/* Cada rota deve ocupar a largura disponível, sem o max-width antigo. */
+html body #root .app-layout .app-main > .page > .dashboard-page,
+html body #root .app-layout .app-main > .page > .modern-page,
+html body #root .app-layout .app-main > .page > .payments-page,
+html body #root .app-layout .app-main > .page > .cp-reports-page,
+html body #root .app-layout .app-main > .page > .calendar-page,
+html body #root .app-layout .app-main > .page > .reports-page,
+html body #root .app-layout .app-main > .page > .ai-page,
+html body #root .app-layout .app-main > .page > .settings-page{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+
+/* Alguns nomes de página são aplicados junto com modern-page. */
+html body #root .app-layout .app-main > .page > .modern-customers-page,
+html body #root .app-layout .app-main > .page > .modern-charges-page{
+  width:100%!important;
+  max-width:none!important;
+}
+
+@media(max-width:900px){
+  html body #root .app-layout .app-main > .page{
+    padding:20px 16px 32px!important;
+  }
+}
+
+@media(max-width:600px){
+  html body #root .app-layout .app-main > .page{
+    padding:16px 12px 28px!important;
+  }
+}
