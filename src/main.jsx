@@ -12,6 +12,7 @@ import "./polish-v2.css";
 import "./workspace-pages.css";
 import "./auth-dark.css";
 import "./push-notifications.css";
+import "./app-layout-width.css";
 
 if (import.meta.env.PROD && "serviceWorker" in navigator) {
   window.addEventListener("load", () => {
