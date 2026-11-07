@@ -450,7 +450,15 @@ function Landing({session}) {
         <div className="lp-wrap lp-hero-grid">
           <div className="lp-hero-copy">
             <p className="lp-kicker">Gestão de cobranças para pequenos negócios</p>
-            <h1>Todo o dinheiro que você tem a receber, <span>em uma tela só.</span></h1>
+            <h1 className="lp-kinetic-title">
+              <span className="lp-kinetic-line" aria-hidden="true">
+                {["Todo","o","dinheiro","que","você","tem","a","receber,"].map((word,index)=><span className="lp-kinetic-word" style={{"--word-index":index}} key={word+index}>{word}</span>)}
+              </span>{" "}
+              <span className="lp-kinetic-accent" aria-hidden="true">
+                {["em","uma","tela","só."].map((word,index)=><span className="lp-kinetic-word" style={{"--word-index":index}} key={word}>{word}</span>)}
+              </span>
+              <span className="lp-kinetic-sr">Todo o dinheiro que você tem a receber, em uma tela só.</span>
+            </h1>
             <p className="lp-lead">Cadastre clientes, crie cobranças e veja na hora quem pagou, quem vence hoje e quem está atrasado. Cobre pelo WhatsApp com a mensagem pronta.</p>
             <div className="lp-cta-row">
               <Link to="/cadastro" className="lp-btn lp-btn-primary lp-btn-lg">Começar grátis <ArrowRight size={18}/></Link>
