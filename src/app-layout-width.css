@@ -47,3 +47,11 @@ html body #root .app-layout .app-main > .page > .modern-charges-page{
     padding:16px 12px 28px!important;
   }
 }
+
+/* O uso do plano fica propositalmente mais compacto que o restante do dashboard. */
+html body #root .app-layout .app-main > .page > .dashboard-page > .plan-usage-card{
+  width:100%!important;
+  max-width:1128px!important;
+  margin-left:0!important;
+  margin-right:auto!important;
+}
