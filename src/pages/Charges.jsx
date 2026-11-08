@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { MessageCircle, Plus, Receipt, X, Check, Download, ArrowDownUp, Copy, QrCode, Settings } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { PLAN_OPTIONS } from "../lib/plans";
+import { getPlanUsage } from "../lib/plan-usage";
 import { money, todayISO } from "../lib/formatters";
 import { downloadCsv } from "../lib/export";
 import { buildPixPayload } from "../lib/pix";
@@ -21,6 +22,10 @@ function addMonths(date,months){
   const last=new Date(target.getFullYear(),target.getMonth()+1,0,12).getDate();
   target.setDate(Math.min(day,last));
   return target.toISOString().slice(0,10);
+}
+
+function isChargePlanLimitError(error){
+  return String(error?.message||error?.details||"").includes("plan_charge_limit");
 }
 
 function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
@@ -87,21 +92,13 @@ function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
   async function repeat(){
     setSaving(true);
     try{
-      const {data:user}=await supabase.auth.getUser();
-      if(!user?.user?.id)throw new Error("Sua sessão expirou. Entre novamente.");
-      const {data:profile}=await supabase.from("profiles").select("plan").eq("id",user.user.id).single();
-      const plan=PLAN_OPTIONS.find(p=>p.key===(profile?.plan||"free"))||PLAN_OPTIONS[0];
-      let query=supabase.from("charges").select("id",{count:"exact",head:true}).eq("company_id",charge.company_id);
-      if(plan.maxCharges!==null){
-        const start=new Date();start.setDate(1);
-        query=query.gte("created_at",start.toISOString().slice(0,10)).lt("created_at",new Date(start.getFullYear(),start.getMonth()+1,1).toISOString().slice(0,10));
-      }
-      const {count}=await query;
-      if(plan.maxCharges!==null&&(count||0)>=plan.maxCharges){toast("O plano "+plan.title+" permite até "+plan.maxCharges+" cobranças por mês. Faça upgrade para adicionar mais.");return;}
       const {error}=await supabase.from("charges").insert({company_id:charge.company_id,customer_id:charge.customer_id,description:charge.description,amount:Number(charge.amount),due_date:repeatDate,payment_method:charge.payment_method,status:"pending",recurrence:"none"});
       if(error)throw error;
       setRepeating(false);onPaid();toast("Próxima cobrança criada.","success");
-    }catch(error){toast(error?.message||"Não foi possível repetir a cobrança.");}
+    }catch(error){
+      if(isChargePlanLimitError(error))toast("Você atingiu o limite mensal de cobranças do seu plano. Faça upgrade para continuar.");
+      else toast(error?.message||"Não foi possível repetir a cobrança.");
+    }
     finally{setSaving(false);}
   }
 
@@ -138,7 +135,9 @@ function ChargeDetail({charge,onClose,onPaid,customers=[],pixSettings={}}){
         if(recurrenceError){
           console.error("Next recurring charge was not created",recurrenceError);
           onPaid();
-          toast("Recebimento registrado, mas a próxima cobrança não foi criada. Você pode criá-la manualmente.");
+          toast(isChargePlanLimitError(recurrenceError)
+            ?"Pagamento registrado, mas o limite mensal do seu plano foi atingido. A próxima cobrança não foi criada."
+            :"Recebimento registrado, mas a próxima cobrança não foi criada. Você pode tentar novamente.");
           return;
         }
       }
@@ -234,13 +233,23 @@ export function Charges({companyId}){
   const [saving,setSaving]=useState(false);
   const [planKey,setPlanKey]=useState("free");
   const [planLoaded,setPlanLoaded]=useState(false);
+  const [monthlyChargeCount,setMonthlyChargeCount]=useState(0);
   const [limitError,setLimitError]=useState("");
   const activePlan=PLAN_OPTIONS.find(p=>p.key===planKey)||PLAN_OPTIONS[0];
-  const monthStart=new Date();monthStart.setDate(1);monthStart.setHours(0,0,0,0);
-  const monthlyChargeCount=rows.filter(item=>item.created_at&&new Date(item.created_at)>=monthStart).length;
   const chargeLimitReached=planLoaded&&activePlan.maxCharges!==null&&monthlyChargeCount>=activePlan.maxCharges;
 
-  useEffect(()=>{let active=true;supabase.auth.getUser().then(async({data})=>{if(!data?.user?.id)return;const {data:profile}=await supabase.from("profiles").select("plan").eq("id",data.user.id).maybeSingle();if(active){setPlanKey(profile?.plan||"free");setPlanLoaded(true);}}).catch(()=>{if(active)setPlanLoaded(true);});return()=>{active=false;};},[]);
+  async function refreshPlanUsage(){
+    if(!companyId)return;
+    try{
+      const usage=await getPlanUsage();
+      setPlanKey(usage.plan||"free");
+      setMonthlyChargeCount(Number(usage.charges)||0);
+      setPlanLoaded(true);
+    }catch(error){
+      console.warn("Não foi possível atualizar o uso do plano:",error?.message||error);
+      setPlanLoaded(false);
+    }
+  }
 
   async function load(){
     if(!companyId)return;
@@ -251,8 +260,13 @@ export function Charges({companyId}){
     ]);
     if(chargeError||customerError){console.error(chargeError||customerError);toast("Não foi possível carregar as cobranças.");return;}
     setRows(c||[]);setCustomers(cu||[]);setPixSettings(settings||{});
+    await refreshPlanUsage();
   }
-  useEffect(()=>{load()},[companyId]);
+  useEffect(()=>{
+    load();
+    const timer=window.setInterval(refreshPlanUsage,30000);
+    return()=>window.clearInterval(timer);
+  },[companyId]);
   useEffect(()=>{
     const requested=new URLSearchParams(loc.search).get("filter");
     if(["pending","overdue","paid"].includes(requested))setFilter(requested);
@@ -297,23 +311,20 @@ export function Charges({companyId}){
     if(!/^\d{4}-\d{2}-\d{2}$/.test(dueDate)){toast("Informe uma data de vencimento válida.");return;}
     setSaving(true);
     try{
-      const {data:user,error:userError}=await supabase.auth.getUser();
-      if(userError||!user?.user?.id)throw new Error(userError?.message||"Sua sessão expirou. Faça login novamente.");
-      const {data:profile,error:profileError}=await supabase.from("profiles").select("plan").eq("id",user.user.id).maybeSingle();
-      if(profileError)throw profileError;
-      const plan=PLAN_OPTIONS.find(p=>p.key===(profile?.plan||"free"))||PLAN_OPTIONS[0];
-      if(plan.maxCharges!==null){
-        const start=new Date();start.setDate(1);
-        const {count,error}=await supabase.from("charges").select("id",{count:"exact",head:true}).eq("company_id",companyId).gte("created_at",start.toISOString().slice(0,10)).lt("created_at",new Date(start.getFullYear(),start.getMonth()+1,1).toISOString().slice(0,10));
-        if(error)throw error;
-        if((count||0)>=plan.maxCharges){setLimitError("Você atingiu o limite de "+plan.maxCharges+" cobranças mensais do plano "+plan.title+". Faça upgrade para continuar.");return;}
-      }
       const {data:created,error}=await supabase.from("charges").insert({company_id:companyId,customer_id:customerId,description,amount,due_date:dueDate,payment_method:form.payment_method||"Pix",recurrence:form.recurrence||"none",notes:String(form.notes||"").trim()||null}).select("id").single();
       if(error)throw error;
       if(!created?.id)throw new Error("A cobrança não foi confirmada pelo banco.");
       setLimitError("");setOpen(false);setForm({customer_id:"",description:"",amount:"",due_date:todayISO(),payment_method:"Pix",recurrence:"none",notes:""});
       await load();toast("Cobrança criada com sucesso.","success");
-    }catch(error){console.error(error);toast(error?.message||"Não foi possível criar a cobrança.");}
+    }catch(error){
+      console.error(error);
+      if(isChargePlanLimitError(error)){
+        setLimitError("Você atingiu o limite mensal de "+activePlan.maxCharges+" cobranças do plano "+activePlan.title+". Faça upgrade para continuar.");
+        await refreshPlanUsage();
+      }else{
+        toast(error?.message||"Não foi possível criar a cobrança.");
+      }
+    }
     finally{setSaving(false);}
   }
 

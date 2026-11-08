@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { TrendingUp, CalendarClock } from "lucide-react";
-import { supabase } from "../lib/supabase";
+import { getPlanUsage } from "../lib/plan-usage";
 import { PLAN_OPTIONS } from "../lib/plans";
 
 function Metric({label,count,max}){
@@ -14,28 +14,29 @@ function Metric({label,count,max}){
 
 export function PlanUsage({companyId,planKey="free",expiresAt=null}){
   const [counts,setCounts]=useState({customers:0,charges:0});
-  const plan=useMemo(()=>PLAN_OPTIONS.find(p=>p.key===planKey)||PLAN_OPTIONS[0],[planKey]);
+  const [currentPlanKey,setCurrentPlanKey]=useState(planKey);
+  const plan=useMemo(()=>PLAN_OPTIONS.find(p=>p.key===currentPlanKey)||PLAN_OPTIONS[0],[currentPlanKey]);
 
   useEffect(()=>{
-    if(!companyId) return;
+    if(!companyId)return;
     let active=true;
     async function load(){
-      const start=new Date();
-      start.setDate(1);
-      const first=start.toISOString().slice(0,10);
-      const next=new Date(start.getFullYear(),start.getMonth()+1,1).toISOString().slice(0,10);
-      const [{count:customers},{count:charges}]=await Promise.all([
-        supabase.from("customers").select("id",{count:"exact",head:true}).eq("company_id",companyId),
-        supabase.from("charges").select("id",{count:"exact",head:true}).eq("company_id",companyId).gte("created_at",first).lt("created_at",next)
-      ]);
-      if(active)setCounts({customers:customers||0,charges:charges||0});
+      try{
+        const usage=await getPlanUsage();
+        if(active){
+          setCounts({customers:usage.customers,charges:usage.charges});
+          setCurrentPlanKey(usage.plan||planKey);
+        }
+      }catch(error){
+        console.warn("Não foi possível atualizar o uso do plano:",error?.message||error);
+      }
     }
     load();
     const timer=window.setInterval(load,30000);
     return()=>{active=false;window.clearInterval(timer);};
-  },[companyId]);
+  },[companyId,planKey]);
 
-  if(!companyId) return null;
+  if(!companyId)return null;
   const expiry=expiresAt?new Date(expiresAt):null;
   const remainingDays=expiry&&!Number.isNaN(expiry.getTime())?Math.max(0,Math.ceil((expiry.getTime()-Date.now())/86400000)):null;
   const expiryLabel=remainingDays===null?"":remainingDays===0?"Vence hoje":`Vence em ${remainingDays} ${remainingDays===1?"dia":"dias"}`;
