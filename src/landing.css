@@ -484,8 +484,9 @@
 @media (prefers-reduced-motion:reduce){
   .lp .lp-animate{opacity:1;transform:none}
 }
+/* A seção de dúvidas acompanha o tema escuro da landing. */
 .lp main > section#precos + section#duvidas{
-  background:#fff;
+  background:#0b0f14!important;
 }
 
 .lp-final-cta{
@@ -1298,5 +1299,121 @@
     opacity:1!important;
     transform:none!important;
     transition:none!important;
+  }
+}
+
+
+/* ---------- Ajustes finais mobile: FAQ, CTA e rodapé ---------- */
+#duvidas,
+#duvidas .lp-wrap,
+#duvidas .lp-faq-grid,
+#duvidas .lp-heading,
+#duvidas .lp-faq,
+.lp-final,
+.lp-final-in,
+.lp-footer,
+.lp-footer-in{
+  min-width:0;
+}
+@media(max-width:640px){
+  #duvidas{
+    width:100%;
+    overflow:visible;
+    padding-left:0;
+    padding-right:0;
+  }
+  #duvidas .lp-wrap,
+  .lp-final .lp-wrap,
+  .lp-footer .lp-wrap{
+    width:100%;
+    max-width:100%;
+    padding-left:20px;
+    padding-right:20px;
+  }
+  #duvidas .lp-faq-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:28px;
+    width:100%;
+  }
+  #duvidas .lp-heading,
+  #duvidas .lp-faq{
+    width:100%;
+    max-width:100%;
+  }
+  #duvidas .lp-heading h2{
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+  #duvidas .lp-faq details,
+  #duvidas .lp-faq summary,
+  #duvidas .lp-faq details p{
+    min-width:0;
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+  #duvidas .lp-faq summary{
+    padding:18px 38px 18px 0;
+    line-height:1.4;
+  }
+  #duvidas .lp-faq details p{
+    padding-right:8px;
+    font-size:15px;
+  }
+  .lp-final{
+    width:100%;
+    padding:48px 0;
+  }
+  .lp-final-in{
+    display:flex;
+    width:100%;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:24px;
+  }
+  .lp-final-in>div{
+    width:100%;
+    min-width:0;
+  }
+  .lp-final h2{
+    max-width:100%;
+    font-size:clamp(27px,8vw,34px);
+    overflow-wrap:anywhere;
+  }
+  .lp-final-cta{
+    max-width:100%;
+    min-width:0!important;
+  }
+  .lp-footer{
+    width:100%;
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .lp-footer-in{
+    display:flex;
+    width:100%;
+    min-height:0;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:18px;
+    padding-top:22px;
+    padding-bottom:calc(22px + env(safe-area-inset-bottom,0px));
+  }
+  .lp-footer-in>span,
+  .lp-footer nav{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+  }
+  .lp-footer nav{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    column-gap:18px;
+    row-gap:12px;
+  }
+  .lp-footer nav a{
+    min-width:0;
+    max-width:100%;
+    overflow-wrap:anywhere;
   }
 }
