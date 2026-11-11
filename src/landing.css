@@ -1544,10 +1544,11 @@
 }
 .lp-final-trial>span{
   color:#b0a5ff!important;
-  font-size:33px!important;
+  font-size:29px!important;
   font-weight:730!important;
   line-height:1.05!important;
-  letter-spacing:-.06em!important;
+  letter-spacing:-.055em!important;
+  white-space:nowrap!important;
 }
 .lp-final-trial>strong{
   color:#a5a3b2!important;
