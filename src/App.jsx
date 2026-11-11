@@ -643,9 +643,24 @@ function Landing({session}) {
       </section>
 
       <section className="lp-final">
-        <div className="lp-wrap lp-final-in">
-          <div><h2><KineticText>Chega de planilha para saber quem está te devendo.</KineticText></h2><p>7 dias grátis · Sem cartão de crédito</p></div>
-          <Link to="/cadastro" className="lp-final-cta">Começar grátis <ArrowRight size={18}/></Link>
+        <div className="lp-wrap">
+          <div className="lp-final-panel">
+            <div className="lp-final-in">
+              <div className="lp-final-copy">
+                <span className="lp-final-eyebrow"><i aria-hidden="true"/> SUA ROTINA FINANCEIRA, EM ORDEM</span>
+                <h2><KineticText>Assuma o controle do que sua empresa tem a receber.</KineticText></h2>
+                <p>Organize clientes e cobranças em um só lugar. Saiba o que está pendente e acompanhe o que já entrou.</p>
+              </div>
+              <div className="lp-final-action">
+                <div className="lp-final-trial">
+                  <span>7 dias</span>
+                  <strong>para testar o CobrançaPro</strong>
+                </div>
+                <Link to="/cadastro" className="lp-final-cta">Começar grátis <ArrowRight size={18}/></Link>
+                <span className="lp-final-note"><i aria-hidden="true">✓</i> Sem cartão de crédito</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
