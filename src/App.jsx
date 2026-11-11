@@ -653,8 +653,8 @@ function Landing({session}) {
               </div>
               <div className="lp-final-action">
                 <div className="lp-final-trial">
-                  <span>7 dias</span>
-                  <strong>para testar o CobrançaPro</strong>
+                  <span>7 dias grátis</span>
+                  <strong>para conhecer o CobrançaPro na prática</strong>
                 </div>
                 <Link to="/cadastro" className="lp-final-cta">Começar grátis <ArrowRight size={18}/></Link>
                 <span className="lp-final-note"><i aria-hidden="true">✓</i> Sem cartão de crédito</span>
