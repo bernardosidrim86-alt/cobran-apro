@@ -384,19 +384,24 @@ function Landing({session}) {
 
     const observer=new IntersectionObserver(entries=>{
       entries.forEach(entry=>{
+        if(!entry.isIntersecting) return;
+
         const el=entry.target;
-        if(entry.isIntersecting){
-          el.dataset.storyDirection=scrollDirection;
-          el.classList.add("is-visible");
-        }else{
-          el.classList.remove("is-visible");
-        }
+        el.dataset.storyDirection=scrollDirection;
+        el.classList.add("is-visible");
+
+        // O reveal acontece uma única vez. Deixar o observer observando
+        // elementos já animados fazia o transform cruzar a área de
+        // interseção e alternar a classe, causando o efeito de piscar.
+        observer.unobserve(el);
       });
     },{
       threshold:0.01,
       rootMargin:"-12% 0px -12% 0px"
     });
-    items.forEach(el=>observer.observe(el));
+    items.forEach(el=>{
+      if(!el.classList.contains("is-visible")) observer.observe(el);
+    });
 
     return()=>{
       observer.disconnect();
