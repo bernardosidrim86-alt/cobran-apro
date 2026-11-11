@@ -2107,3 +2107,116 @@
 @media(prefers-reduced-motion:reduce){
   .lp *,.lp *::before,.lp *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+
+
+/* ==========================================================================
+   COBRANÇAPRO — V6.1 / ACENTO ROXO DA IDENTIDADE
+   Preto e branco continuam como base; roxo volta nos pontos de marca.
+   ========================================================================== */
+.lp{
+  --lp-brand:#8b7cff!important;
+  --lp-brand-d:#7564ef!important;
+  --lp-brand-soft:rgba(139,124,255,.13)!important;
+}
+.lp-hero{
+  background:
+    radial-gradient(ellipse 54% 42% at 50% 10%,rgba(119,94,255,.13),transparent 72%),
+    radial-gradient(ellipse 40% 36% at 50% 78%,rgba(92,68,205,.055),transparent 76%),
+    linear-gradient(180deg,#090a0c 0%,#08090b 100%)!important;
+}
+.lp-hero h1 .lp-kinetic-accent{
+  color:#9587ff!important;
+  background:linear-gradient(100deg,#aaa0ff 0%,#8b7cff 48%,#b09cff 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+}
+.lp-hero .lp-kicker::before{
+  background:#8b7cff!important;
+  box-shadow:0 0 12px rgba(139,124,255,.62)!important;
+}
+.lp-cta-row .lp-btn-primary{
+  border-color:#8b7cff!important;
+  background:#8b7cff!important;
+  color:#fff!important;
+  box-shadow:0 8px 30px rgba(117,100,239,.22)!important;
+}
+.lp-cta-row .lp-btn-primary:hover{
+  border-color:#a094ff!important;
+  background:#a094ff!important;
+  color:#fff!important;
+  box-shadow:0 10px 34px rgba(117,100,239,.3)!important;
+}
+.lp-trust-icon{
+  border-color:rgba(139,124,255,.28)!important;
+  background:rgba(139,124,255,.1)!important;
+  color:#a99dff!important;
+}
+.lp-journey-track i{background:#8b7cff!important}
+.lp-journey-dots a.active{background:#a99dff!important}
+.lp-step::before{
+  border-color:rgba(139,124,255,.55)!important;
+  color:#b3aaff!important;
+}
+.lp-step-n,.lp-journey-outro>span{color:#a99dff!important}
+.lp-journey-outro>a{color:#a99dff!important}
+.lp-journey-outro>a:hover{color:#d0c9ff!important}
+#recursos .lp-feature-icon{
+  border-color:rgba(139,124,255,.25)!important;
+  background:rgba(139,124,255,.09)!important;
+  color:#b0a6ff!important;
+}
+@media(hover:hover){
+  #recursos .lp-feature-item:hover .lp-feature-icon{
+    border-color:rgba(157,140,255,.55)!important;
+    background:rgba(139,124,255,.16)!important;
+    color:#c3bbff!important;
+  }
+}
+.lp-plans .price-card.featured,
+#precos .price-card.featured{
+  border-color:#7666e8!important;
+  box-shadow:0 18px 54px -34px rgba(125,105,255,.42)!important;
+}
+.lp-plans .price-card.featured .price-kicker{color:#ab9fff!important}
+.lp-plans .price-card .btn-primary{
+  border-color:#8b7cff!important;
+  background:#8b7cff!important;
+  color:#fff!important;
+}
+.lp-plans .price-card .btn-primary:hover{
+  border-color:#a094ff!important;
+  background:#a094ff!important;
+  color:#fff!important;
+}
+.lp-plans .popular{
+  border-color:#8b7cff!important;
+  background:#8b7cff!important;
+  color:#fff!important;
+}
+.lp-billing button.active{
+  background:#8b7cff!important;
+  color:#fff!important;
+}
+.lp-billing button.active span{
+  background:rgba(255,255,255,.18)!important;
+  color:#fff!important;
+}
+.lp-final-cta{
+  border-color:#8b7cff!important;
+  background:#8b7cff!important;
+  color:#fff!important;
+}
+.lp-final-cta:hover{
+  border-color:#a094ff!important;
+  background:#a094ff!important;
+  color:#fff!important;
+}
+.lp-scroll-progress>span{
+  background:linear-gradient(90deg,#7666e8,#aa9cff)!important;
+  box-shadow:0 0 10px rgba(139,124,255,.3)!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .lp-hero h1 .lp-kinetic-accent{-webkit-text-fill-color:#9587ff!important}
+}
