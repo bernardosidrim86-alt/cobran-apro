@@ -2220,3 +2220,27 @@
 @media(prefers-reduced-motion:reduce){
   .lp-hero h1 .lp-kinetic-accent{-webkit-text-fill-color:#9587ff!important}
 }
+
+
+
+/* FIX V6.2 — texto do destaque visível também nas palavras animadas */
+.lp-hero h1 .lp-kinetic-accent{
+  color:#a99cff!important;
+  background:none!important;
+  -webkit-background-clip:initial!important;
+  background-clip:initial!important;
+  -webkit-text-fill-color:initial!important;
+}
+.lp-hero h1 .lp-kinetic-accent .lp-kinetic-word{
+  color:#a99cff!important;
+  background:none!important;
+  -webkit-text-fill-color:#a99cff!important;
+  opacity:1;
+}
+@media(prefers-reduced-motion:reduce){
+  .lp-hero h1 .lp-kinetic-accent,
+  .lp-hero h1 .lp-kinetic-accent .lp-kinetic-word{
+    color:#a99cff!important;
+    -webkit-text-fill-color:#a99cff!important;
+  }
+}
