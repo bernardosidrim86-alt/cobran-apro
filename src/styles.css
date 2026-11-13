@@ -15775,3 +15775,18 @@ html[data-theme="dark"] .team-feedback.is-success{background:#203629;border-colo
     padding:16px 12px 28px;
   }
 }
+
+/* AUTH — separar visualmente a nota de segurança do conteúdo lateral */
+.auth-aside-footer{
+  flex:0 0 auto!important;
+  align-self:flex-start!important;
+  width:min(100%,430px)!important;
+  margin-top:48px!important;
+  padding-top:17px!important;
+  border-top:1px solid rgba(255,255,255,.09)!important;
+  gap:10px!important;
+  line-height:1.5!important;
+}
+.auth-aside-footer svg{
+  flex:0 0 14px!important;
+}
