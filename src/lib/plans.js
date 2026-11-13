@@ -25,8 +25,8 @@ export const PLAN_OPTIONS = [
     maxCustomers: 50,
     maxCharges: 150,
     title: "Essencial",
-    monthlyPrice: "49,90",
-    annualPrice: "478,80",
+    monthlyPrice: "29,90",
+    annualPrice: "286,80",
     desc: "Para pequenos negócios que querem mais controle e organização.",
     items: [
       "Até 50 clientes",
@@ -44,8 +44,8 @@ export const PLAN_OPTIONS = [
     maxCustomers: 200,
     maxCharges: 500,
     title: "Profissional",
-    monthlyPrice: "99,90",
-    annualPrice: "958,80",
+    monthlyPrice: "59,90",
+    annualPrice: "574,80",
     desc: "Para empresas que precisam de mais automação e controle no dia a dia.",
     items: [
       "Até 200 clientes",
@@ -63,8 +63,8 @@ export const PLAN_OPTIONS = [
     maxCustomers: null,
     maxCharges: null,
     title: "Business",
-    monthlyPrice: "199,90",
-    annualPrice: "1.918,80",
+    monthlyPrice: "119,90",
+    annualPrice: "1.150,80",
     desc: "Para operações maiores e equipes que precisam de mais capacidade.",
     items: [
       "Clientes ilimitados",
